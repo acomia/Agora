@@ -41,7 +41,7 @@ export default class Dashboard extends React.Component {
                                 autoplayLoop
                                 index={0}
                                 showPagination
-                                paginationStyle={{ marginBottom: 30,}}
+                                paginationStyle={{ marginBottom: 30, }}
                             >
                                 <View style={styles.child}>
                                     <Card style={styles.mainCardStyle}>
@@ -144,14 +144,16 @@ export default class Dashboard extends React.Component {
                         <View style={styles.menuRow}>
                             <View style={styles.cardItemStyle}>
                                 <Card style={styles.cardStyle}>
-                                    <CardItem style={styles.cardStyle}>
-                                        <Left>
-                                            <Body>
-                                                <Text style={styles.cardText}>Find a Medical Provider</Text>
-                                            </Body>
-                                            <Thumbnail source={require('../../assets/images/doctor.png')} resizeMode='contain' />
-                                        </Left>
-                                    </CardItem>
+                                    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('DoctorProfilePage')}>
+                                        <CardItem style={styles.cardStyle}>
+                                            <Left>
+                                                <Body>
+                                                    <Text style={styles.cardText}>Find a Medical Provider</Text>
+                                                </Body>
+                                                <Thumbnail source={require('../../assets/images/doctor.png')} resizeMode='contain' />
+                                            </Left>
+                                        </CardItem>
+                                    </TouchableNativeFeedback>
                                 </Card>
                             </View>
                             {/* <View style={styles.cardItemStyle}>
