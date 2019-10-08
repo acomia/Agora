@@ -18,7 +18,7 @@ export default class DoctorProfile extends React.Component {
                 <Header span style={styles.headerStyle}>
                     <ImageBackground source={require('../../assets/images/intellicareheader.jpg')} style={styles.backgroundImage}>
                         <View style={styles.headerUser}>
-                            <Thumbnail large source={require('../../assets/images/doctor-avatar.png')} resizeMode='contain' />
+                            <Thumbnail large source={require('../../assets/images/doctor-avatar.png')} resizeMode='contain' style={styles.avatarStyle} />
                             <Label style={styles.labelNickname}>Dr. Juan Dela Cruz</Label>
                         </View>
                         <View style={styles.headerDetails}>
@@ -122,6 +122,9 @@ const styles = StyleSheet.create(
         },
         accordion: {
             paddingHorizontal: 20,
+        },
+        avatarStyle: {
+            marginBottom: 5
         }
     }
 )

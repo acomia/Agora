@@ -11,6 +11,7 @@ import Intellimap from "../screens/Intellimap";
 import Members from "../screens/Members";
 import MemberInformation from "../screens/MemberInformation";
 import PostedUtil from "../screens/PostedUtil"
+import DoctorProfile from "../screens/DoctorProfile";
 
 AppStack = createStackNavigator(
     {
@@ -78,6 +79,12 @@ AppStack = createStackNavigator(
         },
         MemberInfoPage: {
             screen: MemberInformation,
+            navigationOptions: {
+                header: null,
+            }
+        },
+        DoctorProfilePage: {
+            screen: DoctorProfile,
             navigationOptions: {
                 header: null,
             }
