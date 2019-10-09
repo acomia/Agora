@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Fernandez Dental Clinic",
+        "address": "Cityland Dela Rosa Condominium, U46, Dela Rosa Street, Makati, 1230 Metro Manila",
+        "coords": {
+            "latitude": 14.5577272,
+            "longitude": 121.0098298
+        },
+        "image_url": "https://geo3.ggpht.com/cbk?panoid=vSQFrB-lq9VtEh9tCyOLnQ&output=thumbnail&cb_client=search.gws-prod.gps&thumb=2&w=408&h=240&yaw=344.9716&pitch=0&thumbfov=100"
+    },
+    {
+        "name": "Lady of Lourdes Dental Clinic",
+        "address": "191-A 28th Ave, Makati, 1216 Metro Manila",
+        "coords": {
+            "latitude": 14.5503474,
+            "longitude": 121.0634718
+        },
+        "image_url": "https://lh3.googleusercontent.com/proxy/5YD9U5FvUbrJhGPRQP7W0qUiK0al1q3a3ymakuqNsptZhGKbPn76r7giZsJp368IHxguMLGjUEY2u5KyzWmG2UHK_rAuAZ1QhhvN4Ci0zUZpX3nk7VwHAaVaIVFQPqdWyisRlhjYA7kENDskky2IMCL2IUM=w426-h240-k-no"
+    },
+    {
+        "name": "Wilmar Diagnostic and Medical Clinic",
+        "address": "Unit 302 AMV Building, 1748 Evangelista Street, Barangay Bangkal, Makati City, 1233, Metro Manila, Makati, Metro Manila",
+        "coords": {
+            "latitude": 14.5452377,
+            "longitude": 121.0112058
+        },
+        "image_url": "https://geo3.ggpht.com/cbk?panoid=Dv5d6JvuETSbdbYlQ1bGeA&output=thumbnail&cb_client=search.gws-prod.gps&thumb=2&w=408&h=240&yaw=234.35492&pitch=0&thumbfov=100"
+    },
+    {
+        "name": "Dental City",
+        "address": "029, New Glorietta 3, Ayala Center, Makati, 1224 Metro Manila",
+        "coords": {
+            "latitude": 14.551495,
+            "longitude": 121.024395
+        },
+        "image_url": "https://lh4.googleusercontent.com/proxy/5To7ZS_NnFtntKcpJ5Nu0HntegyOLsw81WpSu8RY1RFZUXhMW3M28TdBY204ePUyBrXkvGo0N6DMxs8r4_RiYAQ88MgjLhewaSunCax9-fT6gMfCrdYNDeOAGOZCOMxLVaD32XnJf_vu06jba67E1YZnfUo=w426-h240-k-no"
+    },
+    {
+        "name": "Affinity Dental Clinics Makati",
+        "address": "2nd Floor, Plaza 100, 100 V.A. Rufino St.,, Legaspi Village, Legazpi Village, Makati, 1229 Metro Manila",
+        "coords": {
+            "latitude": 14.556798,
+            "longitude": 121.01805
+        },
+        "image_url": "https://lh5.googleusercontent.com/p/AF1QipN9WIrardI7eBHZ2pWjQJmNBT5TK5e51IWmOh_v=w426-h240-k-no"
+    }
+]

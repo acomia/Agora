@@ -24,17 +24,22 @@ export default class Login extends React.Component {
                             <Form>
                                 <Item floatingLabel>
                                     <Label >Username</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(username) => this.setState({ username })} />
+                                    <Input
+                                        style={styles.labelStyle}
+                                        onChangeText={(username) => this.setState({ username })} />
                                 </Item>
                                 <Item floatingLabel>
                                     <Label>Password</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(password) => this.setState({ password })} />
+                                    <Input
+                                        secureTextEntry
+                                        style={styles.labelStyle}
+                                        onChangeText={(password) => this.setState({ password })} />
                                 </Item>
                             </Form>
                             <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
                                 Forgot Password?
                         </Text>
-                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('Dashboard')}>
+                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this._postUser()}>
                                 <Text > Login </Text>
                             </Button>
                         </View>
@@ -50,7 +55,8 @@ export default class Login extends React.Component {
         fetch('http:192.168.1.104:3005/', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json;charset=UTF-8',
+
             }
         })
             .then((response) => {
