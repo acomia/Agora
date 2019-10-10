@@ -6,7 +6,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default class Login extends React.Component {
-
+    constructor() {
+        super();
+        global.loginToken = ''
+    }
     state = {
         username: "",
         password: ""
@@ -89,10 +92,7 @@ export default class Login extends React.Component {
     }
 
     _postUser() {
-
-        // alert('sample')
-        // return
-        fetch('http:192.168.9.104:3005/login', {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
@@ -101,14 +101,16 @@ export default class Login extends React.Component {
                 username: this.state.username,
                 password: this.state.password,
             })
+            // "username":"digitalxform",
+            // "password":"th2p@ssw0rd"
 
         })
             .then((response) => {
                 response.json()
                     .then((data) => {
-                        alert(JSON.stringify(data.message))
-                        if (data.message === 'User found!') {
-                            alert
+                        if (data.message === 'Success!') {
+                            global.loginToken = data.response.token
+                            console.log(global.loginToken)
                             this.props.navigation.navigate('DashboardPage')
                         } else {
                             alert('Username not found!')
