@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Dimensions, Image, TouchableNativeFeedback, ImageBackground } from 'react-native'
-import { Container, Header, Text, Icon, Left, Right, Body, ListItem } from 'native-base'
+import { Container, Header, Text, Icon, Left, Right, Body, ListItem, Thumbnail } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 import { DrawerActions } from 'react-navigation-drawer';
 
@@ -16,7 +16,7 @@ export default class SideBar extends React.Component {
                 <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('MembersPage')}>
                     <ListItem icon style={styles.listItemStyle}>
                         <Left>
-                            <Icon active name="ios-person" style={styles.listStyle} />
+                            <Thumbnail square source={require('../../assets/images/nav-profile.png')} style={styles.navStyle} />
                         </Left>
                         <Body style={styles.listLabel}>
                             <Text style={styles.listStyle}>Member Profiles</Text>
@@ -25,44 +25,29 @@ export default class SideBar extends React.Component {
                 </TouchableNativeFeedback>
                 <ListItem icon style={styles.listItemStyle}>
                     <Left>
-                        <Icon active name="md-map" />
+                        <Thumbnail square source={require('../../assets/images/nav-map.png')} style={styles.navStyle} />
                     </Left>
                     <Body style={styles.listLabel}>
                         <Text>IntelliMap</Text>
                     </Body>
                 </ListItem>
-                {/* <ListItem icon style={styles.listItemStyle}>
-                    <Left>
-                        <Icon active name="ios-paper" />
-                    </Left>
-                    <Body style={styles.listLabel}>
-                        <Text>Request ERCS1</Text>
-                    </Body>
-                </ListItem>
-                <ListItem icon style={styles.listItemStyle}>
-                    <Left>
-                        <Icon active name="ios-paper" />
-                    </Left>
-                    <Body style={styles.listLabel}>
-                        <Text>Request ERCS2</Text>
-                    </Body>
-                </ListItem> */}
                 <ListItem icon style={styles.listItemStyle}>
                     <Left style={styles.listLabel}>
                         <Icon active name="ios-search" />
                     </Left>
                     <Body style={styles.listLabel}>
-                        <Text>Find Medical Provider</Text>
+                        <Text>Find a Medical Provider</Text>
                     </Body>
                 </ListItem>
-                {/* <ListItem icon style={styles.listItemStyle}>
-                    <Left>
-                        <Icon active name="ios-cash" />
+                <View style={styles.divider} />
+                <ListItem icon style={styles.listItemStyle}>
+                    <Left style={styles.listLabel}>
+                        <Thumbnail square source={require('../../assets/images/nav-logout.png')} style={styles.navStyle} />
                     </Left>
                     <Body style={styles.listLabel}>
-                        <Text>Reimbursement</Text>
+                        <Text style={styles.logoutText}>Logout</Text>
                     </Body>
-                </ListItem> */}
+                </ListItem>
             </Container>
 
         );
@@ -71,7 +56,7 @@ export default class SideBar extends React.Component {
 
 const styles = StyleSheet.create(
     {
-        listItemStyle:{
+        listItemStyle: {
             marginTop: 20,
             borderBottomColor: "#2d2d2d",
         },
@@ -85,5 +70,17 @@ const styles = StyleSheet.create(
             flex: 1,
             resizeMode: "stretch",
         },
+        divider: {
+            marginTop: 20,
+            borderBottomWidth: 0.50,
+            borderBottomColor: "#c4c4c4"
+        },
+        logoutText: {
+            color: "#c4c4c4",
+        },
+        navStyle: {
+            height: 20,
+            width: 20
+        }
     }
 )

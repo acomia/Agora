@@ -86,7 +86,7 @@ AppStack = createStackNavigator(
         DoctorProfilePage: {
             screen: DoctorProfile,
             navigationOptions: {
-                header: null,
+                title: "Search Doctor"
             }
         },
     }

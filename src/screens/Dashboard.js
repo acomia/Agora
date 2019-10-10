@@ -156,18 +156,6 @@ export default class Dashboard extends React.Component {
                                     </TouchableNativeFeedback>
                                 </Card>
                             </View>
-                            {/* <View style={styles.cardItemStyle}>
-                                <Card style={styles.cardStyle}>
-                                    <CardItem style={styles.cardStyle}>
-                                        <Left>
-                                            <Body>
-                                                <Text style={styles.cardText}>Reimbursement</Text>
-                                            </Body>
-                                            <Thumbnail source={require('../../assets/images/coins.png')} resizeMode='contain' />
-                                        </Left>
-                                    </CardItem>
-                                </Card>
-                            </View> */}
                         </View>
                     </View>
                 </ScrollView>

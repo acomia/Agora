@@ -1,12 +1,47 @@
 import React from 'react'
 import { StyleSheet, View, Dimensions, Image, ImageBackground } from 'react-native'
-import { Container, Header, Content, Button, Text, Icon, Left, Right, Body, Label, ListItem, Thumbnail, Item, Accordion } from 'native-base'
+import { Container, Header, Text, Left, Right, Body, Label, ListItem, Thumbnail, List, Accordion } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 
+const content = (
+    <View>
+        <List style={{marginBottom: 20, paddingHorizontal: 20, paddingRight: 50, color: "#2d2d2d"}}>
+            <View style={{flexDirection: "row"}}>
+                <Thumbnail square source={require('../../assets/images/nav-door.png')} style={{height: 20, width: 20, marginHorizontal: 10}} />
+                <Text note>Room No: </Text>
+                <Text note>1001</Text>
+            </View>
+        </List>
+        <List style={{marginBottom: 20, paddingHorizontal: 20, paddingRight: 50, color: "#2d2d2d"}}>
+            <View style={{flexDirection: "row"}}>
+                <Thumbnail square source={require('../../assets/images/nav-coordinator.png')} style={{height: 20, width: 20, marginHorizontal: 10}} />
+                <Text note>Coordinator: </Text>
+                <Text note >DELA CRUZ, JUAN</Text>
+            </View>
+        </List>
+        <List style={{marginBottom: 20, paddingHorizontal: 20, paddingRight: 50, color: "#2d2d2d"}}>
+            <View style={{flexDirection: "row"}}>
+                <Thumbnail square source={require('../../assets/images/nav-phone.png')} style={{height: 20, width: 20, marginHorizontal: 10}} />
+                <Text note>(02) 902-3400 loc. 1001</Text>
+            </View>
+        </List>
+        <List style={{marginBottom: 20, paddingHorizontal: 20, paddingRight: 50, color: "#2d2d2d"}}>
+            <View style={{flexDirection: "row"}}>
+                <Thumbnail square source={require('../../assets/images/nav-schedule.png')} style={{height: 20, width: 20, marginHorizontal: 10}} />
+                <Text note>MWF 9:00AM - 12:00PM, TTHS 1:00PM - 5:00PM</Text>
+            </View>
+        </List>
+    </View>
+);
+
 const dataArray = [
-    { title: "Asian Hospital and Medical Center", content: "Room 101, MWF 9:00AM-12:00PM, (02) 902-3400 loc. 1001" },
-    { title: "Makati Medical Center", content: "Room 101, MWF 9:00AM-12:00PM, (02) 902-3400 loc. 1001" },
-    { title: "St. Luke's Medical Center - Global City", content: "Room 101, MWF 9:00AM-12:00PM, (02) 902-3400 loc. 1001" },
+    {
+        title: "Asian Hospital and Medical Center",
+    },
+    {
+        title: "Makati Medical Center",
+    },
+
 ];
 
 
@@ -21,31 +56,10 @@ export default class DoctorProfile extends React.Component {
                             <Thumbnail large source={require('../../assets/images/doctor-avatar.png')} resizeMode='contain' style={styles.avatarStyle} />
                             <Label style={styles.labelNickname}>Dr. Juan Dela Cruz</Label>
                         </View>
-                        <View style={styles.headerDetails}>
-                            <Label style={styles.labelHeaderDetails}>IM-Gastroenterologist</Label>
-                            <Text style={styles.labelHeaderDetails}> | </Text>
-                            <Text style={styles.labelHeaderDetails}>PRC No: </Text>
-                            <Label style={styles.labelHeaderDetails}>123456</Label>
-                        </View>
+                        <Text style={styles.headerDetails}>IM-Gastroenterologist</Text>
                     </ImageBackground>
                 </Header>
                 <ScrollView>
-                    <View style={styles.doctorDescription}>
-                        <ListItem icon>
-                            <Left>
-                                <Thumbnail small style={{ alignSelf: "center" }} source={require('../../assets/images/avatar.png')} resizeMode='contain' />
-                            </Left>
-                            <Body style={{ borderBottomWidth: 0 }}>
-                                <Text style={styles.contentHeader}>Description</Text>
-                            </Body>
-                            <Right />
-                        </ListItem>
-                        <View style={styles.description}>
-                            <Label style={styles.labelDescription}>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                            </Label>
-                        </View>
-                    </View>
                     <View style={styles.hospitalAccreditation}>
                         <ListItem icon>
                             <Left>
@@ -60,8 +74,9 @@ export default class DoctorProfile extends React.Component {
                             <Accordion
                                 dataArray={dataArray}
                                 style={{ borderWidth: 0 }}
-                                headerStyle={{ backgroundColor: "#fff", fontSize: 14, color: "#2d2d2d", padding: 10 }}
-                                contentStyle={{ backgroundColor: "transparent", fontSize: 14, color: "#2d2d2d", paddingHorizontal: 20 }}
+                                headerStyle={{ backgroundColor: "#fff", fontSize: 14, color: "#2d2d2d", paddingBottom: 20 }}
+                                contentStyle={{ backgroundColor: "transparent", fontSize: 14, color: "#2d2d2d" }}
+                                renderContent={() => content}
                             />
                         </View>
                     </View>
@@ -81,7 +96,7 @@ const styles = StyleSheet.create(
             justifyContent: "center"
         },
         headerStyle: {
-            height: 200,
+            height: 180,
             backgroundColor: "#5fb650",
             paddingLeft: 0, paddingRight: 0,
         },
@@ -89,8 +104,8 @@ const styles = StyleSheet.create(
             alignItems: "center"
         },
         headerDetails: {
-            flexDirection: "row",
-            alignSelf: "center"
+            alignSelf: "center",
+            color: "#fff"
         },
         labelNickname: {
             alignSelf: "center",
@@ -104,27 +119,34 @@ const styles = StyleSheet.create(
         },
         doctorDescription: {
             marginTop: 30,
+            paddingRight: 30
         },
         hospitalAccreditation: {
             marginTop: 30,
         },
         contentHeader: {
-            color: "#5fb650"
-        },
-        description: {
-            marginTop: 10,
-            paddingHorizontal: 35,
-            color: "#2d2d2d",
-        },
-        labelDescription: {
-            textAlign: "justify",
-            fontSize: 14,
+            color: "#5fb650",
+            fontWeight: "bold",
+            fontSize: 20
         },
         accordion: {
             paddingHorizontal: 20,
         },
         avatarStyle: {
             marginBottom: 5
+        },
+        description: {
+            marginTop: 20,
+            paddingHorizontal: 50,
+            color: "#2d2d2d",
+        },
+        navStyle: {
+            height: 20,
+            width: 20,
+            marginHorizontal: 10
+        },
+        itemDescription: {
+            flexDirection: "row"
         }
     }
 )
