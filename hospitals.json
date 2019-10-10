@@ -1,0 +1,47 @@
+[
+    {
+        "name": "Makati Medical Center Main Building",
+        "address": "Dela Rosa Street Legazpi Village, Makati Metro Manila",
+        "coords": {
+            "latitude": 14.5594041,
+            "longitude": 121.014414
+        },
+        "image_url": "https://www.makatimed.net.ph/files/thumb/49a3bfccbe2f4c6/1220/400/fit"
+    },
+    {
+        "name": "Philippine General Hospital",
+        "address": "Taft Ave, Ermita, Manila, 1000 Metro Manila",
+        "coords": {
+            "latitude": 14.5777215,
+            "longitude": 120.9856154
+        },
+        "image_url": "https://live.staticflickr.com/5781/19912702604_03d52fee84_b.jpg"
+    },
+    {
+        "name": "Manila Doctors Hospital",
+        "address": "667 United Nations Ave, Ermita, Manila, 1000 Metro Manila",
+        "coords": {
+            "latitude": 14.5819106,
+            "longitude": 120.9827129
+        },
+        "image_url": "https://lh3.googleusercontent.com/proxy/MoGDuBXZRZ0zZI4BBWX-cB_op2y1AkwVsZJ7lt9GirdDokZntAUp5RlbOjYHww8Z55-cTwxMa51aebGeufkJpah2tHLKgqDIQktGOKwHDF1i5sDpAf8XAc5DqhPY5j2fOQWOBtk_Xc-9jp8wCa4Z4JSJbHM=w426-h240-k-no"
+    },
+    {
+        "name": "St. Luke's Medical Center - Global City",
+        "address": "5th Ave, Taguig, 1634 Metro Manila",
+        "coords": {
+            "latitude": 14.554928,
+            "longitude": 121.048202
+        },
+        "image_url": "https://lh5.googleusercontent.com/p/AF1QipOvBSzFrOYjcRsDX2NmZ1NLmgR5HLuBSTBNLTxt=w493-h240-k-no"
+    },
+    {
+        "name": "Aventus Medical Care, Inc. - Makati",
+        "address": "104 Amorsolo Street, Legazpi Village, Makati, 1229 Kalakhang Maynila",
+        "coords": {
+            "latitude": 14.5578852,
+            "longitude": 121.0144425
+        },
+        "image_url": "https://www.aventusmedical.com/ClinicLocatorImages/ClinicLocatorPageClinicLocationsCebuClinic.PNG"
+    }
+]
