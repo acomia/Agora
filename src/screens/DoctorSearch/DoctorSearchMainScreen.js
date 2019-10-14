@@ -98,7 +98,7 @@ export default function DoctorSearchMainScreen() {
           },
           body: JSON.stringify({
             doctor: 'RONALD',
-            hospitalclinic: 'MEDICAL CENTER IMUS',
+            hospitalclinic: 'ALL',
             specialization: 'ALL',
             city: 'ALL',
           }),
