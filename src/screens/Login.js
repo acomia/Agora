@@ -9,7 +9,10 @@ const ACCESS_TOKEN = 'access_token';
 
 
 export default class Login extends React.Component {
-
+    constructor() {
+        super();
+        global.loginToken = ''
+    }
     state = {
         username: "",
         password: ""
@@ -55,11 +58,16 @@ async getToken()
                             <Form>
                                 <Item floatingLabel>
                                     <Label >Username</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(username) => this.setState({ username })} required/>
+                                    <Input
+                                        style={styles.labelStyle}
+                                        onChangeText={(username) => this.setState({ username })} />
                                 </Item>
                                 <Item floatingLabel>
                                     <Label>Password</Label>
-                                    <Input secureTextEntry style={styles.labelStyle} onChangeText={(password) => this.setState({ password })} required/>
+                                    <Input
+                                        secureTextEntry
+                                        style={styles.labelStyle}
+                                        onChangeText={(password) => this.setState({ password })} />
                                 </Item>
                             </Form>
                             <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
@@ -81,7 +89,8 @@ async getToken()
         fetch('http:192.168.1.104:3005/', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json;charset=UTF-8',
+
             }
         })
             .then((response) => {
@@ -114,7 +123,7 @@ async getToken()
     }
 
     _postUser() {
-        fetch('http://52.230.122.226:3000/api/v1/login', {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
@@ -123,21 +132,19 @@ async getToken()
                 email: this.state.username,
                 password: this.state.password,
             })
+            // "username":"digitalxform",
+            // "password":"th2p@ssw0rd"
 
         })
             .then((response) => {
                 response.json()
                     .then((data) => {
-                        if (data.status === 200) 
-                        {
-                            let accessToken = data.token
-                            this.storeToken(accessToken)
-                            alert('TOKEN IS! ' + accessToken)
-                            this.props.navigation.navigate('Dashboard')
-                        } 
-                        else 
-                        {
-                            alert(data.message)
+                        if (data.message === 'Success!') {
+                            global.loginToken = data.response.token
+                            console.log(global.loginToken)
+                            this.props.navigation.navigate('DashboardPage')
+                        } else {
+                            alert('Username not found!')
                         }
                     })
             })

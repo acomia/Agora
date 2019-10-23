@@ -23,14 +23,16 @@ export default class SideBar extends React.Component {
                         </Body>
                     </ListItem>
                 </TouchableNativeFeedback>
-                <ListItem icon style={styles.listItemStyle}>
-                    <Left>
-                        <Icon active name="md-map" />
-                    </Left>
-                    <Body style={styles.listLabel}>
-                        <Text>IntelliMap</Text>
-                    </Body>
-                </ListItem>
+                <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('IntellimapPage')}>
+                    <ListItem icon style={styles.listItemStyle}>
+                        <Left>
+                            <Icon active name="md-map" />
+                        </Left>
+                        <Body style={styles.listLabel}>
+                            <Text>IntelliMap</Text>
+                        </Body>
+                    </ListItem>
+                </TouchableNativeFeedback>
                 {/* <ListItem icon style={styles.listItemStyle}>
                     <Left>
                         <Icon active name="ios-paper" />
@@ -71,7 +73,7 @@ export default class SideBar extends React.Component {
 
 const styles = StyleSheet.create(
     {
-        listItemStyle:{
+        listItemStyle: {
             marginTop: 20,
             borderBottomColor: "#2d2d2d",
         },
