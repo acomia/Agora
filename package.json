@@ -8,6 +8,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-community/async-storage": "^1.6.2",
     "expo": "^35.0.0",
     "native-base": "^2.13.8",
     "react": "16.8.6",
@@ -23,7 +24,8 @@
     "react-native-webview": "^7.4.0",
     "react-navigation": "^4.0.5",
     "react-navigation-drawer": "^2.2.2",
-    "react-navigation-stack": "^1.8.0"
+    "react-navigation-stack": "^1.8.0",
+    "save": "^2.4.0"
   },
   "devDependencies": {
     "@babel/core": "7.6.0",

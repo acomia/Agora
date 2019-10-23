@@ -1,8 +1,11 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, ImageBackground } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, ImageBackground} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { Container, Button, Text, Form, Item, Input, Label } from 'native-base'
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler'
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
+const ACCESS_TOKEN = 'access_token';
 
 
 export default class Login extends React.Component {
@@ -11,6 +14,34 @@ export default class Login extends React.Component {
         username: "",
         password: ""
     }
+
+async storeToken(accessToken)
+{
+    try
+    {
+        await AsyncStorage.setItem(ACCESS_TOKEN,accessToken);
+        this.getToken();
+    } catch(error)
+    {
+        console.log("CANT STORE TOKEN")
+    }
+}
+
+async getToken()
+{
+    try
+    {
+       let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+       console.log("token is: "+ token);
+    } catch(error)
+    {
+        console.log("CANT GET TOKEN")
+    }
+}
+
+
+
+
     render() {
         return (
             <ScrollView>
@@ -24,17 +55,17 @@ export default class Login extends React.Component {
                             <Form>
                                 <Item floatingLabel>
                                     <Label >Username</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(username) => this.setState({ username })} />
+                                    <Input style={styles.labelStyle} onChangeText={(username) => this.setState({ username })} required/>
                                 </Item>
                                 <Item floatingLabel>
                                     <Label>Password</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(password) => this.setState({ password })} />
+                                    <Input secureTextEntry style={styles.labelStyle} onChangeText={(password) => this.setState({ password })} required/>
                                 </Item>
                             </Form>
                             <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
                                 Forgot Password?
                         </Text>
-                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('Dashboard')}>
+                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this._postUser()}>
                                 <Text > Login </Text>
                             </Button>
                         </View>
@@ -83,16 +114,13 @@ export default class Login extends React.Component {
     }
 
     _postUser() {
-
-        // alert('sample')
-        // return
-        fetch('http:192.168.9.104:3005/login', {
+        fetch('http://52.230.122.226:3000/api/v1/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
             },
             body: JSON.stringify({
-                username: this.state.username,
+                email: this.state.username,
                 password: this.state.password,
             })
 
@@ -100,12 +128,16 @@ export default class Login extends React.Component {
             .then((response) => {
                 response.json()
                     .then((data) => {
-                        alert(JSON.stringify(data.message))
-                        if (data.message === 'User found!') {
-                            alert
-                            this.props.navigation.navigate('DashboardPage')
-                        } else {
-                            alert('Username not found!')
+                        if (data.status === 200) 
+                        {
+                            let accessToken = data.token
+                            this.storeToken(accessToken)
+                            alert('TOKEN IS! ' + accessToken)
+                            this.props.navigation.navigate('Dashboard')
+                        } 
+                        else 
+                        {
+                            alert(data.message)
                         }
                     })
             })
