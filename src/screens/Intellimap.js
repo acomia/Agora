@@ -6,9 +6,10 @@ import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps'
 import _ from 'lodash'
 import Geolocation from 'react-native-geolocation-service'
 import getDirections from 'react-native-google-maps-directions'
-import ImageOverlay from 'react-native-image-overlay'
 
-const hospitals = require('../../hospitals.json')
+
+const hospitals = require('../../hospital.json')
+const clinics = require('../../clinic.json')
 
 export async function request_location_runtime_permission() {
     try {
@@ -39,11 +40,15 @@ export default class Intellimap extends React.Component {
             curLatitude: 0,
             curLongitude: 0,
             hospitals: hospitals,
+            clinics: clinics,
+            loginToken: global.loginToken,
+            markers: '',
+            authToken: '',
+            imgSrc: ''
         }
     }
     async componentDidMount() {
         await request_location_runtime_permission()
-
         Geolocation.getCurrentPosition(
             (position) => {
                 this.setState({
@@ -56,7 +61,6 @@ export default class Intellimap extends React.Component {
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 1000 }
         )
-
         // const { hospitals: [sampleLocations] } = this.state
         // this.setState({
         //     desLatitude: sampleLocations.coords.latitude,
@@ -64,54 +68,105 @@ export default class Intellimap extends React.Component {
         // })
 
     }
-    onHospitalButtonPres() {
+
+    _getAuthToken() {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body: JSON.stringify({
+                username: 'digitalxform',
+                password: 'th2p@ssw0rd'
+            })
+        })
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        if (data.message === 'Success!') {
+                            console.log('Token:', data.response.token)
+                            this.setState({
+                                authToken: data.response.token
+                            })
+                        } else {
+                            alert('Username not found!')
+                        }
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
+    }
+
+    async _getHospitals() {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/providers/map?type=H', {
+            method: 'GET',
+            headers: {
+                'authToken': loginAuthToken,
+            }
+        })
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        console.log(data)
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
+    }
+    _getClinics() {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/providers/map?type=C', {
+            method: 'GET',
+            headers: {
+                'authToken': loginToken,
+            }
+        })
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        alert(JSON.stringify(data.key))
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
+    }
+    _getOffices() {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/providers/map?type=H', {
+            method: 'GET',
+            headers: {
+                'authToken': loginToken,
+            }
+        })
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        alert(JSON.stringify(data.key))
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
+    }
+    onHospitalButtonPress() {
+        this.setState({
+            markers: hospitals,
+            imgSrc: require('../../assets/images/location-red.png'),
+            destination: ''
+        })
+        { this.renderMarker() }
+    }
+    onClinicButtonPress() {
+        this.setState({
+            markers: clinics,
+            imgSrc: require('../../assets/images/location-blue.png'),
+            destination: ''
+        })
+        { this.renderMarker() }
 
     }
-    renderMarker() {
-        const { hospitals } = this.state
-        return (
-            <View>
-                {
-                    hospitals.map((location, idx) => {
-                        const { coords: { latitude, longitude } } = location
-                        return (
-                            <Marker
-                                key={idx}
-                                coordinate={{ latitude, longitude }}
-                                title={location.name}
-                                description={location.address}
-                                onPress={this.onMarkerPress(location)}
-                            >
-                                <Image
-                                    source={require('../../assets/images/location-red.png')}
-                                    style={{ height: 30, width: 30 }}
-                                />
-                                {/* <MapView.Callout>
-                                    <View>
-                                        <Text>Address:{location.address}</Text>
-                                        <Button title='Get Direction' />
-                                    </View>
-                                </MapView.Callout> */}
-                            </Marker>
-                            // <Marker
-                            //     key={idx}
-                            //     coordinate={{ latitude, longitude }}
-                            //     onPress={this.onMarkerPress(location)}
-                            // />
-                        )
-                    })
-                }
-            </View>
-        )
-    }
-    onMarkerPress = location => () => {
-        const { coords: { latitude, longitude } } = location
-        this.setState({
-            destination: location,
-            latitude: latitude,
-            longitude: longitude
-        })
-    }
+
     updateSearch = search => {
         this.setState({ search });
     };
@@ -154,13 +209,11 @@ export default class Intellimap extends React.Component {
     renderHeaderMapButton() {
         return (
             <View style={{ height: 24 }}>
-                <ScrollView
-                    horizontal={true}
-                >
+                <ScrollView horizontal={true}>
                     <View style={{ flexDirection: 'row', height: 30, justifyContent: 'center', }}>
                         <TouchableOpacity
                             style={styles.buttonStyle}
-                            onPress={() => this.renderMarker()}
+                            onPress={() => this.onHospitalButtonPress()}
                         >
                             <Image
                                 source={require('../../assets/images/location-red.png')}
@@ -168,7 +221,10 @@ export default class Intellimap extends React.Component {
                             />
                             <Text style={styles.textStyle}>Accredited Hospital</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={styles.buttonStyle}>
+                        <TouchableOpacity
+                            style={styles.buttonStyle}
+                            onPress={() => this.onClinicButtonPress()}
+                        >
                             <Image
                                 source={require('../../assets/images/location-blue.png')}
                                 style={{ width: 18, height: 18, top: 1 }}
@@ -187,46 +243,70 @@ export default class Intellimap extends React.Component {
             </View>
         )
     }
+    renderMarker() {
+        const { markers, imgSrc } = this.state
+        return (
+            <View>
+                {
+                    markers && markers.map((location, idx) => {
+                        const { coords: { latitude, longitude } } = location
+                        return (
+                            <Marker
+                                key={idx}
+                                coordinate={{ latitude, longitude }}
+                                title={location.name}
+                                description={location.address}
+                                onPress={this.onMarkerPress(location)}
+
+                            >
+                                <Image
+                                    source={imgSrc}
+                                    style={{ height: 30, width: 30 }}
+                                />
+                            </Marker>
+                        )
+                    })
+                }
+            </View>
+        )
+
+    }
+    onMarkerPress = location => () => {
+        const { coords: { latitude, longitude } } = location
+        this.setState({
+            destination: location,
+            latitude: latitude,
+            longitude: longitude
+        })
+    }
 
     render() {
-        const { latitude, longitude, destination } = this.state
-        console.log('Current position', this.state)
-        const { container, map, mapSection, headerStyle, searchIcon, textStyle, buttonStyle } = styles
+        const { latitude, longitude, destination, imgSrc } = this.state
+        const { container, map, mapSection, headerStyle, searchIcon, textStyle, buttonStyle, directionButtonStyle, markerDetailsStyle } = styles
         var imgBox = null
         if (!_.isEmpty(destination)) {
             imgBox =
-                <View style={{
-                    bottom: 5,
-                    width: width * 0.98,
-                    height: height * 0.10,
-                    backgroundColor: 'gray',
-                    borderRadius: 10,
-                    // alignContent: 'flex-start',
-                    flexDirection: 'column',
-                    alignItems: 'center'
-                }}>
-                    <Text style={{ color: "white", fontSize: 11 }}>{destination.name}</Text>
-                    <Text style={{ color: "white", fontSize: 11 }}>{destination.address}</Text>
-                    <TouchableOpacity
-                        style={{
-                            backgroundColor: '#fff',
-                            borderRadius: 6,
-                            borderWidth: 1,
-                            borderColor: '#1AA811',
-                            justifyContent: 'center',
-                            flexDirection: 'row',
-                            width: 100,
-                            height: 30,
-                            margin: 2
-                        }}
-                        onPress={() => this.handleGetDirections()}
-                    >
-                        <Image
-                            source={require('../../assets/images/location-red.png')}
-                            style={{ width: 20, height: 20, top: 1 }}
-                        />
-                        <Text style={styles.textStyle}>Get Direction</Text>
-                    </TouchableOpacity>
+                <View style={markerDetailsStyle}>
+                    <Image
+                        source={{ uri: destination.image_url }}
+                        resizeMode='cover'
+                        style={{ width: 100, height: 100, borderTopLeftRadius: 10, borderTopRightRadius: 3 }}
+                    />
+                    <View style={{ flex: 1, paddingLeft: 3, flexDirection: 'column' }}>
+                        <Text style={{ color: "white", fontSize: 12, fontWeight: 'bold' }}>{destination.name}</Text>
+                        <Text allowFontScaling={true} style={{ color: "white", fontSize: 11 }}>{destination.address}</Text>
+                        <TouchableOpacity
+                            style={directionButtonStyle}
+                            onPress={() => this.handleGetDirections()}
+                        >
+                            <Image
+                                source={imgSrc}
+                                style={{ width: 18, height: 18, top: 1 }}
+                            />
+                            <Text style={textStyle}>Get Direction</Text>
+                        </TouchableOpacity>
+                    </View>
+
                 </View>
         }
 
@@ -264,9 +344,8 @@ export default class Intellimap extends React.Component {
                                 zoom: 16,
                             }}
                         >
-                            {this.renderMarker()}
+                            {this.state.markers.length > 0 ? this.renderMarker() : null}
                         </MapView>
-
                         {imgBox}
                     </View>
                 </View>
@@ -296,7 +375,8 @@ const styles = StyleSheet.create(
             backgroundColor: '#fff'
         },
         headerStyle: {
-            backgroundColor: "#f5f5f5"
+            backgroundColor: "#f5f5f5",
+            height: 50
         },
         searchIcon: {
             color: "#2d2d2d",
@@ -318,6 +398,27 @@ const styles = StyleSheet.create(
             width: 140,
             height: 22,
             margin: 2
+        },
+        directionButtonStyle: {
+            backgroundColor: '#fff',
+            borderRadius: 6,
+            borderWidth: 1,
+            borderColor: '#1AA811',
+            justifyContent: 'center',
+            flexDirection: 'row',
+            width: 100,
+            height: 22,
+            margin: 2
+        },
+        markerDetailsStyle: {
+            position: 'absolute',
+            bottom: 0,
+            padding: 1,
+            width: '100%',
+            height: height * 0.10,
+            backgroundColor: 'gray',
+            borderRadius: 10,
+            flexDirection: 'row',
         }
     }
 )
