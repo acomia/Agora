@@ -1,8 +1,11 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, ImageBackground } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, ImageBackground} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { Container, Button, Text, Form, Item, Input, Label } from 'native-base'
-import { ScrollView } from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler'
+import { Colors } from 'react-native/Libraries/NewAppScreen';
 
+const ACCESS_TOKEN = 'access_token';
 
 
 export default class Login extends React.Component {
@@ -14,6 +17,34 @@ export default class Login extends React.Component {
         username: "",
         password: ""
     }
+
+async storeToken(accessToken)
+{
+    try
+    {
+        await AsyncStorage.setItem(ACCESS_TOKEN,accessToken);
+        this.getToken();
+    } catch(error)
+    {
+        console.log("CANT STORE TOKEN")
+    }
+}
+
+async getToken()
+{
+    try
+    {
+       let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+       console.log("token is: "+ token);
+    } catch(error)
+    {
+        console.log("CANT GET TOKEN")
+    }
+}
+
+
+
+
     render() {
         return (
             <ScrollView>
@@ -98,7 +129,7 @@ export default class Login extends React.Component {
                 'Content-Type': 'application/json;charset=UTF-8'
             },
             body: JSON.stringify({
-                username: this.state.username,
+                email: this.state.username,
                 password: this.state.password,
             })
             // "username":"digitalxform",

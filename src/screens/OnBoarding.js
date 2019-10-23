@@ -1,10 +1,38 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, ImageBackground } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, ImageBackground} from 'react-native'
+import AsyncStorage from '@react-native-community/async-storage'
 import { Container, Header, Content, Button, Text, H1 } from 'native-base'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 
+const ACCESS_TOKEN = 'access_token';
+
 export default class OnBoarding extends React.Component {
 
+  componentWillMount()
+{
+  this.getToken();
+  
+}
+ async getToken()
+ {
+   try
+     {
+      let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN);
+      if(!accessToken)
+        {
+        console.log("No token")
+        }
+      else
+        {
+         this.props.navigation.replace('Dashboard')
+        }
+     }
+   catch(error)
+   {
+    console.log("ERROR")
+   }
+   
+ }
   render() {
 
 
