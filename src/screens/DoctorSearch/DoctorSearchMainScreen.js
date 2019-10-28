@@ -1,106 +1,53 @@
 import React, {useEffect, useState} from 'react';
-import {Text, StyleSheet, View, FlatList} from 'react-native';
+import {Text, StyleSheet, View, FlatList, Dimensions} from 'react-native';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
-
-const DATA = [
-  {
-    doctorcode: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    doctorfullname: 'Dr. Juan Dela Cruz',
-    specialization: 'Internal Medicine - Gastroenterologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    doctorfullname: 'Dr. Andres Bonifacio',
-    specialization: 'Internal Medicine - Infectious and Trop...',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-bd96-145571e29d72',
-    doctorfullname: 'Dr. Maria Dela Cruz',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-b2d96-145571e29d72',
-    doctorfullname: 'Dr. Apolinario Mabini',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-b56d96-145571e29d72',
-    doctorfullname: 'Dr. Emilio Aguinaldo',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-bd9566-145571e29d72',
-    doctorfullname: 'Dr. Emilio Jacinto',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-bd966-145571e29d72',
-    doctorfullname: 'Dr. Jose Rizal',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-b2d96-14557fs1e29d72',
-    doctorfullname: 'Dr. Gregorio Del Pilar',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-  {
-    doctorcode: '58694a0f-3da1-471f-bd696-145571e29d72',
-    doctorfullname: 'Dr. Antonio Luna',
-    specialization: 'Obstetrician and Gynecologist',
-    imgsrc: '../../../assets/images/user.png',
-    hospitalclinic: 'MAKATI MEDICAL CENTER',
-    city: 'MAKATI CITY (DISTRICT 4 [NCR - NATIONAL CAPITAL REGION])',
-  },
-];
+import SlidingUpPanel from 'rn-sliding-up-panel';
+import {Input, Item} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
+import {useNavigationParam} from 'react-navigation-hooks';
 
 export default function DoctorSearchMainScreen() {
-  const [token, setToken] = useState('CB91109E-1FEE-E911-80BB-00155D006102');
   const [doctorList, setDoctorList] = useState([]);
+  const [textSearch, setTextSearch] = useState('');
+  const [refreshing, setRefreshing] = useState(true);
+  const [tempSearch, setTempSearch] = useState('');
+
+  const searchQuery = useNavigationParam('searchQuery');
+  const tokenVal = useNavigationParam('token');
+
+  const [token] = useState(tokenVal);
 
   useEffect(() => {
-    fetchDoctors();
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    fetchDoctors(signal);
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
-  async function fetchDoctors() {
+  async function fetchDoctors(signal) {
     try {
       let response = await fetch(
         `https://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
         {
           method: 'POST',
+          signal: signal,
           headers: {
             Accept: 'application/json',
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            doctor: 'RONALD',
-            hospitalclinic: 'MEDICAL CENTER IMUS',
-            specialization: 'ALL',
-            city: 'ALL',
+            doctor:
+              searchQuery.doctorName === '' ? 'ALL' : searchQuery.doctorName,
+            hospitalclinic:
+              searchQuery.clinic === '' ? 'ALL' : searchQuery.clinic,
+            specialization:
+              searchQuery.specialty === '' ? 'ALL' : searchQuery.specialty,
+            city: searchQuery.location === '' ? 'ALL' : searchQuery.location,
           }),
         },
       );
@@ -109,6 +56,19 @@ export default function DoctorSearchMainScreen() {
 
       console.log(responseJson.response);
 
+      if (responseJson.response == null) {
+        alert(
+          responseJson.message.toLowerCase().includes('token')
+            ? responseJson.message.split(':')[0]
+            : responseJson.message,
+        );
+        setRefreshing(false);
+        return;
+      }
+
+      if (responseJson.response.length > 150)
+        responseJson.response.splice(0, responseJson.response.length - 150);
+
       const map = new Map();
       const result = [];
 
@@ -116,34 +76,92 @@ export default function DoctorSearchMainScreen() {
         if (!map.has(item.doctorcode)) {
           map.set(item.doctorcode, true); // set any value to Map
           result.push({
-            city: item.city,
             doctorcode: item.doctorcode,
             doctorfullname: item.doctorfullname,
-            hospitalclinic: item.hospitalclinic,
-            hospitalcode: item.hospitalcode,
             specialization: item.specialization,
+            hospitalcode: item.hospitalcode,
+            hospitalclinic: item.hospitalclinic,
+            city: item.city,
           });
         }
       }
 
-      console.log(result);
+      if (result.length > 100) result.splice(0, result.length - 100);
 
       setDoctorList(result);
 
-      //setDoctorList(responseJson.response);
+      setRefreshing(false);
     } catch (error) {
+      setRefreshing(false);
       console.log(error);
     }
   }
 
+  function handleChangeTextSearch(search) {
+    setTextSearch(search);
+  }
+
+  function handleSearch() {
+    if (textSearch === tempSearch) {
+      console.log('same');
+      return;
+    }
+    if (textSearch === '') {
+      console.log('no input');
+      return;
+    }
+
+    setDoctorList([]);
+    setTempSearch(textSearch);
+    setRefreshing(true);
+    fetchDoctors();
+  }
+
+  function handlePanelShow() {
+    _panel.show();
+  }
+
   return (
     <View style={styles.mainContainer}>
-      <SearchDoctor />
+      <SearchDoctor
+        search={handleChangeTextSearch}
+        onSearch={handleSearch}
+        onPanelShow={handlePanelShow}
+      />
       <FlatList
         data={doctorList}
-        renderItem={({item}) => <DoctorList drdata={item} />}
+        renderItem={({item}) => <DoctorList drdata={item} token={token} />}
         keyExtractor={item => item.doctorcode}
+        initialNumToRender={5}
+        refreshing={refreshing}
+        onRefresh={() => fetchDoctors()}
       />
+      <SlidingUpPanel
+        ref={c => (_panel = c)}
+        draggableRange={{
+          top: Dimensions.get('window').height * 0.4,
+          bottom: 0,
+        }}
+        friction={0.4}>
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: 'white',
+            alignItems: 'center',
+          }}>
+          <ScrollView>
+            <Item>
+              <Text style={{fontSize: 12, textAlign: 'left'}}>By Name</Text>
+            </Item>
+            <Item style={{height: 25}}>
+              <Input
+                placeholder="Last Name or First Name"
+                style={{fontSize: 12, textAlign: 'center', borderRadius: 5}}
+              />
+            </Item>
+          </ScrollView>
+        </View>
+      </SlidingUpPanel>
     </View>
   );
 }

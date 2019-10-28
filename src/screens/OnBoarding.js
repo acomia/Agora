@@ -16,7 +16,7 @@ export default class OnBoarding extends React.Component {
             <View style={styles.swiperContainer}>
               <SwiperFlatList
                 autoplay
-                autoplayDelay={2}
+                autoplayDelay={35}
                 autoplayLoop
                 index={2}
                 showPagination

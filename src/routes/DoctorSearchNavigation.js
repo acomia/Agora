@@ -3,8 +3,15 @@ import {createDrawerNavigator} from 'react-navigation-drawer';
 import {createStackNavigator} from 'react-navigation-stack';
 import DoctorSearchMainScreen from '../screens/DoctorSearch/DoctorSearchMainScreen';
 import DoctorProfile from '../screens/DoctorProfile';
+import DoctorSearchLandingPage from '../screens/DoctorSearch/DoctorSearchLandingPage';
 
 DoctorSearchModule = createStackNavigator({
+  SearchLandingPage: {
+    screen: DoctorSearchLandingPage,
+    navigationOptions: {
+      header: null,
+    },
+  },
   DoctorSearchMainScreen: {
     screen: DoctorSearchMainScreen,
     navigationOptions: {

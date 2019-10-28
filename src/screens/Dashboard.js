@@ -37,7 +37,7 @@ export default class Dashboard extends React.Component {
                         <ImageBackground source={require('../../assets/images/intelliappheader.png')} style={styles.backgroundImage}>
                             <SwiperFlatList
                                 autoplay
-                                autoplayDelay={5}
+                                autoplayDelay={1000}
                                 autoplayLoop
                                 index={0}
                                 showPagination
@@ -144,7 +144,7 @@ export default class Dashboard extends React.Component {
                         <View style={styles.menuRow}>
                             <View style={styles.cardItemStyle}>
                                 <Card style={styles.cardStyle}>
-                                    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('DoctorProfilePage')}>
+                                    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('DoctorSearchNavigation')}>
                                         <CardItem style={styles.cardStyle}>
                                             <Left>
                                                 <Body>

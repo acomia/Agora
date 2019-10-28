@@ -1,15 +1,34 @@
 import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
-import {Button, Thumbnail} from 'native-base';
+import {Thumbnail} from 'native-base';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {useNavigation} from 'react-navigation-hooks';
 
-export default function DoctorList({drdata}) {
+export default function DoctorList({drdata, token}) {
   const {navigate} = useNavigation();
 
   function handleNavigate() {
-    navigate('DoctorProfile', {drdata});
+    navigate('DoctorProfile', {drdata, token});
   }
+
+  let renderImage;
+
+  if (drdata.specialization.toLowerCase().includes('dentist'))
+    renderImage = (
+      <Thumbnail
+        square
+        source={require('../../../assets/images/search.png')}
+        style={{width: 60, height: 60}}
+      />
+    );
+  else
+    renderImage = (
+      <Thumbnail
+        square
+        source={require('../../../assets/images/stethoscope.png')}
+        style={{width: 60, height: 60}}
+      />
+    );
 
   return (
     <TouchableOpacity onPress={handleNavigate}>
@@ -20,23 +39,21 @@ export default function DoctorList({drdata}) {
             width: 70,
             justifyContent: 'center',
           }}>
-          <Thumbnail
-            circular
-            source={require('../../../assets/images/doctor.png')}
-            style={{width: 60, height: 60}}
-          />
+          {renderImage}
         </View>
         <View style={{flex: 1}}>
           <Text style={{fontWeight: 'bold', fontSize: 14, fontFamily: 'Arial'}}>
             {drdata.doctorfullname}
           </Text>
-          <Text style={{fontSize: 12, color: '#c2c2c2'}}>
-            {drdata.specialization.length > 38
-              ? drdata.specialization.substring(0, 38) + '...'
+          <Text style={{fontSize: 11, color: '#c2c2c2'}}>
+            {drdata.specialization.length > 35
+              ? drdata.specialization.substring(0, 35) + '...'
               : drdata.specialization}
           </Text>
           <Text style={{fontSize: 9, color: '#c2c2c2', paddingTop: 10}}>
-            {drdata.hospitalclinic.length > 50 ? drdata.hospitalclinic.substring(0, 50) : drdata.hospitalclinic}
+            {drdata.hospitalclinic.length > 50
+              ? drdata.hospitalclinic.substring(0, 50)
+              : drdata.hospitalclinic}
           </Text>
           <Text style={{fontSize: 9, color: '#c2c2c2'}}>
             {drdata.city.length > 50
