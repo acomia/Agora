@@ -132,14 +132,14 @@ export default function DoctorSearchLandingPage() {
 
 const styles = StyleSheet.create({
   doctorInput: {
-    fontSize: 10,
+    fontSize: 12,
     backgroundColor: 'white',
     borderRadius: 7,
     marginHorizontal: 35,
     height: 35,
   },
   clinicInput: {
-    fontSize: 10,
+    fontSize: 12,
     backgroundColor: 'white',
     borderRadius: 7,
     marginHorizontal: 35,
@@ -147,14 +147,14 @@ const styles = StyleSheet.create({
     height: 35,
   },
   specialtyInput: {
-    fontSize: 10,
+    fontSize: 12,
     backgroundColor: 'white',
     borderRadius: 7,
     marginHorizontal: 35,
     height: 35,
   },
   locationInput: {
-    fontSize: 10,
+    fontSize: 12,
     backgroundColor: 'white',
     borderRadius: 7,
     marginHorizontal: 35,
