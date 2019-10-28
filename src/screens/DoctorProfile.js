@@ -68,7 +68,7 @@ export default function DoctorProfile() {
       let hospitals = [];
 
       for (let key of filteredDoctors)
-        for (let obj in key) {
+        for (let {} in key) {
           let hscode = key['hospitalcode'];
           let drcode = key['doctorcode'];
           let hospclinic = key['hospitalclinic'];
