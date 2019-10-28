@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {StyleSheet, View, Dimensions, ImageBackground} from 'react-native';
 import {
   Container,
@@ -12,92 +12,177 @@ import {
   Thumbnail,
   List,
   Accordion,
+  Spinner,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
-
-const content = (
-  <View>
-    <List
-      style={{
-        marginBottom: 20,
-        paddingHorizontal: 20,
-        paddingRight: 50,
-        color: '#2d2d2d',
-      }}>
-      <View style={{flexDirection: 'row'}}>
-        <Thumbnail
-          square
-          source={require('../../assets/images/nav-door.png')}
-          style={{height: 20, width: 20, marginHorizontal: 10}}
-        />
-        <Text note>Room No: </Text>
-        <Text note>1001</Text>
-      </View>
-    </List>
-    <List
-      style={{
-        marginBottom: 20,
-        paddingHorizontal: 20,
-        paddingRight: 50,
-        color: '#2d2d2d',
-      }}>
-      <View style={{flexDirection: 'row'}}>
-        <Thumbnail
-          square
-          source={require('../../assets/images/nav-coordinator.png')}
-          style={{height: 20, width: 20, marginHorizontal: 10}}
-        />
-        <Text note>Coordinator: </Text>
-        <Text note>DELA CRUZ, JUAN</Text>
-      </View>
-    </List>
-    <List
-      style={{
-        marginBottom: 20,
-        paddingHorizontal: 20,
-        paddingRight: 50,
-        color: '#2d2d2d',
-      }}>
-      <View style={{flexDirection: 'row'}}>
-        <Thumbnail
-          square
-          source={require('../../assets/images/nav-phone.png')}
-          style={{height: 20, width: 20, marginHorizontal: 10}}
-        />
-        <Text note>(02) 902-3400 loc. 1001</Text>
-      </View>
-    </List>
-    <List
-      style={{
-        marginBottom: 20,
-        paddingHorizontal: 20,
-        paddingRight: 50,
-        color: '#2d2d2d',
-      }}>
-      <View style={{flexDirection: 'row'}}>
-        <Thumbnail
-          square
-          source={require('../../assets/images/nav-schedule.png')}
-          style={{height: 20, width: 20, marginHorizontal: 10}}
-        />
-        <Text note>MWF 9:00AM - 12:00PM, TTHS 1:00PM - 5:00PM</Text>
-      </View>
-    </List>
-  </View>
-);
-
-const dataArray = [
-  {
-    title: 'Asian Hospital and Medical Center',
-  },
-  {
-    title: 'Makati Medical Center',
-  },
-];
+import AccordionDetails from './AccordionDetails';
 
 export default function DoctorProfile() {
   const drdata = useNavigationParam('drdata');
+  const tokenVal = useNavigationParam('token');
+
+  const [hospitalList, setHospitalList] = useState([]);
+  const [token] = useState(tokenVal);
+  const dataArray = hospitalList;
+
+  useEffect(() => {
+    const abortController = new AbortController();
+    const signal = abortController.signal;
+
+    fetchHospitalAccreditation(signal);
+
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  async function fetchHospitalAccreditation(signal) {
+    try {
+      let response = await fetch(
+        `https://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
+        {
+          method: 'POST',
+          signal: signal,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            doctor: drdata.doctorfullname.split(',')[0],
+            hospitalclinic: 'ALL',
+            specialization: drdata.specialization,
+            city: 'ALL',
+          }),
+        },
+      );
+
+      let responseJson = await response.json();
+
+      let filteredDoctors = responseJson.response.filter(doctors => {
+        return doctors.doctorcode === drdata.doctorcode;
+      });
+
+      console.log(filteredDoctors);
+
+      let hospitals = [];
+
+      for (let key of filteredDoctors)
+        for (let {} in key) {
+          let hscode = key['hospitalcode'];
+          let drcode = key['doctorcode'];
+          let hospclinic = key['hospitalclinic'];
+          let city = key['city'];
+          let room;
+          let coordinator;
+          let phone;
+          let schedule;
+
+          let data = await fetchProviderDetail(signal, drcode, hscode);
+
+          console.log(data.response);
+
+          if (data.response !== null) {
+            room =
+              data.response.room.trim() === ''
+                ? 'N/A'
+                : data.response.room.trim();
+            coordinator =
+              data.response.coordinator.trim() === ''
+                ? 'N/A'
+                : data.response.coordinator.trim();
+            phone =
+              data.response.phone.trim() === ''
+                ? 'N/A'
+                : data.response.phone.trim();
+            schedule =
+              data.response.schedule.trim() === ''
+                ? 'N/A'
+                : data.response.schedule.trim();
+          } else {
+            room = 'N/A';
+            coordinator = 'N/A';
+            phone = 'N/A';
+            schedule = 'N/A';
+          }
+
+          hospitals.push({
+            title: hospclinic,
+            hscode: hscode,
+            drcode: drcode,
+            room: room,
+            coordinator: coordinator,
+            phone: phone,
+            schedule: schedule,
+            city: city
+          });
+
+          break;
+        }
+
+      console.log(hospitals);
+
+      if (hospitals.length > 0) setHospitalList(hospitals);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  let renderHospitalAccreditation;
+
+  if (hospitalList.length < 1)
+    renderHospitalAccreditation = (
+      <View style={{flex: 1, justifyContent: 'center'}}>
+        <Container>
+          <Spinner />
+        </Container>
+      </View>
+    );
+  else
+    renderHospitalAccreditation = (
+      <View style={styles.accordion}>
+        <Accordion
+          dataArray={dataArray}
+          style={{borderWidth: 0}}
+          headerStyle={{
+            backgroundColor: '#fff',
+            fontSize: 14,
+            color: '#2d2d2d',
+            paddingBottom: 20,
+          }}
+          contentStyle={{
+            backgroundColor: 'transparent',
+            fontSize: 14,
+            color: '#2d2d2d',
+          }}
+          renderContent={item => <AccordionDetails dataArray={item} />}
+        />
+      </View>
+    );
+
+  async function fetchProviderDetail(signal, drcode, hscode) {
+    try {
+      let response = await fetch(
+        `https://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/detail/${token}`,
+        {
+          method: 'POST',
+          signal: signal,
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            doctorcode: drcode,
+            hospitalcode: hscode,
+          }),
+        },
+      );
+
+      return response.json();
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <Container>
@@ -133,24 +218,7 @@ export default function DoctorProfile() {
             </Body>
             <Right />
           </ListItem>
-          <View style={styles.accordion}>
-            <Accordion
-              dataArray={dataArray}
-              style={{borderWidth: 0}}
-              headerStyle={{
-                backgroundColor: '#fff',
-                fontSize: 14,
-                color: '#2d2d2d',
-                paddingBottom: 20,
-              }}
-              contentStyle={{
-                backgroundColor: 'transparent',
-                fontSize: 14,
-                color: '#2d2d2d',
-              }}
-              renderContent={() => content}
-            />
-          </View>
+          {renderHospitalAccreditation}
         </View>
       </ScrollView>
     </Container>
