@@ -42,7 +42,7 @@ export default class Login extends React.Component {
                             <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
                                 Forgot Password?
                         </Text>
-                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this._postUser()}>
+                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('DashboardPage')}>
                                 <Text > Login </Text>
                             </Button>
                         </View>
@@ -110,7 +110,6 @@ export default class Login extends React.Component {
                     .then((data) => {
                         if (data.message === 'Success!') {
                             global.loginToken = data.response.token
-                            console.log(global.loginToken)
                             this.props.navigation.navigate('DashboardPage')
                         } else {
                             alert('Username not found!')
