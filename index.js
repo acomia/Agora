@@ -5,6 +5,6 @@
 import {AppRegistry} from 'react-native';
 import App from './App';
 import {name as appName} from './app.json';
-import StackNavigator from './src/routes/StackNavigator';
+import DoctorSearchNavigation from './src/routes/DoctorSearchNavigation';
 
-AppRegistry.registerComponent(appName, () => StackNavigator);
+AppRegistry.registerComponent(appName, () => DoctorSearchNavigation);
