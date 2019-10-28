@@ -10,9 +10,7 @@ import DrawerNavigator from '../routes/DrawerNavigator';
 import Intellimap from '../screens/Intellimap';
 import Members from '../screens/Members';
 import MemberInformation from '../screens/MemberInformation';
-import PostedUtil from '../screens/PostedUtil';
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
-import DoctorProfile from '../screens/DoctorProfile';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -82,10 +80,10 @@ AppStack = createStackNavigator({
       header: null,
     },
   },
-  DoctorProfilePage: {
-    screen: DoctorProfile,
+  DoctorSearchNavigation: {
+    screen: DoctorSearchNavigation,
     navigationOptions: {
-      title: 'Search Doctor',
+      header: null,
     },
   },
 });
