@@ -14,7 +14,7 @@ export default class MemberInformation extends React.Component {
                 <Tabs tabBarPosition="overlayBottom" tabBarUnderlineStyle={{ backgroundColor: '#5fb650' }}>
                     <Tab heading={
                         <TabHeading style={styles.tabHeadingStyle}>
-                            <Icon name="ios-person" style={styles.tabIconStyle} />
+                            <Icon type="MaterialIcons" name="person-outline" style={styles.tabIconStyle} />
                         </TabHeading>
                     }>
                         <MembInfo />
@@ -22,7 +22,7 @@ export default class MemberInformation extends React.Component {
 
                     <Tab heading={
                         <TabHeading style={styles.tabHeadingStyle} >
-                            <Icon name="ios-checkmark-circle-outline" style={styles.tabIconStyle} />
+                            <Icon type="MaterialCommunityIcons" name="check-circle-outline" style={styles.tabIconStyle} />
                         </TabHeading>
                     }>
                         <ApprovedUtil />
@@ -31,7 +31,7 @@ export default class MemberInformation extends React.Component {
 
                     <Tab heading={
                         <TabHeading style={styles.tabHeadingStyle}>
-                            <Icon name="md-paper" style={styles.tabIconStyle} />
+                            <Icon type="Ionicons" name="md-clipboard" style={styles.tabIconStyle} />
                         </TabHeading>
                     }>
                         <PostedUtil />
@@ -50,7 +50,7 @@ const styles = StyleSheet.create(
         tabHeadingStyle: {
             backgroundColor: '#f5f5f5',
             flexDirection: "column",
-            borderBottomColor: "#5fb650",
+            borderTopColor: "#5fb650",
         },
         tabIconStyle: {
             color: "#5fb650"

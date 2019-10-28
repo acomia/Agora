@@ -22,7 +22,7 @@ export default class ForgotPassword extends React.Component {
                 <View style={styles.viewForm}>
                     <Label style={styles.labelPassword}>Provide the following:</Label>
                     <View style={styles.formPassword}>
-                        
+
                         <Item floatingLabel style={styles.formStyle}>
                             <Label>Username</Label>
                             <Input style={styles.labelStyle} />
@@ -49,6 +49,11 @@ export default class ForgotPassword extends React.Component {
                             <Label>Email Address</Label>
                             <Input style={styles.labelStyle} />
                         </Item>
+                    </View>
+                    <View style={styles.viewButtonSignUp}>
+                        <Button block rounded info>
+                            <Text>Submit</Text>
+                        </Button>
                     </View>
                 </View>
             </Container>
@@ -78,11 +83,16 @@ const styles = StyleSheet.create(
             marginBottom: 5,
         },
         formStyle: {
-            marginBottom: 20,
+            marginVertical: 20,
         },
         viewForm: {
             flex: 1,
             padding: 10,
+        },
+        viewButtonSignUp: {
+            marginTop: 30,
+            marginBottom: 20,
+            marginHorizontal: 20,
         },
 
     }

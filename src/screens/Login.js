@@ -23,7 +23,7 @@ export default class Login extends React.Component {
                         <View style={styles.loginForm}>
                             <Form>
                                 <Item floatingLabel>
-                                    <Label >Username</Label>
+                                    <Label>Username</Label>
                                     <Input style={styles.labelStyle} onChangeText={(username) => this.setState({ username })} />
                                 </Item>
                                 <Item floatingLabel>
@@ -33,9 +33,9 @@ export default class Login extends React.Component {
                             </Form>
                             <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
                                 Forgot Password?
-                        </Text>
+                            </Text>
                             <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('Dashboard')}>
-                                <Text > Login </Text>
+                                <Text> Login </Text>
                             </Button>
                         </View>
                         <View style={styles.footer}>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create(
         },
         footer: {
             flex: 1,
-            padding: 10,
+            paddingBottom: 10,
         },
         footerText: {
             textAlign: "center",
@@ -175,7 +175,7 @@ const styles = StyleSheet.create(
         },
         ForgotPasswordLink: {
             color: '#3498db',
-            fontSize: 13,
+            fontSize: 16,
             alignSelf: "flex-end",
             marginTop: 10
         }

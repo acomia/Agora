@@ -16,7 +16,7 @@ export default class SideBar extends React.Component {
                 <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('MembersPage')}>
                     <ListItem icon style={styles.listItemStyle}>
                         <Left>
-                            <Thumbnail square source={require('../../assets/images/nav-profile.png')} style={styles.navStyle} />
+                            <Icon type="MaterialCommunityIcons" name='account-outline' />
                         </Left>
                         <Body style={styles.listLabel}>
                             <Text style={styles.listStyle}>Member Profiles</Text>
@@ -25,7 +25,7 @@ export default class SideBar extends React.Component {
                 </TouchableNativeFeedback>
                 <ListItem icon style={styles.listItemStyle}>
                     <Left>
-                        <Thumbnail square source={require('../../assets/images/nav-map.png')} style={styles.navStyle} />
+                        <Icon type="MaterialCommunityIcons" name='map-search-outline' />
                     </Left>
                     <Body style={styles.listLabel}>
                         <Text>IntelliMap</Text>
@@ -33,7 +33,7 @@ export default class SideBar extends React.Component {
                 </ListItem>
                 <ListItem icon style={styles.listItemStyle}>
                     <Left style={styles.listLabel}>
-                        <Icon active name="ios-search" />
+                        <Icon type="MaterialCommunityIcons" active name="account-search-outline" />
                     </Left>
                     <Body style={styles.listLabel}>
                         <Text>Find a Medical Provider</Text>
@@ -42,7 +42,7 @@ export default class SideBar extends React.Component {
                 <View style={styles.divider} />
                 <ListItem icon style={styles.listItemStyle}>
                     <Left style={styles.listLabel}>
-                        <Thumbnail square source={require('../../assets/images/nav-logout.png')} style={styles.navStyle} />
+                        <Icon type="MaterialCommunityIcons" name='arrow-collapse-left' style={styles.logoutText} />
                     </Left>
                     <Body style={styles.listLabel}>
                         <Text style={styles.logoutText}>Logout</Text>

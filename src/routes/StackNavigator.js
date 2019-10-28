@@ -25,13 +25,13 @@ AppStack = createStackNavigator(
         LoginPage: {
             screen: Login,
             navigationOptions: {
-                title: "Login",
+                title: "Sign In",
             }
         },
         RegisterPage: {
             screen: Register,
             navigationOptions: {
-                title: "Sign Up"
+                title: "Create an Account"
             }
         },
         ForgotPasswordPage: {
