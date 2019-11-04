@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, ImageBackground, TouchableNativeFeedback, } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, ImageBackground, TouchableNativeFeedback, StatusBar } from 'react-native'
 import { Container, Header, Content, Button, Text, Card, CardItem, Left, Body, Thumbnail, Icon, Right, Title, Label, Item } from 'native-base'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import { ScrollView } from 'react-native-gesture-handler';
@@ -9,6 +9,7 @@ export default class OnBoarding extends React.Component {
   render() {
     return (
       <Container>
+        <StatusBar translucent backgroundColor="transparent" />
         <ImageBackground source={require('../../assets/images/photo2.jpg')} style={styles.backgroundImage}>
           <View style={styles.sectionWelome}>
             <View style={styles.welcomeLabelLogo}>
@@ -36,7 +37,7 @@ export default class OnBoarding extends React.Component {
                   <Body>
                     <Icon type="SimpleLineIcons" name="earphones-alt" style={styles.cardIconStyleMedgate} />
                     <Label style={styles.cardContent}>Call Doc. Anywhere. Anytime. No line.</Label>
-                    <Button iconRight rounded style={styles.cardButtonMedgate}>
+                    <Button iconRight rounded style={styles.cardButtonMedgate} onPress={() => this.props.navigation.navigate('MedgatePage')} >
                       <Text style={styles.cardButtonText}>Medgate</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
                     </Button>

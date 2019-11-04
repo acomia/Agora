@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, View, FlatList, Dimensions} from 'react-native';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
-import SlidingUpPanel from 'rn-sliding-up-panel';
+// import SlidingUpPanel from 'rn-sliding-up-panel';
 import {Input, Item} from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
@@ -136,7 +136,7 @@ export default function DoctorSearchMainScreen() {
         refreshing={refreshing}
         onRefresh={() => fetchDoctors()}
       />
-      <SlidingUpPanel
+      {/* <SlidingUpPanel
         ref={c => (_panel = c)}
         draggableRange={{
           top: Dimensions.get('window').height * 0.4,
@@ -161,7 +161,7 @@ export default function DoctorSearchMainScreen() {
             </Item>
           </ScrollView>
         </View>
-      </SlidingUpPanel>
+      </SlidingUpPanel> */}
     </View>
   );
 }

@@ -1,5 +1,5 @@
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import Login from '../screens/Login';
 import OnBoarding from '../screens/OnBoarding';
 import Register from '../screens/Register';
@@ -11,6 +11,7 @@ import Intellimap from '../screens/Intellimap';
 import Members from '../screens/Members';
 import MemberInformation from '../screens/MemberInformation';
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
+import Medgate from '../screens/Medgate';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -86,6 +87,20 @@ AppStack = createStackNavigator({
       header: null,
     },
   },
+  MedgatePage: {
+    screen: Medgate,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        backgroundColor: '#258bf5',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
+    }
+  }
 });
 
 export default createAppContainer(AppStack);

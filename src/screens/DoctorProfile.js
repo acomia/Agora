@@ -13,6 +13,7 @@ import {
   List,
   Accordion,
   Spinner,
+  Icon
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';

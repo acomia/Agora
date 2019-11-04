@@ -17,7 +17,7 @@ export default function DoctorList({drdata, token}) {
     renderImage = (
       <Thumbnail
         square
-        source={require('../../../assets/images/search.png')}
+        source={require('../../../assets/images/dental.png')}
         style={{width: 60, height: 60}}
       />
     );
@@ -42,15 +42,15 @@ export default function DoctorList({drdata, token}) {
           {renderImage}
         </View>
         <View style={{flex: 1}}>
-          <Text style={{fontWeight: 'bold', fontSize: 14, fontFamily: 'Arial'}}>
+          <Text style={{fontWeight: 'bold', fontSize: 14, fontFamily: 'Arial', color: "#5fb650"}}>
             {drdata.doctorfullname}
           </Text>
-          <Text style={{fontSize: 11, color: '#c2c2c2'}}>
+          <Text style={{fontSize: 11, color: '#2d2d2d'}}>
             {drdata.specialization.length > 35
               ? drdata.specialization.substring(0, 35) + '...'
               : drdata.specialization}
           </Text>
-          <Text style={{fontSize: 9, color: '#c2c2c2', paddingTop: 10}}>
+          <Text style={{fontSize: 9, color: '#c2c2c2'}}>
             {drdata.hospitalclinic.length > 50
               ? drdata.hospitalclinic.substring(0, 50)
               : drdata.hospitalclinic}
