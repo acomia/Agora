@@ -2,7 +2,6 @@ import React, {useEffect, useState} from 'react';
 import {Text, StyleSheet, View, FlatList, Dimensions} from 'react-native';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
-import SlidingUpPanel from 'rn-sliding-up-panel';
 import {Input, Item} from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
@@ -32,7 +31,7 @@ export default function DoctorSearchMainScreen() {
   async function fetchDoctors(signal) {
     try {
       let response = await fetch(
-        `https://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
+        `http://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
         {
           method: 'POST',
           signal: signal,
@@ -103,11 +102,9 @@ export default function DoctorSearchMainScreen() {
 
   function handleSearch() {
     if (textSearch === tempSearch) {
-      console.log('same');
       return;
     }
     if (textSearch === '') {
-      console.log('no input');
       return;
     }
 
@@ -117,16 +114,11 @@ export default function DoctorSearchMainScreen() {
     fetchDoctors();
   }
 
-  function handlePanelShow() {
-    _panel.show();
-  }
-
   return (
     <View style={styles.mainContainer}>
       <SearchDoctor
         search={handleChangeTextSearch}
         onSearch={handleSearch}
-        onPanelShow={handlePanelShow}
       />
       <FlatList
         data={doctorList}
@@ -136,32 +128,6 @@ export default function DoctorSearchMainScreen() {
         refreshing={refreshing}
         onRefresh={() => fetchDoctors()}
       />
-      <SlidingUpPanel
-        ref={c => (_panel = c)}
-        draggableRange={{
-          top: Dimensions.get('window').height * 0.4,
-          bottom: 0,
-        }}
-        friction={0.4}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: 'white',
-            alignItems: 'center',
-          }}>
-          <ScrollView>
-            <Item>
-              <Text style={{fontSize: 12, textAlign: 'left'}}>By Name</Text>
-            </Item>
-            <Item style={{height: 25}}>
-              <Input
-                placeholder="Last Name or First Name"
-                style={{fontSize: 12, textAlign: 'center', borderRadius: 5}}
-              />
-            </Item>
-          </ScrollView>
-        </View>
-      </SlidingUpPanel>
     </View>
   );
 }

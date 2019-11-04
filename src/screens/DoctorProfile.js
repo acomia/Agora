@@ -40,7 +40,7 @@ export default function DoctorProfile() {
   async function fetchHospitalAccreditation(signal) {
     try {
       let response = await fetch(
-        `https://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
+        `http://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
         {
           method: 'POST',
           signal: signal,
@@ -163,7 +163,7 @@ export default function DoctorProfile() {
   async function fetchProviderDetail(signal, drcode, hscode) {
     try {
       let response = await fetch(
-        `https://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/detail/${token}`,
+        `http://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/detail/${token}`,
         {
           method: 'POST',
           signal: signal,

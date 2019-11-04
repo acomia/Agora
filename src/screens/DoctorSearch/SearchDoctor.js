@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {Input, Icon, Header, Item, Thumbnail} from 'native-base';
 import {useNavigation} from 'react-navigation-hooks';
 
-export default function SearchDoctor({search, onSearch, onPanelShow}) {
+export default function SearchDoctor({search, onSearch}) {
   const [textSearch, setTextSearch] = useState('');
 
   const {navigate} = useNavigation();
@@ -15,10 +15,6 @@ export default function SearchDoctor({search, onSearch, onPanelShow}) {
 
   function handleSearchEvent() {
     onSearch();
-  }
-
-  function handleOnPanelShow() {
-    onPanelShow();
   }
 
   return (
@@ -45,7 +41,7 @@ export default function SearchDoctor({search, onSearch, onPanelShow}) {
           value={textSearch}
         />
       </Item>
-      <TouchableOpacity onPress={handleOnPanelShow}>
+      <TouchableOpacity>
         <Thumbnail
           source={require('../../../assets/images/filter.png')}
           style={{height: 25, width: 25}}

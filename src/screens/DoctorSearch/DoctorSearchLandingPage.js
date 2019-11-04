@@ -12,7 +12,7 @@ export default function DoctorSearchLandingPage() {
     location: '',
   });
   const [btnSrchDisabled, setBtnSrchDisabled] = useState(true);
-  const [token, setToken] = useState('ACE86BFF-02F6-E911-80BB-00155D006102');
+  const [token, setToken] = useState('05222132-B3FE-E911-80BC-00155D006102');
 
   const {navigate} = useNavigation();
 
