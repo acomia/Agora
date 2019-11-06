@@ -52,7 +52,7 @@ export default class OnBoarding extends React.Component {
                   <Text> Login </Text>
                 </Button>
                 <Button rounded bordered light style={{backgroundColor:"#fff", flex: 1, marginHorizontal: 10 }}>
-                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('SearchBar')}> Sign Up </Text>
+                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('IntellimapPage')}> Sign Up </Text>
                 </Button>
               </View>
             </View>

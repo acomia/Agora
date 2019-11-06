@@ -1,14 +1,15 @@
 import React, { PureComponent } from 'react'
 import { StyleSheet, View, Dimensions, PermissionsAndroid, Alert, Image, Animated, ListView, ScrollView, TouchableOpacity } from 'react-native'
 import { Container, Header, Text, Icon, Item, Input, ListItem, Segment, Button, Left, Body, Title, Right, Content, List, Label } from 'native-base'
-import MapView from 'react-native-map-clustering'
-import { Marker, AnimatedRegion, PROVIDER_GOOGLE } from 'react-native-maps'
+import MapView, { Marker, AnimatedRegion, PROVIDER_GOOGLE } from 'react-native-maps'
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import Geolocation from 'react-native-geolocation-service'
 import getDirections from 'react-native-google-maps-directions'
+import LinearGradient from 'react-native-linear-gradient'
 import _ from 'lodash'
 import Spinner from 'react-native-spinkit'
 import isEqual from 'lodash.isequal'
+import Geocoder from 'react-native-geocoding'
 
 const offices = require('../../offices.json')
 
@@ -32,6 +33,9 @@ export async function request_location_runtime_permission() {
     }
 }
 export default class Intellimap extends PureComponent {
+    scroll = new Animated.Value(0)
+    headerY = Animated.multiply(Animated.diffClamp(this.scroll, 0, 56), -1)
+
     constructor(props) {
         super(props);
         global.token = ''
@@ -51,37 +55,47 @@ export default class Intellimap extends PureComponent {
                     curLatitude: position.coords.latitude,
                     curLongitude: position.coords.longitude,
                     latitude: position.coords.latitude,
-                    longitude: position.coords.longitude
+                    longitude: position.coords.longitude,
+                    loading: false
                 })
             },
             (error) => this.setState({ error: error.message }),
             { enableHighAccuracy: true, timeout: 15000, maximumAge: 1000 }
         )
+        // Geocoder.init('AIzaSyAEr63gs_sYIqF9HFTvqQX4rvdPEcrNQTo')
+        // Geocoder.from(curLatitude, curLongitude)
+        //     .then(json => {
+        //         var addressComponent = json.results[0].address_components[0];
+        //         console.log('Current Address:', addressComponent);
+        //         Alert.alert(addressComponent);
+        //     })
+        //     .catch(error => console.warn(error));
+
         // Fetching token for map authentication //
-        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
-            },
-            body: JSON.stringify({
-                username: 'digitalxform',
-                password: 'th2p@ssw0rd'
-            })
-        })
-            .then((response) => {
-                response.json()
-                    .then((data) => {
-                        if (data.message === 'Success!') {
-                            global.token = data.response.token
-                            { this._getMarkersData() }
-                        } else {
-                            alert('Username not found!')
-                        }
-                    })
-            })
-            .catch((error) => {
-                alert('Error!' + error)
-            })
+        // fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json;charset=UTF-8'
+        //     },
+        //     body: JSON.stringify({
+        //         username: 'digitalxform',
+        //         password: 'th2p@ssw0rd'
+        //     })
+        // })
+        //     .then((response) => {
+        //         response.json()
+        //             .then((data) => {
+        //                 if (data.message === 'Success!') {
+        //                     global.token = data.response.token
+        //                     // { this._getMarkersData() }
+        //                 } else {
+        //                     alert('Username not found!')
+        //                 }
+        //             })
+        //     })
+        //     .catch((error) => {
+        //         alert('Error!' + error)
+        //     })
     }
     _getMarkersData() {
         // Fetching all accredited hospitals //
@@ -123,6 +137,9 @@ export default class Intellimap extends PureComponent {
             })
     }
     onHospitalButtonPress = (hospitals) => {
+        const { latitude, longitude } = this.state
+        { this.nearestMarker(latitude, longitude) }
+
         this.setState({
             markers: hospitals,
             imgSrc: require('../../assets/images/location-red.png'),
@@ -155,9 +172,6 @@ export default class Intellimap extends PureComponent {
         })
         { this.renderMarker() }
     }
-    updateSearch = search => {
-        this.setState({ search });
-    };
     handleGetDirections = (destination) => {
         const { curLatitude, curLongitude, officeSelected } = this.state
         var desLat = 0
@@ -197,7 +211,7 @@ export default class Intellimap extends PureComponent {
         const { hospitals, clinics } = this.state
         return (
             <View style={{ height: 24 }}>
-                <ScrollView horizontal={true}>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
                     <View style={{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
                         <TouchableOpacity
                             disabled={this.state.hospitalPressed ? true : false}
@@ -262,7 +276,6 @@ export default class Intellimap extends PureComponent {
                             this.state = { coordinate: { latitude: newLatitude, longitude: newLongitude, } }
                             return (
                                 <Marker
-                                    cluster={false}
                                     key={idx}
                                     coordinate={this.state.coordinate}
                                     title={hospital_name}
@@ -306,23 +319,28 @@ export default class Intellimap extends PureComponent {
         lat2 = this.deg2Rad(lat2);
         lon1 = this.deg2Rad(lon1);
         lon2 = this.deg2Rad(lon2);
+        console.log('Pytha:', lat1, lat2, lon1, lon2)
         const R = 6371;
         const x = (lon2 - lon1) * Math.cos((lat1 + lat2) / 2);
         const y = (lat2 - lat1);
         const d = Math.sqrt(x * x + y * y) * R;
+        console.log('D:', d)
         return d;
     }
     nearestMarker = (latitude, longitude) => {
-        let mindif = 99999;
+        const { hospitals } = this.state
+        let mindif = 2999;
         let closest;
-
+        console.log('LatLong:', latitude, longitude)
         for (index = 0; index < hospitals.length; ++index) {
-            const dif = this.pythagorasEquirectangular(latitude, longitude, hospitals[index][1],
-                hospitals[index][2]);
+            const dif = this.pythagorasEquirectangular(latitude, longitude, hospitals.latitudes,
+                hospitals.longitudes);
+            console.log('Difference:', dif)
             if (dif < mindif) {
                 closest = index;
                 mindif = dif;
             }
+            console.log('Closest:', closest)
             return hospitals[closest]
         }
     }
@@ -330,85 +348,89 @@ export default class Intellimap extends PureComponent {
         const { imgSrc } = this.state
         return (
             <View style={styles.markerDetailsStyle}>
-                <Image
-                    source={{ uri: destination.image_url }}
-                    resizeMode='cover'
-                    style={{ top: 28, width: 120, height: 120, borderRadius: 5 }} />
-                <ScrollView>
-                    <View style={{ flex: 1, paddingLeft: 3, flexDirection: 'column' }}>
-                        <ListItem>
-                            <Text style={{ color: "green", fontSize: 14, fontWeight: 'bold' }}>{destination.name}</Text>
-                            <Label style={{ marginHorizontal: 16, color: '#D6D6D6' }}>|</Label>
-                            <Icon name="md-call" style={{ marginRight: 5, color: 'green' }} />
-                            <Text style={{ color: "#000", fontSize: 12 }}>{destination.phone}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Icon name="md-time" size={10} style={{ marginRight: 5, color: 'green' }} />
-                            <Text style={{ color: "#000", fontSize: 12 }}>{destination.ofc_hrs}   {destination.ofc_schedule}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Icon name="md-map" size={10} style={{ marginRight: 5, color: 'green' }} />
-                            <Text style={{ color: "#000", fontSize: 12 }}>{destination.address}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <TouchableOpacity
-                                style={styles.directionButtonStyle}
-                                onPress={() => this.handleGetDirections(destination)}>
-                                <Image
-                                    source={imgSrc}
-                                    style={{ width: 9, height: 21, top: 2, marginHorizontal: 3 }} />
-                                <Text style={styles.textStyle}>Get Direction</Text>
-                            </TouchableOpacity>
-                        </ListItem>
-                    </View>
-                </ScrollView>
-            </View>
+                <View style={styles.imgNameStyle}>
+                    <Image
+                        source={{ uri: destination.image_url }}
+                        resizeMode='cover'
+                        style={styles.markerDetImgStyle} />
+                    <Text style={{ color: "green", fontSize: 14, fontWeight: 'bold', marginHorizontal: 5 }}>{destination.name}</Text>
+                    <Label style={{ color: '#D6D6D6', marginHorizontal: 5 }}>|</Label>
+                    <Icon name="md-call" style={{ marginRight: 5, color: 'green' }} />
+                    <Text style={styles.markerDetTextStyle}>{destination.phone}</Text>
+                </View>
+                <View style={styles.markerDetSchedStyle}>
+                    <ListItem>
+                        <Icon name="md-time" style={{ color: 'green', marginHorizontal: 5 }} />
+                        <Text style={styles.markerDetTextStyle}>{destination.ofc_hrs}   {destination.ofc_schedule}</Text>
+                    </ListItem>
+                </View>
+                <View style={styles.markerDetListStyle}>
+                    <ListItem>
+                        <Icon name="md-map" style={{ color: 'green', marginHorizontal: 5 }} />
+                        <Text style={styles.markerDetTextStyle}>{destination.address}</Text>
+                    </ListItem>
+                    <ListItem >
+                        <TouchableOpacity
+                            style={styles.directionButtonStyle}
+                            onPress={() => this.handleGetDirections(destination)}>
+                            <Image
+                                source={imgSrc}
+                                style={{ width: 9, height: 21, top: 2, marginHorizontal: 3 }} />
+                            <Text style={styles.textStyle}>Get Direction</Text>
+                        </TouchableOpacity>
+                    </ListItem>
+                </View>
+            </View >
         )
     }
     hospclinicMarkerDetails = (destination) => {
         const { imgSrc } = this.state
         return (
             <View style={styles.markerDetailsStyle}>
-                <Image
-                    source={this.state.hospitalPressed ? require('../../assets/images/hospital_img.png') : require('../../assets/images/clinic_img.png')}
-                    resizeMode='cover'
-                    style={{ top: 28, width: 100, height: 100, borderRadius: 5 }} />
-                <ScrollView>
-                    <View style={{ flex: 1, paddingLeft: 3, flexDirection: 'column' }}>
-                        <ScrollView horizontal={true} style={{ flexWrap: 'wrap' }}>
-                            <ListItem>
-                                <Text style={{ color: "green", fontSize: 13, fontWeight: 'bold' }}>{destination.hospital_name}</Text>
-                                <Label style={{ marginHorizontal: 16, color: '#D6D6D6' }}>|</Label>
-                                <Icon name="md-call" style={this.state.clinicPressed ? { marginRight: 5, color: '#5DADE2' } : { marginRight: 5, color: 'red' }} />
-                                <Text style={{ color: "#000", fontSize: 12 }}>{destination.phone}</Text>
-                            </ListItem>
-                        </ScrollView>
-                        <ListItem>
-                            <Icon name="md-time" size={10} style={this.state.clinicPressed ? { marginRight: 5, color: '#5DADE2' } : { marginRight: 5, color: 'red' }} />
-                            <Text style={{ color: "#000", fontSize: 12 }}>{destination.clinic_hrs}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <Icon name="md-map" size={10} style={this.state.clinicPressed ? { marginRight: 5, color: '#5DADE2' } : { marginRight: 5, color: 'red' }} />
-                            <Text style={{ color: "#000", fontSize: 12 }}>{destination.street} {destination.subd_brgy} {destination.city_prov}</Text>
-                        </ListItem>
-                        <ListItem>
-                            <TouchableOpacity
-                                style={styles.directionButtonStyle}
-                                onPress={() => this.handleGetDirections(destination)}>
-                                <Image
-                                    source={imgSrc}
-                                    style={{ width: 18, height: 18, top: 2 }} />
-                                <Text style={styles.textStyle}>Get Direction</Text>
-                            </TouchableOpacity>
-                        </ListItem>
-                    </View>
-                </ScrollView>
+                <View style={styles.imgNameStyle}>
+                    <Image
+                        source={this.state.hospitalPressed ? require('../../assets/images/hospital_img.png') : require('../../assets/images/clinic_img.png')}
+                        resizeMode='cover'
+                        style={styles.markerDetImgStyle} />
+                    <Text style={{ color: "green", fontSize: 13, fontWeight: 'bold' }}>{destination.hospital_name}</Text>
+                    <Label style={{ marginHorizontal: 16, color: '#D6D6D6' }}>|</Label>
+                    <Icon name="md-call" style={this.state.clinicPressed ? { marginRight: 5, color: '#5DADE2' } : { marginRight: 5, color: 'red' }} />
+                    <Text style={styles.markerDetTextStyle}>{destination.phone}</Text>
+                </View>
+                <View style={styles.markerDetSchedStyle}>
+                    <ListItem>
+                        <Icon name="md-time" style={this.state.clinicPressed ? { marginHorizontal: 5, color: '#5DADE2' } : { marginHorizontal: 5, color: 'red' }} />
+                        <Text style={styles.markerDetTextStyle}>{destination.clinic_hrs}</Text>
+                    </ListItem>
+                </View>
+                <View style={styles.markerDetListStyle}>
+                    <ListItem>
+                        <Icon name="md-medical" style={{ color: 'green', marginHorizontal: 5 }} />
+                        <TouchableOpacity>
+                            <Text style={[styles.markerDetTextStyle, { textDecorationLine: 'underline' }]}>See Available Doctors</Text>
+                        </TouchableOpacity>
+                    </ListItem>
+                    <ListItem>
+                        <Icon name="md-map" style={this.state.clinicPressed ? { marginHorizontal: 5, color: '#5DADE2' } : { marginHorizontal: 5, color: 'red' }} />
+                        <Text style={styles.markerDetTextStyle}>{destination.street} {destination.subd_brgy} {destination.city_prov}</Text>
+                    </ListItem>
+                    <ListItem >
+                        <TouchableOpacity
+                            style={styles.directionButtonStyle}
+                            onPress={() => this.handleGetDirections(destination)}>
+                            <Image
+                                source={imgSrc}
+                                style={{ width: 9, height: 21, top: 2, marginHorizontal: 3 }} />
+                            <Text style={styles.textStyle}>Get Direction</Text>
+                        </TouchableOpacity>
+                    </ListItem>
+                </View>
             </View>
         )
     }
     render() {
         const { latitude, longitude, destination, markers } = this.state
-        const { container, map, mapSection, headerStyle, searchIcon, textStyle, directionButtonStyle, markerDetailsStyle, searchTextInput, searchBarContainer } = styles
+        const { container, map, mapSection, searchIcon, imgBoxStyle, spinnerTextStyle, spinnerStyle } = styles
         var imgBox = null
         if (!_.isEmpty(destination)) {
             if (this.state.officeSelected) {
@@ -418,28 +440,17 @@ export default class Intellimap extends PureComponent {
             }
         }
         return (
-            <Container>
-                <Header searchBar rounded style={headerStyle}>
-                    <Item>
-                        <Icon name="ios-search" style={searchIcon} />
-                        <Input
-                            placeholder="Search hospitals/clinics"
-                            placeholderTextColor="#bdc3c7"
-                            value={this.state.searchValue}
-                            onChangeText={(searchValue) => this.setState({ searchValue })} />
-                        <Icon name="md-close" style={searchIcon} onPress={() => this.setState({ searchValue: '' })} />
-                    </Item>
-                </Header>
-                {this.renderHeaderMapButton()}
-                <View style={mapSection}>
-                    <View style={container}>
+            <View style={StyleSheet.absoluteFillObject}>
+                <Animated.ScrollView scrollEventThrottle={5}
+                    showsVerticalScrollIndicator={false}
+                    style={{ zIndex: 0, backgroundColor: 'transparent' }}
+                    onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: this.scroll } } }], { useNativeDriver: true })}>
+                    <Animated.View style={{
+                        height: height * 1.0,
+                        width: '100%',
+                        transform: [{ translateY: Animated.multiply(this.scroll, 0.5) }]
+                    }}>
                         <MapView
-                            clustering={true}
-                            clusterColor='#000'
-                            clusterTextColor='#fff'
-                            clusterBorderColor='#fff'
-                            clusterBorderWidth={4}
-                            // ref={ref => mapView = ref}
                             showsUserLocation
                             provider={PROVIDER_GOOGLE} // remove if not using Google Maps
                             style={map}
@@ -461,25 +472,53 @@ export default class Intellimap extends PureComponent {
                             }}>
                             {markers.length > 0 ? this.renderMarker() : null}
                         </MapView>
+                    </Animated.View>
+                    <View style={{
+                        transform: [{ translateY: -70 }],
+                        width: width,
+                    }}>
+                        <View style={imgBoxStyle} />
                         {imgBox}
                     </View>
-                </View>
+                </Animated.ScrollView>
+                <Animated.View style={{
+                    width: "100%",
+                    position: "absolute",
+                    transform: [{
+                        translateY: this.headerY
+                    }],
+                    flex: 1,
+                    backgroundColor: 'transparent'
+                }}>
+                    <Header searchBar rounded androidStatusBarColor={'#58D68D'} style={{ backgroundColor: '#58D68D' }} backgroundColor={'#58D68D'}>
+                        <Item>
+                            <Icon name="ios-search" style={searchIcon} />
+                            <Input
+                                placeholder="Search hospitals/clinics"
+                                placeholderTextColor="#bdc3c7"
+                                value={this.state.searchValue}
+                                onChangeText={(searchValue) => this.setState({ searchValue })} />
+                            <Icon name="md-close" style={searchIcon} onPress={() => this.setState({ searchValue: '' })} />
+                        </Item>
+                    </Header>
+                    {this.renderHeaderMapButton()}
+                </Animated.View>
                 {this.state.loading &&
-                    <View style={styles.spinnerStyle}>
+                    <View style={spinnerStyle}>
                         <Spinner
                             color={'green'}
                             size={200}
                             type={'Bounce'}
                         />
-                        <Text style={{ textAlign: 'center', fontSize: 20, color: 'red' }}>Fetching data...</Text>
+                        <Text style={spinnerTextStyle}>Fetching data...</Text>
                     </View>
                 }
-            </Container>
+            </View>
         );
     };
 }
 
-export const { width, height } = Dimensions.get('screen');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create(
     {
@@ -546,14 +585,11 @@ const styles = StyleSheet.create(
             height: 30,
         },
         markerDetailsStyle: {
-            position: 'absolute',
-            bottom: 5,
-            padding: 5,
-            width: '97%',
-            height: height * 0.20,
-            backgroundColor: '#fff',
+            height: '50%',
+            backgroundColor: 'transparent',
             borderRadius: 10,
-            flexDirection: 'row',
+            flexDirection: 'column',
+            justifyContent: 'center'
         },
         spinnerStyle: {
             flex: 1,
@@ -567,8 +603,61 @@ const styles = StyleSheet.create(
             top: 0,
             bottom: 0,
         },
+        spinnerTextStyle: {
+            textAlign: 'center',
+            fontSize: 20,
+            color: 'red'
+        },
         searchTextInput: {
             borderWidth: 1,
+        },
+        imgBoxStyle: {
+            ...StyleSheet.absoluteFillObject,
+            position: 'absolute',
+            backgroundColor: 'transparent',
+            marginLeft: 10,
+            marginRight: 10,
+            borderRadius: 10
+        },
+        imgNameStyle: {
+            backgroundColor: 'white',
+            marginVertical: 2,
+            borderRadius: 5,
+            flexDirection: "row",
+            alignItems: 'center',
+            marginLeft: 5,
+            marginRight: 5,
+            height: '23%'
+        },
+        markerDetTextStyle: {
+            color: "#000",
+            fontSize: 12
+        },
+        markerDetImgStyle: {
+            width: 60,
+            height: 60,
+            borderRadius: 50,
+            marginHorizontal: 10
+        },
+        markerDetSchedStyle: {
+            backgroundColor: 'white',
+            marginVertical: 2,
+            borderRadius: 5,
+            flexDirection: "row",
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            marginLeft: 5,
+            marginRight: 5,
+            height: '10%',
+            paddingHorizontal: 5
+        },
+        markerDetListStyle: {
+            backgroundColor: 'white',
+            marginVertical: 2,
+            borderRadius: 5,
+            marginLeft: 5,
+            marginRight: 5,
+            paddingHorizontal: 5
         }
     }
 )
