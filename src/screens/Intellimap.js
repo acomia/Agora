@@ -41,7 +41,7 @@ export default class Intellimap extends PureComponent {
         global.token = ''
         this.state = {
             latitude: 0, longitude: 0, curLatitude: 0, curLongitude: 0, hospitals: [], clinics: [], offices: offices, markers: [], imgSrc: '', loading: false,
-            officeSelected: false, tracksViewChanges: true, searchValue: '', clinicPressed: false, hospitalPressed: false,
+            officeSelected: false, clinicPressed: false, hospitalPressed: false,
         }
     }
     async componentDidMount() {
@@ -56,7 +56,6 @@ export default class Intellimap extends PureComponent {
                     curLongitude: position.coords.longitude,
                     latitude: position.coords.latitude,
                     longitude: position.coords.longitude,
-                    loading: false
                 })
             },
             (error) => this.setState({ error: error.message }),
@@ -72,30 +71,30 @@ export default class Intellimap extends PureComponent {
         //     .catch(error => console.warn(error));
 
         // Fetching token for map authentication //
-        // fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json;charset=UTF-8'
-        //     },
-        //     body: JSON.stringify({
-        //         username: 'digitalxform',
-        //         password: 'th2p@ssw0rd'
-        //     })
-        // })
-        //     .then((response) => {
-        //         response.json()
-        //             .then((data) => {
-        //                 if (data.message === 'Success!') {
-        //                     global.token = data.response.token
-        //                     // { this._getMarkersData() }
-        //                 } else {
-        //                     alert('Username not found!')
-        //                 }
-        //             })
-        //     })
-        //     .catch((error) => {
-        //         alert('Error!' + error)
-        //     })
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8'
+            },
+            body: JSON.stringify({
+                username: 'digitalxform',
+                password: 'th2p@ssw0rd'
+            })
+        })
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        if (data.code === 200) {
+                            global.token = data.response.token
+                            { this._getMarkersData() }
+                        } else {
+                            alert('Username not found!')
+                        }
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
     }
     _getMarkersData() {
         // Fetching all accredited hospitals //
@@ -137,16 +136,13 @@ export default class Intellimap extends PureComponent {
             })
     }
     onHospitalButtonPress = (hospitals) => {
-        const { latitude, longitude } = this.state
-        { this.nearestMarker(latitude, longitude) }
-
         this.setState({
             markers: hospitals,
             imgSrc: require('../../assets/images/location-red.png'),
             destination: '',
-            officeSelected: false,
             hospitalPressed: true,
-            clinicPressed: false
+            clinicPressed: false,
+            officeSelected: false
         })
         { this.renderMarker() }
     }
@@ -155,9 +151,9 @@ export default class Intellimap extends PureComponent {
             markers: clinics,
             imgSrc: require('../../assets/images/location-blue.png'),
             destination: '',
-            officeSelected: false,
             hospitalPressed: false,
-            clinicPressed: true
+            clinicPressed: true,
+            officeSelected: false
         })
         { this.renderMarker() }
     }
@@ -166,9 +162,9 @@ export default class Intellimap extends PureComponent {
             markers: offices,
             imgSrc: require('../../assets/images/intellicare-icon.png'),
             destination: '',
-            officeSelected: true,
             hospitalPressed: false,
-            clinicPressed: false
+            clinicPressed: false,
+            officeSelected: true
         })
         { this.renderMarker() }
     }
@@ -392,10 +388,12 @@ export default class Intellimap extends PureComponent {
                         source={this.state.hospitalPressed ? require('../../assets/images/hospital_img.png') : require('../../assets/images/clinic_img.png')}
                         resizeMode='cover'
                         style={styles.markerDetImgStyle} />
-                    <Text style={{ color: "green", fontSize: 13, fontWeight: 'bold' }}>{destination.hospital_name}</Text>
-                    <Label style={{ marginHorizontal: 16, color: '#D6D6D6' }}>|</Label>
-                    <Icon name="md-call" style={this.state.clinicPressed ? { marginRight: 5, color: '#5DADE2' } : { marginRight: 5, color: 'red' }} />
-                    <Text style={styles.markerDetTextStyle}>{destination.phone}</Text>
+                    <ScrollView horizontal={true}>
+                        <Text style={{ color: "green", fontSize: 13, fontWeight: 'bold' }}>{destination.hospital_name}</Text>
+                        <Label style={{ marginHorizontal: 16, color: '#D6D6D6' }}>|</Label>
+                        <Icon name="md-call" style={this.state.clinicPressed ? { marginRight: 5, color: '#5DADE2' } : { marginRight: 5, color: 'red' }} />
+                        <Text style={styles.markerDetTextStyle}>{destination.phone}</Text>
+                    </ScrollView>
                 </View>
                 <View style={styles.markerDetSchedStyle}>
                     <ListItem>
@@ -420,7 +418,7 @@ export default class Intellimap extends PureComponent {
                             onPress={() => this.handleGetDirections(destination)}>
                             <Image
                                 source={imgSrc}
-                                style={{ width: 9, height: 21, top: 2, marginHorizontal: 3 }} />
+                                style={{ width: 20, height: 20, top: 2, marginHorizontal: 3 }} />
                             <Text style={styles.textStyle}>Get Direction</Text>
                         </TouchableOpacity>
                     </ListItem>
