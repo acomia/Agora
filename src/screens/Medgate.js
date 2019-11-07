@@ -11,20 +11,18 @@ export default class SideBar extends React.Component {
                 <StatusBar translucent backgroundColor="transparent" />
                 <View style={styles.header}>
                     <Image source={require('../../assets/images/medgatelogo-white.png')} style={styles.medgate} resizeMode="contain" />
+                    <Text style={styles.title}>Call Doc. Anytime. Anywhere. No lines.™</Text>
+                        <Text style={styles.subtitle}>Get your hassle-free medical consultation. Our Filipino specialist doctors are just a phone call away to give you the case you deserve.</Text>
 
                 </View>
                 <ScrollView>
-                    <View style={{ padding: 30 }}>
-                        <Text style={styles.title}>Call Doc. Anytime. Anywhere. No lines.™</Text>
-                        <Text style={styles.subtitle}>Get your hassle-free medical consultation. Our Filipino specialist doctors are just a phone call away to give you the case you deserve.</Text>
-                    </View>
                     <View style={{ flex: 1 }}>
                         <Text style={styles.HowToUse}>How to Use?</Text>
                     </View>
                     <View style={styles.swiperFeatures}>
                         <SwiperFlatList
                             autoplay
-                            autoplayDelay={10}
+                            autoplayDelay={60}
                             autoplayLoop
                             index={0}
                             paginationDefaultColor="#fff"
@@ -79,7 +77,7 @@ export default class SideBar extends React.Component {
                             </View>
                         </SwiperFlatList>
                     </View>
-                    <View style={{ padding: 50, backgroundColor: "#fff", marginTop: 50 }}>
+                    <View style={{ padding: 30, backgroundColor: "#fff", marginTop: 50 }}>
                         <Text style={{ fontSize: 24, color: "#258bf5", fontWeight: "bold" }}>Easy, fast, secure.</Text>
                         <Text style={{ color: "#2d2d2d", fontSize: 14 }}>Download the Medgate Philippines app now!</Text>
                         <Text style={{ color: "#2d2d2d", fontSize: 14 }}>Call Doc. Anytime. Anywhere. No lines.™</Text>
@@ -118,15 +116,17 @@ const styles = StyleSheet.create(
             elevation: 5,
         },
         title: {
-            color: "#258bf5",
+            color: "#fff",
             fontWeight: "bold",
-            fontSize: 18,
+            fontSize: 16,
+            textAlign: "center",
+            marginBottom: 10
         },
         subtitle: {
             fontSize: 14,
-            color: "#258bf5",
+            color: "#fff",
             alignSelf: "center",
-            textAlign: "justify"
+            textAlign: "center"
         },
         HowToUse: {
             fontSize: 24,

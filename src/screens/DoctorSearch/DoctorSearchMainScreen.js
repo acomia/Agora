@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {Text, StyleSheet, View, FlatList, Dimensions} from 'react-native';
+import {StyleSheet, View, FlatList} from 'react-native';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
-import {Input, Item} from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
 
 export default function DoctorSearchMainScreen() {
   const [doctorList, setDoctorList] = useState([]);
+  const [tempDoctorList, setTempDoctorList] = useState([]);
   const [textSearch, setTextSearch] = useState('');
   const [refreshing, setRefreshing] = useState(true);
   const [tempSearch, setTempSearch] = useState('');
@@ -88,6 +87,7 @@ export default function DoctorSearchMainScreen() {
       if (result.length > 100) result.splice(0, result.length - 100);
 
       setDoctorList(result);
+      setTempDoctorList(result);
 
       setRefreshing(false);
     } catch (error) {
@@ -97,29 +97,24 @@ export default function DoctorSearchMainScreen() {
   }
 
   function handleChangeTextSearch(search) {
-    setTextSearch(search);
-  }
-
-  function handleSearch() {
-    if (textSearch === tempSearch) {
-      return;
-    }
-    if (textSearch === '') {
+    if (search === '') {
+      setDoctorList(tempDoctorList);
       return;
     }
 
-    setDoctorList([]);
-    setTempSearch(textSearch);
-    setRefreshing(true);
-    fetchDoctors();
-  }
+    let filtered = tempDoctorList.filter(doctor => {
+      return (
+        doctor.doctorfullname.toLowerCase().includes(search.toLowerCase()) ||
+        doctor.specialization.toLowerCase().includes(search.toLowerCase())
+      );
+    });
 
+    setDoctorList(filtered);
+  }
+  
   return (
     <View style={styles.mainContainer}>
-      <SearchDoctor
-        search={handleChangeTextSearch}
-        onSearch={handleSearch}
-      />
+      <SearchDoctor search={handleChangeTextSearch} />
       <FlatList
         data={doctorList}
         renderItem={({item}) => <DoctorList drdata={item} token={token} />}

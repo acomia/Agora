@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {Input, Icon, Header, Item, Thumbnail} from 'native-base';
 import {useNavigation} from 'react-navigation-hooks';
 
-export default function SearchDoctor({search, onSearch}) {
+export default function SearchDoctor({search}) {
   const [textSearch, setTextSearch] = useState('');
 
   const {navigate} = useNavigation();
@@ -11,10 +11,6 @@ export default function SearchDoctor({search, onSearch}) {
   function handleOnChangeText(e) {
     setTextSearch(e);
     search(e);
-  }
-
-  function handleSearchEvent() {
-    onSearch();
   }
 
   return (
@@ -34,10 +30,9 @@ export default function SearchDoctor({search, onSearch}) {
       <Item style={{height: 25, margin: 10}}>
         <Input
           placeholderTextColor={'#c2c2c2'}
-          placeholder="Search Doctor's Name or Specialty"
+          placeholder="Filter Doctor's Name or Specialty"
           style={{fontSize: 12, textAlign: 'center', paddingBottom: 0.3}}
           onChangeText={handleOnChangeText}
-          onSubmitEditing={handleSearchEvent}
           value={textSearch}
         />
       </Item>
