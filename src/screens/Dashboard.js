@@ -37,11 +37,11 @@ export default class Dashboard extends React.Component {
                         <ImageBackground source={require('../../assets/images/intelliappheader.png')} style={styles.backgroundImage}>
                             <SwiperFlatList
                                 autoplay
-                                autoplayDelay={5}
+                                autoplayDelay={1000}
                                 autoplayLoop
                                 index={0}
                                 showPagination
-                                paginationStyle={{ marginBottom: 30,}}
+                                paginationStyle={{ marginBottom: 30, }}
                             >
                                 <View style={styles.child}>
                                     <Card style={styles.mainCardStyle}>
@@ -144,28 +144,18 @@ export default class Dashboard extends React.Component {
                         <View style={styles.menuRow}>
                             <View style={styles.cardItemStyle}>
                                 <Card style={styles.cardStyle}>
-                                    <CardItem style={styles.cardStyle}>
-                                        <Left>
-                                            <Body>
-                                                <Text style={styles.cardText}>Find a Medical Provider</Text>
-                                            </Body>
-                                            <Thumbnail source={require('../../assets/images/doctor.png')} resizeMode='contain' />
-                                        </Left>
-                                    </CardItem>
+                                    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('DoctorSearchNavigation')}>
+                                        <CardItem style={styles.cardStyle}>
+                                            <Left>
+                                                <Body>
+                                                    <Text style={styles.cardText}>Find a Medical Provider</Text>
+                                                </Body>
+                                                <Thumbnail source={require('../../assets/images/doctor.png')} resizeMode='contain' />
+                                            </Left>
+                                        </CardItem>
+                                    </TouchableNativeFeedback>
                                 </Card>
                             </View>
-                            {/* <View style={styles.cardItemStyle}>
-                                <Card style={styles.cardStyle}>
-                                    <CardItem style={styles.cardStyle}>
-                                        <Left>
-                                            <Body>
-                                                <Text style={styles.cardText}>Reimbursement</Text>
-                                            </Body>
-                                            <Thumbnail source={require('../../assets/images/coins.png')} resizeMode='contain' />
-                                        </Left>
-                                    </CardItem>
-                                </Card>
-                            </View> */}
                         </View>
                     </View>
                 </ScrollView>

@@ -169,7 +169,7 @@ const styles = StyleSheet.create(
         },
         footer: {
             flex: 1,
-            padding: 10,
+            paddingBottom: 10,
         },
         footerText: {
             textAlign: "center",
@@ -182,7 +182,7 @@ const styles = StyleSheet.create(
         },
         ForgotPasswordLink: {
             color: '#3498db',
-            fontSize: 13,
+            fontSize: 16,
             alignSelf: "flex-end",
             marginTop: 10
         }

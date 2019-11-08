@@ -59,7 +59,31 @@ export default class MembInfo extends React.Component {
                         </Item>
                         <Item style={styles.itemStyle}>
                             <Left>
+                                <Text style={styles.itemLabel}>Employee ID</Text>
+                            </Left>
+                            <Body style={styles.itemBody}>
+                                <Label style={styles.itemInfo}>COMPANY-10001</Label>
+                            </Body>
+                        </Item>
+                        <Item style={styles.itemStyle}>
+                            <Left>
                                 <Text style={styles.itemLabel}>Member Type</Text>
+                            </Left>
+                            <Body style={styles.itemBody}>
+                                <Label style={styles.itemInfo}>PRINCIPAL</Label>
+                            </Body>
+                        </Item>
+                        <Item style={styles.itemStyle}>
+                            <Left>
+                                <Text style={styles.itemLabel}>Civil Status</Text>
+                            </Left>
+                            <Body style={styles.itemBody}>
+                                <Label style={styles.itemInfo}>SINGLE</Label>
+                            </Body>
+                        </Item>
+                        <Item style={styles.itemStyle}>
+                            <Left>
+                                <Text style={styles.itemLabel}>Relation</Text>
                             </Left>
                             <Body style={styles.itemBody}>
                                 <Label style={styles.itemInfo}>PRINCIPAL</Label>
@@ -91,18 +115,10 @@ export default class MembInfo extends React.Component {
                         </Item>
                         <Item style={styles.itemStyle}>
                             <Left>
-                                <Text style={styles.itemLabel}>Civil Status</Text>
+                                <Text style={styles.itemLabel}>Card Printed Date</Text>
                             </Left>
                             <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>SINGLE</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Relation</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>PRINCIPAL</Label>
+                                <Label style={styles.itemInfo}>01/01/2019</Label>
                             </Body>
                         </Item>
                     </View>

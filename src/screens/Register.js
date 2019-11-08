@@ -79,7 +79,7 @@ export default class Login extends React.Component {
                                     disabled={false}
                                 />
                             </Item>
-                            <Item stackedLabel style={styles.formStyle} style={{marginTop: 10}}>
+                            <Item stackedLabel style={styles.formStyle} style={{ marginTop: 10 }}>
                                 <Label>Civil Status</Label>
                                 <Item picker>
                                     <Picker
@@ -102,11 +102,15 @@ export default class Login extends React.Component {
                         <Text style={styles.headerText}>Account Information</Text>
                         <View style={styles.formInfo}>
                         <Item floatingLabel style={styles.formStyle}>
+                                <Label>Intellicare Account No.</Label>
+                                <Input style={styles.labelStyle} />
+                            </Item>
+                            <Item floatingLabel style={styles.formStyle}>
                                 <Label>Intellicare Card No.</Label>
                                 <Input style={styles.labelStyle} />
                             </Item>
                             <Item floatingLabel style={styles.formStyle}>
-                                <Label>Username</Label>
+                                <Label>Username/Email Address</Label>
                                 <Input style={styles.labelStyle} />
                             </Item>
                             <Item floatingLabel style={styles.formStyle}>
@@ -117,9 +121,9 @@ export default class Login extends React.Component {
                                 <Label>Confirm Password</Label>
                                 <Input style={styles.labelStyle} />
                             </Item>
-                            <Item stackedLabel style={styles.formStyle}>
-                                <Label>Email</Label>
-                                <Input placeholder="sample@email.com" placeholderTextColor="#bdc3c7" />
+                            <Item floatingLabel style={styles.formStyle}>
+                                <Label>Mobile No.</Label>
+                                <Input style={styles.labelStyle} />
                             </Item>
                         </View>
                     </View>
