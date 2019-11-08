@@ -6,7 +6,10 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 
 export default class Login extends React.Component {
-
+    constructor() {
+        super();
+        global.loginToken = ''
+    }
     state = {
         username: "",
         password: ""
@@ -23,19 +26,24 @@ export default class Login extends React.Component {
                         <View style={styles.loginForm}>
                             <Form>
                                 <Item floatingLabel>
-                                    <Label>Username</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(username) => this.setState({ username })} />
+                                    <Label >Username</Label>
+                                    <Input
+                                        style={styles.labelStyle}
+                                        onChangeText={(username) => this.setState({ username })} />
                                 </Item>
                                 <Item floatingLabel>
                                     <Label>Password</Label>
-                                    <Input style={styles.labelStyle} onChangeText={(password) => this.setState({ password })} />
+                                    <Input
+                                        secureTextEntry
+                                        style={styles.labelStyle}
+                                        onChangeText={(password) => this.setState({ password })} />
                                 </Item>
                             </Form>
                             <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
                                 Forgot Password?
-                            </Text>
-                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('Dashboard')}>
-                                <Text> Login </Text>
+                        </Text>
+                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('DashboardPage')}>
+                                <Text > Login </Text>
                             </Button>
                         </View>
                         <View style={styles.footer}>
@@ -50,7 +58,8 @@ export default class Login extends React.Component {
         fetch('http:192.168.1.104:3005/', {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json;charset=UTF-8',
+
             }
         })
             .then((response) => {
@@ -83,10 +92,7 @@ export default class Login extends React.Component {
     }
 
     _postUser() {
-
-        // alert('sample')
-        // return
-        fetch('http:192.168.9.104:3005/login', {
+        fetch('http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json;charset=UTF-8'
@@ -95,14 +101,15 @@ export default class Login extends React.Component {
                 username: this.state.username,
                 password: this.state.password,
             })
+            // "username":"digitalxform",
+            // "password":"th2p@ssw0rd"
 
         })
             .then((response) => {
                 response.json()
                     .then((data) => {
-                        alert(JSON.stringify(data.message))
-                        if (data.message === 'User found!') {
-                            alert
+                        if (data.message === 'Success!') {
+                            global.loginToken = data.response.token
                             this.props.navigation.navigate('DashboardPage')
                         } else {
                             alert('Username not found!')
