@@ -3,129 +3,120 @@ import { StyleSheet, View, Dimensions, Image, TouchableOpacity, ImageBackground,
 import { Container, Text, Card, Header, Left, Right, Body, Title, Item, Label, Icon, Button, Content } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 
-
 export default class MembInfo extends React.Component {
-    render() {
-        return (
-            <Container>
-                <Header style={styles.headerStyle} >
-                    <Left>
-                        <Button transparent>
-                            <Icon name="arrow-back" style={{ color: "#fff" }} />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>Member Information</Title>
-                    </Body>
-                    <Right />
-                </Header>
-                <ScrollView>
-                    <View style={styles.sectionCard}>
-                        <Card style={styles.mainCardStyle}>
-                            <View style={{ flex: 1 }}>
-                                <ImageBackground source={require('../../assets/images/virtual-card-header.png')} resizeMode='contain' style={styles.intellicareLogo} />
+    // constructor(props) {
+    //     super(props)
+    //     this.state = {
+    //         item:''
+    //     }
+    // }
+
+render() {
+     const { fullname, acct, cardno, birth_date, gender, status, member_type, room_and_board, maximum_limit, coverage_period} = this.props.navigation.state.params
+    return (
+        <Container>
+            <Header style={styles.headerStyle} >
+                <Left>
+                <Button transparent onPress={() => this.props.navigation.navigate('MembersPage')}>
+                        <Icon name="arrow-back" style={{ color: "#fff" }} />
+                    </Button>
+                </Left>
+                <Body>
+                    <Title>Member Information</Title>
+                </Body>
+                <Right />
+            </Header>
+            <ScrollView>
+                <View style={styles.sectionCard}>
+                    <Card style={styles.mainCardStyle}>
+                        <View style={{ flex: 1 }}>
+                            <ImageBackground source={require('../../assets/images/virtual-card-header.png')} resizeMode='contain' style={styles.intellicareLogo} />
+                        </View>
+                        <View style={styles.cardInfo}>
+                            <Label style={styles.cardName}>{fullname}</Label>
+                            <Label style={styles.cardDetails}>INTELLICARE</Label>
+                            <View style={{ flexDirection: "row" }}>
+                                <Label style={styles.titlecardDetails}>Account No: </Label>
+                                <Label style={styles.cardDetails}>{acct}</Label>
                             </View>
-                            <View style={styles.cardInfo}>
-                                <Label style={styles.cardName}>SERAFINO, FREDERICK E.</Label>
-                                <Label style={styles.cardDetails}>INTELLICARE</Label>
-                                <View style={{ flexDirection: "row" }}>
-                                    <Label style={styles.titlecardDetails}>Account No: </Label>
-                                    <Label style={styles.cardDetails}>80-00-00000-00000-00/1</Label>
-                                </View>
-                                <View style={{ flexDirection: "row" }}>
-                                    <Label style={styles.titlecardDetails}>Card No: </Label>
-                                    <Label style={styles.cardDetails}>11950000092817266</Label>
-                                </View>
-                                <View style={{ flexDirection: "row" }}>
-                                    <Label style={styles.titlecardDetails}>Birthdate (mm/yy): </Label>
-                                    <Label style={styles.cardDetails}>01/01</Label>
-                                </View>
-                                <View style={{ flexDirection: "row" }}>
-                                    <Label style={styles.titlecardDetails}>Gender: </Label>
-                                    <Label style={styles.cardDetails}>MALE</Label>
-                                </View>
-                                <Label style={styles.cardDetails}>W/ DENTAL COVERAGE</Label>
+                            <View style={{ flexDirection: "row" }}>
+                                <Label style={styles.titlecardDetails}>Card No: </Label>
+                                <Label style={styles.cardDetails}>{cardno}</Label>
                             </View>
-                        </Card>
-                    </View>
-                    <View style={styles.sectionMembInfo}>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Account Status</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.labelStatus}>ACTIVE</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Employee ID</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>COMPANY-10001</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Member Type</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>PRINCIPAL</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Civil Status</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>SINGLE</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Relation</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>PRINCIPAL</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Room and Board</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>REGULAR PRIVATE</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Maximum Limit</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>100,000</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Coverage Period</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>01/01/2019 TO 01/01/2020</Label>
-                            </Body>
-                        </Item>
-                        <Item style={styles.itemStyle}>
-                            <Left>
-                                <Text style={styles.itemLabel}>Card Printed Date</Text>
-                            </Left>
-                            <Body style={styles.itemBody}>
-                                <Label style={styles.itemInfo}>01/01/2019</Label>
-                            </Body>
-                        </Item>
-                    </View>
-                </ScrollView>
-            </Container>
-        );
-    };
+                            <View style={{ flexDirection: "row" }}>
+                                <Label style={styles.titlecardDetails}>Birthdate (mm/yy): </Label>
+                                <Label style={styles.cardDetails}>{birth_date}</Label>
+                            </View>
+                            <View style={{ flexDirection: "row" }}>
+                                <Label style={styles.titlecardDetails}>Gender: </Label>
+                                <Label style={styles.cardDetails}>{gender}</Label>
+                            </View>
+                            <Label style={styles.cardDetails}>W/ DENTAL COVERAGE</Label>
+                        </View>
+                    </Card>
+                </View>
+                <View style={styles.sectionMembInfo}>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Account Status</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.labelStatus}>{status}</Label>
+                        </Body>
+                    </Item>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Member Type</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.itemInfo}>{member_type}</Label>
+                        </Body>
+                    </Item>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Room and Board</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.itemInfo}>{room_and_board}</Label>
+                        </Body>
+                    </Item>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Maximum Limit</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.itemInfo}>{maximum_limit}</Label>
+                        </Body>
+                    </Item>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Coverage Period</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.itemInfo}>{coverage_period}</Label>
+                        </Body>
+                    </Item>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Civil Status</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.itemInfo}>Single</Label>
+                        </Body>
+                    </Item>
+                    <Item style={styles.itemStyle}>
+                        <Left>
+                            <Text style={styles.itemLabel}>Relation</Text>
+                        </Left>
+                        <Body style={styles.itemBody}>
+                            <Label style={styles.itemInfo}>{member_type}</Label>
+                        </Body>
+                    </Item>
+                </View>
+            </ScrollView>
+        </Container>
+    );
+};
 }
 
 export const { width, height } = Dimensions.get('window');
