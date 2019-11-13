@@ -16,7 +16,7 @@ import MembInfo from "../screens/MembInfo";
 import Intellimap from "../screens/Intellimap";
 // import ApprovedUtil from "../screens/ApprovedUtil"
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
-
+import EditProfile from '../screens/EditProfile';
 
 
 
@@ -108,6 +108,19 @@ AppStack = createStackNavigator(
         navigationOptions: {
         header:null,
             },
+        },
+        EditProfilePage: {
+            screen: EditProfile,
+            navigationOptions: {
+                title: "Edit",
+                headerStyle: {
+                    backgroundColor: '#5fb650',
+                    elevation: 0,
+                    shadowOpacity: 0,
+                    borderBottomWidth: 0,
+                },
+                headerTintColor: '#fff',
+            }
         },
 
 
