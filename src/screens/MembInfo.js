@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity, ImageBackground, Linking } from 'react-native'
-import { Container, Text, Card, Header, Left, Right, Body, Title, Item, Label, Icon, Button, Content } from 'native-base'
+import { StyleSheet, View, Dimensions, ImageBackground } from 'react-native'
+import { Container, Text, Card, Header, Left, Right, Body, Title, Item, Label, Icon, Button } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 
 export default class MembInfo extends React.Component {

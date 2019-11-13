@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
+import { View, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { Container, Body, Text, Badge, List, ListItem, Left, Content } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
-import { createBottomTabNavigator } from 'react-navigation-tabs'
+import Spinner from 'react-native-spinkit'
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacct = ''
@@ -14,12 +14,15 @@ export default class Members extends React.Component {
     global.storeToken = ''
     // this.membacct = ''
     this.state = {
-      isLoading: true,
+      isLoading: false,
       dataSource: []
     }
   }
 
   componentDidMount() {
+    this.setState({
+      isLoading: true
+    })
     this.getacct()
     // let xmemb = await AsyncStorage.getItem(MEMB_ACCOUNTNO)
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/login', {
@@ -44,8 +47,8 @@ export default class Members extends React.Component {
                 method: 'GET',
                 headers: {
                   'authToken': global.storeToken,
-                  'paramAcct': this.membacct ,
-                  'paramContract': '1',
+                  'paramAcct': this.membacct,
+                  // 'paramContract': '1',
                   'Content-Type': 'application/json;charset=UTF-8'
                 }
               })
@@ -94,7 +97,6 @@ export default class Members extends React.Component {
   };
 
   renderItem = ({ item }) => {
-    console.log('sasasasa',item)
     return (
       <TouchableOpacity style={{ flexDirection: 'row' }}>
         <ScrollView>
@@ -127,6 +129,19 @@ export default class Members extends React.Component {
 
   render() {
     //  const { data } = this.state
+    const { spinnerStyle, spinnerTextStyle } = styles
+    if (this.state.isLoading) {
+      return (
+        <View style={spinnerStyle}>
+          <Spinner
+            color={'green'}
+            size={50}
+            type={'ChasingDots'}
+          />
+          <Text style={spinnerTextStyle}>Fetching data...</Text>
+        </View>
+      )
+    }
     return (
       <View style={StyleSheet.container}>
         <FlatList
@@ -136,6 +151,7 @@ export default class Members extends React.Component {
           keyExtractor={(item, index) => index}
           ItemSeparatorComponent={this.renderSeparator}
         />
+
       </View>
     );
   }
@@ -181,8 +197,19 @@ const styles = StyleSheet.create({
   viewNameBadge: {
     flexDirection: "row",
     flex: 1
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    opacity: 0.2,
+    backgroundColor: 'black',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   }
 
 });
-
 
