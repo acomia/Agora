@@ -17,7 +17,8 @@ export default function SearchDoctor({search}) {
     <Header
       searchBar
       rounded
-      style={{backgroundColor: '#5fb650', height: 45, alignItems: 'center'}}>
+      translucent
+      style={{backgroundColor: '#5fb650', height: 60, alignItems: 'center', paddingTop: 25}}>
       <TouchableOpacity
         style={{paddingRight: 10}}
         onPress={() => navigate('SearchLandingPage')}>

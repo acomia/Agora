@@ -7,9 +7,7 @@ import {useNavigationParam} from 'react-navigation-hooks';
 export default function DoctorSearchMainScreen() {
   const [doctorList, setDoctorList] = useState([]);
   const [tempDoctorList, setTempDoctorList] = useState([]);
-  const [textSearch, setTextSearch] = useState('');
   const [refreshing, setRefreshing] = useState(true);
-  const [tempSearch, setTempSearch] = useState('');
 
   const searchQuery = useNavigationParam('searchQuery');
   const tokenVal = useNavigationParam('token');
@@ -111,7 +109,7 @@ export default function DoctorSearchMainScreen() {
 
     setDoctorList(filtered);
   }
-  
+
   return (
     <View style={styles.mainContainer}>
       <SearchDoctor search={handleChangeTextSearch} />

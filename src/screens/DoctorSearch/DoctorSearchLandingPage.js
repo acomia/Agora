@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import {Text, Input, Form, Content, Button} from 'native-base';
-import {View, StyleSheet, Dimensions} from 'react-native';
+import {View, StyleSheet, Dimensions, StatusBar} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from 'react-navigation-hooks';
 
@@ -72,6 +72,7 @@ export default function DoctorSearchLandingPage() {
 
   return (
     <View style={{backgroundColor: '#5fb650', flex: 1}}>
+      <StatusBar translucent backgroundColor="transparent" />
       <ScrollView>
         <View style={{flex: 1, paddingTop: winHeight * 0.1}}>
           <Text style={styles.physicianDirectory}>PHYSICIAN DIRECTORY</Text>

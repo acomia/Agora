@@ -1,5 +1,5 @@
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 import Login from '../screens/Login';
 import OnBoarding from '../screens/OnBoarding';
 import Register from '../screens/Register';
@@ -99,8 +99,8 @@ AppStack = createStackNavigator({
         paddingTop: 20,
       },
       headerTintColor: '#fff',
-    }
-  }
+    },
+  },
 });
 
 export default createAppContainer(AppStack);

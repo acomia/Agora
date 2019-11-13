@@ -1,5 +1,11 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, View, Dimensions, ImageBackground} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  ImageBackground,
+  StatusBar,
+} from 'react-native';
 import {
   Container,
   Header,
@@ -13,7 +19,7 @@ import {
   List,
   Accordion,
   Spinner,
-  Icon
+  Icon,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
@@ -115,7 +121,7 @@ export default function DoctorProfile() {
             coordinator: coordinator,
             phone: phone,
             schedule: schedule,
-            city: city
+            city: city,
           });
 
           break;
@@ -186,23 +192,22 @@ export default function DoctorProfile() {
   }
 
   return (
-    <Container>
-      <Header span style={styles.headerStyle}>
-        <ImageBackground
-          source={require('../../assets/images/intellicareheader.jpg')}
-          style={styles.backgroundImage}>
-          <View style={styles.headerUser}>
-            <Thumbnail
-              large
-              source={require('../../assets/images/doctor-avatar.png')}
-              resizeMode="contain"
-              style={styles.avatarStyle}
-            />
-            <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
-          </View>
-          <Text style={styles.headerDetails}>{drdata.specialization}</Text>
-        </ImageBackground>
-      </Header>
+    <ScrollView>
+      <StatusBar translucent backgroundColor="transparent" />
+      <ImageBackground
+        source={require('../../assets/images/intellicareheader.jpg')}
+        style={styles.backgroundImage}>
+        <View style={styles.headerUser}>
+          <Thumbnail
+            large
+            source={require('../../assets/images/doctor-avatar.png')}
+            resizeMode="contain"
+            style={styles.avatarStyle}
+          />
+          <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
+        </View>
+        <Text style={styles.headerDetails}>{drdata.specialization}</Text>
+      </ImageBackground>
       <ScrollView>
         <View style={styles.hospitalAccreditation}>
           <ListItem icon>
@@ -222,7 +227,7 @@ export default function DoctorProfile() {
           {renderHospitalAccreditation}
         </View>
       </ScrollView>
-    </Container>
+    </ScrollView>
   );
 }
 
@@ -233,6 +238,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'stretch',
     justifyContent: 'center',
+    height: 200
   },
   headerStyle: {
     height: 180,
