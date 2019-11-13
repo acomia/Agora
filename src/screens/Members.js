@@ -3,11 +3,8 @@ import { View, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-nativ
 import { Container, Body, Text, Badge, List, ListItem, Left, Content } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
-import { createBottomTabNavigator } from 'react-navigation-tabs'
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
-const membacct = ''
-const membinfo = require('../../membinfo.json')
 export default class Members extends React.Component {
   constructor(props) {
     super(props)

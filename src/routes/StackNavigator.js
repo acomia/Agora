@@ -13,6 +13,7 @@ import ApprovedUtilModal from '../screens/ApprovedUtilModal';
 // import PostedUtil from "../screens/PostedUtil"
 import MembInfo from '../screens/MembInfo';
 // import ApprovedUtil from "../screens/ApprovedUtil"
+import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -84,6 +85,12 @@ AppStack = createStackNavigator({
   },
   ApprovedUtilModal: {
     screen: ApprovedUtilModal,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  DoctorSearchNavigation: {
+    screen: DoctorSearchNavigation,
     navigationOptions: {
       header: null,
     },
