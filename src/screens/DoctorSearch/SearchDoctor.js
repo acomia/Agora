@@ -3,7 +3,7 @@ import {TouchableOpacity} from 'react-native';
 import {Input, Icon, Header, Item, Thumbnail} from 'native-base';
 import {useNavigation} from 'react-navigation-hooks';
 
-export default function SearchDoctor({search, onSearch, onPanelShow}) {
+export default function SearchDoctor({search}) {
   const [textSearch, setTextSearch] = useState('');
 
   const {navigate} = useNavigation();
@@ -13,19 +13,12 @@ export default function SearchDoctor({search, onSearch, onPanelShow}) {
     search(e);
   }
 
-  function handleSearchEvent() {
-    onSearch();
-  }
-
-  function handleOnPanelShow() {
-    onPanelShow();
-  }
-
   return (
     <Header
       searchBar
       rounded
-      style={{backgroundColor: '#5fb650', height: 45, alignItems: 'center'}}>
+      translucent
+      style={{backgroundColor: '#5fb650', height: 60, alignItems: 'center', paddingTop: 25}}>
       <TouchableOpacity
         style={{paddingRight: 10}}
         onPress={() => navigate('SearchLandingPage')}>
@@ -38,14 +31,13 @@ export default function SearchDoctor({search, onSearch, onPanelShow}) {
       <Item style={{height: 25, margin: 10}}>
         <Input
           placeholderTextColor={'#c2c2c2'}
-          placeholder="Search Doctor's Name or Specialty"
+          placeholder="Filter Doctor's Name or Specialty"
           style={{fontSize: 12, textAlign: 'center', paddingBottom: 0.3}}
           onChangeText={handleOnChangeText}
-          onSubmitEditing={handleSearchEvent}
           value={textSearch}
         />
       </Item>
-      <TouchableOpacity onPress={handleOnPanelShow}>
+      <TouchableOpacity>
         <Thumbnail
           source={require('../../../assets/images/filter.png')}
           style={{height: 25, width: 25}}

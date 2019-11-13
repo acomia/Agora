@@ -1,9 +1,10 @@
 import {createAppContainer} from 'react-navigation';
-import {createDrawerNavigator} from 'react-navigation-drawer';
 import {createStackNavigator} from 'react-navigation-stack';
 import DoctorSearchMainScreen from '../screens/DoctorSearch/DoctorSearchMainScreen';
 import DoctorProfile from '../screens/DoctorProfile';
 import DoctorSearchLandingPage from '../screens/DoctorSearch/DoctorSearchLandingPage';
+import {StatusBar} from 'react-native';
+import React from 'react';
 
 DoctorSearchModule = createStackNavigator({
   SearchLandingPage: {
@@ -15,7 +16,7 @@ DoctorSearchModule = createStackNavigator({
   DoctorSearchMainScreen: {
     screen: DoctorSearchMainScreen,
     navigationOptions: {
-      header: null,
+      header: <StatusBar backgroundColor="transparent" />,
     },
   },
   DoctorProfile: {

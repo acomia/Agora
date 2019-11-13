@@ -16,9 +16,12 @@ import MemberInformation from '../screens/MemberInformation';
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
 import Medgate from '../screens/Medgate';
 import LinearGradient from 'react-native-linear-gradient';
-import MembInfo from '../screens/MembInfo';
 import ApprovedUtil from '../screens/ApprovedUtil';
 import PostedUtil from '../screens/PostedUtil';
+import ApprovedUtilModal from '../screens/ApprovedUtilModal';
+// import PostedUtil from "../screens/PostedUtil"
+import MembInfo from '../screens/MembInfo';
+// import ApprovedUtil from "../screens/ApprovedUtil"
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -39,6 +42,7 @@ AppStack = createStackNavigator({
         paddingTop: 20,
       },
       headerTintColor: '#fff',
+      title: 'Login',
     },
   },
   RegisterPage: {
@@ -53,6 +57,7 @@ AppStack = createStackNavigator({
         paddingTop: 20,
       },
       headerTintColor: '#fff',
+      title: 'Sign Up',
     },
   },
   ForgotPasswordPage: {
@@ -160,6 +165,19 @@ AppStack = createStackNavigator({
         paddingTop: 20,
       },
       headerTintColor: '#fff',
+      header: null,
+    },
+  },
+  MembInfo: {
+    screen: MembInfo,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  ApprovedUtilModal: {
+    screen: ApprovedUtilModal,
+    navigationOptions: {
+      header: null,
     },
   },
   DoctorSearchNavigation: {

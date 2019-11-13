@@ -26,10 +26,9 @@ import {
   Badge,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage'
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
-const membacct = ''
-const membinfo = require('../../membinfo.json')
 export default class Members extends React.Component {
   render() {
     return (
