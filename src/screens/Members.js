@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from 'react-navigation-tabs'
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacct = ''
-const membinfo = require('../../membinfo.json')
+// const membinfo = require('../../membinfo.json')
 export default class Members extends React.Component {
   constructor(props) {
     super(props)

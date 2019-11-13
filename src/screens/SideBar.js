@@ -57,7 +57,7 @@ export default class SideBar extends React.Component {
                     <Body style={styles.listLabel}>
                         <Text style={styles.logoutText}>Logout</Text>
                     </Body>
-                </ListItem>
+                </ListItem> */}
             </Container>
 
         );

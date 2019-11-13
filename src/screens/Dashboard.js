@@ -102,7 +102,7 @@ export default class Dashboard extends React.Component {
                             </View>
                             <View style={styles.cardItemStyle}>
                                 <Card style={styles.cardStyle}>
-                                    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('IntellimapPage')}>
+                                    <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('Intellimap')}>
                                         <CardItem style={styles.cardStyle}>
                                             <Left>
                                                 <Body>

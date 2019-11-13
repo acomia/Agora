@@ -1,19 +1,22 @@
 import { createAppContainer } from 'react-navigation';
 import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs'
+// import { createBottomTabNavigator } from 'react-navigation-tabs';
 import Login from '../screens/Login';
 import OnBoarding from '../screens/OnBoarding';
 import Register from '../screens/Register';
 import ForgotPassword from '../screens/ForgotPassword';
-import Dashboard from '../screens/Dashboard'
-import Profile from '../screens/Profile'
+import Dashboard from '../screens/Dashboard';
+import Profile from '../screens/Profile';
 import DrawerNavigator from "../routes/DrawerNavigator";
 import Members from "../screens/Members";
 import MemberInformation from "../screens/MemberInformation";
 import ApprovedUtilModal from "../screens/ApprovedUtilModal";
 // import PostedUtil from "../screens/PostedUtil"
 import MembInfo from "../screens/MembInfo";
+import Intellimap from "../screens/Intellimap";
 // import ApprovedUtil from "../screens/ApprovedUtil"
+import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
+
 
 
 
@@ -93,7 +96,21 @@ AppStack = createStackNavigator(
                 header: null,
             }
         },
-    
+        IntellimapPage: {
+            screen: Intellimap,
+            navigationOptions: {
+                header: null,
+            }
+        },
+        
+        DoctorSearchNavigation: {
+        screen:DoctorSearchNavigation,
+        navigationOptions: {
+        header:null,
+            },
+        },
+
+
     
   
 })
