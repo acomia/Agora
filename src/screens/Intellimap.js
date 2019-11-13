@@ -2,14 +2,14 @@ import React, { PureComponent } from 'react'
 import { StyleSheet, View, Dimensions, PermissionsAndroid, Alert, Image, Animated, ListView, ScrollView, TouchableOpacity } from 'react-native'
 import { Container, Header, Text, Icon, Item, Input, ListItem, Segment, Button, Left, Body, Title, Right, Content, List, Label } from 'native-base'
 import MapView, { Marker, AnimatedRegion, PROVIDER_GOOGLE } from 'react-native-maps'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import Geolocation from 'react-native-geolocation-service'
 import getDirections from 'react-native-google-maps-directions'
 import LinearGradient from 'react-native-linear-gradient'
 import _ from 'lodash'
 import Spinner from 'react-native-spinkit'
-import isEqual from 'lodash.isequal'
-import Geocoder from 'react-native-geocoding'
+// import isEqual from 'lodash.isequal'
+// import Geocoder from 'react-native-geocoding'
 
 const offices = require('../../offices.json')
 
