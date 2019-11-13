@@ -1,9 +1,6 @@
 import React from 'react';
 import {
   StyleSheet,
-  View,
-  Dimensions,
-  Image,
   TouchableNativeFeedback,
   ImageBackground,
 } from 'react-native';
@@ -13,13 +10,9 @@ import {
   Text,
   Icon,
   Left,
-  Right,
   Body,
   ListItem,
-  Thumbnail,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
-import {DrawerActions} from 'react-navigation-drawer';
 
 export default class SideBar extends React.Component {
   render() {
@@ -43,39 +36,42 @@ export default class SideBar extends React.Component {
             </Body>
           </ListItem>
         </TouchableNativeFeedback>
-        <ListItem icon style={styles.listItemStyle}>
-          <Left>
-            <Icon type="MaterialCommunityIcons" name="map-search-outline" />
-          </Left>
-          <Body style={styles.listLabel}>
-            <Text>IntelliMap</Text>
-          </Body>
-        </ListItem>
-        <ListItem icon style={styles.listItemStyle}>
-          <Left style={styles.listLabel}>
-            <Icon
-              type="MaterialCommunityIcons"
-              active
-              name="account-search-outline"
-            />
-          </Left>
-          <Body style={styles.listLabel}>
-            <Text>Find a Medical Provider</Text>
-          </Body>
-        </ListItem>
-        <View style={styles.divider} />
-        <ListItem icon style={styles.listItemStyle}>
-          <Left style={styles.listLabel}>
-            <Icon
-              type="MaterialCommunityIcons"
-              name="arrow-collapse-left"
-              style={styles.logoutText}
-            />
-          </Left>
-          <Body style={styles.listLabel}>
-            <Text style={styles.logoutText}>Logout</Text>
-          </Body>
-        </ListItem>
+        <TouchableNativeFeedback
+          onPress={() => this.props.navigation.navigate('IntellimapPage')}>
+          <ListItem icon style={styles.listItemStyle}>
+            <Left>
+              <Icon active name="md-map" />
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text>IntelliMap</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        {/* <ListItem icon style={styles.listItemStyle}>
+                    <Left>
+                        <Icon active name="ios-paper" />
+                    </Left>
+                    <Body style={styles.listLabel}>
+                        <Text>Request ERCS1</Text>
+                    </Body>
+                </ListItem>
+                <ListItem icon style={styles.listItemStyle}>
+                    <Left style={styles.listLabel}>
+                        <Icon type="MaterialCommunityIcons" active name="account-search-outline" />
+                    </Left>
+                    <Body style={styles.listLabel}>
+                        <Text>Find a Medical Provider</Text>
+                    </Body>
+                </ListItem>
+                <View style={styles.divider} />
+                <ListItem icon style={styles.listItemStyle}>
+                    <Left style={styles.listLabel}>
+                        <Icon type="MaterialCommunityIcons" name='arrow-collapse-left' style={styles.logoutText} />
+                    </Left>
+                    <Body style={styles.listLabel}>
+                        <Text style={styles.logoutText}>Logout</Text>
+                    </Body>
+        </ListItem>*/}
       </Container>
     );
   }

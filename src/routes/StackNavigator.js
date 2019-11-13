@@ -7,11 +7,12 @@ import ForgotPassword from '../screens/ForgotPassword';
 import Dashboard from '../screens/Dashboard';
 import Profile from '../screens/Profile';
 import DrawerNavigator from '../routes/DrawerNavigator';
-import Intellimap from '../screens/Intellimap';
 import Members from '../screens/Members';
 import MemberInformation from '../screens/MemberInformation';
-import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
-import Medgate from '../screens/Medgate';
+import ApprovedUtilModal from '../screens/ApprovedUtilModal';
+// import PostedUtil from "../screens/PostedUtil"
+import MembInfo from '../screens/MembInfo';
+// import ApprovedUtil from "../screens/ApprovedUtil"
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -23,13 +24,13 @@ AppStack = createStackNavigator({
   LoginPage: {
     screen: Login,
     navigationOptions: {
-      title: 'Sign In',
+      title: 'Login',
     },
   },
   RegisterPage: {
     screen: Register,
     navigationOptions: {
-      title: 'Create an Account',
+      title: 'Sign Up',
     },
   },
   ForgotPasswordPage: {
@@ -63,12 +64,6 @@ AppStack = createStackNavigator({
       header: null,
     },
   },
-  IntellimapPage: {
-    screen: Intellimap,
-    navigationOptions: {
-      header: null,
-    },
-  },
   MembersPage: {
     screen: Members,
     navigationOptions: {
@@ -81,24 +76,16 @@ AppStack = createStackNavigator({
       header: null,
     },
   },
-  DoctorSearchNavigation: {
-    screen: DoctorSearchNavigation,
+  MembInfo: {
+    screen: MembInfo,
     navigationOptions: {
       header: null,
     },
   },
-  MedgatePage: {
-    screen: Medgate,
+  ApprovedUtilModal: {
+    screen: ApprovedUtilModal,
     navigationOptions: {
-      title: '',
-      headerStyle: {
-        backgroundColor: '#258bf5',
-        elevation: 0,
-        shadowOpacity: 0,
-        borderBottomWidth: 0,
-        paddingTop: 20,
-      },
-      headerTintColor: '#fff',
+      header: null,
     },
   },
 });

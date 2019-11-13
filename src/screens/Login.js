@@ -10,6 +10,10 @@ import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 
 export default class Login extends React.Component {
+  constructor() {
+    super();
+    global.loginToken = '';
+  }
   state = {
     username: '',
     password: '',
@@ -43,6 +47,7 @@ export default class Login extends React.Component {
                 <Item floatingLabel>
                   <Label>Password</Label>
                   <Input
+                    secureTextEntry
                     style={styles.labelStyle}
                     onChangeText={password => this.setState({password})}
                   />
@@ -60,7 +65,7 @@ export default class Login extends React.Component {
                 block
                 success
                 style={{marginTop: 50}}
-                onPress={() => this.props.navigation.navigate('Dashboard')}>
+                onPress={() => this.props.navigation.navigate('DashboardPage')}>
                 <Text> Login </Text>
               </Button>
             </View>
@@ -102,6 +107,37 @@ export default class Login extends React.Component {
       .then(response => {
         response.json().then(data => {
           alert(JSON.stringify(data.message));
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+  }
+
+  _postUser() {
+    fetch(
+      'http://www.intellicare.com.ph/uat/webservice/thousandminds/api/login',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify({
+          username: this.state.username,
+          password: this.state.password,
+        }),
+        // "username":"digitalxform",
+        // "password":"th2p@ssw0rd"
+      },
+    )
+      .then(response => {
+        response.json().then(data => {
+          if (data.message === 'Success!') {
+            global.loginToken = data.response.token;
+            this.props.navigation.navigate('DashboardPage');
+          } else {
+            alert('Username not found!');
+          }
         });
       })
       .catch(error => {
