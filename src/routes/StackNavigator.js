@@ -1,5 +1,8 @@
-import { createAppContainer } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
+import React from 'react';
+import {StyleSheet, StatusBar} from 'react-native';
+import {Icon, Header} from 'native-base';
+import {createAppContainer} from 'react-navigation';
+import {createStackNavigator} from 'react-navigation-stack';
 import Login from '../screens/Login';
 import OnBoarding from '../screens/OnBoarding';
 import Register from '../screens/Register';
@@ -12,6 +15,10 @@ import Members from '../screens/Members';
 import MemberInformation from '../screens/MemberInformation';
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
 import Medgate from '../screens/Medgate';
+import LinearGradient from 'react-native-linear-gradient';
+import MembInfo from '../screens/MembInfo';
+import ApprovedUtil from '../screens/ApprovedUtil';
+import PostedUtil from '../screens/PostedUtil';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -23,13 +30,29 @@ AppStack = createStackNavigator({
   LoginPage: {
     screen: Login,
     navigationOptions: {
-      title: 'Sign In',
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
     },
   },
   RegisterPage: {
     screen: Register,
     navigationOptions: {
-      title: 'Create an Account',
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
     },
   },
   ForgotPasswordPage: {
@@ -53,6 +76,7 @@ AppStack = createStackNavigator({
         elevation: 0,
         shadowOpacity: 0,
         borderBottomWidth: 0,
+        paddingTop: 20,
       },
       headerTintColor: '#fff',
     },
@@ -60,7 +84,7 @@ AppStack = createStackNavigator({
   Dashboard: {
     screen: DrawerNavigator,
     navigationOptions: {
-      header: null,
+      header: <StatusBar translucent backgroundColor="transparent" />,
     },
   },
   IntellimapPage: {
@@ -72,13 +96,70 @@ AppStack = createStackNavigator({
   MembersPage: {
     screen: Members,
     navigationOptions: {
-      title: 'Account Profiles',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
     },
   },
   MemberInfoPage: {
     screen: MemberInformation,
     navigationOptions: {
-      header: null,
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  MembInfoPage: {
+    screen: MembInfo,
+    navigationOptions: {
+      title: 'Member information',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ApprovedUtilPage: {
+    screen: ApprovedUtil,
+    navigationOptions: {
+      title: 'Approved Utilization',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  PostedUtilPage: {
+    screen: PostedUtil,
+    navigationOptions: {
+      title: 'Posted Utilization',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
     },
   },
   DoctorSearchNavigation: {
@@ -99,8 +180,14 @@ AppStack = createStackNavigator({
         paddingTop: 20,
       },
       headerTintColor: '#fff',
-    }
-  }
+    },
+  },
 });
 
 export default createAppContainer(AppStack);
+
+const styles = StyleSheet.create({
+  backIcon: {
+    padding: 10,
+  },
+});

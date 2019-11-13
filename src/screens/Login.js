@@ -1,7 +1,8 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, ImageBackground } from 'react-native'
-import { Container, Button, Text, Form, Item, Input, Label } from 'native-base'
+import { StyleSheet, View, Dimensions, Image, ImageBackground, StatusBar } from 'react-native'
+import { Container, Button, Text, Form, Item, Input, Label, Header, Left, Body, Right, Icon, Title } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
+import LinearGradient from 'react-native-linear-gradient';
 
 
 
@@ -13,9 +14,13 @@ export default class Login extends React.Component {
     }
     render() {
         return (
-            <ScrollView>
-                <Container>
-                    <ImageBackground source={require('../../assets/images/white-with-skin.jpg')} style={styles.backgroundImage}>
+            <Container>
+                <StatusBar translucent backgroundColor="transparent" />
+                <ScrollView>
+                    <View style={styles.header}>
+                        <Text style={styles.headerTitle}>Sign in</Text>
+                    </View>
+                    <View style={styles.contentStyle}>
                         <View style={styles.companyLogo}>
                             <Image source={require('../../assets/images/intellicarelogo.png')} style={styles.imageStyle} resizeMode='contain' />
                             <Label style={styles.fullertonLabel}>A Member of Fullerton Health</Label>
@@ -35,15 +40,12 @@ export default class Login extends React.Component {
                                 Forgot Password?
                             </Text>
                             <Button rounded block success style={{ marginTop: 50 }} onPress={() => this.props.navigation.navigate('Dashboard')}>
-                                <Text> Login </Text>
+                                <Text>Login</Text>
                             </Button>
                         </View>
-                        <View style={styles.footer}>
-                            <Text style={styles.footerText}>By logging in to this application, I have read and understood the Terms and Conditions</Text>
-                        </View>
-                    </ImageBackground>
-                </Container>
-            </ScrollView>
+                    </View>
+                </ScrollView>
+            </Container>
         );
     };
     _getRequest() {
@@ -123,46 +125,54 @@ const styles = StyleSheet.create(
     {
         containerStyle: {
             flex: 1,
+
         },
-        backgroundImage: {
+        header: {
             flex: 1,
-            resizeMode: "stretch",
+            height: 100,
+            backgroundColor: "#5fb650",
+            paddingHorizontal: 30,
         },
-        headerBackground: {
-            backgroundColor: '#fff',
+        headerTitle: {
+            fontSize: 30,
+            fontWeight: "bold",
+            color: "#fff"
         },
-        title: {
-            fontWeight: "bold"
+        contentStyle: {
+            paddingVertical: 50,
+            marginTop: -45,
+            backgroundColor: "#fff",
+            borderTopStartRadius: 50,
+            borderTopEndRadius: 50,
+            justifyContent: "center",
+            shadowColor: '#2d2d2d',
+            shadowOffset: { width: 1, height: 5 },
+            shadowOpacity: 0.10,
+            shadowRadius: 20,
+            elevation: 5,
+            borderWidth: 0,
         },
         loginForm: {
-            flex: 4,
             padding: 10,
             paddingHorizontal: 30,
         },
         companyLogo: {
-            flex: 2,
             padding: 20,
             justifyContent: "center"
         },
         imageStyle: {
-            flex: 1,
-            height: '10%',
-            width: width * 0.65,
+            height: height * 0.10,
+            width: width * 0.50,
             alignSelf: "center",
         },
         fullertonLabel: {
             color: '#273c75',
             fontWeight: "bold",
-            fontSize: 15,
-            marginTop: -75,
+            fontSize: 12,
             alignSelf: "center"
         },
         labelStyle: {
             marginBottom: 5,
-        },
-        footer: {
-            flex: 1,
-            paddingBottom: 10,
         },
         footerText: {
             textAlign: "center",
@@ -175,7 +185,7 @@ const styles = StyleSheet.create(
         },
         ForgotPasswordLink: {
             color: '#3498db',
-            fontSize: 16,
+            fontSize: 12,
             alignSelf: "flex-end",
             marginTop: 10
         }
