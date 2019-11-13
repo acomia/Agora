@@ -23,12 +23,22 @@ export default class SideBar extends React.Component {
                         </Body>
                     </ListItem>
                 </TouchableNativeFeedback>
-                <ListItem icon style={styles.listItemStyle}>
+                <TouchableNativeFeedback onPress={() => this.props.navigation.navigate('IntellimapPage')}>
+                    <ListItem icon style={styles.listItemStyle}>
+                        <Left>
+                            <Icon active name="md-map" />
+                        </Left>
+                        <Body style={styles.listLabel}>
+                            <Text>IntelliMap</Text>
+                        </Body>
+                    </ListItem>
+                </TouchableNativeFeedback>
+                {/* <ListItem icon style={styles.listItemStyle}>
                     <Left>
-                        <Icon type="MaterialCommunityIcons" name='map-search-outline' />
+                        <Icon active name="ios-paper" />
                     </Left>
                     <Body style={styles.listLabel}>
-                        <Text>IntelliMap</Text>
+                        <Text>Request ERCS1</Text>
                     </Body>
                 </ListItem>
                 <ListItem icon style={styles.listItemStyle}>

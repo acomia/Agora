@@ -251,8 +251,8 @@ const styles = StyleSheet.create(
                 <Button rounded success style={{ flex: 1, marginHorizontal: 10 }} onPress={() => this.props.navigation.navigate('LoginPage')}>
                   <Text> Login </Text>
                 </Button>
-                <Button rounded bordered light style={{ backgroundColor: "#fff", flex: 1, marginHorizontal: 10 }}>
-                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('RegisterPage')}> Sign Up </Text>
+                <Button rounded bordered light style={{backgroundColor:"#fff", flex: 1, marginHorizontal: 10 }}>
+                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('IntellimapPage')}> Sign Up </Text>
                 </Button>
               </View>
             </View>

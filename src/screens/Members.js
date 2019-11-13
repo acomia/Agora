@@ -27,6 +27,9 @@ import {
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 
+const MEMB_ACCOUNTNO = 'memb_accountno';
+const membacct = ''
+const membinfo = require('../../membinfo.json')
 export default class Members extends React.Component {
   render() {
     return (
