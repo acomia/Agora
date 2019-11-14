@@ -3,6 +3,7 @@ import {Text, Input, Form, Content, Button} from 'native-base';
 import {View, StyleSheet, Dimensions, StatusBar} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from 'react-navigation-hooks';
+import {ActivityIndicator} from 'react-native-paper';
 
 export default function DoctorSearchLandingPage() {
   const [searchQuery, setSearchQuery] = useState({
@@ -12,13 +13,40 @@ export default function DoctorSearchLandingPage() {
     location: '',
   });
   const [btnSrchDisabled, setBtnSrchDisabled] = useState(true);
-  const [token, setToken] = useState('05222132-B3FE-E911-80BC-00155D006102');
+  const [token, setToken] = useState('');
 
   const {navigate} = useNavigation();
 
   useEffect(() => {
+    fetchToken();
     handleSrcBtnDisabled();
   });
+
+  async function fetchToken() {
+    try {
+      let response = await fetch(
+        'http://intellicare.com.ph/webservice/thousandminds/api/login',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: 'digitalxform',
+            password: 'th2p@ssw0rd',
+          }),
+        },
+      );
+
+      let responseJson = await response.json();
+      let tokenVal = responseJson.response.token;
+
+      setToken(tokenVal);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   function handleSrcBtnDisabled() {
     let counter = 0;
@@ -121,7 +149,11 @@ export default function DoctorSearchLandingPage() {
                 style={styles.buttonSearch}
                 disabled={btnSrchDisabled}
                 onPress={handleSearch}>
-                <Text style={{fontSize: 16}}>Search</Text>
+                {token === '' ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text style={{fontSize: 16}}>Search</Text>
+                )}
               </Button>
             </Form>
           </Content>
