@@ -49,7 +49,7 @@ export default class OnBoarding extends React.Component {
                   <Body>
                     <Icon type="SimpleLineIcons" name="map" style={styles.cardIconStyleIntellimap} />
                     <Label style={styles.cardContent}>Locate our Accreditted Facilities.</Label>
-                    <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('IntellimapPage')}>
+                    <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('Intellimap')}>
                       <Text style={styles.cardButtonText}>Intellimap</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
                     </Button>
@@ -252,7 +252,7 @@ const styles = StyleSheet.create(
                   <Text> Login </Text>
                 </Button>
                 <Button rounded bordered light style={{backgroundColor:"#fff", flex: 1, marginHorizontal: 10 }}>
-                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('IntellimapPage')}> Sign Up </Text>
+                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('Intellimap')}> Sign Up </Text>
                 </Button>
               </View>
             </View>
