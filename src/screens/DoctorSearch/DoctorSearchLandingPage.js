@@ -14,6 +14,7 @@ export default function DoctorSearchLandingPage() {
   });
   const [btnSrchDisabled, setBtnSrchDisabled] = useState(true);
   const [token, setToken] = useState('');
+  const [checkConnection, setCheckConnection] = useState(true);
 
   const {navigate} = useNavigation();
 
@@ -25,7 +26,7 @@ export default function DoctorSearchLandingPage() {
   async function fetchToken() {
     try {
       let response = await fetch(
-        'http://intellicare.com.ph/webservice/thousandminds/api/login',
+        'https://intellicare.com.ph/webservice/thousandminds/api/login',
         {
           method: 'POST',
           headers: {
@@ -43,9 +44,22 @@ export default function DoctorSearchLandingPage() {
       let tokenVal = responseJson.response.token;
 
       setToken(tokenVal);
+      setCheckConnection(false);
     } catch (error) {
-      console.log(error);
+      alert('Network Failed')
+      setCheckConnection(false);
     }
+  }
+
+  function ConnectionValidity() {
+    if (checkConnection)
+      return (
+        <View>
+          <Text style={{fontSize: 10}}>Checking Connection...</Text>
+          <ActivityIndicator size="small" color="white" />
+        </View>
+      );
+    else return <Text style={{fontSize: 16}}>Search</Text>;
   }
 
   function handleSrcBtnDisabled() {
@@ -53,7 +67,8 @@ export default function DoctorSearchLandingPage() {
 
     for (let key in searchQuery) if (searchQuery[key].trim() === '') counter++;
 
-    counter === 4 ? setBtnSrchDisabled(true) : setBtnSrchDisabled(false);
+    if (counter === 4 || token === '') setBtnSrchDisabled(true);
+    else setBtnSrchDisabled(false);
   }
 
   function handleOnChangeDoctorName(e) {
@@ -149,11 +164,7 @@ export default function DoctorSearchLandingPage() {
                 style={styles.buttonSearch}
                 disabled={btnSrchDisabled}
                 onPress={handleSearch}>
-                {token === '' ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <Text style={{fontSize: 16}}>Search</Text>
-                )}
+                {ConnectionValidity()}
               </Button>
             </Form>
           </Content>
