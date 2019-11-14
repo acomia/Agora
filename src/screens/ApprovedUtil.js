@@ -1,10 +1,35 @@
-import React from 'react'
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, Modal, style, TouchableHighlight } from 'react-native'
-import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base'
-import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable } from 'react-native-paper'
-import AsyncStorage from '@react-native-community/async-storage'
-import Spinner from 'react-native-spinkit'
+import React from 'react';
+import {
+  StyleSheet,
+  View,
+  Dimensions,
+  Image,
+  TouchableOpacity,
+  FlatList,
+  Modal,
+  style,
+  TouchableHighlight,
+} from 'react-native';
+import {
+  Container,
+  Text,
+  Header,
+  Left,
+  Right,
+  Body,
+  Title,
+  Footer,
+  Content,
+  Item,
+  Label,
+  Icon,
+  Button,
+  List,
+} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
+import {DataTable} from 'react-native-paper';
+import AsyncStorage from '@react-native-community/async-storage';
+import Spinner from 'react-native-spinkit';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacctUtil = '';
 
@@ -151,127 +176,125 @@ export default class ApprovedUtil extends React.Component {
     return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
   };
 
-    render() {
-        //  const { data } = this.state
-        // { console.log('member', this.state) }
-        // const totalAmount = utilDataSource.reduce((AmountTotal, total) => AmountTotal + total.amount, 0);
-        const { spinnerStyle, spinnerTextStyle } = styles
-        if (this.state.isLoading) {
-            return (
-                <View style={spinnerStyle}>
-                    <Spinner
-                        color={'green'}
-                        size={50}
-                        type={'ChasingDots'}
-                    />
-                    <Text style={spinnerTextStyle}>Fetching data...</Text>
-                </View>
-            )
-        }
-        return (
-            <Container>
-                <Header style={styles.headerStyle}>
-                    <Left>
-                        <Button transparent onPress={() => this.props.navigation.navigate('MembInfo')}>
-                            <Icon name="arrow-back" style={{ color: "#fff" }} />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>Approved Utilization</Title>
-                    </Body>
-                    <Right />
-                </Header>
-                <DataTable>
-                    <DataTable.Header>
-                        <DataTable.Title>RCS No.</DataTable.Title>
-                        <DataTable.Title>Date</DataTable.Title>
-                        <DataTable.Title numeric>Amount</DataTable.Title>
-                    </DataTable.Header>
-                </DataTable>
-                <FlatList
-                    data={this.state.utilDataSource}
-                    renderItem={this.renderItem}
-                    //   keyExtractor={(item, index) => amount}
-                    ItemSeparatorComponent={this.renderSeparator}
-                />
-                <Footer style={styles.footerStyle}>
-                    <Content>
-                        <Item style={styles.footeritemStyle}>
-                            <Left>
-                                <Text style={styles.footeritemLabel}>Total Approved Amount:</Text>
-                            </Left>
-                            <Body style={styles.footeritemBody}>
-                                <Label style={styles.footerlabelTotalAmount}>0.00</Label>
-                            </Body>
-                        </Item>
-                    </Content>
-                </Footer>
-            </Container>
-        );
+  render() {
+    //  const { data } = this.state
+    // { console.log('member', this.state) }
+    // const totalAmount = utilDataSource.reduce((AmountTotal, total) => AmountTotal + total.amount, 0);
+    const {spinnerStyle, spinnerTextStyle} = styles;
+    if (this.state.isLoading) {
+      return (
+        <View style={spinnerStyle}>
+          <Spinner color={'green'} size={50} type={'ChasingDots'} />
+          <Text style={spinnerTextStyle}>Fetching data...</Text>
+        </View>
+      );
     }
+    return (
+      <Container>
+        <Header style={styles.headerStyle}>
+          <Left>
+            <Button
+              transparent
+              onPress={() => this.props.navigation.navigate('MembInfo')}>
+              <Icon name="arrow-back" style={{color: '#fff'}} />
+            </Button>
+          </Left>
+          <Body>
+            <Title>Approved Utilization</Title>
+          </Body>
+          <Right />
+        </Header>
+        <DataTable>
+          <DataTable.Header>
+            <DataTable.Title>RCS No.</DataTable.Title>
+            <DataTable.Title>Date</DataTable.Title>
+            <DataTable.Title numeric>Amount</DataTable.Title>
+          </DataTable.Header>
+        </DataTable>
+        <FlatList
+          data={this.state.utilDataSource}
+          renderItem={this.renderItem}
+          //   keyExtractor={(item, index) => amount}
+          ItemSeparatorComponent={this.renderSeparator}
+        />
+        <Footer style={styles.footerStyle}>
+          <Content>
+            <Item style={styles.footeritemStyle}>
+              <Left>
+                <Text style={styles.footeritemLabel}>
+                  Total Approved Amount:
+                </Text>
+              </Left>
+              <Body style={styles.footeritemBody}>
+                <Label style={styles.footerlabelTotalAmount}>0.00</Label>
+              </Body>
+            </Item>
+          </Content>
+        </Footer>
+      </Container>
+    );
+  }
 }
 
-const styles = StyleSheet.create(
-    {
-        headerStyle: {
-            backgroundColor: "#5fb650",
-        },
-        headerText: {
-            color: "#fff",
-            fontSize: 20,
-        },
-        contentDataTable: {
-            justifyContent: "center",
-            alignContent: "center"
-        },
-        footerStyle: {
-            backgroundColor: "#fff"
-        },
-        footerContent: {
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center"
-        },
-        footeritemStyle: {
-            padding: 20,
-        },
-        footeritemLabel: {
-            color: "#2d2d2d",
-            fontWeight: "bold",
-        },
-        footeritemInfo: {
-            color: "#b2bec3",
-            textTransform: "uppercase"
-        },
-        footeritemBody: {
-            alignItems: 'flex-end',
-        },
-        footerlabelTotalAmount: {
-            color: "green",
-            fontWeight: "bold",
-        },
-        listStyle: {
-            color: "green",
-        },
-        modalContainer: {
-            flex: 1,
-            justifyContent: 'center',
-            backgroundColor: 'white',
-        },
-        innerContainer: {
-            alignItems: 'center',
-        },
-        spinnerStyle: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            opacity: 0.2,
-            backgroundColor: 'black',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-        }
-    }
-)
+const styles = StyleSheet.create({
+  headerStyle: {
+    backgroundColor: '#5fb650',
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 20,
+  },
+  contentDataTable: {
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  footerStyle: {
+    backgroundColor: '#fff',
+  },
+  footerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footeritemStyle: {
+    padding: 20,
+  },
+  footeritemLabel: {
+    color: '#2d2d2d',
+    fontWeight: 'bold',
+  },
+  footeritemInfo: {
+    color: '#b2bec3',
+    textTransform: 'uppercase',
+  },
+  footeritemBody: {
+    alignItems: 'flex-end',
+  },
+  footerlabelTotalAmount: {
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  listStyle: {
+    color: 'green',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  innerContainer: {
+    alignItems: 'center',
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    opacity: 0.2,
+    backgroundColor: 'black',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+});

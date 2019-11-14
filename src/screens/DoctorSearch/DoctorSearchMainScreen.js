@@ -28,7 +28,7 @@ export default function DoctorSearchMainScreen() {
   async function fetchDoctors(signal) {
     try {
       let response = await fetch(
-        `http://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
+        `http://203.160.190.52/webservice/thousandminds/api/searchprovider/${token}`,
         {
           method: 'POST',
           signal: signal,

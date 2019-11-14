@@ -4,15 +4,7 @@ import {
   TouchableNativeFeedback,
   ImageBackground,
 } from 'react-native';
-import {
-  Container,
-  Header,
-  Text,
-  Icon,
-  Left,
-  Body,
-  ListItem,
-} from 'native-base';
+import {Container, Header, Text, Icon, Left, Body, ListItem} from 'native-base';
 
 export default class SideBar extends React.Component {
   render() {
@@ -72,10 +64,9 @@ export default class SideBar extends React.Component {
                         <Text style={styles.logoutText}>Logout</Text>
                     </Body>
                 </ListItem> */}
-            </Container>
-
-        );
-    };
+      </Container>
+    );
+  }
 }
 
 const styles = StyleSheet.create({
