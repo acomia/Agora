@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image } from 'react-native'
+import { StyleSheet, View, Dimensions, Image, StatusBar } from 'react-native'
 import { Container, Header, Content, Button, Text, Icon, Left, Right, Body, Title, Form, Item, Input, Label, Picker, DatePicker } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 import {StackActions, NavigationActions} from 'react-navigation'
@@ -12,11 +12,6 @@ const resetAction = StackActions.reset({
       NavigationActions.navigate({ routeName: 'OnBoarding' }),
     ],
   });
-
-
-
-
-
 
 export default class Login extends React.Component {
 
@@ -39,6 +34,7 @@ export default class Login extends React.Component {
     render() {
         return (
             <Container>
+                <StatusBar translucent backgroundColor="transparent" />
                 <ScrollView>
                     <View style={styles.viewForm}>
                         <Text style={styles.headerText}>Personal Information</Text>
@@ -118,6 +114,41 @@ export default class Login extends React.Component {
                                         <Picker.Item label="Single" value="single" />
                                         <Picker.Item label="Married" value="married" />
                                     </Picker>
+                                </Item>
+                                <Item stackedLabel style={styles.formStyle} style={{ alignItems: "flex-start" }}>
+                                    <Label>Date of birth</Label>
+                                    <DatePicker
+                                        defaultDate={new Date(2018, 4, 4)} style={{ alignSelf: Left }}
+                                        minimumDate={new Date(2018, 1, 1)}
+                                        maximumDate={new Date(2018, 12, 31)}
+                                        locale={"en"}
+                                        timeZoneOffsetInMinutes={undefined}
+                                        modalTransparent={true}
+                                        animationType={"fade"}
+                                        androidMode={"default"}
+                                        placeHolderText="Select date"
+                                        textStyle={{ color: "#2d2d2d" }}
+                                        placeHolderTextStyle={{ color: "#bdc3c7" }}
+                                        onDateChange={this.setDate}
+                                        disabled={false}
+                                    />
+                                </Item>
+                                <Item stackedLabel style={styles.formStyle} style={{ marginTop: 10 }}>
+                                    <Label>Civil Status</Label>
+                                    <Item picker>
+                                        <Picker
+                                            mode="dropdown"
+                                            iosIcon={<Icon name="arrow-down" />}
+                                            style={{ width: undefined }}
+                                            placeholder="Select Gender"
+                                            placeholderStyle={{ color: "#bdc3c7" }}
+                                            placeholderIconColor="#007aff"
+                                            selectedValue={this.state.selected2}
+                                            onValueChange={this.onValueChange2.bind(this)}>
+                                            <Picker.Item label="Single" value="single" />
+                                            <Picker.Item label="Married" value="married" />
+                                        </Picker>
+                                    </Item>
                                 </Item>
                             </Item>
                         </View>
@@ -279,6 +310,31 @@ const styles = StyleSheet.create(
         headerBackground: {
             backgroundColor: '#fff',
         },
+        header: {
+            flex: 1,
+            height: 100,
+            backgroundColor: "#5fb650",
+            paddingHorizontal: 30,
+        },
+        headerTitle: {
+            fontSize: 30,
+            fontWeight: "bold",
+            color: "#fff"
+        },
+        contentStyle: {
+            paddingVertical: 50,
+            marginTop: -45,
+            backgroundColor: "#fff",
+            borderTopStartRadius: 50,
+            borderTopEndRadius: 50,
+            justifyContent: "center",
+            shadowColor: '#2d2d2d',
+            shadowOffset: { width: 1, height: 5 },
+            shadowOpacity: 0.10,
+            shadowRadius: 20,
+            elevation: 5,
+            borderWidth: 0,
+        },
         title: {
             color: "#2d2d2d",
             fontWeight: "bold"
@@ -299,7 +355,7 @@ const styles = StyleSheet.create(
         headerText: {
             color: "#5fb650",
             marginVertical: 20,
-            fontSize: 30,
+            fontSize: 24,
             fontWeight: "bold",
         },
         viewButtonSignUp: {

@@ -3,6 +3,7 @@ import {createDrawerNavigator} from 'react-navigation-drawer';
 import SideBar from '../screens/SideBar';
 import Dashboard from '../screens/Dashboard';
 import Members from '../screens/Members';
+import {StatusBar} from 'react-native';
 
 const DrawerNavigator = createDrawerNavigator(
   {

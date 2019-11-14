@@ -1,15 +1,15 @@
 import React, { PureComponent } from 'react'
-import { StyleSheet, View, Dimensions, PermissionsAndroid, Alert, Image, Animated, ListView, ScrollView, TouchableOpacity } from 'react-native'
+import { StyleSheet, View, Dimensions, PermissionsAndroid, Alert, Image, Animated, ListView, ScrollView, TouchableOpacity, StatusBar } from 'react-native'
 import { Container, Header, Text, Icon, Item, Input, ListItem, Segment, Button, Left, Body, Title, Right, Content, List, Label } from 'native-base'
 import MapView, { Marker, AnimatedRegion, PROVIDER_GOOGLE } from 'react-native-maps'
-import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
+// import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete'
 import Geolocation from 'react-native-geolocation-service'
 import getDirections from 'react-native-google-maps-directions'
 import LinearGradient from 'react-native-linear-gradient'
 import _ from 'lodash'
 import Spinner from 'react-native-spinkit'
-import isEqual from 'lodash.isequal'
-import Geocoder from 'react-native-geocoding'
+// import isEqual from 'lodash.isequal'
+// import Geocoder from 'react-native-geocoding'
 
 const offices = require('../../offices.json')
 
@@ -206,17 +206,17 @@ export default class Intellimap extends PureComponent {
     renderHeaderMapButton() {
         const { hospitals, clinics } = this.state
         return (
-            <View style={{ height: 24 }}>
+            <View style={{paddingVertical: 15, height: 70}}>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-                    <View style={{ flexDirection: 'row', height: 30, justifyContent: 'center' }}>
+                    <View style={{ flexDirection: 'row'}}>
                         <TouchableOpacity
                             disabled={this.state.hospitalPressed ? true : false}
                             style={!this.state.hospitalPressed ? styles.buttonStyle : styles.disabledButtonStyle}
                             onPress={() => this.onHospitalButtonPress(hospitals)}>
                             <Image
                                 source={require('../../assets/images/location-red.png')}
-                                style={{ width: 18, height: 18, top: 1 }} />
-                            <Text style={styles.textStyle}>Accredited Hospital</Text>
+                                style={{ width: 18, height: 18, marginTop: 5 }} />
+                            <Text style={styles.textStyle}>Accredited Hospitals</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={this.state.clinicPressed ? true : false}
@@ -224,8 +224,8 @@ export default class Intellimap extends PureComponent {
                             onPress={() => this.onClinicButtonPress(clinics)}>
                             <Image
                                 source={require('../../assets/images/location-blue.png')}
-                                style={{ width: 18, height: 18, top: 1 }} />
-                            <Text style={styles.textStyle}>Accredited Clinic</Text>
+                                style={{ width: 18, height: 18, marginTop: 5 }} />
+                            <Text style={styles.textStyle}>Accredited Clinics</Text>
                         </TouchableOpacity>
                         <TouchableOpacity
                             disabled={this.state.officeSelected ? true : false}
@@ -233,7 +233,7 @@ export default class Intellimap extends PureComponent {
                             onPress={() => this.onOfficesButtonPress()}>
                             <Image
                                 source={require('../../assets/images/intellicare-icon.png')}
-                                style={{ width: 8, height: 18, top: 1 }} />
+                                style={{ width: 8, height: 18, marginTop: 5 }} />
                             <Text style={styles.textStyle}>Intellicare Offices</Text>
                         </TouchableOpacity>
                     </View>
@@ -488,8 +488,8 @@ export default class Intellimap extends PureComponent {
                     flex: 1,
                     backgroundColor: 'transparent'
                 }}>
-                    <Header searchBar rounded androidStatusBarColor={'#58D68D'} style={{ backgroundColor: '#58D68D' }} backgroundColor={'#58D68D'}>
-                        <Item>
+                    <Header searchBar rounded style={{ height: 80}} backgroundColor={'#5fb650'}>
+                        <Item style={{marginTop: 25}}>
                             <Icon name="ios-search" style={searchIcon} />
                             <Input
                                 placeholder="Search hospitals/clinics"
@@ -540,25 +540,30 @@ const styles = StyleSheet.create(
             height: 50
         },
         searchIcon: {
-            color: "#2d2d2d",
+            color: "#c4c4c4",
         },
         textStyle: {
             alignSelf: 'center',
-            color: '#1AA811',
+            color: '#c4c4c4',
             fontSize: 12,
             fontWeight: '600',
         },
         buttonStyle: {
-            alignSelf: 'stretch',
             backgroundColor: '#fff',
             borderRadius: 6,
             borderWidth: 1,
-            borderColor: '#1AA811',
-            justifyContent: 'center',
-            flexDirection: 'row',
+            borderColor: "#c4c4c4",
+            justifyContent: "center",
+            flexDirection: "row",
             width: 140,
-            height: 22,
-            marginHorizontal: 3
+            height: 30,
+            marginHorizontal: 3,
+            shadowColor: '#2d2d2d',
+            shadowOffset: {width: 1, height: 2},
+            shadowOpacity: 0.1,
+            shadowRadius: 20,
+            elevation: 3,
+            borderWidth: 0,
         },
         disabledButtonStyle: {
             alignSelf: 'stretch',
