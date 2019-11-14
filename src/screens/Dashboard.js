@@ -177,32 +177,6 @@ export default class Dashboard extends React.Component {
                 </Card>
               </View>
             </View>
-            {/* <View style={styles.menuRow}>
-                            <View style={styles.cardItemStyle}>
-                                <Card style={styles.cardStyle}>
-                                    <CardItem style={styles.cardStyle}>
-                                        <Left>
-                                            <Body>
-                                                <Text style={styles.cardText}>Request ERCS1</Text>
-                                            </Body>
-                                            <Thumbnail source={require('../../assets/images/form1.png')} resizeMode='contain' />
-                                        </Left>
-                                    </CardItem>
-                                </Card>
-                            </View>
-                            <View style={styles.cardItemStyle}>
-                                <Card style={styles.cardStyle}>
-                                    <CardItem style={styles.cardStyle}>
-                                        <Left>
-                                            <Body>
-                                                <Text style={styles.cardText}>Request ERCS2</Text>
-                                            </Body>
-                                            <Thumbnail source={require('../../assets/images/clipboard.png')} resizeMode='contain' />
-                                        </Left>
-                                    </CardItem>
-                                </Card>
-                            </View>
-                        </View> */}
             <View style={styles.menuRow}>
               <View style={styles.cardItemStyle}>
                 <Card style={styles.cardStyle}>

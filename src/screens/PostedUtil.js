@@ -4,6 +4,7 @@ import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Ite
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
 import AsyncStorage from '@react-native-community/async-storage'
+import Spinner from 'react-native-spinkit'
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacctPosted = ''
 
@@ -19,12 +20,12 @@ export default class tabOne extends React.Component {
 
     async componentDidMount() {
         this.membacctPosted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-        console.log('sasasas',this.membacctPosted)
+        console.log('sasasas', this.membacctPosted)
         fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
             method: 'GET',
             headers: {
                 'authToken': global.storeToken,
-                'paramAcct': this.membacctPosted ,
+                'paramAcct': this.membacctPosted,
                 // 'paramContract': '7',
                 'Content-Type': 'application/json;charset=UTF-8'
             }
@@ -71,7 +72,19 @@ export default class tabOne extends React.Component {
     }
 
     render() {
-
+        const { spinnerStyle, spinnerTextStyle } = styles
+        if (this.state.isLoading) {
+            return (
+                <View style={spinnerStyle}>
+                    <Spinner
+                        color={'green'}
+                        size={50}
+                        type={'ChasingDots'}
+                    />
+                    <Text style={spinnerTextStyle}>Fetching data...</Text>
+                </View>
+            )
+        }
         return (
 
             <Container>
@@ -155,6 +168,18 @@ const styles = StyleSheet.create(
         footerlabelTotalAmount: {
             color: "green",
             fontWeight: "bold",
+        },
+        spinnerStyle: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            opacity: 0.2,
+            backgroundColor: 'white',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
         }
     }
 )

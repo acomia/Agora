@@ -29,6 +29,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {DataTable} from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
+import Spinner from 'react-native-spinkit';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacctUtil = '';
 
@@ -179,7 +180,15 @@ export default class ApprovedUtil extends React.Component {
     //  const { data } = this.state
     // { console.log('member', this.state) }
     // const totalAmount = utilDataSource.reduce((AmountTotal, total) => AmountTotal + total.amount, 0);
-
+    const {spinnerStyle, spinnerTextStyle} = styles;
+    if (this.state.isLoading) {
+      return (
+        <View style={spinnerStyle}>
+          <Spinner color={'green'} size={50} type={'ChasingDots'} />
+          <Text style={spinnerTextStyle}>Fetching data...</Text>
+        </View>
+      );
+    }
     return (
       <Container>
         <Header style={styles.headerStyle}>
@@ -275,5 +284,17 @@ const styles = StyleSheet.create({
   },
   innerContainer: {
     alignItems: 'center',
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    opacity: 0.2,
+    backgroundColor: 'black',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 });
