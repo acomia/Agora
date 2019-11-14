@@ -31,7 +31,7 @@ import {
 const App = () => {
   return (
     <View style={styles.container}>
-      <StackNavigator />
+      <StackNavigator/>
     </View>
   );
 };
@@ -43,3 +43,5 @@ const styles = StyleSheet.create(
 );
 
 export default App;
+
+console.disableYellowBox = true;
