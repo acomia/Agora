@@ -19,10 +19,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ApprovedUtil from '../screens/ApprovedUtil';
 import PostedUtil from '../screens/PostedUtil';
 import ApprovedUtilModal from '../screens/ApprovedUtilModal';
-// import PostedUtil from "../screens/PostedUtil"
 import MembInfo from '../screens/MembInfo';
-// import ApprovedUtil from "../screens/ApprovedUtil"
-import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
 import EditProfile from '../screens/EditProfile';
 
 AppStack = createStackNavigator({
