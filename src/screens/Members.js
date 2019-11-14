@@ -40,9 +40,7 @@ export default class Members extends React.Component {
         response.json()
           .then((data) => {
             if (data.is_success === true) {
-              console.log("membacct2 is: " + this.membacct);
               global.storeToken = data.data.token
-              console.log('component ' + this.membacct)
               fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/profile', {
                 method: 'GET',
                 headers: {
@@ -55,20 +53,27 @@ export default class Members extends React.Component {
                 .then((response) => {
                   response.json()
                     .then((responseJson) => {
-                      console.log(responseJson)
+                      if (responseJson.data != null) {
+                      console.log('sampledata',responseJson)
                       this.setState({
                         isLoading: false,
                         dataSource: [responseJson.data],
                       });
+                    }else
+                    {
+                      alert('Members not found!')
+                      this.setState({isLoading: false})
+                      this.props.navigation.navigate('Dashboard')
+                    }
                     })
                 })
                 .catch((error) => {
-
-                  alert('Error!' + error)
+                  alert('Unable to connect to server' + error)
                 })
             }
             else {
               alert(data.message)
+              
             }
           })
       })

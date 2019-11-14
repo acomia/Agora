@@ -25,10 +25,27 @@ import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {DrawerActions} from 'react-navigation-drawer';
 import LinearGradient from 'react-native-linear-gradient';
+import AsyncStorage from '@react-native-community/async-storage'
+
+const MEMB_NAME = 'memb_name'
 
 export default class Dashboard extends React.Component {
+  constructor(props) {
+    super(props);
+      this.state = {
+          fname: ""
+      };
+    }
+
+
+  async componentDidMount() {
+    this.state.fname = await AsyncStorage.getItem(MEMB_NAME)
+  }
   render() {
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
+
+   
+    
 
     return (
       <Container style={{display: 'flex', flex: 1, backgroundColor: '#f5f5f5'}}>
@@ -59,7 +76,7 @@ export default class Dashboard extends React.Component {
             <Text style={styles.headerTitle}>Welcome!</Text>
           </View>
           <View style={styles.contentStyle}>
-            <Text style={styles.WelcomeheaderTitle}>Hello, Frederick!</Text>
+            <Text style={styles.WelcomeheaderTitle}>Hello, {this.state.fname}</Text>
             <Text style={{color: '#6d6e72', fontSize: 14}}>
               How are you doing today? We hope you're having a great one!
             </Text>
