@@ -21,9 +21,9 @@ import {
   Thumbnail,
   Label,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import {DrawerActions} from 'react-navigation-drawer';
+import { DrawerActions } from 'react-navigation-drawer';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -32,23 +32,22 @@ const MEMB_NAME = 'memb_name'
 export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
-      this.state = {
-          fname: ""
-      };
-    }
+    this.state = {
+      fname: ""
+    };
+  }
 
 
-  async componentDidMount() {
-    this.state.fname = await AsyncStorage.getItem(MEMB_NAME)
+  async componentWillMount() {
+    let membname = await AsyncStorage.getItem(MEMB_NAME);
+    this.setState({ fname: membname });
+    alert(this.state.fname);
   }
   render() {
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
 
-   
-    
-
     return (
-      <Container style={{display: 'flex', flex: 1, backgroundColor: '#f5f5f5'}}>
+      <Container style={{ display: 'flex', flex: 1, backgroundColor: '#f5f5f5' }}>
         <Header style={styles.headerStyle}>
           <Left>
             <Button
@@ -77,13 +76,13 @@ export default class Dashboard extends React.Component {
           </View>
           <View style={styles.contentStyle}>
             <Text style={styles.WelcomeheaderTitle}>Hello, {this.state.fname}</Text>
-            <Text style={{color: '#6d6e72', fontSize: 14}}>
+            <Text style={{ color: '#6d6e72', fontSize: 14 }}>
               How are you doing today? We hope you're having a great one!
             </Text>
           </View>
           <View style={styles.MenucontentStyle}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1 }}>
                 <TouchableNativeFeedback
                   onPress={() => this.props.navigation.navigate('MembersPage')}>
                   <Card transparent>
@@ -101,7 +100,7 @@ export default class Dashboard extends React.Component {
                   </Card>
                 </TouchableNativeFeedback>
               </View>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <TouchableNativeFeedback
                   onPress={() =>
                     this.props.navigation.navigate('DoctorSearchNavigation')
@@ -129,7 +128,7 @@ export default class Dashboard extends React.Component {
                     source={require('../../assets/images/map.png')}
                     resizeMode="contain"
                   />
-                  <Body style={{marginLeft: 15}}>
+                  <Body style={{ marginLeft: 15 }}>
                     <Text style={styles.cardMenuTextIntellimap}>
                       Intellimap
                     </Text>
@@ -151,11 +150,11 @@ export default class Dashboard extends React.Component {
             </Card>
             <Card transparent>
               <CardItem style={[styles.cardMenuStyle]}>
-                <Body style={{marginLeft: 15}}>
+                <Body style={{ marginLeft: 15 }}>
                   <Image
                     source={require('../../assets/images/medgatelogo.png')}
                     resizeMode="contain"
-                    style={{width: width * 0.5, height: height * 0.08}}
+                    style={{ width: width * 0.5, height: height * 0.08 }}
                   />
 
                   <Text style={styles.cardMenuText}>
@@ -193,7 +192,7 @@ export default class Dashboard extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -221,7 +220,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -285,7 +284,7 @@ const styles = StyleSheet.create({
   cardStyle: {
     borderRadius: 20,
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -295,7 +294,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 5,
     shadowColor: '#f5f5f5',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 2,
