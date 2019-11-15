@@ -112,13 +112,19 @@ export default class ApprovedUtil extends React.Component {
     )
       .then(response => {
         response.json().then(responseJson => {
-          console.log('posted', responseJson);
-          console.log('test103', this.membacctUtil);
+          if (responseJson.data != null) {
           this.setState({
             isLoading: false,
             utilDataSource: responseJson.data,
           });
+        }else
+        {
+          alert('Approved Utilization Empty')
+          this.setState({isLoading: false})
+          this.props.navigation.navigate('Membinfo')          
+        }
         });
+    
       })
       .catch(error => {
         alert('Error!' + error);

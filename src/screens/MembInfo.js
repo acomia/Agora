@@ -26,6 +26,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 
 export default class MembInfo extends React.Component {
   render() {
+    const { fullname, acct, cardno, birth_date, gender, status, member_type, card_printed_date ,employee_id, room_and_board, maximum_limit, coverage_period} = this.props.navigation.state.params
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
@@ -49,33 +50,23 @@ export default class MembInfo extends React.Component {
                     />
                   </View>
                   <View style={styles.cardInfo}>
-                    <Label style={styles.cardName}>
-                      SERAFINO, FREDERICK E.
-                    </Label>
+                    <Label style={styles.cardName}>{fullname}</Label>
                     <Label style={styles.cardDetails}>INTELLICARE</Label>
                     <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>
-                        Account No:{' '}
-                      </Label>
-                      <Label style={styles.cardDetails}>
-                        80-00-00000-00000-00/1
-                      </Label>
+                      <Label style={styles.titlecardDetails}>Account No:{' '}</Label>
+                      <Label style={styles.cardDetails}>{acct}</Label>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Label style={styles.titlecardDetails}>Card No: </Label>
-                      <Label style={styles.cardDetails}>
-                        11950000092817266
-                      </Label>
+                      <Label style={styles.cardDetails}>{cardno}</Label>
                     </View>
                     <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>
-                        Birthdate (mm/yy):{' '}
-                      </Label>
-                      <Label style={styles.cardDetails}>01/01</Label>
+                      <Label style={styles.titlecardDetails}>Birthdate (mm/yy):{' '}</Label>
+                      <Label style={styles.cardDetails}>{birth_date}</Label>
                     </View>
                     <View style={{flexDirection: 'row'}}>
                       <Label style={styles.titlecardDetails}>Gender: </Label>
-                      <Label style={styles.cardDetails}>MALE</Label>
+                      <Label style={styles.cardDetails}>{gender}</Label>
                     </View>
                     <Label style={styles.cardDetails}>W/ DENTAL COVERAGE</Label>
                   </View>
@@ -95,7 +86,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Account Status</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.labelStatus}>ACTIVE</Label>
+                <Label style={styles.labelStatus}>{status}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -103,7 +94,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Employee ID</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>COMPANY-10001</Label>
+                <Label style={styles.itemInfo}>{employee_id}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -111,7 +102,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Member Type</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>PRINCIPAL</Label>
+                <Label style={styles.itemInfo}>{member_type}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -127,7 +118,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Relation</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>PRINCIPAL</Label>
+                <Label style={styles.itemInfo}>{member_type}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -135,7 +126,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Room and Board</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>REGULAR PRIVATE</Label>
+                <Label style={styles.itemInfo}>{room_and_board}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -143,7 +134,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Maximum Limit</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>100,000</Label>
+                <Label style={styles.itemInfo}>{maximum_limit}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -151,7 +142,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Coverage Period</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>01/01/2019 TO 01/01/2020</Label>
+                <Label style={styles.itemInfo}>{coverage_period}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -159,7 +150,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Card Printed Date</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>01/01/2019</Label>
+                <Label style={styles.itemInfo}>{card_printed_date}</Label>
               </Body>
             </Item>
           </View>

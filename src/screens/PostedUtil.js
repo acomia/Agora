@@ -33,10 +33,17 @@ export default class tabOne extends React.Component {
             .then((response) => {
                 response.json()
                     .then((responseJson) => {
+                        if (responseJson.data != null) {
                         this.setState({
                             isLoading: false,
                             PostedutilDataSource: responseJson.data
                         });
+                    }else
+                    {
+                      alert('Posted Utilization Empty')
+                      this.setState({isLoading: false})
+                      this.props.navigation.navigate('Membinfo')
+                    }
                     })
             })
             .catch((error) => {
