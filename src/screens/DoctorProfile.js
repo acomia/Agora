@@ -220,7 +220,7 @@ export default function DoctorProfile() {
           <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
         </View>
         <Text style={styles.headerDetails}>
-          {toTitleCase(drdata.specialization)}
+          {drdata.specialization}
         </Text>
       </ImageBackground>
       <ScrollView>
@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#fff',
     textAlign: 'center',
-    fontSize: 14,
+    fontSize: 18,
   },
   labelNickname: {
     alignSelf: 'center',
