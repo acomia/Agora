@@ -114,7 +114,7 @@ export default function DoctorProfile() {
           }
 
           hospitals.push({
-            title: hospclinic,
+            title: toTitleCase(hospclinic),
             hscode: hscode,
             drcode: drcode,
             room: room,
@@ -153,14 +153,9 @@ export default function DoctorProfile() {
           style={{borderWidth: 0}}
           headerStyle={{
             backgroundColor: '#fff',
-            fontSize: 14,
+            fontSize: 12,
             color: '#2d2d2d',
-            paddingBottom: 20,
-          }}
-          contentStyle={{
-            backgroundColor: 'transparent',
-            fontSize: 14,
-            color: '#2d2d2d',
+            paddingBottom: 15,
           }}
           renderContent={item => <AccordionDetails dataArray={item} />}
         />
@@ -191,6 +186,29 @@ export default function DoctorProfile() {
     }
   }
 
+  function renderThumbnail() {
+    if (drdata.specialization.toLowerCase().includes('dentist'))
+      return (
+        <Thumbnail
+          large
+          source={require('../../assets/images/dental.png')}
+          resizeMode="contain"
+          style={styles.avatarStyle}
+          square
+        />
+      );
+
+    return (
+      <Thumbnail
+        large
+        source={require('../../assets/images//stethoscope.png')}
+        resizeMode="contain"
+        style={styles.avatarStyle}
+        square
+      />
+    );
+  }
+
   return (
     <ScrollView>
       <StatusBar translucent backgroundColor="transparent" />
@@ -198,15 +216,12 @@ export default function DoctorProfile() {
         source={require('../../assets/images/intellicareheader.jpg')}
         style={styles.backgroundImage}>
         <View style={styles.headerUser}>
-          <Thumbnail
-            large
-            source={require('../../assets/images/doctor-avatar.png')}
-            resizeMode="contain"
-            style={styles.avatarStyle}
-          />
+          {renderThumbnail()}
           <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
         </View>
-        <Text style={styles.headerDetails}>{drdata.specialization}</Text>
+        <Text style={styles.headerDetails}>
+          {toTitleCase(drdata.specialization)}
+        </Text>
       </ImageBackground>
       <ScrollView>
         <View style={styles.hospitalAccreditation}>
@@ -231,6 +246,12 @@ export default function DoctorProfile() {
   );
 }
 
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+}
+
 export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
@@ -238,7 +259,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'stretch',
     justifyContent: 'center',
-    height: 200
+    height: 200,
   },
   headerStyle: {
     height: 180,
@@ -252,11 +273,14 @@ const styles = StyleSheet.create({
   headerDetails: {
     alignSelf: 'center',
     color: '#fff',
+    textAlign: 'center',
+    fontSize: 14,
   },
   labelNickname: {
     alignSelf: 'center',
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 20,
   },
   labelHeaderDetails: {
     alignSelf: 'center',
