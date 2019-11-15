@@ -31,7 +31,7 @@ export default function SearchDoctor({search}) {
       <Item style={{height: 25, margin: 10}}>
         <Input
           placeholderTextColor={'#c2c2c2'}
-          placeholder="Filter Doctor's Name or Specialty"
+          placeholder="Filter By Name or Specialty"
           style={{fontSize: 12, textAlign: 'center', paddingBottom: 0.3}}
           onChangeText={handleOnChangeText}
           value={textSearch}
