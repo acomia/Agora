@@ -62,7 +62,7 @@ export default class Dashboard extends React.Component {
               onPress={() => this.props.navigation.navigate('ProfilePage')}>
               <Thumbnail
                 small
-                source={require('../../assets/images/sample-image-circle.png')}
+                source={require('../../assets/images/nav-profile.png')}
                 resizeMode="contain"
               />
             </TouchableNativeFeedback>
