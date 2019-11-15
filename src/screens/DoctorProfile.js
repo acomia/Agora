@@ -220,7 +220,7 @@ export default function DoctorProfile() {
           <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
         </View>
         <Text style={styles.headerDetails}>
-          {drdata.specialization}
+          {toTitleCase(drdata.specialization)}
         </Text>
       </ImageBackground>
       <ScrollView>
