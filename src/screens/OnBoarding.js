@@ -1,10 +1,40 @@
 import React from 'react'
+import AsyncStorage from '@react-native-community/async-storage'
 import { StyleSheet, View, Dimensions, Image, ImageBackground, TouchableNativeFeedback, StatusBar } from 'react-native'
 import { Container, Header, Content, Button, Text, Card, CardItem, Left, Body, Thumbnail, Icon, Right, Title, Label, Item } from 'native-base'
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import { ScrollView } from 'react-native-gesture-handler';
 
+const ACCESS_TOKEN = 'access_token';
+
 export default class OnBoarding extends React.Component {
+
+  componentWillMount()
+  {
+    this.getToken();
+    
+  }
+   async getToken()
+   {
+     try
+       {
+        let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN);
+        if(!accessToken)
+          {
+          console.log("No token")
+          }
+        else
+          {
+          console.log("token is: " + accessToken )
+           this.props.navigation.replace('Dashboard')
+          }
+       }
+     catch(error)
+     {
+      console.log("ERROR")
+     }
+     
+   }
 
   render() {
     return (
@@ -49,7 +79,7 @@ export default class OnBoarding extends React.Component {
                   <Body>
                     <Icon type="SimpleLineIcons" name="map" style={styles.cardIconStyleIntellimap} />
                     <Label style={styles.cardContent}>Locate our Accreditted Facilities.</Label>
-                    <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('Intellimap')}>
+                    <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('IntellimapPage')}>
                       <Text style={styles.cardButtonText}>Intellimap</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
                     </Button>
@@ -61,7 +91,7 @@ export default class OnBoarding extends React.Component {
                   <Body>
                     <Icon type="SimpleLineIcons" name="magnifier" style={styles.cardIconStyleProviders} />
                     <Label style={styles.cardContent}>Our Accreditted Doctors and Dentists.</Label>
-                    <Button iconRight rounded style={styles.cardButtonProviders}>
+                    <Button iconRight rounded style={styles.cardButtonProviders} onPress={() => this.props.navigation.navigate('DoctorSearchNavigation')}>
                       <Text style={styles.cardButtonText}>Providers</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
                     </Button>
