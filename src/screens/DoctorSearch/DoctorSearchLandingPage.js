@@ -14,8 +14,15 @@ export default function DoctorSearchLandingPage() {
   });
   const [btnSrchDisabled, setBtnSrchDisabled] = useState(true);
   const [token, setToken] = useState('');
+  const [checkConnection, setCheckConnection] = useState('');
 
   const {navigate} = useNavigation();
+
+  const networkFailed = (
+    <Text style={{alignSelf: 'center', fontSize: 10, color: 'red'}}>
+      Network Failed. Please Check Your Internet Connection.
+    </Text>
+  );
 
   useEffect(() => {
     fetchToken();
@@ -25,7 +32,7 @@ export default function DoctorSearchLandingPage() {
   async function fetchToken() {
     try {
       let response = await fetch(
-        'http://intellicare.com.ph/webservice/thousandminds/api/login',
+        'http://203.160.190.52/webservice/thousandminds/api/login',
         {
           method: 'POST',
           headers: {
@@ -43,17 +50,33 @@ export default function DoctorSearchLandingPage() {
       let tokenVal = responseJson.response.token;
 
       setToken(tokenVal);
+      setCheckConnection('success');
     } catch (error) {
-      console.log(error);
+      setCheckConnection('failed');
     }
   }
 
+  function ConnectionValidity() {
+    if (checkConnection === 'checking')
+      return (
+        <View>
+          <Text style={{fontSize: 10}}>Checking Connection...</Text>
+          <ActivityIndicator size="small" color="white" />
+        </View>
+      );
+    else if (checkConnection === 'failed')
+      return (
+        <View>
+          <Text style={{fontSize: 16}}>RETRY</Text>
+        </View>
+      );
+    else return <Text style={{fontSize: 16}}>Search</Text>;
+  }
+
   function handleSrcBtnDisabled() {
-    let counter = 0;
-
-    for (let key in searchQuery) if (searchQuery[key].trim() === '') counter++;
-
-    counter === 4 ? setBtnSrchDisabled(true) : setBtnSrchDisabled(false);
+    if (checkConnection === 'checking') setBtnSrchDisabled(true);
+    else if (checkConnection === 'success' || checkConnection === 'failed')
+      setBtnSrchDisabled(false);
   }
 
   function handleOnChangeDoctorName(e) {
@@ -93,7 +116,12 @@ export default function DoctorSearchLandingPage() {
   }
 
   function handleSearch() {
-    navigate('DoctorSearchMainScreen', {searchQuery, token});
+    if (checkConnection === 'success')
+      navigate('DoctorSearchMainScreen', {searchQuery, token});
+    else {
+      setCheckConnection('checking');
+      fetchToken();
+    }
   }
 
   const winHeight = Dimensions.get('window').height;
@@ -145,15 +173,12 @@ export default function DoctorSearchLandingPage() {
                 value={searchQuery.location}
                 onChangeText={handleOnchangeLocation}
               />
+              {checkConnection === 'failed' ? networkFailed : null}
               <Button
                 style={styles.buttonSearch}
                 disabled={btnSrchDisabled}
                 onPress={handleSearch}>
-                {token === '' ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <Text style={{fontSize: 16}}>Search</Text>
-                )}
+                {ConnectionValidity()}
               </Button>
             </Form>
           </Content>

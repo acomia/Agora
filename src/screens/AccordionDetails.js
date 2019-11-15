@@ -17,8 +17,8 @@ export default function AccordionDetails({dataArray}) {
             source={require('../../assets/images/nav-door.png')}
             style={{height: 20, width: 20, marginHorizontal: 10}}
           />
-          <Text note>Room No: </Text>
-          <Text note>{dataArray.room}</Text>
+          <Text note style={{fontSize: 12}}>Room No: </Text>
+          <Text note style={{fontSize: 12}}>{dataArray.room}</Text>
         </View>
       </List>
       <List
@@ -34,8 +34,8 @@ export default function AccordionDetails({dataArray}) {
             source={require('../../assets/images/nav-coordinator.png')}
             style={{height: 20, width: 20, marginHorizontal: 10}}
           />
-          <Text note>Coordinator: </Text>
-          <Text note>{dataArray.coordinator}</Text>
+          <Text note style={{fontSize: 12}}>Coordinator: </Text>
+          <Text note style={{fontSize: 12}}>{dataArray.coordinator}</Text>
         </View>
       </List>
       <List
@@ -51,7 +51,7 @@ export default function AccordionDetails({dataArray}) {
             source={require('../../assets/images/nav-phone.png')}
             style={{height: 20, width: 20, marginHorizontal: 10}}
           />
-          <Text note>{dataArray.phone}</Text>
+          <Text note style={{fontSize: 12}}>{dataArray.phone}</Text>
         </View>
       </List>
       <List
@@ -67,7 +67,7 @@ export default function AccordionDetails({dataArray}) {
             source={require('../../assets/images/nav-schedule.png')}
             style={{height: 20, width: 20, marginHorizontal: 10}}
           />
-          <Text note>{dataArray.schedule}</Text>
+          <Text note style={{fontSize: 12}}>{dataArray.schedule}</Text>
         </View>
       </List>
       <List
@@ -83,7 +83,7 @@ export default function AccordionDetails({dataArray}) {
             name="map-marker"
             style={{height: 27, width: 20, marginHorizontal: 10}}
           />
-          <Text note>{dataArray.city}</Text>
+          <Text note style={{fontSize: 12}}>{dataArray.city}</Text>
         </View>
       </List>
     </View>

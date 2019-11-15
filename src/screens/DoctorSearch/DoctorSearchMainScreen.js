@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
+import {Text} from 'native-base';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
-import {useNavigationParam} from 'react-navigation-hooks';
+import {useNavigationParam, useNavigation} from 'react-navigation-hooks';
 
 export default function DoctorSearchMainScreen() {
   const [doctorList, setDoctorList] = useState([]);
@@ -14,6 +15,18 @@ export default function DoctorSearchMainScreen() {
 
   const [token] = useState(tokenVal);
 
+  const {navigate} = useNavigation();
+
+  if (
+    searchQuery.doctorName.trim() === '' &&
+    searchQuery.clinic.trim() === '' &&
+    searchQuery.specialty.trim() === '' &&
+    searchQuery.location.trim() === ''
+  ) {
+    searchQuery.clinic = 'aventus medical care inc';
+    searchQuery.location = 'makati';
+  }
+
   useEffect(() => {
     const abortController = new AbortController();
     const signal = abortController.signal;
@@ -22,6 +35,8 @@ export default function DoctorSearchMainScreen() {
 
     return () => {
       abortController.abort();
+      searchQuery.clinic = '';
+      searchQuery.location = '';
     };
   }, []);
 
@@ -47,6 +62,9 @@ export default function DoctorSearchMainScreen() {
           }),
         },
       );
+
+      searchQuery.clinic = '';
+      searchQuery.location = '';
 
       let responseJson = await response.json();
 
@@ -90,7 +108,9 @@ export default function DoctorSearchMainScreen() {
       setRefreshing(false);
     } catch (error) {
       setRefreshing(false);
-      console.log(error);
+      searchQuery.clinic = '';
+      searchQuery.location = '';
+      navigate('SearchLandingPage', {error});
     }
   }
 
