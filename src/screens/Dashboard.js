@@ -37,11 +37,9 @@ export default class Dashboard extends React.Component {
     };
   }
 
-
   async componentWillMount() {
     let membname = await AsyncStorage.getItem(MEMB_NAME);
     this.setState({ fname: membname });
-    alert(this.state.fname);
   }
   render() {
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
