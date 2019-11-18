@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {StyleSheet, View, FlatList} from 'react-native';
-import {Text} from 'native-base';
+import {Thumbnail, Text} from 'native-base';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
 import {useNavigationParam, useNavigation} from 'react-navigation-hooks';
@@ -9,6 +9,7 @@ export default function DoctorSearchMainScreen() {
   const [doctorList, setDoctorList] = useState([]);
   const [tempDoctorList, setTempDoctorList] = useState([]);
   const [refreshing, setRefreshing] = useState(true);
+  const [isResult, setIsResult] = useState(true);
 
   const searchQuery = useNavigationParam('searchQuery');
   const tokenVal = useNavigationParam('token');
@@ -71,17 +72,10 @@ export default function DoctorSearchMainScreen() {
       console.log(responseJson.response);
 
       if (responseJson.response == null) {
-        alert(
-          responseJson.message.toLowerCase().includes('token')
-            ? responseJson.message.split(':')[0]
-            : responseJson.message,
-        );
-        setRefreshing(false);
+        setDoctorList(null);
+
         return;
       }
-
-      if (responseJson.response.length > 150)
-        responseJson.response.splice(0, responseJson.response.length - 150);
 
       const map = new Map();
       const result = [];
@@ -100,8 +94,6 @@ export default function DoctorSearchMainScreen() {
         }
       }
 
-      if (result.length > 100) result.splice(0, result.length - 100);
-
       setDoctorList(result);
       setTempDoctorList(result);
 
@@ -115,6 +107,8 @@ export default function DoctorSearchMainScreen() {
   }
 
   function handleChangeTextSearch(search) {
+    if (!doctorList) return 
+    
     if (search === '') {
       setDoctorList(tempDoctorList);
       return;
@@ -133,14 +127,32 @@ export default function DoctorSearchMainScreen() {
   return (
     <View style={styles.mainContainer}>
       <SearchDoctor search={handleChangeTextSearch} />
-      <FlatList
-        data={doctorList}
-        renderItem={({item}) => <DoctorList drdata={item} token={token} />}
-        keyExtractor={item => item.doctorcode}
-        initialNumToRender={5}
-        refreshing={refreshing}
-        onRefresh={() => fetchDoctors()}
-      />
+      {doctorList ? (
+        <FlatList
+          data={doctorList}
+          renderItem={({item}) => <DoctorList drdata={item} token={token} />}
+          keyExtractor={item => item.doctorcode}
+          initialNumToRender={5}
+          refreshing={refreshing}
+          onRefresh={() => fetchDoctors()}
+        />
+      ) : (
+        <View style={{paddingTop: 20}}>
+          <Thumbnail
+            square
+            source={require('../../../assets/images/error.png')}
+            style={{
+              height: 80,
+              width: 80,
+              marginHorizontal: 10,
+              alignSelf: 'center',
+            }}
+          />
+          <Text style={{alignSelf: 'center', color: 'gray', fontSize: 12}}>
+            No Results Found
+          </Text>
+        </View>
+      )}
     </View>
   );
 }
