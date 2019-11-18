@@ -22,11 +22,13 @@ import {
   Content,
 } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
+import moment from 'moment'
 
 export default class MembInfo extends React.Component {
   render() {
-    const { fullname, acct, cardno, birth_date, gender, status, member_type, card_printed_date ,employee_id, room_and_board, maximum_limit, coverage_period} = this.props.navigation.state.params
+    const { fullname, acct, cardno, birth_date, gender, status, member_type, card_printed_date, employee_id, room_and_board, maximum_limit, coverage_period, company, civil_status, relation } = this.props.navigation.state.params
+
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
@@ -39,10 +41,10 @@ export default class MembInfo extends React.Component {
               <Card style={styles.mainCardStyle}>
                 <LinearGradient
                   colors={['#fff', '#ececec']}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 0}}
-                  style={{flex: 1, borderRadius: 20}}>
-                  <View style={{flex: 1}}>
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 0 }}
+                  style={{ flex: 1, borderRadius: 20 }}>
+                  <View style={{ flex: 1 }}>
                     <ImageBackground
                       source={require('../../assets/images/virtual-card-header.png')}
                       resizeMode="contain"
@@ -51,24 +53,24 @@ export default class MembInfo extends React.Component {
                   </View>
                   <View style={styles.cardInfo}>
                     <Label style={styles.cardName}>{fullname}</Label>
-                    <Label style={styles.cardDetails}>INTELLICARE</Label>
-                    <View style={{flexDirection: 'row'}}>
+                    <Label style={styles.cardDetails}>{company}</Label>
+                    <View style={{ flexDirection: 'row' }}>
                       <Label style={styles.titlecardDetails}>Account No:{' '}</Label>
                       <Label style={styles.cardDetails}>{acct}</Label>
                     </View>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                       <Label style={styles.titlecardDetails}>Card No: </Label>
                       <Label style={styles.cardDetails}>{cardno}</Label>
                     </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>Birthdate (mm/yy):{' '}</Label>
-                      <Label style={styles.cardDetails}>{birth_date}</Label>
+                    <View style={{ flexDirection: 'row' }}>
+                      <Label style={styles.titlecardDetails}>Birthdate (mm/dd/yyyy):{' '}</Label>
+                      <Label style={styles.cardDetails}>{moment(birth_date).format('L')}</Label>
                     </View>
-                    <View style={{flexDirection: 'row'}}>
+                    <View style={{ flexDirection: 'row' }}>
                       <Label style={styles.titlecardDetails}>Gender: </Label>
                       <Label style={styles.cardDetails}>{gender}</Label>
                     </View>
-                    <Label style={styles.cardDetails}>W/ DENTAL COVERAGE</Label>
+                    {/* <Label style={styles.cardDetails}>W/ DENTAL COVERAGE</Label> */}
                   </View>
                 </LinearGradient>
               </Card>
@@ -110,7 +112,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Civil Status</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>SINGLE</Label>
+                <Label style={styles.itemInfo}>{civil_status}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -118,7 +120,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Relation</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>{member_type}</Label>
+                <Label style={styles.itemInfo}>{relation}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>
@@ -150,7 +152,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Card Printed Date</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>{card_printed_date}</Label>
+                <Label style={styles.itemInfo}>{moment(card_printed_date).format('L')}</Label>
               </Body>
             </Item>
           </View>
@@ -160,7 +162,7 @@ export default class MembInfo extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -197,7 +199,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: '#f5f5f5',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 0, height: 3},
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 10,
