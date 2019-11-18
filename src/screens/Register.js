@@ -35,6 +35,9 @@ export default class Login extends React.Component {
             <Container>
                 <StatusBar translucent backgroundColor="transparent" />
                 <ScrollView>
+                <View style={styles.header}>
+                        <Text style={styles.headerTitle}>Create an account</Text>
+                    </View>
                     <View style={styles.viewForm}>
                         <Text style={styles.headerText}>Personal Information</Text>
                         <View style={styles.formInfo}>

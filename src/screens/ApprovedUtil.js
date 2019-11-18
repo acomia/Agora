@@ -30,6 +30,8 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {DataTable} from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
+import moment from 'moment'
+
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacctUtil = '';
 
@@ -40,6 +42,7 @@ export default class ApprovedUtil extends React.Component {
       isLoading: true,
       utilDataSource: [],
       modalVisible: false,
+      totalUtilAmount: 0
     };
   }
 
@@ -112,19 +115,32 @@ export default class ApprovedUtil extends React.Component {
     )
       .then(response => {
         response.json().then(responseJson => {
+
           if (responseJson.data != null) {
+            let totalUtilAmount = 0;
+
+          console.log('posted', responseJson);
+          console.log('test103', this.membacctUtil);
           this.setState({
             isLoading: false,
             utilDataSource: responseJson.data,
           });
+
+          responseJson.data.map(util => {
+            console.log(util.amount)
+            totalUtilAmount = totalUtilAmount + parseFloat(util.amount)
+          })
+
+          this.setState({totalUtilAmount})
+
         }else
         {
           alert('Approved Utilization Empty')
           this.setState({isLoading: false})
           this.props.navigation.navigate('Membinfo')          
         }
+
         });
-    
       })
       .catch(error => {
         alert('Error!' + error);
@@ -168,7 +184,7 @@ export default class ApprovedUtil extends React.Component {
             <DataTable Body>
               <DataTable.Row>
                 <DataTable.Cell>{item.loa}</DataTable.Cell>
-                <DataTable.Cell>{item.loa_date}</DataTable.Cell>
+                <DataTable.Cell>        {moment(item.loa_date).format('L')}</DataTable.Cell>
                 <DataTable.Cell numeric>{item.amount}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
@@ -186,6 +202,7 @@ export default class ApprovedUtil extends React.Component {
     //  const { data } = this.state
     // { console.log('member', this.state) }
     // const totalAmount = utilDataSource.reduce((AmountTotal, total) => AmountTotal + total.amount, 0);
+
     const {spinnerStyle, spinnerTextStyle} = styles;
     if (this.state.isLoading) {
       return (
@@ -195,34 +212,33 @@ export default class ApprovedUtil extends React.Component {
         </View>
       );
     }
+
     return (
       <Container>
-        <Header style={styles.headerStyle}>
-          <Left>
-            <Button
-              transparent
-              onPress={() => this.props.navigation.navigate('MembInfo')}>
-              <Icon name="arrow-back" style={{color: '#fff'}} />
-            </Button>
-          </Left>
-          <Body>
-            <Title>Approved Utilization</Title>
-          </Body>
-          <Right />
-        </Header>
-        <DataTable>
-          <DataTable.Header>
-            <DataTable.Title>RCS No.</DataTable.Title>
-            <DataTable.Title>Date</DataTable.Title>
-            <DataTable.Title numeric>Amount</DataTable.Title>
-          </DataTable.Header>
-        </DataTable>
-        <FlatList
-          data={this.state.utilDataSource}
-          renderItem={this.renderItem}
-          //   keyExtractor={(item, index) => amount}
-          ItemSeparatorComponent={this.renderSeparator}
-        />
+        <ScrollView>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Approved Utilization</Text>
+            <Text style={styles.headerSubheader}>
+              Incurred buy not posted. Approved availments through Intellicare's
+              Customer Service Department.
+            </Text>
+          </View>
+          <View style={styles.contentStyle}>
+            <DataTable>
+              <DataTable.Header>
+                <DataTable.Title>RCS No.</DataTable.Title>
+                <DataTable.Title>     Date</DataTable.Title>
+                <DataTable.Title numeric>Amount</DataTable.Title>
+              </DataTable.Header>
+            </DataTable>
+            <FlatList
+              data={this.state.utilDataSource}
+              renderItem={this.renderItem}
+              //   keyExtractor={(item, index) => amount}
+              ItemSeparatorComponent={this.renderSeparator}
+            />
+          </View>
+        </ScrollView>
         <Footer style={styles.footerStyle}>
           <Content>
             <Item style={styles.footeritemStyle}>
@@ -232,7 +248,7 @@ export default class ApprovedUtil extends React.Component {
                 </Text>
               </Left>
               <Body style={styles.footeritemBody}>
-                <Label style={styles.footerlabelTotalAmount}>0.00</Label>
+                <Label style={styles.footerlabelTotalAmount}>{parseFloat(this.state.totalUtilAmount).toFixed(2)}</Label>
               </Body>
             </Item>
           </Content>
@@ -243,6 +259,36 @@ export default class ApprovedUtil extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    flex: 1,
+    height: 100,
+    backgroundColor: '#5fb650',
+    paddingHorizontal: 30,
+  },
+  headerTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerSubheader:{
+    fontSize: 12,
+    color: "#a5d69c"
+  },
+  contentStyle: {
+    paddingHorizontal: 10,
+    paddingVertical: 10,
+    // marginTop: -45,
+    backgroundColor: '#fff',
+    // borderTopStartRadius: 50,
+    // borderTopEndRadius: 50,
+    justifyContent: 'center',
+    shadowColor: '#2d2d2d',
+    shadowOffset: {width: 1, height: 5},
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
+    borderWidth: 0,
+  },
   headerStyle: {
     backgroundColor: '#5fb650',
   },
@@ -263,10 +309,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   footeritemStyle: {
-    padding: 20,
+    justifyContent: 'center',
+    padding: 15,
+    borderBottomWidth: 0,
   },
   footeritemLabel: {
-    color: '#2d2d2d',
+    color: '#6d6e72',
     fontWeight: 'bold',
   },
   footeritemInfo: {

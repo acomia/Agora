@@ -1,14 +1,13 @@
-import React, { Component } from 'react';
-import { View, FlatList, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
-import { Container, Body, Text, Badge, List, ListItem, Left, Content } from 'native-base'
+import React from 'react';
+import { StyleSheet, View, FlatList, Dimensions, Image, TouchableOpacity, StatusBar, } from 'react-native';
+import { Container, Header, Content, Button, Text, Icon, Left, Right, Body, Label, ListItem, Thumbnail, Item, Title, List, Badge, } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
-const membacct = ''
-// const membinfo = require('../../membinfo.json')
 export default class Members extends React.Component {
+
   constructor(props) {
     super(props)
     global.storeToken = ''
@@ -54,17 +53,16 @@ export default class Members extends React.Component {
                   response.json()
                     .then((responseJson) => {
                       if (responseJson.data != null) {
-                      console.log('sampledata',responseJson)
-                      this.setState({
-                        isLoading: false,
-                        dataSource: [responseJson.data],
-                      });
-                    }else
-                    {
-                      alert('Members not found!')
-                      this.setState({isLoading: false})
-                      this.props.navigation.navigate('Dashboard')
-                    }
+                        console.log('sampledata', responseJson)
+                        this.setState({
+                          isLoading: false,
+                          dataSource: [responseJson.data],
+                        });
+                      } else {
+                        alert('Members not found!')
+                        this.setState({ isLoading: false })
+                        this.props.navigation.navigate('Dashboard')
+                      }
                     })
                 })
                 .catch((error) => {
@@ -73,7 +71,7 @@ export default class Members extends React.Component {
             }
             else {
               alert(data.message)
-              
+
             }
           })
       })
@@ -82,10 +80,6 @@ export default class Members extends React.Component {
         alert('Error!' + error)
       })
   }
-
-  // componentDidMount() {
-
-  // }
   //store member account no.
   async getacct() {
     try {
@@ -101,28 +95,44 @@ export default class Members extends React.Component {
     this.props.navigation.navigate('MemberInfoPage', item);
   };
 
+
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity style={{ flexDirection: 'row' }}>
-        <ScrollView>
-          <List style={styles.listStyle}>
-            <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
-              <Left>
-                {/* <Image style={{ width: 60, height: 60, margin: 3, borderRadius: 150 / 2 }} source={{ uri: item.image_url }} /> */}
-              </Left>
-              <Body style={{ borderBottomWidth: 0 }}>
-                <View style={styles.viewNameBadge}>
-                  <Text style={styles.listFullname}>{item.fullname}</Text>
-                  <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
-                </View>
-                <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
-                <Text>{item.member_type}</Text>
-              </Body>
-            </ListItem>
-          </List>
+      <Container>
+      <StatusBar translucent backgroundColor="transparent" />
+     
+      <ScrollView>
+        
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Account Profiles</Text>
+          </View>
+         
+          <View style={styles.contentStyle}>
+        
+            <List style={styles.listStyle}>
+           
+              <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
+
+                <Left>
+                  <Thumbnail source={require('../../assets/images/sample-image-square.jpg')} />
+                </Left>
+               
+                <Body style={{ borderBottomWidth: 0 }}>
+                  <View style={styles.viewNameBadge}>
+                    <Text style={styles.listFullname}>{item.fullname}</Text>
+                    <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
+                  </View>
+                  <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
+                  <Text>{item.member_type}</Text>
+                </Body>
+    
+              </ListItem>
+            </List>
+          </View>
         </ScrollView>
-      </TouchableOpacity>
-    )
+    </Container>
+     
+    );
   }
   renderSeparator = () => {
     return (
@@ -131,7 +141,6 @@ export default class Members extends React.Component {
       </View>
     )
   }
-
   render() {
     //  const { data } = this.state
     const { spinnerStyle, spinnerTextStyle } = styles
@@ -161,47 +170,67 @@ export default class Members extends React.Component {
     );
   }
 
+
 }
 
 const styles = StyleSheet.create({
-  container: {
+  header: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    marginTop: 20,
-    padding: 5,
-    marginBottom: 10
+    height: 100,
+    backgroundColor: '#5fb650',
+    paddingHorizontal: 30,
+  },
+  headerTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  contentStyle: {
+    paddingVertical: 20,
+    marginTop: -45,
+    backgroundColor: '#fff',
+    borderTopStartRadius: 50,
+    borderTopEndRadius: 50,
+    justifyContent: 'center',
+    shadowColor: '#2d2d2d',
+    shadowOffset: { width: 1, height: 5 },
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
+    borderWidth: 0,
+  },
+  headerStyle: {
+    backgroundColor: '#fff',
+    marginBottom: 10,
+  },
+  badgeStyle: {
+    justifyContent: 'center',
+    borderRadius: 5,
+    backgroundColor: '#fff',
+    borderColor: '#c4c4c4',
+    borderWidth: 1,
+  },
+  badgeText: {
+    color: '#c4c4c4',
+    fontStyle: 'italic',
   },
   listItemMember: {
     marginLeft: 0,
     paddingHorizontal: 20,
-    borderBottomWidth: 0.50,
-    borderBottomColor: "#c4c4c4"
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#c4c4c4',
   },
-  badgeStyle: {
-    justifyContent: "center",
-    borderRadius: 5,
-    backgroundColor: "#fff",
-    borderColor: "#c4c4c4",
-    borderWidth: 1,
-  },
-  badgeText: {
-    color: "#c4c4c4",
-    fontStyle: "italic"
+  listFullname: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#5fb650',
   },
   listAccountNote: {
     fontSize: 16,
   },
-  listStyle: {
-    backgroundColor: "#fff",
-  },
-  listFullname: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#5fb650"
-  },
   viewNameBadge: {
-    flexDirection: "row",
-    flex: 1
+    flexDirection: 'row',
+    flex: 1,
   },
   spinnerStyle: {
     flex: 1,
@@ -215,7 +244,4 @@ const styles = StyleSheet.create({
     top: 0,
     bottom: 0,
   }
-
 });
-
-

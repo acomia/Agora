@@ -1,85 +1,113 @@
-import React from 'react'
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList } from 'react-native'
-import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base'
-import { ScrollView } from 'react-native-gesture-handler';
+import React from 'react';
+import {StyleSheet, View, StatusBar, Dimensions, Image, TouchableOpacity, FlatList} from 'react-native';
+import {
+  Container,
+  Text,
+  Header,
+  Left,
+  Right,
+  Body,
+  Title,
+  Footer,
+  Content,
+  Item,
+  Label,
+  Icon,
+  Button,
+  List,
+} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper'
 import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
+import moment from 'moment'
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const membacctPosted = ''
 
 export default class tabOne extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            isLoading: true,
-            PostedutilDataSource: [],
-            modalVisible: false,
+
+  constructor(props) {
+    super(props)
+    this.state = {
+        isLoading: true,
+        PostedutilDataSource: [],
+        modalVisible: false,
+        totalUtilAmount: 0
+    }
+}
+
+async componentDidMount() {
+    this.membacctPosted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+    console.log('sasasas', this.membacctPosted)
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
+        method: 'GET',
+        headers: {
+            'authToken': global.storeToken,
+            'paramAcct': this.membacctPosted,
+            // 'paramContract': '7',
+            'Content-Type': 'application/json;charset=UTF-8'
         }
-    }
+    })
+        .then((response) => {
+            response.json()
+                .then((responseJson) => {
+                    if (responseJson.data != null) {
+                        let totalUtilAmount = 0;
 
-    async componentDidMount() {
-        this.membacctPosted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-        console.log('sasasas', this.membacctPosted)
-        fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
-            method: 'GET',
-            headers: {
-                'authToken': global.storeToken,
-                'paramAcct': this.membacctPosted,
-                // 'paramContract': '7',
-                'Content-Type': 'application/json;charset=UTF-8'
-            }
+                    this.setState({
+                        isLoading: false,
+                        PostedutilDataSource: responseJson.data
+                    });
+
+                    responseJson.data.map(util => {
+                        console.log(util.amount)
+                        totalUtilAmount = totalUtilAmount + parseFloat(util.amount)
+                      })
+            
+                      this.setState({totalUtilAmount})
+
+                }else
+                {
+                  alert('Posted Utilization Empty')
+                  this.setState({isLoading: false})
+                  this.props.navigation.navigate('Membinfo')
+                }
+                })
         })
-            .then((response) => {
-                response.json()
-                    .then((responseJson) => {
-                        if (responseJson.data != null) {
-                        this.setState({
-                            isLoading: false,
-                            PostedutilDataSource: responseJson.data
-                        });
-                    }else
-                    {
-                      alert('Posted Utilization Empty')
-                      this.setState({isLoading: false})
-                      this.props.navigation.navigate('Membinfo')
-                    }
-                    })
-            })
-            .catch((error) => {
+        .catch((error) => {
 
-                alert('Error!' + error)
-            })
-    }
+            alert('Error!' + error)
+        })
+}
 
 
-    renderItem = ({ item }) => {
-        { console.log('testing', item) }
-        return (
-            <ScrollView>
-                <List style={styles.listStyle}>
-                    <DataTable Body>
-                        <DataTable.Row>
-                            <DataTable.Cell>{item.ap_code}</DataTable.Cell>
-                            <DataTable.Cell>{item.loa_date}</DataTable.Cell>
-                            <DataTable.Cell numeric>{item.amount}</DataTable.Cell>
-                        </DataTable.Row>
-                    </DataTable>
-                </List>
-            </ScrollView >
-        );
-    };
+renderItem = ({ item }) => {
+    { console.log('testing', item) }
+    return (
+        <ScrollView>
+            <List style={styles.listStyle}>
+                <DataTable Body>
+                    <DataTable.Row>
+                        <DataTable.Cell>{item.ap_code}</DataTable.Cell>
+                        <DataTable.Cell>        {moment(item.loa_date).format('L')}</DataTable.Cell>
+                        <DataTable.Cell numeric>{item.amount}</DataTable.Cell>
+                    </DataTable.Row>
+                </DataTable>
+            </List>
+        </ScrollView >
+    );
+};
 
-    renderSeparator = () => {
-        return (
-            <View
-                style={{ height: 0, backgroundColor: 'gray' }}>
-            </View>
-        )
-    }
-
-    render() {
-        const { spinnerStyle, spinnerTextStyle } = styles
+renderSeparator = () => {
+    return (
+        <View
+            style={{ height: 0, backgroundColor: 'gray' }}>
+        </View>
+    )
+}
+  
+  render() {
+    const { spinnerStyle, spinnerTextStyle } = styles
         if (this.state.isLoading) {
             return (
                 <View style={spinnerStyle}>
@@ -92,20 +120,20 @@ export default class tabOne extends React.Component {
                 </View>
             )
         }
-        return (
-
-            <Container>
-                <Header style={styles.headerStyle}>
-                    <Left>
-                        <Button transparent onPress={() => this.props.navigation.navigate('ApprovedUtil')}>
-                            <Icon name="arrow-back" style={{ color: "#fff" }} />
-                        </Button>
-                    </Left>
-                    <Body>
-                        <Title>Posted Utilization</Title>
-                    </Body>
-                    <Right />
-                </Header>
+    return (
+      <Container>
+        <StatusBar translucent backgroundColor="transparent" />
+        <ScrollView>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Posted Utilization</Text>
+            <Text style={styles.headerSubheader}>
+              Billed availments and encoded in Intellicare system.
+            </Text>
+          </View>
+          <View style={styles.contentStyle}>
+            {/* <Content>
+              <View>
+                <Text style={{alignSelf: 'center', justifyContent: 'center'}}> */}
                 <DataTable>
                     <DataTable.Header>
                         <DataTable.Title>RCS No.</DataTable.Title>
@@ -119,74 +147,105 @@ export default class tabOne extends React.Component {
                     //   keyExtractor={(item, index) => amount}
                     ItemSeparatorComponent={this.renderSeparator}
                 />
-                <Footer style={styles.footerStyle}>
-                    <Content>
-                        <Item style={styles.footeritemStyle}>
-                            <Left>
-                                <Text style={styles.footeritemLabel}>Total Posted Amount:</Text>
-                            </Left>
-                            <Body style={styles.footeritemBody}>
-                                <Label style={styles.footerlabelTotalAmount}>0.00</Label>
-                            </Body>
-                        </Item>
-                    </Content>
-                </Footer>
-            </Container>
-
-        );
-    }
+                {/* </Text>
+              </View>
+            </Content> */}
+          </View>
+        </ScrollView>
+        <Footer style={styles.footerStyle}>
+          <Content>
+            <Item style={styles.footeritemStyle}>
+              <Left>
+                <Text style={styles.footeritemLabel}>Total Posted Amount:</Text>
+              </Left>
+              <Body style={styles.footeritemBody}>
+                <Label style={styles.footerlabelTotalAmount}>{parseFloat(this.state.totalUtilAmount).toFixed(2)}</Label>
+              </Body>
+            </Item>
+          </Content>
+        </Footer>
+      </Container>
+    );
+  }
 }
 
-const styles = StyleSheet.create(
-    {
-        headerStyle: {
-            backgroundColor: "#5fb650",
-        },
-        headerText: {
-            color: "#fff",
-            fontSize: 20,
-        },
-        contentDataTable: {
-            justifyContent: "center",
-            alignContent: "center"
-        },
-        footerStyle: {
-            backgroundColor: "#fff"
-        },
-        footerContent: {
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center"
-        },
-        footeritemStyle: {
-            padding: 20,
-        },
-        footeritemLabel: {
-            color: "#2d2d2d",
-            fontWeight: "bold",
-        },
-        footeritemInfo: {
-            color: "#b2bec3",
-            textTransform: "uppercase"
-        },
-        footeritemBody: {
-            alignItems: 'flex-end',
-        },
-        footerlabelTotalAmount: {
-            color: "green",
-            fontWeight: "bold",
-        },
-        spinnerStyle: {
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            position: 'absolute',
-            opacity: 0.2,
-            backgroundColor: 'white',
-            left: 0,
-            right: 0,
-            top: 0,
-            bottom: 0,
-        }
-    }
-)
+const styles = StyleSheet.create({
+  header: {
+    flex: 1,
+    height: 100,
+    backgroundColor: '#5fb650',
+    paddingHorizontal: 30,
+  },
+  headerTitle: {
+    fontSize: 30,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
+  headerSubheader: {
+    fontSize: 12,
+    color: '#a5d69c',
+  },
+  contentStyle: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    shadowColor: '#2d2d2d',
+    shadowOffset: {width: 1, height: 5},
+    shadowOpacity: 0.1,
+    shadowRadius: 20,
+    elevation: 5,
+    borderWidth: 0,
+  },
+  headerStyle: {
+    backgroundColor: '#5fb650',
+  },
+  headerText: {
+    color: '#fff',
+    fontSize: 20,
+  },
+  contentDataTable: {
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  footerStyle: {
+    backgroundColor: '#fff',
+  },
+  footerContent: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  footeritemStyle: {
+    justifyContent: 'center',
+    padding: 15,
+    borderBottomWidth: 0,
+  },
+  footeritemLabel: {
+    color: '#6d6e72',
+    fontWeight: 'bold',
+  },
+  footeritemInfo: {
+    color: '#b2bec3',
+    textTransform: 'uppercase',
+  },
+  footeritemBody: {
+    alignItems: 'flex-end',
+  },
+  footerlabelTotalAmount: {
+    color: 'green',
+    fontWeight: 'bold',
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    opacity: 0.2,
+    backgroundColor: 'white',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+}
+});
