@@ -112,7 +112,7 @@ async getacct()
                 <StatusBar translucent backgroundColor="transparent" />
                 <ScrollView>
                     <View style={styles.header}>
-                        <Text style={styles.headerTitle}>Log in</Text>
+                        <Text style={styles.headerTitle}>Sign In</Text>
                     </View>
                     <View style={styles.contentStyle}>
                         <View style={styles.companyLogo}>
