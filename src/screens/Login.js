@@ -135,19 +135,9 @@ async getname()
 
     render() {
         return (
-<<<<<<< HEAD
-            <Container>
-                <StatusBar translucent backgroundColor="transparent" />
-                <ScrollView>
-                    <View style={styles.header}>
-                        <Text style={styles.headerTitle}>Sign In</Text>
-                    </View>
-                    <View style={styles.contentStyle}>
-=======
             <ScrollView>
                 <Container>
                     <ImageBackground source={require('../../assets/images/white-with-skin.jpg')} style={styles.backgroundImage}>
->>>>>>> dfef485ef1b9a19091c85cc4b6249eddac0ef49e
                         <View style={styles.companyLogo}>
                             <Image source={require('../../assets/images/intellicarelogo.png')} style={styles.imageStyle} resizeMode='contain' />
                             <Label style={styles.fullertonLabel}>A Member of Fullerton Health</Label>
