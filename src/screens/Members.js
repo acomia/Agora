@@ -114,7 +114,7 @@ export default class Members extends React.Component {
               <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
 
                 <Left>
-                  <Thumbnail source={require('../../assets/images/sample-image-square.jpg')} />
+                  <Thumbnail source={require('../../assets/images/user.png')} />
                 </Left>
                
                 <Body style={{ borderBottomWidth: 0 }}>
