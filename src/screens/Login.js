@@ -1,6 +1,6 @@
 import React from 'react'
-import { StyleSheet, View, Dimensions, Image, ImageBackground, StatusBar } from 'react-native'
-import { Container, Button, Text, Form, Item, Input, Label, Header, Left, Body, Right, Icon, Title } from 'native-base'
+import { StyleSheet, View, Dimensions, Image, ImageBackground } from 'react-native'
+import { Container, Button, Text, Form, Item, Input, Label } from 'native-base'
 import { ScrollView } from 'react-native-gesture-handler';
 import {StackActions, NavigationActions} from 'react-navigation'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_NAME = 'memb_name'
 
 const resetAction = StackActions.reset({
     index: 0, // <-- currect active route from actions array
@@ -106,8 +107,35 @@ async getacct()
     }
 }
 
+//store member name
+async storemembname(memb_name)
+{
+    try
+    {
+        await AsyncStorage.setItem(MEMB_NAME,memb_name);
+        this.getname();
+    } catch(error)
+    {
+        console.log("CANT STORE MEMB NAME")
+    }
+}
+
+async getname()
+{
+    try
+    {
+       let membname =  await AsyncStorage.getItem(MEMB_NAME);
+       console.log("memb name is: "+ membname);
+    } catch(error)
+    {
+        console.log("CANT GET NAME")
+    }
+}
+
+
     render() {
         return (
+<<<<<<< HEAD
             <Container>
                 <StatusBar translucent backgroundColor="transparent" />
                 <ScrollView>
@@ -115,6 +143,11 @@ async getacct()
                         <Text style={styles.headerTitle}>Sign In</Text>
                     </View>
                     <View style={styles.contentStyle}>
+=======
+            <ScrollView>
+                <Container>
+                    <ImageBackground source={require('../../assets/images/white-with-skin.jpg')} style={styles.backgroundImage}>
+>>>>>>> dfef485ef1b9a19091c85cc4b6249eddac0ef49e
                         <View style={styles.companyLogo}>
                             <Image source={require('../../assets/images/intellicarelogo.png')} style={styles.imageStyle} resizeMode='contain' />
                             <Label style={styles.fullertonLabel}>A Member of Fullerton Health</Label>
@@ -142,48 +175,15 @@ async getacct()
                                 <Text > Login </Text>
                             </Button>
                         </View>
-                    </View>
-                </ScrollView>
-            </Container>
+                        <View style={styles.footer}>
+                            <Text style={styles.footerText}>By logging in to this application, I have read and understood the Terms and Conditions</Text>
+                        </View>
+                    </ImageBackground>
+                </Container>
+            </ScrollView>
         );
     };
-    _getRequest() {
-        fetch('http:192.168.1.104:3005/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-
-            }
-        })
-            .then((response) => {
-                response.json()
-                    .then((data) => {
-                        alert(JSON.stringify(data.key))
-                    })
-            })
-            .catch((error) => {
-                alert('Error!' + error)
-            })
-    }
-
-    _postRequest() {
-        fetch('http:192.168.9.104:3005/post', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
-            }
-        })
-            .then((response) => {
-                response.json()
-                    .then((data) => {
-                        alert(JSON.stringify(data.message))
-                    })
-            })
-            .catch((error) => {
-                alert('Error!' + error)
-            })
-    }
-
+   
     _postUser() {
         fetch('http://52.230.122.226:3000/api/v1/login', {
             method: 'POST',
@@ -204,11 +204,14 @@ async getacct()
                             let accessToken = data.token
                             this.storeToken(accessToken)
                             
-                            let membId = data.user_info.id.toString()
-                            this.storememberId(membId)
+                            let memberId = data.user_info.id.toString()
+                            this.storememberId(memberId)
                            
                             let memb_Accountno = data.user_info.account_no
                             this.storeacct(memb_Accountno)
+
+                            let memb_name = data.user_info.first_name
+                            this.storemembname(memb_name)
         
 
                             this.props.navigation.dispatch(resetAction);
@@ -224,35 +227,9 @@ async getacct()
             })
     }
 
-  _postUser() {
-    // alert('sample')
-    // return
-    fetch('http:192.168.9.104:3005/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
-      },
-      body: JSON.stringify({
-        username: this.state.username,
-        password: this.state.password,
-      }),
-    })
-      .then(response => {
-        response.json().then(data => {
-          alert(JSON.stringify(data.message));
-          if (data.message === 'User found!') {
-            alert;
-            this.props.navigation.navigate('DashboardPage');
-          } else {
-            alert('Username not found!');
-          }
-        });
-      })
-      .catch(error => {
-        alert('Error!' + error);
-      });
-  }
+
 }
+
 
 export const { width, height } = Dimensions.get('window');
 
@@ -260,54 +237,46 @@ const styles = StyleSheet.create(
     {
         containerStyle: {
             flex: 1,
-
         },
-        header: {
+        backgroundImage: {
             flex: 1,
-            height: 100,
-            backgroundColor: "#5fb650",
-            paddingHorizontal: 30,
+            resizeMode: "stretch",
         },
-        headerTitle: {
-            fontSize: 30,
-            fontWeight: "bold",
-            color: "#fff"
+        headerBackground: {
+            backgroundColor: '#fff',
         },
-        contentStyle: {
-            paddingVertical: 50,
-            marginTop: -45,
-            backgroundColor: "#fff",
-            borderTopStartRadius: 50,
-            borderTopEndRadius: 50,
-            justifyContent: "center",
-            shadowColor: '#2d2d2d',
-            shadowOffset: { width: 1, height: 5 },
-            shadowOpacity: 0.10,
-            shadowRadius: 20,
-            elevation: 5,
-            borderWidth: 0,
+        title: {
+            fontWeight: "bold"
         },
         loginForm: {
+            flex: 4,
             padding: 10,
             paddingHorizontal: 30,
         },
         companyLogo: {
+            flex: 2,
             padding: 20,
             justifyContent: "center"
         },
         imageStyle: {
-            height: height * 0.10,
-            width: width * 0.50,
+            flex: 1,
+            height: '10%',
+            width: width * 0.65,
             alignSelf: "center",
         },
         fullertonLabel: {
             color: '#273c75',
             fontWeight: "bold",
-            fontSize: 12,
+            fontSize: 15,
+            marginTop: -75,
             alignSelf: "center"
         },
         labelStyle: {
             marginBottom: 5,
+        },
+        footer: {
+            flex: 1,
+            paddingBottom: 10,
         },
         footerText: {
             textAlign: "center",
@@ -320,7 +289,7 @@ const styles = StyleSheet.create(
         },
         ForgotPasswordLink: {
             color: '#3498db',
-            fontSize: 12,
+            fontSize: 16,
             alignSelf: "flex-end",
             marginTop: 10
         }

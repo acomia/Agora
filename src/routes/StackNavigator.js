@@ -175,10 +175,30 @@ AppStack = createStackNavigator({
       header: null,
     },
   },
+  IntellimapPage: {
+    screen: Intellimap,
+    navigationOptions: {
+      header: null,
+    },
+  },
+
   DoctorSearchNavigation: {
     screen: DoctorSearchNavigation,
     navigationOptions: {
       header: null,
+    },
+  },
+  EditProfilePage: {
+    screen: EditProfile,
+    navigationOptions: {
+      title: 'Edit',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+      },
+      headerTintColor: '#fff',
     },
   },
   MedgatePage: {

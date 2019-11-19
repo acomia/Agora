@@ -2,7 +2,7 @@ import React from 'react'
 import { StyleSheet, View, ActivityIndicator } from 'react-native'
 import { Container, Header, Button, Text, Left, Right, Body, Label, Thumbnail, ListItem } from 'native-base'
 import ImagePicker from "react-native-image-picker"
-
+import Spinner from 'react-native-spinkit';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 
@@ -18,7 +18,7 @@ export default class Profile extends React.Component {
         this.state = {
             photo: null,
             dataSource: [],
-            isLoading: true
+            isLoading: true,
         }
     }
 
@@ -63,18 +63,10 @@ export default class Profile extends React.Component {
 
         const { photo } = this.state;
 
-        if (this.state.isLoading) {
-            return (
-                <View style={{ flex: 1, padding: 20 }}>
-                    <ActivityIndicator />
-                </View>
-            )
-        }
-
         return (
             <Container>
                 <Header span style={styles.headerStyle}>
-                <Body style={{ justifyContent: "center" }}>
+                    <Body style={{ justifyContent: "center" }}>
                         {photo && (
                             <Thumbnail large style={{ alignSelf: "center" }} source={{ uri: photo.uri }} resizeMode='contain' />
                         )}
@@ -133,6 +125,21 @@ export default class Profile extends React.Component {
     };
     render() {
         { console.log('member', this.state) }
+
+        const { spinnerStyle, spinnerTextStyle } = styles
+        if (this.state.isLoading) {
+            return (
+                <View style={spinnerStyle}>
+                    <Spinner
+                        color={'green'}
+                        size={50}
+                        type={'ChasingDots'}
+                    />
+                    <Text style={spinnerTextStyle}>Loading...</Text>
+                </View>
+            )
+        }
+
         return (
             <View style={StyleSheet.container}>
                 <FlatList
@@ -181,6 +188,18 @@ const styles = StyleSheet.create(
             alignSelf: "center",
             color: "#fff",
             fontSize: 14
+        },
+        spinnerStyle: {
+            flex: 1,
+            justifyContent: 'center',
+            alignItems: 'center',
+            position: 'absolute',
+            opacity: 0.2,
+            backgroundColor: 'black',
+            left: 0,
+            right: 0,
+            top: 0,
+            bottom: 0,
         }
     }
 )

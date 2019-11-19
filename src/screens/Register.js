@@ -6,10 +6,10 @@ import {StackActions, NavigationActions} from 'react-navigation'
 
 
 const resetAction = StackActions.reset({
-    index: 1, // <-- currect active route from actions array
+    index: 0, // <-- currect active route from actions array
     key: null,
     actions: [
-      NavigationActions.navigate({ routeName: 'OnBoarding' }),
+      NavigationActions.navigate({ routeName: 'OnBoardingPage' }),
     ],
   });
 
@@ -24,7 +24,6 @@ export default class Login extends React.Component {
         civil_stat: 'single',
         email: '',
         mobile_no: '',
-        username: '',
         password: '',
         confirm_password: '',
         intellicare_no: '',
@@ -36,6 +35,9 @@ export default class Login extends React.Component {
             <Container>
                 <StatusBar translucent backgroundColor="transparent" />
                 <ScrollView>
+                <View style={styles.header}>
+                        <Text style={styles.headerTitle}>Create an account</Text>
+                    </View>
                     <View style={styles.viewForm}>
                         <Text style={styles.headerText}>Personal Information</Text>
                         <View style={styles.formInfo}>
@@ -115,7 +117,7 @@ export default class Login extends React.Component {
                                         <Picker.Item label="Married" value="married" />
                                     </Picker>
                                 </Item>
-                                <Item stackedLabel style={styles.formStyle} style={{ alignItems: "flex-start" }}>
+                                {/* <Item stackedLabel style={styles.formStyle} style={{ alignItems: "flex-start" }}>
                                     <Label>Date of birth</Label>
                                     <DatePicker
                                         defaultDate={new Date(2018, 4, 4)} style={{ alignSelf: Left }}
@@ -132,8 +134,8 @@ export default class Login extends React.Component {
                                         onDateChange={this.setDate}
                                         disabled={false}
                                     />
-                                </Item>
-                                <Item stackedLabel style={styles.formStyle} style={{ marginTop: 10 }}>
+                                </Item> */}
+                                {/* <Item stackedLabel style={styles.formStyle} style={{ marginTop: 10 }}>
                                     <Label>Civil Status</Label>
                                     <Item picker>
                                         <Picker
@@ -149,7 +151,7 @@ export default class Login extends React.Component {
                                             <Picker.Item label="Married" value="married" />
                                         </Picker>
                                     </Item>
-                                </Item>
+                                </Item> */}
                             </Item>
                         </View>
                     </View>
@@ -280,12 +282,15 @@ _InsertRequest() {
                         alert("Successfully Registered!")
                         this.props.navigation.dispatch(resetAction);
                     } 
+                    else{
+                    console.log(data.errors);
+                    }
                     // else if (data.errors.message.email === 'Must be a valid email' ) 
                     // {
                     //     return  alert("Invalid Email.")
                     // } 
                       
-                            console.log(data.errors);   
+                              
                         //     let deptcount = Object.keys(data.errors).length;
                         //     for (let i = 0; i < deptcount; i++) {
                         //       let deptlist = data.errors[i];
@@ -300,7 +305,6 @@ _InsertRequest() {
         })
 
     }
-
 }
  
 

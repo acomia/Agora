@@ -20,6 +20,7 @@ import {
   Accordion,
   Spinner,
   Icon,
+  Button,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
@@ -30,6 +31,8 @@ export default function DoctorProfile() {
   const tokenVal = useNavigationParam('token');
 
   const [hospitalList, setHospitalList] = useState([]);
+  const [error, setError] = useState(false);
+  const [fetching, setFetching] = useState(false);
   const [token] = useState(tokenVal);
   const dataArray = hospitalList;
 
@@ -44,10 +47,13 @@ export default function DoctorProfile() {
     };
   }, []);
 
+  let renderHospitalAccreditation;
+
   async function fetchHospitalAccreditation(signal) {
     try {
+      setFetching(true);
       let response = await fetch(
-        `http://www.intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
+        `http://203.160.190.52/webservice/thousandminds/api/searchprovider/${token}`,
         {
           method: 'POST',
           signal: signal,
@@ -114,7 +120,7 @@ export default function DoctorProfile() {
           }
 
           hospitals.push({
-            title: hospclinic,
+            title: toTitleCase(hospclinic),
             hscode: hscode,
             drcode: drcode,
             room: room,
@@ -130,42 +136,81 @@ export default function DoctorProfile() {
       console.log(hospitals);
 
       if (hospitals.length > 0) setHospitalList(hospitals);
+      setError(false);
+      setFetching(false);
     } catch (error) {
       console.log(error);
+      setError(true);
+      setFetching(false);
     }
   }
 
-  let renderHospitalAccreditation;
-
-  if (hospitalList.length < 1)
+  if (!error) {
+    if (hospitalList.length < 1)
+      renderHospitalAccreditation = (
+        <View style={{flex: 1, justifyContent: 'center'}}>
+          <Container>
+            <Spinner color="#5fb650" />
+          </Container>
+        </View>
+      );
+    else
+      renderHospitalAccreditation = (
+        <View style={styles.accordion}>
+          <Accordion
+            dataArray={dataArray}
+            style={{borderWidth: 0}}
+            headerStyle={{
+              backgroundColor: '#fff',
+              fontSize: 12,
+              color: '#2d2d2d',
+              paddingBottom: 15,
+            }}
+            renderContent={item => <AccordionDetails dataArray={item} />}
+          />
+        </View>
+      );
+  } else {
     renderHospitalAccreditation = (
       <View style={{flex: 1, justifyContent: 'center'}}>
-        <Container>
-          <Spinner />
-        </Container>
-      </View>
-    );
-  else
-    renderHospitalAccreditation = (
-      <View style={styles.accordion}>
-        <Accordion
-          dataArray={dataArray}
-          style={{borderWidth: 0}}
-          headerStyle={{
-            backgroundColor: '#fff',
-            fontSize: 14,
-            color: '#2d2d2d',
-            paddingBottom: 20,
+        <Thumbnail
+          square
+          source={require('../../assets/images/network_error.png')}
+          style={{
+            height: 100,
+            width: 100,
+            marginHorizontal: 10,
+            alignSelf: 'center',
           }}
-          contentStyle={{
-            backgroundColor: 'transparent',
-            fontSize: 14,
-            color: '#2d2d2d',
-          }}
-          renderContent={item => <AccordionDetails dataArray={item} />}
         />
+        <Text style={{textAlign: 'center', color: 'gray', fontSize: 12}}>
+          Failed To Display Hospital Accreditation
+        </Text>
+        <Text style={{textAlign: 'center', color: 'gray', fontSize: 12}}>
+          Please Check Your Internet Connection
+        </Text>
+        <Text></Text>
+        <Button
+          small
+          style={{alignSelf: 'center', backgroundColor: '#5fb650'}}
+          onPress={() => {
+            fetchHospitalAccreditation();
+          }}>
+          <Text>Retry</Text>
+        </Button>
+        {fetching ? (
+          <View
+            style={{flex: 1, flexDirection: 'row', justifyContent: 'center'}}>
+            <Spinner size="small" color="#5fb650" />
+            <Text style={{alignSelf: 'center', color: 'gray', fontSize: 12}}>
+              {' '}
+              Reconnecting...
+            </Text>
+          </View>
+        ) : null}
       </View>
     );
+  }
 
   async function fetchProviderDetail(signal, drcode, hscode) {
     try {
@@ -191,6 +236,29 @@ export default function DoctorProfile() {
     }
   }
 
+  function renderThumbnail() {
+    if (drdata.specialization.toLowerCase().includes('dentist'))
+      return (
+        <Thumbnail
+          large
+          source={require('../../assets/images/dental.png')}
+          resizeMode="contain"
+          style={styles.avatarStyle}
+          square
+        />
+      );
+
+    return (
+      <Thumbnail
+        large
+        source={require('../../assets/images//stethoscope.png')}
+        resizeMode="contain"
+        style={styles.avatarStyle}
+        square
+      />
+    );
+  }
+
   return (
     <ScrollView>
       <StatusBar translucent backgroundColor="transparent" />
@@ -198,37 +266,42 @@ export default function DoctorProfile() {
         source={require('../../assets/images/intellicareheader.jpg')}
         style={styles.backgroundImage}>
         <View style={styles.headerUser}>
-          <Thumbnail
-            large
-            source={require('../../assets/images/doctor-avatar.png')}
-            resizeMode="contain"
-            style={styles.avatarStyle}
-          />
+          {renderThumbnail()}
           <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
         </View>
-        <Text style={styles.headerDetails}>{drdata.specialization}</Text>
+        <Text style={styles.headerDetails}>
+          {toTitleCase(drdata.specialization)}
+        </Text>
       </ImageBackground>
       <ScrollView>
         <View style={styles.hospitalAccreditation}>
-          <ListItem icon>
-            <Left>
-              <Thumbnail
-                small
-                style={{alignSelf: 'center'}}
-                source={require('../../assets/images/id-card.png')}
-                resizeMode="contain"
-              />
-            </Left>
-            <Body style={{borderBottomWidth: 0}}>
-              <Text style={styles.contentHeader}>Hospital Accreditation</Text>
-            </Body>
-            <Right />
-          </ListItem>
+          {!error ? (
+            <ListItem icon>
+              <Left>
+                <Thumbnail
+                  small
+                  style={{alignSelf: 'center'}}
+                  source={require('../../assets/images/id-card.png')}
+                  resizeMode="contain"
+                />
+              </Left>
+              <Body style={{borderBottomWidth: 0}}>
+                <Text style={styles.contentHeader}>Hospital Accreditation</Text>
+              </Body>
+              <Right />
+            </ListItem>
+          ) : null}
           {renderHospitalAccreditation}
         </View>
       </ScrollView>
     </ScrollView>
   );
+}
+
+function toTitleCase(str) {
+  return str.replace(/\w\S*/g, function(txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
 }
 
 export const {width, height} = Dimensions.get('window');
@@ -238,7 +311,7 @@ const styles = StyleSheet.create({
     flex: 1,
     resizeMode: 'stretch',
     justifyContent: 'center',
-    height: 200
+    height: 200,
   },
   headerStyle: {
     height: 180,
@@ -252,11 +325,15 @@ const styles = StyleSheet.create({
   headerDetails: {
     alignSelf: 'center',
     color: '#fff',
+    textAlign: 'center',
+    fontSize: 18,
   },
   labelNickname: {
     alignSelf: 'center',
     color: '#fff',
     fontWeight: 'bold',
+    fontSize: 20,
+    textAlign: 'center',
   },
   labelHeaderDetails: {
     alignSelf: 'center',

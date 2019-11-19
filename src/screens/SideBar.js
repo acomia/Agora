@@ -1,20 +1,44 @@
 import React from 'react';
-import {
-  StyleSheet,
-  TouchableNativeFeedback,
-  ImageBackground,
-} from 'react-native';
-import {
-  Container,
-  Header,
-  Text,
-  Icon,
-  Left,
-  Body,
-  ListItem,
-} from 'native-base';
+import {StyleSheet,TouchableNativeFeedback,ImageBackground} from 'react-native';
+import {Container,Header,Text,Icon,Left,Body,ListItem} from 'native-base';
+import AsyncStorage from '@react-native-community/async-storage'
+import {StackActions, NavigationActions} from 'react-navigation'
+
+const ACCESS_TOKEN = 'access_token';
+const MEMBER_ID = 'member_id';
+const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_NAME = 'memb_name'
+
+const resetAction = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [
+    NavigationActions.navigate({ routeName: 'OnBoardingPage' }),
+  ],
+});
+
 
 export default class SideBar extends React.Component {
+  onLogout()
+  {
+    this.deleteToken()
+  }
+  async deleteToken()
+  {
+    try
+    {
+      await AsyncStorage.removeItem(ACCESS_TOKEN)
+      await AsyncStorage.removeItem(MEMBER_ID)
+      await AsyncStorage.removeItem(MEMB_ACCOUNTNO)
+      await AsyncStorage.removeItem(MEMB_NAME)
+      this.props.navigation.dispatch(resetAction);
+    }
+    catch
+    {
+      console.log("Something went wrong")
+    }
+  }
+
   render() {
     return (
       <Container>
@@ -44,6 +68,17 @@ export default class SideBar extends React.Component {
             </Left>
             <Body style={styles.listLabel}>
               <Text>IntelliMap</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => { this.onLogout() }}>
+          <ListItem icon style={styles.listItemStyle}>
+          <Left>
+              <Icon active name="logout" />
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text>Logout</Text>
             </Body>
           </ListItem>
         </TouchableNativeFeedback>

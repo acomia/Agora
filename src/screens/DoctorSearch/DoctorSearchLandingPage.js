@@ -3,6 +3,7 @@ import {Text, Input, Form, Content, Button} from 'native-base';
 import {View, StyleSheet, Dimensions, StatusBar} from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from 'react-navigation-hooks';
+import {ActivityIndicator} from 'react-native-paper';
 
 export default function DoctorSearchLandingPage() {
   const [searchQuery, setSearchQuery] = useState({
@@ -12,20 +13,70 @@ export default function DoctorSearchLandingPage() {
     location: '',
   });
   const [btnSrchDisabled, setBtnSrchDisabled] = useState(true);
-  const [token, setToken] = useState('05222132-B3FE-E911-80BC-00155D006102');
+  const [token, setToken] = useState('');
+  const [checkConnection, setCheckConnection] = useState('');
 
   const {navigate} = useNavigation();
 
+  const networkFailed = (
+    <Text style={{alignSelf: 'center', fontSize: 10, color: 'red'}}>
+      Network Failed. Please Check Your Internet Connection.
+    </Text>
+  );
+
   useEffect(() => {
+    fetchToken();
     handleSrcBtnDisabled();
   });
 
+  async function fetchToken() {
+    try {
+      let response = await fetch(
+        'http://203.160.190.52/webservice/thousandminds/api/login',
+        {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            username: 'digitalxform',
+            password: 'th2p@ssw0rd',
+          }),
+        },
+      );
+
+      let responseJson = await response.json();
+      let tokenVal = responseJson.response.token;
+
+      setToken(tokenVal);
+      setCheckConnection('success');
+    } catch (error) {
+      setCheckConnection('failed');
+    }
+  }
+
+  function ConnectionValidity() {
+    if (checkConnection === 'checking')
+      return (
+        <View>
+          <Text style={{fontSize: 10}}>Checking Connection...</Text>
+          <ActivityIndicator size="small" color="white" />
+        </View>
+      );
+    else if (checkConnection === 'failed')
+      return (
+        <View>
+          <Text style={{fontSize: 16}}>RETRY</Text>
+        </View>
+      );
+    else return <Text style={{fontSize: 16}}>Search</Text>;
+  }
+
   function handleSrcBtnDisabled() {
-    let counter = 0;
-
-    for (let key in searchQuery) if (searchQuery[key].trim() === '') counter++;
-
-    counter === 4 ? setBtnSrchDisabled(true) : setBtnSrchDisabled(false);
+    if (checkConnection === 'checking') setBtnSrchDisabled(true);
+    else if (checkConnection === 'success' || checkConnection === 'failed')
+      setBtnSrchDisabled(false);
   }
 
   function handleOnChangeDoctorName(e) {
@@ -65,7 +116,12 @@ export default function DoctorSearchLandingPage() {
   }
 
   function handleSearch() {
-    navigate('DoctorSearchMainScreen', {searchQuery, token});
+    if (checkConnection === 'success')
+      navigate('DoctorSearchMainScreen', {searchQuery, token});
+    else {
+      setCheckConnection('checking');
+      fetchToken();
+    }
   }
 
   const winHeight = Dimensions.get('window').height;
@@ -117,11 +173,12 @@ export default function DoctorSearchLandingPage() {
                 value={searchQuery.location}
                 onChangeText={handleOnchangeLocation}
               />
+              {checkConnection === 'failed' ? networkFailed : null}
               <Button
                 style={styles.buttonSearch}
                 disabled={btnSrchDisabled}
                 onPress={handleSearch}>
-                <Text style={{fontSize: 16}}>Search</Text>
+                {ConnectionValidity()}
               </Button>
             </Form>
           </Content>
