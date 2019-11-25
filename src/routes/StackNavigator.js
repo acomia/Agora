@@ -60,7 +60,15 @@ AppStack = createStackNavigator({
   ForgotPasswordPage: {
     screen: ForgotPassword,
     navigationOptions: {
-      title: 'Forgot Password',
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#fff',
     },
   },
   DashboardPage: {
@@ -191,12 +199,13 @@ AppStack = createStackNavigator({
   EditProfilePage: {
     screen: EditProfile,
     navigationOptions: {
-      title: 'Edit',
+      title: '',
       headerStyle: {
         backgroundColor: '#5fb650',
         elevation: 0,
         shadowOpacity: 0,
         borderBottomWidth: 0,
+        paddingTop: 20,
       },
       headerTintColor: '#fff',
     },
