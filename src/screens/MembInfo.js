@@ -24,12 +24,43 @@ import {
 import LinearGradient from 'react-native-linear-gradient';
 import { ScrollView } from 'react-native-gesture-handler';
 import moment from 'moment'
+// import { stat } from 'fs';
 
 export default class MembInfo extends React.Component {
-  render() {
-    const { fullname, acct, cardno, birth_date, gender, status, member_type, card_printed_date, employee_id, room_and_board, maximum_limit, coverage_period, company, civil_status, relation } = this.props.navigation.state.params
 
+  render() {
+
+    const { fullname, acct, cardno, birth_date, gender, status, member_type, card_printed_date, employee_id, room_and_board, maximum_limit, coverage_period, company, civil_status, relation } = this.props.navigation.state.params
+    var membstat = civil_status; // Assigned a value to the variable text
+    switch (membstat)     // Passing the variable to switch condition
+    {
+      case "A":
+        membstat = 'ANNULLED'
+        break;
+      case "M":
+        membstat = 'MARRIED'
+        break;
+      case "P":
+        membstat = 'SINGLE PARENT'
+        break;
+      case "S":
+        membstat = 'SINGLE'
+        break;
+      case "W":
+        membstat = 'WIDOWED'
+        break;
+      case "X":
+        membstat = 'SEPARATED'
+        break;
+      case "C":
+        membstat = 'DOMESTIC PARTNER/COMMON LAW SPOUSE'
+        break;
+      default:
+        membstat = ''
+        break;
+    }
     return (
+
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
         <ScrollView>
@@ -112,7 +143,7 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Civil Status</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>{civil_status}</Label>
+                <Label style={styles.itemInfo}>{membstat}</Label>
               </Body>
             </Item>
             <Item style={styles.itemStyle}>

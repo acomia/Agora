@@ -164,7 +164,7 @@ export default class Login extends React.Component {
   }
 
   _postUser() {
-    fetch('http://52.230.122.226:3000/api/v1/login', {
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json;charset=UTF-8',
@@ -176,22 +176,23 @@ export default class Login extends React.Component {
     })
       .then(response => {
         response.json().then(data => {
-          if (data.status === 200) {
-            let accessToken = data.token;
+          if (data.is_success === 'true') {
+           
+            let accessToken = data.access_token;
             this.storeToken(accessToken);
 
-            let memberId = data.user_info.id.toString();
-            this.storememberId(memberId);
+            // let memberId = data.data.id.toString();
+            // this.storememberId(memberId); 
 
-            let memb_Accountno = data.user_info.account_no;
+            let memb_Accountno = data.data.accountno;
             this.storeacct(memb_Accountno);
 
-            let memb_name = data.user_info.first_name;
+            let memb_name = data.data.firstname;
             this.storemembname(memb_name);
 
             this.props.navigation.dispatch(resetAction);
           } else {
-            alert(data.message);
+            alert(data.error_message);
           }
         });
       })

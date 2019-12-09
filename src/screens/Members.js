@@ -4,8 +4,17 @@ import { Container, Header, Content, Button, Text, Icon, Left, Right, Body, Labe
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
+import {StackActions, NavigationActions} from 'react-navigation';
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const ACCESS_TOKEN = 'access_token';
+
+const resetAction = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
+});
+
 export default class Members extends React.Component {
 
   constructor(props) {
@@ -18,78 +27,91 @@ export default class Members extends React.Component {
     }
   }
 
-  componentDidMount() {
+  onLogout() {
+    this.deleteToken();
+  }
+  async deleteToken() {
+    try {
+      await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
+      this.props.navigation.dispatch(resetAction);
+    } catch {
+      console.log('Something went wrong');
+    }
+  }
+
+  async componentDidMount() {
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     this.setState({
       isLoading: true
     })
-    this.getacct()
+    // this.getacct()
+    // this.getToken()
     // let xmemb = await AsyncStorage.getItem(MEMB_ACCOUNTNO)
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/login', {
-      method: 'POST',
+    console.log('acct1',membacct)
+     console.log('token1','bearer',token)
+   
+    //global.storeToken = data.data.token
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/profile', {
+      method: 'GET',
       headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: "digitalxform_util",
-        password: "memprof@pass"
-      })
-
+        'Authorization': 'Bearer ' + token,
+        'AccountNo': membacct,
+        // 'paramContract': '1',
+        // 'Content-Type': 'application/json;charset=UTF-8'
+      }
     })
       .then((response) => {
         response.json()
-          .then((data) => {
-            if (data.is_success === true) {
-              global.storeToken = data.data.token
-              fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/profile', {
-                method: 'GET',
-                headers: {
-                  'authToken': global.storeToken,
-                  'paramAcct': this.membacct,
-                  // 'paramContract': '1',
-                  'Content-Type': 'application/json;charset=UTF-8'
-                }
-              })
-                .then((response) => {
-                  response.json()
-                    .then((responseJson) => {
-                      if (responseJson.data != null) {
-                        console.log('sampledata', responseJson)
-                        this.setState({
-                          isLoading: false,
-                          dataSource: [responseJson.data],
-                        });
-                      } else {
-                        alert('Members not found!')
-                        this.setState({ isLoading: false })
-                        this.props.navigation.navigate('Dashboard')
-                      }
-                    })
-                })
-                .catch((error) => {
-                  alert('Unable to connect to server' + error)
-                })
+          .then((responseJson) => {
+            console.log('data', responseJson)
+            if (responseJson.data != null) {
+              console.log('sampledata', responseJson)
+              this.setState({
+                isLoading: false,
+                dataSource: [responseJson.data],
+              });
+            } else 
+            if (response.Json = "Invalid Access Token"){
+              console.log('sampledata')
+              this.onLogout();
             }
-            else {
-              alert(data.message)
 
+            else{
+              alert('Members not found!')
+              this.setState({ isLoading: false })
+              this.props.navigation.navigate('Dashboard')
             }
           })
       })
-
       .catch((error) => {
-        alert('Error!' + error)
+        alert('Unable to connect to server' + error)
       })
+
   }
   //store member account no.
-  async getacct() {
-    try {
-      this.membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-      console.log("membacct is: " + this.membacct);
-      return this.membacct
-    } catch (error) {
-      console.log("CANT GET ACCT NO")
-    }
-  }
+  // async getacct() {
+  //   try {
+  //     this.membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+  //       let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+  //     console.log("membacct is: " + this.membacct);
+  //     return this.membacct
+  //   } catch (error) {
+  //     console.log("CANT GET ACCT NO")
+  //   }
+    
+  // }
+
+  // async getToken() {
+  //   try {
+  //     this.token  = await AsyncStorage.getItem(ACCESS_TOKEN);
+  //     console.log('membtoken is: ' + this.token);
+  //     return this.token
+  //   } catch (error) {
+  //     console.log('CANT GET TOKEN');
+  //   }
+  // }
 
   onUser = (item) => {
     this.props.navigation.navigate('MemberInfoPage', item);
@@ -99,24 +121,24 @@ export default class Members extends React.Component {
   renderItem = ({ item }) => {
     return (
       <Container>
-      <StatusBar translucent backgroundColor="transparent" />
-     
-      <ScrollView>
-        
+        <StatusBar translucent backgroundColor="transparent" />
+
+        <ScrollView>
+
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Account Profiles</Text>
           </View>
-         
+
           <View style={styles.contentStyle}>
-        
+
             <List style={styles.listStyle}>
-           
+
               <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
 
                 <Left>
-                  <Thumbnail source={require('../../assets/images/user.png')} />
+                  <Thumbnail source={require('../../assets/images/sample-image-square.jpg')} />
                 </Left>
-               
+
                 <Body style={{ borderBottomWidth: 0 }}>
                   <View style={styles.viewNameBadge}>
                     <Text style={styles.listFullname}>{item.fullname}</Text>
@@ -125,13 +147,13 @@ export default class Members extends React.Component {
                   <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
                   <Text>{item.member_type}</Text>
                 </Body>
-    
+
               </ListItem>
             </List>
           </View>
         </ScrollView>
-    </Container>
-     
+      </Container>
+
     );
   }
   renderSeparator = () => {
@@ -162,7 +184,7 @@ export default class Members extends React.Component {
           roundAvatar
           data={this.state.dataSource}
           renderItem={this.renderItem}
-          keyExtractor={(item, index) => index}
+          keyExtractor={(item, index) => item}
           ItemSeparatorComponent={this.renderSeparator}
         />
 

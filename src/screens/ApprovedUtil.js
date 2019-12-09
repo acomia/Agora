@@ -26,14 +26,19 @@ import {
   Button,
   List,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
-import {DataTable} from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
+import { DataTable } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
 import moment from 'moment'
+import 'intl';
+import 'intl/locale-data/jsonp/en';
+
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const ACCESS_TOKEN = 'access_token';
 const membacctUtil = '';
+
 
 export default class ApprovedUtil extends React.Component {
   constructor(props) {
@@ -42,46 +47,47 @@ export default class ApprovedUtil extends React.Component {
       isLoading: true,
       utilDataSource: [],
       modalVisible: false,
-      totalUtilAmount: 0
+      totalUtilAmount: 0,
+      refreshing: false,
     };
   }
 
-  state = {
-    modalVisible: false,
-  };
+  // state = {
+  //   modalVisible: false,
+  // };
 
-  openModal = item => {
-    this.setState({modalVisible: true});
-    // this.props.navigation.navigate('ApprovedUtilModal', item);
-    return (
-      <View style={StyleSheet.container}>
-        <Modal
-          visible={this.state.modalVisible}
-          animationType={'fade'}
-          onRequestClose={() => this.closeModal()}>
-          <View style={styles.modalContainer}>
-            <View style={styles.innerContainer}>
-              <Text>RCS No.</Text>
-              <Text>{item.ap_code}</Text>
-              <Button
-                rounded
-                block
-                success
-                style={{marginTop: 50}}
-                onPress={() => this.closeModal()}>
-                <Text> Okay </Text>
-              </Button>
-            </View>
-          </View>
-        </Modal>
-      </View>
-    );
-  };
+  // openModal = item => {
+  //   this.setState({ modalVisible: true });
+  //   // this.props.navigation.navigate('ApprovedUtilModal', item);
+  //   return (
+  //     <View style={StyleSheet.container}>
+  //       <Modal
+  //         visible={this.state.modalVisible}
+  //         animationType={'fade'}
+  //         onRequestClose={() => this.closeModal()}>
+  //         <View style={styles.modalContainer}>
+  //           <View style={styles.innerContainer}>
+  //             <Text>RCS No.</Text>
+  //             <Text>{item.ap_code}</Text>
+  //             <Button
+  //               rounded
+  //               block
+  //               success
+  //               style={{ marginTop: 50 }}
+  //               onPress={() => this.closeModal()}>
+  //               <Text> Okay </Text>
+  //             </Button>
+  //           </View>
+  //         </View>
+  //       </Modal>
+  //     </View>
+  //   );
+  // };
 
-  closeModal() {
-    this.setState({modalVisible: false});
-    this.props.navigation.navigate('ApprovedUtilModal', item);
-  }
+  // closeModal() {
+  //   this.setState({ modalVisible: false });
+  //   this.props.navigation.navigate('ApprovedUtilModal', item);
+  // }
 
   // async _getacct() {
   //     try {
@@ -95,50 +101,41 @@ export default class ApprovedUtil extends React.Component {
 
   async componentDidMount() {
     // this._getacct()
-
-    this.membacctUtil = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    console.log('membacct is: ' + this.membacctUtil);
-
-    console.log('test102', global.storeToken);
-    console.log('test101', this.membacctUtil);
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil',
-      {
-        method: 'GET',
-        headers: {
-          authToken: global.storeToken,
-          paramAcct: this.membacctUtil,
-          'Content-Type': 'application/json;charset=UTF-8',
-          // 'paramContract': '1',
-        },
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'AccountNo': membacctposted,
+        'Content-Type': 'application/json;charset=UTF-8',
+        // 'paramContract': '1',
       },
+    },
     )
       .then(response => {
         response.json().then(responseJson => {
-
           if (responseJson.data != null) {
             let totalUtilAmount = 0;
+            this.setState({
+              isLoading: false,
+              utilDataSource: responseJson.data,
+              refreshing: false,
+            });
 
-          console.log('posted', responseJson);
-          console.log('test103', this.membacctUtil);
-          this.setState({
-            isLoading: false,
-            utilDataSource: responseJson.data,
-          });
+            responseJson.data.map(util => {
+              console.log(util.amount)
+              totalUtilAmount = totalUtilAmount + parseFloat(util.amount)
+            })
 
-          responseJson.data.map(util => {
-            console.log(util.amount)
-            totalUtilAmount = totalUtilAmount + parseFloat(util.amount)
-          })
+            this.setState({ totalUtilAmount })
 
-          this.setState({totalUtilAmount})
-
-        }else
-        {
-          alert('Approved Utilization Empty')
-          this.setState({isLoading: false})
-          this.props.navigation.navigate('Membinfo')          
-        }
+          } else {
+            alert('Approved Utilization Empty')
+            this.setState({ isLoading: false })
+            this.setState({ refreshing: false })
+            this.props.navigation.navigate('Membinfo')
+          }
 
         });
       })
@@ -146,6 +143,7 @@ export default class ApprovedUtil extends React.Component {
         alert('Error!' + error);
       });
   }
+
 
   //   render(){
   //     // const { utilDataSource } = this.state
@@ -173,19 +171,16 @@ export default class ApprovedUtil extends React.Component {
   //             )
   //             }
 
-  renderItem = ({item}) => {
-    {
-      console.log('testing', item);
-    }
+  renderItem = ({ item }) => {
     return (
       <TouchableOpacity onPress={() => this.openModal(item)}>
         <ScrollView>
           <List style={styles.listStyle}>
             <DataTable Body>
               <DataTable.Row>
-                <DataTable.Cell>{item.loa}</DataTable.Cell>
-                <DataTable.Cell>        {moment(item.loa_date).format('L')}</DataTable.Cell>
-                <DataTable.Cell numeric>{item.amount}</DataTable.Cell>
+                <DataTable.Cell style={styles.contentDataTable}>{item.provider_name}</DataTable.Cell>
+                <DataTable.Cell style={styles.contentDataTable}>{moment(item.loa_date).format('L')}</DataTable.Cell>
+                <DataTable.Cell numeric style={styles.contentDataTable}>{item.amount}</DataTable.Cell>
               </DataTable.Row>
             </DataTable>
           </List>
@@ -194,16 +189,26 @@ export default class ApprovedUtil extends React.Component {
     );
   };
 
+  handleRefresh = () => {
+    this.setState({
+      refreshing: true
+
+    }, () => {
+      this.componentDidMount();
+    }
+    )
+  }
+
   renderSeparator = () => {
-    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
+    return (
+      <View
+        style={{ height: 0, backgroundColor: 'gray' }}>
+      </View>
+    )
   };
 
   render() {
-    //  const { data } = this.state
-    // { console.log('member', this.state) }
-    // const totalAmount = utilDataSource.reduce((AmountTotal, total) => AmountTotal + total.amount, 0);
-
-    const {spinnerStyle, spinnerTextStyle} = styles;
+    const { spinnerStyle, spinnerTextStyle } = styles;
     if (this.state.isLoading) {
       return (
         <View style={spinnerStyle}>
@@ -212,7 +217,13 @@ export default class ApprovedUtil extends React.Component {
         </View>
       );
     }
-
+    // const NumberFormat = (value) =>
+    //   new Intl.NumberFormat('en-IN', {
+    //     style: 'currency',
+    //     currency: 'PHP',
+    //     minimumFractionDigits: 2 
+    //   }).format(value);
+    //   console.log('amount', NumberFormat(this.state.totalUtilAmount))
     return (
       <Container>
         <ScrollView>
@@ -226,16 +237,19 @@ export default class ApprovedUtil extends React.Component {
           <View style={styles.contentStyle}>
             <DataTable>
               <DataTable.Header>
-                <DataTable.Title>RCS No.</DataTable.Title>
-                <DataTable.Title>     Date</DataTable.Title>
-                <DataTable.Title numeric>Amount</DataTable.Title>
+                <DataTable.Title style={styles.headerStyle}>Provider's Name</DataTable.Title>
+                <DataTable.Title style={styles.headerStyle}>Date</DataTable.Title>
+                <DataTable.Title style={styles.headerStyle}>Amount</DataTable.Title>
               </DataTable.Header>
             </DataTable>
             <FlatList
+              contentContainerStyle={{ alignSelf: 'stretch' }}
               data={this.state.utilDataSource}
               renderItem={this.renderItem}
               //   keyExtractor={(item, index) => amount}
               ItemSeparatorComponent={this.renderSeparator}
+              refreshing={this.state.refreshing}
+              onRefresh={this.handleRefresh}
             />
           </View>
         </ScrollView>
@@ -243,12 +257,10 @@ export default class ApprovedUtil extends React.Component {
           <Content>
             <Item style={styles.footeritemStyle}>
               <Left>
-                <Text style={styles.footeritemLabel}>
-                  Total Approved Amount:
-                </Text>
+                <Text style={styles.footeritemLabel}>Total Approved Amount:</Text>
               </Left>
               <Body style={styles.footeritemBody}>
-                <Label style={styles.footerlabelTotalAmount}>{parseFloat(this.state.totalUtilAmount).toFixed(2)}</Label>
+                <Label style={styles.footerlabelTotalAmount}>{Intl.NumberFormat('en-US', { style: 'currency', currency: 'PHP', minimumFractionDigits: 2 }).format(this.state.totalUtilAmount)}</Label>
               </Body>
             </Item>
           </Content>
@@ -270,9 +282,14 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#fff',
   },
-  headerSubheader:{
+  headerSubheader: {
     fontSize: 12,
     color: "#a5d69c"
+  },
+  datacell: {
+    justifyContent: 'center',
+    padding: 15,
+    borderBottomWidth: 0,
   },
   contentStyle: {
     paddingHorizontal: 10,
@@ -283,14 +300,17 @@ const styles = StyleSheet.create({
     // borderTopEndRadius: 50,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
     borderWidth: 0,
   },
   headerStyle: {
-    backgroundColor: '#5fb650',
+    color: '#fff',
+    fontSize: 20,
+    fontWeight: 'bold',
+    justifyContent: 'center',
   },
   headerText: {
     color: '#fff',
