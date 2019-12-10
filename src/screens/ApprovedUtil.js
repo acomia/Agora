@@ -1,31 +1,6 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Image,
-  TouchableOpacity,
-  FlatList,
-  Modal,
-  style,
-  TouchableHighlight,
-} from 'react-native';
-import {
-  Container,
-  Text,
-  Header,
-  Left,
-  Right,
-  Body,
-  Title,
-  Footer,
-  Content,
-  Item,
-  Label,
-  Icon,
-  Button,
-  List,
-} from 'native-base';
+import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, Modal, style, TouchableHighlight } from 'react-native';
+import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -100,7 +75,6 @@ export default class ApprovedUtil extends React.Component {
   // }
 
   async componentDidMount() {
-    // this._getacct()
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
@@ -124,7 +98,6 @@ export default class ApprovedUtil extends React.Component {
             });
 
             responseJson.data.map(util => {
-              console.log(util.amount)
               totalUtilAmount = totalUtilAmount + parseFloat(util.amount)
             })
 
@@ -136,7 +109,6 @@ export default class ApprovedUtil extends React.Component {
             this.setState({ refreshing: false })
             this.props.navigation.navigate('Membinfo')
           }
-
         });
       })
       .catch(error => {
@@ -173,7 +145,7 @@ export default class ApprovedUtil extends React.Component {
 
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => this.openModal(item)}>
+      <TouchableOpacity>
         <ScrollView>
           <List style={styles.listStyle}>
             <DataTable Body>
@@ -195,8 +167,7 @@ export default class ApprovedUtil extends React.Component {
 
     }, () => {
       this.componentDidMount();
-    }
-    )
+    })
   }
 
   renderSeparator = () => {
@@ -284,7 +255,7 @@ const styles = StyleSheet.create({
   },
   headerSubheader: {
     fontSize: 12,
-    color: "#a5d69c"
+    color: "#a5d69c",
   },
   datacell: {
     justifyContent: 'center',

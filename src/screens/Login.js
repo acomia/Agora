@@ -176,7 +176,7 @@ export default class Login extends React.Component {
     })
       .then(response => {
         response.json().then(data => {
-          if (data.is_success === 'true') {
+          if (data.is_success == true) {
            
             let accessToken = data.access_token;
             this.storeToken(accessToken);

@@ -142,10 +142,11 @@ export default class Members extends React.Component {
                 <Body style={{ borderBottomWidth: 0 }}>
                   <View style={styles.viewNameBadge}>
                     <Text style={styles.listFullname}>{item.fullname}</Text>
-                    <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
+                    
                   </View>
                   <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
-                  <Text>{item.member_type}</Text>
+                  {/* <Text>{item.member_type}</Text> */}
+                  <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
                 </Body>
 
               </ListItem>

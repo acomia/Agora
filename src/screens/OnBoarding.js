@@ -52,7 +52,7 @@ export default class OnBoarding extends React.Component {
               <Text style={styles.textButtonSignIn}>Sign in</Text>
             </Button>
             <Button light rounded style={styles.buttonCreateAccount} onPress={() => this.props.navigation.navigate('RegisterPage')}>
-              <Text style={styles.textButtonCreateAccount}>Create an Account</Text>
+              <Text style={styles.textButtonCreateAccount}>Register</Text>
             </Button>
           </View>
           <View style={{fle: 1, justifyContent: "center", padding: 10, alignItems: "center"}}>
