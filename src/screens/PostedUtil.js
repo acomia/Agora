@@ -1,38 +1,24 @@
 import React from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, Image, TouchableOpacity, FlatList } from 'react-native';
-import {
-  Container,
-  Text,
-  Header,
-  Left,
-  Right,
-  Body,
-  Title,
-  Footer,
-  Content,
-  Item,
-  Label,
-  Icon,
-  Button,
-  List,
-} from 'native-base';
+import { StyleSheet, View, StatusBar, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
+import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable } from 'react-native-paper'
-import AsyncStorage from '@react-native-community/async-storage'
-import Spinner from 'react-native-spinkit'
-import moment from 'moment'
+import { DataTable } from 'react-native-paper';
+import AsyncStorage from '@react-native-community/async-storage';
+import Spinner from 'react-native-spinkit';
+import moment from 'moment';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
 
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const ACCESS_TOKEN = 'access_token';
-const membacctPosted = ''
+const membacctPosted = '';
 
-export default class tabOne extends React.Component {
+
+export default class PostedUtil extends React.Component {
 
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
       isLoading: true,
       PostedutilDataSource: [],
@@ -45,19 +31,18 @@ export default class tabOne extends React.Component {
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctpreapproved = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+    console.log('acctno', membacctpreapproved)
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
         'AccountNo': membacctpreapproved,
-        // 'paramContract': '7',
         'Content-Type': 'application/json;charset=UTF-8'
       },
     },
     )
-      .then((response) => {
-        response.json()
-          .then((responseJson) => {
+      .then(response => {
+        response.json().then(responseJson => {
             if (responseJson.data != null) {
               let totalUtilAmount = 0;
               this.setState({
@@ -67,7 +52,6 @@ export default class tabOne extends React.Component {
               });
 
               responseJson.data.map(util => {
-                console.log(util.amount)
                 totalUtilAmount = totalUtilAmount + parseFloat(util.amount)
               })
 
@@ -79,15 +63,16 @@ export default class tabOne extends React.Component {
               this.setState({ refreshing: false })
               this.props.navigation.navigate('Membinfo')
             }
-          })
+          });
       })
       .catch((error) => {
         alert('Error!' + error)
-      })
+      });
   }
 
 
   renderItem = ({ item }) => {
+    {console.log('data', item)}
     return (
       <TouchableOpacity>
         <ScrollView>
@@ -105,15 +90,13 @@ export default class tabOne extends React.Component {
     );
   };
 
-
-  handleRefresh = () => {
+  _handleRefresh = () => {
     this.setState({
       refreshing: true
-
     }, () => {
+      {console.log('handlerefresh', this.state.refreshing)}
       this.componentDidMount();
-    }
-    )
+    })
   }
 
   renderSeparator = () => {
@@ -122,7 +105,7 @@ export default class tabOne extends React.Component {
         style={{ height: 0, backgroundColor: 'gray' }}>
       </View>
     )
-  }
+  };
 
   render() {
     const { spinnerStyle, spinnerTextStyle } = styles;
@@ -135,7 +118,9 @@ export default class tabOne extends React.Component {
       );
     }
     return (
+  
       <Container>
+         <Content refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._handleRefresh} />}>
         <ScrollView>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Posted Utilization</Text>
@@ -157,11 +142,20 @@ export default class tabOne extends React.Component {
               renderItem={this.renderItem}
               //   keyExtractor={(item, index) => amount}
               ItemSeparatorComponent={this.renderSeparator}
-              refreshing={this.state.refreshing}
-              onRefresh={this.handleRefresh}
+              // refreshControl={
+              //   <RefreshControl
+              //    refreshing={this.state.refreshing}
+              //    onRefresh={this._handleRefresh}
+              //   />
+              // }
+              // refreshing={this.state.refreshing}
+              // onRefresh={this.handleRefresh}
             />
+          
           </View>
+          
         </ScrollView>
+        </Content>
         <Footer style={styles.footerStyle}>
           <Content>
             <Item style={styles.footeritemStyle}>
@@ -175,6 +169,7 @@ export default class tabOne extends React.Component {
           </Content>
         </Footer>
       </Container>
+
     );
   }
 }
@@ -194,6 +189,11 @@ const styles = StyleSheet.create({
   headerSubheader: {
     fontSize: 12,
     color: '#a5d69c',
+  },
+  datacell: {
+    justifyContent: 'center',
+    padding: 15,
+    borderBottomWidth: 0,
   },
   contentStyle: {
     paddingVertical: 10,
@@ -249,6 +249,17 @@ const styles = StyleSheet.create({
     color: 'green',
     fontWeight: 'bold',
   },
+  listStyle: {
+    color: 'green',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    backgroundColor: 'white',
+  },
+  innerContainer: {
+    alignItems: 'center',
+  },
   spinnerStyle: {
     flex: 1,
     justifyContent: 'center',
@@ -260,5 +271,5 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
-  }
+  },
 });

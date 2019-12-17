@@ -1,148 +1,166 @@
-import React from 'react';
-import {
-  StyleSheet,
-  View,
-  Dimensions,
-  Image,
-  ImageBackground,
-} from 'react-native';
-import {
-  Container,
-  Header,
-  Content,
-  Button,
-  Text,
-  Icon,
-  Left,
-  Right,
-  Body,
-  Title,
-  Form,
-  Item,
-  Input,
-  Label,
-  DatePicker,
-} from 'native-base';
+import React from 'react'
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
+import { Container, Button, Text, Left, Item, Input, Label, Icon } from 'native-base'
+// import { Icon } from 'react-native-elements'
+import Modal from 'react-native-modal'
 
 export default class ForgotPassword extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {chosenDate: new Date()};
-    this.setDate = this.setDate.bind(this);
-  }
 
-  setDate(newDate) {
-    this.setState({chosenDate: newDate});
-  }
+    constructor() {
+        super();
+        this.state = { email_add: '', visibleModal: false }
+    }
 
-  render() {
-    return (
-      <Container>
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Forgot Password</Text>
-        </View>
-        <View style={styles.contentStyle}>
-          <View style={styles.viewForm}>
-            <View style={styles.formPassword}>
-              <Label style={styles.labelPassword}>Provide the following:</Label>
-              <Item floatingLabel style={styles.formStyle}>
-                <Label>Username</Label>
-                <Input style={styles.labelStyle} />
-              </Item>
-              <Item
-                stackedLabel
-                style={styles.formStyle}
-                style={{alignItems: 'flex-start'}}>
-                <Label>Date of birth</Label>
-                <DatePicker
-                  defaultDate={new Date(2018, 4, 4)}
-                  style={{alignSelf: Left}}
-                  minimumDate={new Date(2018, 1, 1)}
-                  maximumDate={new Date(2018, 12, 31)}
-                  locale={'en'}
-                  timeZoneOffsetInMinutes={undefined}
-                  modalTransparent={true}
-                  animationType={'fade'}
-                  androidMode={'default'}
-                  placeHolderText="Select date"
-                  textStyle={{color: '#2d2d2d'}}
-                  placeHolderTextStyle={{color: '#bdc3c7'}}
-                  onDateChange={this.setDate}
-                  disabled={false}
-                />
-              </Item>
-              <Item floatingLabel style={styles.formStyle}>
-                <Label>Email Address</Label>
-                <Input style={styles.labelStyle} />
-              </Item>
+    RESET_PW() {
+        fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/send?postedfrom=mobile', {
+            method: 'PUT',
+            headers: {
+                EmailAddress: this.state.email_add
+            },
+            // params: {
+            //     postedfrom: 'mobile'
+            // }
+        })
+            .then(response => {
+                response.json()
+                    .then((data) => {
+                        if (data.error_message === 'Successfully generate verification code.') {
+                            this.props.navigation.navigate('VerifyOTP', {
+                                routeAddress: 'forgot_PW',
+                                emailAddress: this.state.email_add
+                            })
+                        } else {
+                            this.setState({ visibleModal: true })
+                        }
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <View style={styles.topContent}>
+                    <Image
+                        style={{ width: 100, height: 100, margin: 30 }}
+                        source={require('../../assets/images/forgot_pw.png')}
+                        resizeMode='center' />
+                    <Label style={styles.forgotPWText}>Forgot Password?</Label>
+                    <Label style={{ textAlign: 'center', margin: 30 }}>We just need your registered email address to send your password reset code</Label>
+                    <Item floatingLabel style={styles.formStyle}>
+                        <Icon active name='md-mail' />
+                        <Input
+                            value={this.state.email_add}
+                            onChangeText={email_add => this.setState({ email_add })}
+                            autoCapitalize={false}
+                            placeholder="Email Address"
+                        />
+                    </Item>
+                    <Button block rounded info onPress={() => this.RESET_PW()}>
+                        <Text>RESET PASSWORD</Text>
+                    </Button>
+                </View>
+                <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
+                    <View style={styles.modalContent}>
+                        <Text style={[styles.textModalStyle, { color: 'red' }]}>Oops,</Text>
+                        <Text style={[styles.textModalStyle, { margin: 5 }]}>unable to reset your password</Text>
+                        <Image
+                            style={{ width: 40, height: 40 }}
+                            source={require('../../assets/images/database_error.png')}
+                            resizeMode='center' />
+                    </View>
+                    <View style={{ backgroundColor: 'white' }}>
+                        <TouchableOpacity onPress={() => this.setState({ visibleModal: false })}>
+                            <View style={styles.buttonModal}>
+                                <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>O K A Y</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                </Modal>
             </View>
-            <View style={styles.viewButtonSignUp}>
-              <Button block rounded info>
-                <Text>Submit</Text>
-              </Button>
-            </View>
-          </View>
-        </View>
-      </Container>
-    );
-  }
+        );
+    };
 }
 
-const styles = StyleSheet.create({
-  header: {
-    height: 100,
-    backgroundColor: '#5fb650',
-    paddingHorizontal: 30,
-  },
-  headerTitle: {
-    fontSize: 30,
-    fontWeight: 'bold',
-    color: '#fff',
-  },
-  contentStyle: {
-    flex: 1,
-    paddingVertical: 30,
-    marginTop: -45,
-    backgroundColor: '#fff',
-    borderTopStartRadius: 50,
-    borderTopEndRadius: 50,
-    justifyContent: 'center',
-    shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 5,
-    borderWidth: 0,
-  },
-  formPassword: {
-    paddingHorizontal: 30,
-  },
-  inputPassword: {
-    marginHorizontal: 10,
-  },
-  labelPassword: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginVertical: 10,
-    color: '#5fb650',
-  },
-  goIcon: {
-    margin: 10,
-    color: '#2ecc71',
-  },
-  labelStyle: {
-    marginBottom: 5,
-  },
-  formStyle: {
-    marginVertical: 20,
-  },
-  viewForm: {
-    flex: 1,
-    padding: 10,
-  },
-  viewButtonSignUp: {
-    marginTop: 30,
-    marginBottom: 20,
-    marginHorizontal: 20,
-  },
-});
+const styles = StyleSheet.create(
+    {
+        forgotPWText: {
+            color: '#5fb650',
+            fontSize: 30,
+            fontWeight: 'bold'
+        },
+        inputPassword: {
+            marginHorizontal: 10,
+        },
+        labelPassword: {
+            fontSize: 25,
+            fontWeight: "bold",
+            margin: 10,
+            color: "#5fb650"
+        },
+        goIcon: {
+            margin: 10,
+            color: "#2ecc71"
+        },
+        formStyle: {
+            marginVertical: 20,
+        },
+        viewForm: {
+            flex: 1,
+            padding: 10,
+            justifyContent: 'space-evenly',
+            alignItems: 'center',
+        },
+        viewButtonSignUp: {
+            marginTop: 30,
+            marginBottom: 20,
+            marginHorizontal: 20,
+        },
+        container: {
+            display: 'flex',
+            flex: 1,
+            flexDirection: 'column',
+        },
+        topContent: {
+            flex: 3,
+            padding: 20,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+        },
+        bottomContent: {
+            flex: 2,
+            justifyContent: 'flex-start',
+            alignItems: 'center',
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+        },
+        buttonModal: {
+            backgroundColor: '#5fb650',
+            padding: 12,
+            margin: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderRadius: 30,
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+        },
+        modalContent: {
+            backgroundColor: 'white',
+            padding: 16,
+            justifyContent: 'center',
+            alignItems: 'center',
+            borderColor: 'rgba(0, 0, 0, 0.1)',
+            flexDirection: 'row'
+        },
+        bottomModal: {
+            justifyContent: 'flex-end',
+            margin: 0,
+        },
+        textModalStyle: {
+            color: '#5fb650',
+            fontSize: 18,
+            fontWeight: 'bold',
+        }
+    }
+)

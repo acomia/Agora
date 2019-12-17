@@ -22,7 +22,6 @@ import moment from 'moment'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
-const MEMB_EMAIL = 'memb_email'
 
 const CANCEL_INDEX = 0
 const DESTRUCTIVE_INDEX = 4
@@ -39,7 +38,6 @@ export default class Profile extends React.Component {
       dataSource: [],
       isLoading: true,
       selected: '',
-      membemail: '',
     };
   }
 
@@ -85,7 +83,6 @@ export default class Profile extends React.Component {
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    let memb_email = await AsyncStorage.getItem(MEMB_EMAIL);
     const response = await fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/profile',
       {
@@ -107,7 +104,6 @@ export default class Profile extends React.Component {
     this.setState({
       isLoading: false,
       dataSource: json.data,
-      membemail: memb_email,
     });
   }
   onUser = item => {
@@ -159,8 +155,7 @@ export default class Profile extends React.Component {
             <Body style={{ justifyContent: 'center' }}>
               <TouchableNativeFeedback
                 onPress={this.showActionSheet}>
-                {/* <Thumbnail large style={{ alignSelf: "center" }} source={require('../../assets/images/nav-coordinator.png')} resizeMode='contain' /> */}
-                {renderAvatar()}
+                <Thumbnail large style={{ alignSelf: "center" }} source={require('../../assets/images/nav-coordinator.png')} resizeMode='contain' />
               </TouchableNativeFeedback>
               <Label style={styles.labelNickname}></Label>
             </Body>
@@ -206,7 +201,7 @@ export default class Profile extends React.Component {
                 </Left>
                 <Right style={{ flex: 3 }}>
                   <Text style={{ color: '#214021' }}>
-                  {this.state.membemail}
+                    sample@intellicare.com
                     </Text>
                 </Right>
               </ListItem>

@@ -4,7 +4,7 @@ import { Container, Header, Content, Button, Text, Icon, Left, Right, Body, Labe
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
-import {StackActions, NavigationActions} from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const ACCESS_TOKEN = 'access_token';
@@ -12,7 +12,7 @@ const ACCESS_TOKEN = 'access_token';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
 });
 
 export default class Members extends React.Component {
@@ -49,9 +49,9 @@ export default class Members extends React.Component {
     // this.getacct()
     // this.getToken()
     // let xmemb = await AsyncStorage.getItem(MEMB_ACCOUNTNO)
-    console.log('acct1',membacct)
-     console.log('token1','bearer',token)
-   
+    console.log('acct1', membacct)
+    console.log('token1', 'bearer', token)
+
     //global.storeToken = data.data.token
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/profile', {
       method: 'GET',
@@ -72,17 +72,16 @@ export default class Members extends React.Component {
                 isLoading: false,
                 dataSource: [responseJson.data],
               });
-            } else 
-            if (response.Json = "Invalid Access Token"){
-              console.log('sampledata')
-              this.onLogout();
-            }
+            } else
+              if (response.Json = "Invalid Access Token") {
+                this.onLogout();
+              }
 
-            else{
-              alert('Members not found!')
-              this.setState({ isLoading: false })
-              this.props.navigation.navigate('Dashboard')
-            }
+              else {
+                alert('Members not found!')
+                this.setState({ isLoading: false })
+                this.props.navigation.navigate('Dashboard')
+              }
           })
       })
       .catch((error) => {
@@ -100,7 +99,7 @@ export default class Members extends React.Component {
   //   } catch (error) {
   //     console.log("CANT GET ACCT NO")
   //   }
-    
+
   // }
 
   // async getToken() {
@@ -119,6 +118,19 @@ export default class Members extends React.Component {
 
 
   renderItem = ({ item }) => {
+    var xgender = item.gender
+    switch (xgender)     // Passing the variable to switch condition
+    {
+      case "M":
+        xgender =  <Thumbnail source={require('../../assets/images/man.png')} />
+        break;
+      case "F":
+        xgender =  <Thumbnail source={require('../../assets/images/girl.png')} />
+        break;
+      default:
+        xgender =<Thumbnail source={require('../../assets/images/man.png')} />
+          break;
+      }
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
@@ -136,17 +148,17 @@ export default class Members extends React.Component {
               <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
 
                 <Left>
-                  <Thumbnail source={require('../../assets/images/sample-image-square.jpg')} />
+                  {/* <Thumbnail source={require('../../assets/images/person-100.png')} /> */}
+                  {xgender}
                 </Left>
 
                 <Body style={{ borderBottomWidth: 0 }}>
                   <View style={styles.viewNameBadge}>
                     <Text style={styles.listFullname}>{item.fullname}</Text>
-                    
                   </View>
                   <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
-                  {/* <Text>{item.member_type}</Text> */}
                   <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
+                  {/* <Text>{item.member_type}</Text> */}
                 </Body>
 
               </ListItem>

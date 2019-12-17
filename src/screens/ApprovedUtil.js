@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, Modal, style, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl, Modal, style, TouchableHighlight } from 'react-native';
 import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
@@ -197,6 +197,7 @@ export default class ApprovedUtil extends React.Component {
     //   console.log('amount', NumberFormat(this.state.totalUtilAmount))
     return (
       <Container>
+        <Content refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._handleRefresh} />}>
         <ScrollView>
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Approved Utilization</Text>
@@ -236,6 +237,7 @@ export default class ApprovedUtil extends React.Component {
             </Item>
           </Content>
         </Footer>
+        </Content>
       </Container>
     );
   }
@@ -255,7 +257,7 @@ const styles = StyleSheet.create({
   },
   headerSubheader: {
     fontSize: 12,
-    color: "#a5d69c",
+    color: "#a5d69c"
   },
   datacell: {
     justifyContent: 'center',
