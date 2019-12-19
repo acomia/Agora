@@ -32,7 +32,7 @@ export default function DoctorSearchLandingPage() {
   async function fetchToken() {
     try {
       let response = await fetch(
-        'http://203.160.190.52/webservice/thousandminds/api/login',
+        'https://intellicare.com.ph/uat/webservice/thousandminds/api/login',
         {
           method: 'POST',
           headers: {

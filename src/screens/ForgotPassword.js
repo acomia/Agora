@@ -71,12 +71,10 @@ export default class ForgotPassword extends React.Component {
                             source={require('../../assets/images/database_error.png')}
                             resizeMode='center' />
                     </View>
-                    <View style={{ backgroundColor: 'white' }}>
-                        <TouchableOpacity onPress={() => this.setState({ visibleModal: false })}>
-                            <View style={styles.buttonModal}>
-                                <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>O K A Y</Text>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 4 }}>
+                        <Button block rounded warning onPress={() => this.setState({ visibleModal: false })}>
+                            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>O K A Y</Text>
+                        </Button>
                     </View>
                 </Modal>
             </View>
@@ -130,24 +128,9 @@ const styles = StyleSheet.create(
             alignItems: 'center',
             borderColor: 'rgba(0, 0, 0, 0.1)',
         },
-        bottomContent: {
-            flex: 2,
-            justifyContent: 'flex-start',
-            alignItems: 'center',
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-        },
-        buttonModal: {
-            backgroundColor: '#5fb650',
-            padding: 12,
-            margin: 16,
-            justifyContent: 'center',
-            alignItems: 'center',
-            borderRadius: 30,
-            borderColor: 'rgba(0, 0, 0, 0.1)',
-        },
         modalContent: {
             backgroundColor: 'white',
-            padding: 16,
+            padding: 8,
             justifyContent: 'center',
             alignItems: 'center',
             borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -159,7 +142,7 @@ const styles = StyleSheet.create(
         },
         textModalStyle: {
             color: '#5fb650',
-            fontSize: 18,
+            fontSize: 16,
             fontWeight: 'bold',
         }
     }

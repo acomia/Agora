@@ -415,7 +415,7 @@ export default class Login extends React.Component {
                 onPress={() => {
                   this.setState({ visibleModal: true })
                 }}>
-                <Text style={{ align: "left" }}>Terms of Service, Privacy Notice and Privacy Policy</Text>
+                <Text style={{ align: "left" }}>Click Here to Read Terms of Service, Privacy Notice and Privacy Policy</Text>
               </Button>
             </View>
             <View style={{ paddingHorizontal: 20, alignContent: 'center' }}>

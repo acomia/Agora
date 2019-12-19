@@ -1,8 +1,10 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Image, Dimensions } from 'react-native'
-import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { Button} from 'native-base'
+// import OTPInputView from '@twotalltotems/react-native-otp-input'
 import Modal from 'react-native-modal'
 import { Icon } from 'react-native-elements'
+import OTPTextView from 'react-native-otp-textinput'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -140,13 +142,11 @@ export default class VerifyOTP extends React.Component {
                     <Text style={{ fontSize: 16, color: '#5fb650' }}>We have send OTP on your email</Text>
                 </View>
                 <View style={styles.bottomContent}>
-                    <OTPInputView
-                        style={{ width: '80%', height: 100 }}
-                        pinCount={6}
-                        autoFocusOnLoad={false}
-                        codeInputFieldStyle={styles.underlineStyleBase}
-                        codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                        onCodeChanged={verification_CODE => this.setState({ verification_CODE })}
+                    <OTPTextView
+                        containerStyle={styles.textInputContainer}
+                        handleTextChange={text => this.setState({ verification_CODE: text })}
+                        textInputStyle={styles.roundedTextInput}
+                        inputCount={6}
                     />
                     <TouchableOpacity onPress={() => this.RESEND_OTP()}>
                         <View>
@@ -180,12 +180,10 @@ export default class VerifyOTP extends React.Component {
                             source={require('../../assets/images/email_sent.png')}
                             resizeMode='center' />
                     </View>
-                    <View style={{ backgroundColor: 'white' }}>
-                        <TouchableOpacity onPress={() => this.setState({ visibleModal: null })}>
-                            <View style={styles.buttonModal}>
-                                <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>O K A Y</Text>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 4 }}>
+                        <Button block rounded success onPress={() => this.setState({ visibleModal: null })}>
+                            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>O K A Y</Text>
+                        </Button>
                     </View>
                 </Modal>
             </View >
@@ -204,7 +202,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold',
         color: '#5fb650',
-        top: 20
     },
     resendOTP: {
         color: 'white',
@@ -221,10 +218,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        borderColor: 'rgba(0, 0, 0, 0.1)',
+        
         borderBottomLeftRadius: 80,
         borderBottomRightRadius: 80,
-
+        borderColor: 'rgba(0, 0, 0, 0.1)',
         borderBottomWidth: 2,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -247,27 +244,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         borderColor: 'rgba(0, 0, 0, 0.1)',
         width: SCREEN_WIDTH * 0.8
-    },
-    underlineStyleBase: {
-        width: 30,
-        height: 45,
-        borderWidth: 0,
-        borderBottomWidth: 1,
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: 'white'
-    },
-    underlineStyleHighLighted: {
-        borderColor: "#03DAC6",
-    },
-    buttonModal: {
-        backgroundColor: '#5fb650',
-        padding: 12,
-        margin: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 30,
-        borderColor: 'rgba(0, 0, 0, 0.1)',
     },
     modalContent: {
         backgroundColor: 'white',
@@ -299,5 +275,12 @@ const styles = StyleSheet.create({
         borderColor: '#5fb650',
         alignItems: 'center',
         backgroundColor: '#fff'
-    }
+    },
+    textInputContainer: {
+        marginBottom: 20,
+    },
+    roundedTextInput: {
+        borderRadius: 10,
+        borderWidth: 4,
+    },
 })
