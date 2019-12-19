@@ -188,11 +188,17 @@ android {
 }
 
 dependencies {
+
+
+    implementation project(':react-native-compress-image')
     implementation project(':@react-native-community_async-storage')
     implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation "com.android.support:appcompat-v7:23.0.1"
     implementation "com.facebook.react:react-native:+"  // From node_modules
     implementation 'androidx.appcompat:appcompat:1.1.0-rc01'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0-alpha02'
+    implementation "com.android.support:appcompat-v7:$rootProject.supportLibVersion"
+    implementation "com.android.support:support-v4:$rootProject.supportLibVersion"
 
     if (enableHermes) {
       def hermesPath = "../../node_modules/hermesvm/android/";

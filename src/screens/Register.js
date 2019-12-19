@@ -31,7 +31,7 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import { StackActions, NavigationActions } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker';
-
+import CompressImage from 'react-native-compress-image';
 import Modal from 'react-native-modal'
 
 const { width, height } = Dimensions.get('window');
@@ -56,10 +56,10 @@ export default class Login extends React.Component {
     street: '',
     municipal: '',
     province:'',
-    gender: '',
+    gender: 'M',
     bdate: '',
-    civil_stat: '',
-    membertype: '',
+    civil_stat: 'SINGLE',
+    membertype: 'P',
     email: '',
     mobile_no: '',
     password: '',
@@ -177,8 +177,12 @@ export default class Login extends React.Component {
             <Text style={styles.headerTitle}>
               Create an account
             </Text>
-            <Text style={{ fontSize: 20 }}>
+            {/* <Text style={{ fontSize: 20 }}>
               (For Pricipal Members Only)
+            </Text> */}
+
+            <Text style={styles.headerSubheader}>
+            (For Pricipal Members Only)
             </Text>
           </View>
           <View style={styles.contentStyle}>
@@ -207,6 +211,14 @@ export default class Login extends React.Component {
                     style={styles.labelStyle}
                     value={this.state.lastname}
                     onChangeText={lastname => this.setState({ lastname })}
+                  />
+                </Item>
+                <Item floatingLabel style={styles.formStyle}>
+                  <Label>Street</Label>
+                  <Input
+                    style={styles.labelStyle}
+                    value={this.state.street}
+                    onChangeText={street => this.setState({ street })}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
@@ -586,14 +598,29 @@ export default class Login extends React.Component {
     ImagePicker.launchCamera(options, response => {
       if (response) {
         console.log(response);
+        let imgtype = response.type ;
+ 
+        CompressImage.createCompressedImage(response.path, '').then((responseimg) => {
+        
+          console.log(responseimg);
+          var vidphoto = {
+            uri: responseimg.uri,
+            type: imgtype,
+            //name: response.fileName
+            name: responseimg.name
+          }
 
-        var vidphoto = {
-          uri: response.uri,
-          type: response.type,
-          name: response.fileName
-        }
-
-        this.setState({ valid_photo: vidphoto });
+          
+          console.log(vidphoto);
+          this.setState({ valid_photo: vidphoto });
+          // response.uri is the URI of the new image that can now be displayed, uploaded...
+          // response.path is the path of the new image
+          // response.name is the name of the new image with the extension
+          // response.size is the size of the new image
+        }).catch((err) => {
+          // Oops, something went wrong. Check that the filename is correct and
+          // inspect err to get more details.
+        });    
       }
     });
   };
@@ -605,14 +632,29 @@ export default class Login extends React.Component {
     ImagePicker.launchCamera(options, response => {
       if (response) {
         console.log(response);
+        let imgtype = response.type ;
+   
+        CompressImage.createCompressedImage(response.path, '').then((responseimg) => {
+        
+          console.log(responseimg);
+          var intphoto = {
+            uri: responseimg.uri,
+           type: imgtype,
+            //name: response.fileName
+            name: responseimg.name
+          }
+   
+         console.log(intphoto);
+          this.setState({ intid_photo: intphoto });
+          // response.uri is the URI of the new image that can now be displayed, uploaded...
+          // response.path is the path of the new image
+          // response.name is the name of the new image with the extension
+          // response.size is the size of the new image
+        }).catch((err) => {
+          // Oops, something went wrong. Check that the filename is correct and
+          // inspect err to get more details.
+        });
 
-        var intphoto = {
-          uri: response.uri,
-          type: response.type,
-          name: response.fileName
-        }
-
-        this.setState({ intid_photo: intphoto });
       }
     });
   };
@@ -666,7 +708,7 @@ export default class Login extends React.Component {
         },
       );
       let respJson = await resp.json();
-      alert(respJson);
+      //alert(respJson);
       if (respJson.is_success === true) {
         // alert('Successfully Registered! Please Confirm Your Email.');
         this.SEND_EMAILVERIFICATION()
@@ -688,30 +730,30 @@ export default class Login extends React.Component {
   }
 
   SEND_EMAILVERIFICATION() {
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' + this.state.firstname + '&lastname=' + this.state.lastname, {
-      method: 'PUT',
-      headers: {
-        EmailAddress: this.state.email
-      }
-    })
-      .then(response => {
-        response.json()
-          .then((data) => {
-            if (data.error_message === 'Successfully generate verification code.') {
+    // fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' + this.state.firstname + '&lastname=' + this.state.lastname, {
+    //   method: 'PUT',
+    //   headers: {
+    //     EmailAddress: this.state.email
+    //   }
+    // })
+      // .then(response => {
+      //   response.json()
+      //     .then((data) => {
+      //       if (data.error_message === 'Successfully generate verification code.') {
               this.props.navigation.navigate('VerifyOTP', {
                 routeAddress: 'registration',
                 emailAddress: this.state.email,
                 f_NAME: this.state.firstname,
                 l_NAME: this.state.lastname
               })
-            } else {
-              alert('error')
-            }
-          })
-      })
-      .catch((error) => {
-        alert('Error!' + error)
-      })
+      //       } else {
+      //         alert('error')
+      //       }
+      //     })
+      // })
+      // .catch((error) => {
+      //   alert('Error!' + error)
+      // })
   }
 }
 
@@ -835,5 +877,9 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#FFF',
     alignSelf: 'center'
-  }
+  },
+  headerSubheader: {
+    fontSize: 12,
+    color: '#a5d69c',
+  },
 });

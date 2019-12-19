@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@react-native-community/async-storage": "github:react-native-community/async-storage",
+    "@twotalltotems/react-native-otp-input": "^1.1.2",
     "expo": "^35.0.0",
     "intl": "^1.2.5",
     "jetifier": "^1.6.4",
@@ -19,6 +20,7 @@
     "prop-types": "^15.7.2",
     "react": "16.8.6",
     "react-native": "0.60.5",
+    "react-native-compress-image": "^2.0.1",
     "react-native-custom-actionsheet": "0.0.4",
     "react-native-datepicker": "^1.7.2",
     "react-native-elements": "^1.2.7",
