@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, TouchableOpacity, Text, StyleSheet, Image, Dimensions } from 'react-native'
-import { Button} from 'native-base'
+import { Button } from 'native-base'
 // import OTPInputView from '@twotalltotems/react-native-otp-input'
 import Modal from 'react-native-modal'
 import { Icon } from 'react-native-elements'
@@ -146,6 +146,8 @@ export default class VerifyOTP extends React.Component {
                         containerStyle={styles.textInputContainer}
                         handleTextChange={text => this.setState({ verification_CODE: text })}
                         textInputStyle={styles.roundedTextInput}
+                        tintColor='#03DAC6'
+                        offTintColor='#DCDCDC'
                         inputCount={6}
                     />
                     <TouchableOpacity onPress={() => this.RESEND_OTP()}>
@@ -218,7 +220,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-        
+
         borderBottomLeftRadius: 80,
         borderBottomRightRadius: 80,
         borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -280,7 +282,7 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     roundedTextInput: {
-        borderRadius: 10,
-        borderWidth: 4,
+        borderWidth: 0,
+        borderBottomWidth: 2
     },
 })

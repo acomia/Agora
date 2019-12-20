@@ -1,11 +1,10 @@
 import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native'
 import { Container, Button, Text, Left, Item, Input, Label, Icon } from 'native-base'
 // import { Icon } from 'react-native-elements'
 import Modal from 'react-native-modal'
 
 export default class ForgotPassword extends React.Component {
-
     constructor() {
         super();
         this.state = { email_add: '', visibleModal: false }
@@ -41,27 +40,29 @@ export default class ForgotPassword extends React.Component {
 
     render() {
         return (
-            <View style={styles.container}>
-                <View style={styles.topContent}>
-                    <Image
-                        style={{ width: 100, height: 100, margin: 30 }}
-                        source={require('../../assets/images/forgot_pw.png')}
-                        resizeMode='center' />
-                    <Label style={styles.forgotPWText}>Forgot Password?</Label>
-                    <Label style={{ textAlign: 'center', margin: 30 }}>We just need your registered email address to send your password reset code</Label>
-                    <Item floatingLabel style={styles.formStyle}>
-                        <Icon active name='md-mail' />
-                        <Input
-                            value={this.state.email_add}
-                            onChangeText={email_add => this.setState({ email_add })}
-                            autoCapitalize={false}
-                            placeholder="Email Address"
-                        />
-                    </Item>
-                    <Button block rounded info onPress={() => this.RESET_PW()}>
-                        <Text>RESET PASSWORD</Text>
-                    </Button>
-                </View>
+            <KeyboardAvoidingView
+                style={styles.topContent}
+                behavior="padding"
+            >
+                <Image
+                    style={{ width: 100, height: 100, margin: 30 }}
+                    source={require('../../assets/images/forgot_pw.png')}
+                    resizeMode='center' />
+                <Label style={styles.forgotPWText}>Forgot Password?</Label>
+                <Label style={{ textAlign: 'center', margin: 30 }}>We just need your registered email address to send your password reset code</Label>
+
+                <Item floatingLabel style={styles.formStyle}>
+                    <Icon active name='md-mail' />
+                    <Label>Email Address</Label>
+                    <Input
+                        value={this.state.email_add}
+                        onChangeText={email_add => this.setState({ email_add })}
+                        autoCapitalize={false}
+                    />
+                </Item>
+                <Button block rounded info onPress={() => this.RESET_PW()}>
+                    <Text>RESET PASSWORD</Text>
+                </Button>
                 <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
                     <View style={styles.modalContent}>
                         <Text style={[styles.textModalStyle, { color: 'red' }]}>Oops,</Text>
@@ -77,7 +78,7 @@ export default class ForgotPassword extends React.Component {
                         </Button>
                     </View>
                 </Modal>
-            </View>
+            </KeyboardAvoidingView>
         );
     };
 }
@@ -124,7 +125,7 @@ const styles = StyleSheet.create(
         topContent: {
             flex: 3,
             padding: 20,
-            justifyContent: 'flex-start',
+            justifyContent: 'center',
             alignItems: 'center',
             borderColor: 'rgba(0, 0, 0, 0.1)',
         },

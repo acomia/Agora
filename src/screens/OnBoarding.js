@@ -6,35 +6,31 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import { ScrollView } from 'react-native-gesture-handler';
 
 const ACCESS_TOKEN = 'access_token';
+const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
+const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight()
 
 export default class OnBoarding extends React.Component {
 
-  componentWillMount()
-  {
+  componentWillMount() {
     this.getToken();
-    
+
   }
-   async getToken()
-   {
-     try
-       {
-        let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN);
-        if(!accessToken)
-          {
-          console.log("No token")
-          }
-        else
-          {
-          console.log("token is: " + accessToken )
-           this.props.navigation.replace('Dashboard')
-          }
-       }
-     catch(error)
-     {
+  async getToken() {
+    try {
+      let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN);
+      if (!accessToken) {
+        console.log("No token")
+      }
+      else {
+        console.log("token is: " + accessToken)
+        this.props.navigation.replace('Dashboard')
+      }
+    }
+    catch (error) {
       console.log("ERROR")
-     }
-     
-   }
+    }
+
+  }
 
   render() {
     return (
@@ -55,18 +51,18 @@ export default class OnBoarding extends React.Component {
               <Text style={styles.textButtonCreateAccount}>Register</Text>
             </Button>
           </View>
-          <View style={{fle: 1, justifyContent: "center", padding: 10, alignItems: "center"}}>
-            <Text style={{color: "#fff", fontSize: 18, fontWeight: "bold"}}>
+          <View style={{ fle: 1, justifyContent: "center", padding: 10, alignItems: "center" }}>
+            <Text style={{ color: "#fff", fontSize: 18, fontWeight: "bold" }}>
               You can also:
             </Text>
           </View>
           <View style={styles.viewFeatures}>
-            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
+            <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} pagingEnabled={true}>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="earphones-alt" style={styles.cardIconStyleMedgate} />
-                    <Label style={styles.cardContent}>Call Doc. Anywhere. Anytime. No line.</Label>
+                    <Label style={{ textAlign: 'center' }}>Call Doc. Anywhere. Anytime. No line.</Label>
                     <Button iconRight rounded style={styles.cardButtonMedgate} onPress={() => this.props.navigation.navigate('MedgatePage')} >
                       <Text style={styles.cardButtonText}>Medgate</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -76,9 +72,9 @@ export default class OnBoarding extends React.Component {
               </Card>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="map" style={styles.cardIconStyleIntellimap} />
-                    <Label style={styles.cardContent}>Locate our Accreditted Facilities.</Label>
+                    <Label style={{ textAlign: 'center' }}>Locate our Accreditted Facilities.</Label>
                     <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('IntellimapPage')}>
                       <Text style={styles.cardButtonText}>Intellimap</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -88,9 +84,9 @@ export default class OnBoarding extends React.Component {
               </Card>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="magnifier" style={styles.cardIconStyleProviders} />
-                    <Label style={styles.cardContent}>Our Accreditted Doctors and Dentists.</Label>
+                    <Label style={{ textAlign: 'center' }}>Our Accreditted Doctors and Dentists.</Label>
                     <Button iconRight rounded style={styles.cardButtonProviders} onPress={() => this.props.navigation.navigate('DoctorSearchNavigation')}>
                       <Text style={styles.cardButtonText}>Providers</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -100,11 +96,9 @@ export default class OnBoarding extends React.Component {
               </Card>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="book-open" style={styles.cardIconStyleGuidebook} />
-                    <Label style={styles.cardContent}>
-                      Learn more about your benefit coverage.
-                      </Label>
+                    <Label style={{ textAlign: 'center' }}>Learn more about your benefit coverage.</Label>
                     <Button iconRight rounded style={styles.cardButtonGuidebook}>
                       <Text style={styles.cardButtonText}>e-Guidebook</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -135,7 +129,8 @@ const styles = StyleSheet.create(
     },
     welcomeLabel: {
       fontSize: 18,
-      color: "#fff"
+      color: "#fff",
+      textAlign: 'center'
     },
     logoStyle: {
       height: 120,
@@ -170,9 +165,7 @@ const styles = StyleSheet.create(
       justifyContent: "center"
     },
     cardContainer: {
-      flex: 1, width: 200,
-      borderRadius: 20,
-      alignItems: "center",
+      width: SCREEN_WIDTH / 2,
     },
     cardContent: {
       color: "#2d2d2d",
@@ -187,47 +180,52 @@ const styles = StyleSheet.create(
     },
     cardIconStyleMedgate: {
       color: "#258bf5",
-      fontSize: 40,
-      marginVertical: 10,
+      fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
       alignSelf: "center"
     },
     cardIconStyleIntellimap: {
       color: "#f39c12",
-      fontSize: 40,
-      marginVertical: 10,
+      fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
       alignSelf: "center"
     },
     cardIconStyleProviders: {
       color: "#e74c3c",
-      fontSize: 40,
-      marginVertical: 10,
+      fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
       alignSelf: "center"
     },
     cardIconStyleGuidebook: {
       color: "#2ecc71",
-      fontSize: 40,
-      marginVertical: 10,
+      fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 0,
       alignSelf: "center"
     },
     cardButtonMedgate: {
-      marginVertical: 10,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 4,
       backgroundColor: "#258bf5",
-      alignSelf: "center"
+      alignSelf: "center",
+      height: 40
     },
     cardButtonIntellimap: {
-      marginVertical: 10,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 4,
       backgroundColor: "#f39c12",
-      alignSelf: "center"
+      alignSelf: "center",
+      height: 40
     },
     cardButtonProviders: {
-      marginVertical: 10,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 4,
       backgroundColor: "#e74c3c",
-      alignSelf: "center"
+      alignSelf: "center",
+      height: 40
     },
     cardButtonGuidebook: {
-      marginVertical: 10,
+      marginVertical: SCREEN_HEIGHT > 750 ? 10 : 0,
       backgroundColor: "#2ecc71",
-      alignSelf: "center"
+      alignSelf: "center",
+      // bottom: SCREEN_HEIGHT > 750 ? 0 : 6,
+      height: 40
     },
     cardButtonText: {
       color: "#fff"

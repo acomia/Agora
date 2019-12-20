@@ -18,68 +18,75 @@ import ImagePicker from 'react-native-image-picker';
 import Spinner from 'react-native-spinkit';
 import { ScrollView, FlatList } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
-import moment from 'moment'
+import moment from 'moment';
+import ImageView from 'react-native-image-view';
 
 const ACCESS_TOKEN = 'access_token';
+const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_EMAIL = 'memb_email'
 
-const CANCEL_INDEX = 0
-const DESTRUCTIVE_INDEX = 4
-const acOptions = ['Cancel', 'Take photo', 'Upload from gallery ', 'View photo']
-
 export default class Profile extends React.Component {
-  state = { selected: '', dataSource: [] };
+  state = { selected: '', dataSource: [], isImageViewVisible: false };
 
 
   constructor(props) {
     super(props);
     this.state = {
-      photo: null,
       dataSource: [],
       isLoading: true,
       selected: '',
+      isImageViewVisible: false,
+      imgsrc: '',
       membemail: '',
+      imgPath: '',
     };
   }
 
-  showActionSheet = () => this.actionSheet.show()
+  async getProfilePhotoPath(token) {
+    let membid = await AsyncStorage.getItem(MEMBER_ID);
+    let resp2 = await fetch("https://intellicare.com.ph/uat/webservice/memberprofile/api/member/files",
+      {
+        method: 'GET',
+        headers: {
+          "Authorization": "Bearer " + token,
+          "MemberID": membid,
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+      },
+    )
+      .then(resp2 => resp2.json())
+      .then(jsonObject => {
+        const data = jsonObject.data;
+        const record = data.find(item => item.tag === 'govid');
+        if (record) {
+          varImagePath = record.path;
+        }
+      })
+      .catch(error => {
+        alert('Error: ' + error);
+      });
+  }
 
-  getActionSheetRef = ref => (this.actionSheet = ref)
+  async getProfilePhoto() {
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
 
-  handlePress = (index) => {
-    this.setState({ selected: index });
-    const options = {
-      title: 'Select Avatar',
-      noData: true,
-    };
-    switch (this.state.selected) {
-      case 1:
-        ImagePicker.launchCamera(options, response => {
-          if (response.uri) {
-            this.setState({ photo: response });
-          }
-        });
-        break;
-      case 2:
-        ImagePicker.launchImageLibrary(options, response => {
-          if (response.didCancel) {
-            console.log('User cancelled image picker');
-          } else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
-          } else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
-          } else {
-            if (response.uri) {
-              this.setState({ photo: response });
-            }
-          }
-        });
-        break;
-      case 3: alert("No view photo yet");
-        break;
+    await this.getProfilePhotoPath(token);
+
+    let resp = await fetch("https://intellicare.com.ph/uat/webservice/memberprofile/api/member/filepathtoimage", {
+      headers: {
+        "Authorization": "Bearer " + token,
+        "ImagePath": varImagePath,
+      }
+    })
+
+    let respBlob = await resp.blob();
+    let reader = new FileReader()
+    reader.readAsDataURL(respBlob)
+
+    reader.onload = () => {
+      this.setState({ imgsrc: reader.result })
     }
-
   }
 
   async componentDidMount() {
@@ -103,20 +110,18 @@ export default class Profile extends React.Component {
         alert('Error!' + error);
       });
     const json = await response.json();
-    console.log('datasource ito: ', json.data)
     this.setState({
       isLoading: false,
       dataSource: json.data,
       membemail: memb_email,
     });
+
+    this.getProfilePhoto();
   }
-  onUser = item => {
-    this.props.navigation.navigate('EditProfilePage', item);
-  };
 
   render() {
     const { spinnerStyle, spinnerTextStyle } = styles;
-    const { dataSource, photo } = this.state
+    const { dataSource } = this.state
 
     if (this.state.isLoading) {
       return (
@@ -127,30 +132,6 @@ export default class Profile extends React.Component {
       );
     }
 
-    function renderAvatar() {
-      if (photo == null)
-        return (
-          <Thumbnail
-            large
-            style={{ alignSelf: "center" }}
-            source={require('../../assets/images/nav-coordinator.png')}
-            resizeMode='contain'
-          />
-        );
-      else {
-        return (
-          photo && (
-            <Thumbnail
-              large
-              style={{ alignSelf: 'center' }}
-              source={{ uri: photo.uri }}
-              resizeMode='contain'
-            />
-          )
-        )
-      };
-    }
-
     return (
       <View style={StyleSheet.container}>
         <ScrollView>
@@ -158,11 +139,14 @@ export default class Profile extends React.Component {
           <View style={styles.header}>
             <Body style={{ justifyContent: 'center' }}>
               <TouchableNativeFeedback
-                onPress={this.showActionSheet}>
-                {/* <Thumbnail large style={{ alignSelf: "center" }} source={require('../../assets/images/nav-coordinator.png')} resizeMode='contain' /> */}
-                {renderAvatar()}
+                onPress={() => {
+                  this.setState({
+                    isImageViewVisible: true,
+                  });
+                }}
+              >
+                <Thumbnail large style={{ alignSelf: "center" }} source={{ uri: this.state.imgsrc }} resizeMode='contain' />
               </TouchableNativeFeedback>
-              <Label style={styles.labelNickname}></Label>
             </Body>
           </View>
 
@@ -206,8 +190,8 @@ export default class Profile extends React.Component {
                 </Left>
                 <Right style={{ flex: 3 }}>
                   <Text style={{ color: '#214021' }}>
-                  {this.state.membemail}
-                    </Text>
+                    {this.state.membemail}
+                  </Text>
                 </Right>
               </ListItem>
               <ListItem style={styles.itemStyle}>
@@ -226,26 +210,6 @@ export default class Profile extends React.Component {
                   <Text style={styles.itemInfo}>{dataSource && dataSource.cardno}</Text>
                 </Right>
               </ListItem>
-              {/* <View style={{ marginTop: 30 }}>
-                <Button
-                  iconLeft
-                  bordered
-                  success
-                  block
-                  onPress={() => this.onUser(item)}>
-                  <Icon type="Feather" name="edit" />
-                  <Text>Edit Profile</Text>
-                </Button>
-              </View> */}
-              <View style={styles.wrapper}>
-                <ActionSheet
-                  ref={this.getActionSheetRef}
-                  options={acOptions}
-                  cancelButtonIndex={CANCEL_INDEX}
-                  destructiveButtonIndex={DESTRUCTIVE_INDEX}
-                  onPress={this.handlePress}
-                />
-              </View>
             </View>
           </View>
         </ScrollView>
@@ -256,7 +220,7 @@ export default class Profile extends React.Component {
 
 const styles = StyleSheet.create({
   header: {
-    height: 200,
+    height: 140,
     backgroundColor: '#5fb650',
     paddingHorizontal: 30,
   },
