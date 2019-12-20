@@ -453,8 +453,8 @@ export default class Login extends React.Component {
                 <Body>
                   <Text style={styles.textTermConditions}>
                     I hereby warrant that I, as the Principal member under my Intellicare HMO Plan,
-                    have secured the written consent of my
-                    dependents allowing me to provide and access their information via App.
+                    have secured the written consent of my dependents
+                    allowing me to provide and access their information via App.
                   </Text>
                 </Body>
               </ListItem>
