@@ -40,29 +40,33 @@ export default class ForgotPassword extends React.Component {
 
     render() {
         return (
-            <KeyboardAvoidingView
-                style={styles.topContent}
-                behavior="padding"
-            >
-                <Image
-                    style={{ width: 100, height: 100, margin: 30 }}
-                    source={require('../../assets/images/forgot_pw.png')}
-                    resizeMode='center' />
-                <Label style={styles.forgotPWText}>Forgot Password?</Label>
-                <Label style={{ textAlign: 'center', margin: 30 }}>We just need your registered email address to send your password reset code</Label>
-
-                <Item floatingLabel style={styles.formStyle}>
-                    <Icon active name='md-mail' />
-                    <Label>Email Address</Label>
-                    <Input
-                        value={this.state.email_add}
-                        onChangeText={email_add => this.setState({ email_add })}
-                        autoCapitalize={false}
-                    />
-                </Item>
-                <Button block rounded info onPress={() => this.RESET_PW()}>
-                    <Text>RESET PASSWORD</Text>
-                </Button>
+            // <KeyboardAvoidingView
+            //     style={styles.topContent}
+            //     behavior="padding"
+            // >
+            <View style={styles.container}>
+                <View style={styles.topContent}>
+                    <Image
+                        style={{ width: 100, height: 100 }}
+                        source={require('../../assets/images/forgot_pw.png')}
+                        resizeMode='center' />
+                    <Label style={styles.forgotPWText}>Forgot Password?</Label>
+                    <Label style={{ textAlign: 'center' }}>We just need your registered email address to send your password reset code</Label>
+                </View>
+                <View style={styles.bottomContent}>
+                    <Item floatingLabel style={styles.formStyle}>
+                        <Icon active name='md-mail' />
+                        <Label>Email Address</Label>
+                        <Input
+                            value={this.state.email_add}
+                            onChangeText={email_add => this.setState({ email_add })}
+                            autoCapitalize={false}
+                        />
+                    </Item>
+                    <Button block rounded info onPress={() => this.RESET_PW()}>
+                        <Text>RESET PASSWORD</Text>
+                    </Button>
+                </View>
                 <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
                     <View style={styles.modalContent}>
                         <Text style={[styles.textModalStyle, { color: 'red' }]}>Oops,</Text>
@@ -78,7 +82,7 @@ export default class ForgotPassword extends React.Component {
                         </Button>
                     </View>
                 </Modal>
-            </KeyboardAvoidingView>
+            </View>
         );
     };
 }
@@ -99,35 +103,22 @@ const styles = StyleSheet.create(
             margin: 10,
             color: "#5fb650"
         },
-        goIcon: {
-            margin: 10,
-            color: "#2ecc71"
-        },
         formStyle: {
             marginVertical: 20,
         },
-        viewForm: {
-            flex: 1,
-            padding: 10,
-            justifyContent: 'space-evenly',
-            alignItems: 'center',
-        },
-        viewButtonSignUp: {
-            marginTop: 30,
-            marginBottom: 20,
-            marginHorizontal: 20,
-        },
         container: {
-            display: 'flex',
             flex: 1,
             flexDirection: 'column',
         },
         topContent: {
-            flex: 3,
-            padding: 20,
-            justifyContent: 'center',
+            height: '50%',
+            // padding: 20,
+            justifyContent: 'space-evenly',
             alignItems: 'center',
             borderColor: 'rgba(0, 0, 0, 0.1)',
+        },
+        bottomContent: {
+            paddingHorizontal: 20
         },
         modalContent: {
             backgroundColor: 'white',

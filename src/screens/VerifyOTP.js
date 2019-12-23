@@ -195,7 +195,6 @@ export default class VerifyOTP extends React.Component {
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
         flex: 1,
         flexDirection: 'column',
         backgroundColor: '#5fb650'
@@ -216,7 +215,7 @@ const styles = StyleSheet.create({
         fontSize: 20
     },
     topContent: {
-        flex: 3,
+        height: '60%',
         backgroundColor: 'white',
         justifyContent: 'space-evenly',
         alignItems: 'center',
@@ -231,7 +230,7 @@ const styles = StyleSheet.create({
         elevation: 2,
     },
     bottomContent: {
-        flex: 2,
+        height: '40%',
         backgroundColor: '#5fb650',
         justifyContent: 'space-evenly',
         alignItems: 'center',

@@ -46,34 +46,39 @@ export default class ChangePassword extends React.Component {
 
     render() {
         return (
-            <KeyboardAvoidingView style={styles.topContent} behavior="padding">
-                <Image
-                    style={{ width: 100, height: 100, margin: 30 }}
-                    source={require('../../assets/images/forgot_pw.png')}
-                    resizeMode='center' />
-                <Label style={styles.chagePasswordText}>Change Password</Label>
-                <Label style={{ textAlign: 'center', margin: 30 }}>Please enter your new password</Label>
-                <Item floatingLabel>
-                    <Icon name='md-lock' />
-                    <Label>New password</Label>
-                    <Input
-                        value={this.state.new_PW}
-                        onChangeText={new_PW => this.setState({ new_PW })}
-                        secureTextEntry
-                    />
-                </Item>
-                <Item floatingLabel style={styles.formStyle}>
-                    <Icon name='md-lock' />
-                    <Label>Confirm new password</Label>
-                    <Input
-                        value={this.state.confirm_PW}
-                        onChangeText={confirm_PW => this.setState({ confirm_PW })}
-                        secureTextEntry
-                    />
-                </Item>
-                <Button block rounded info onPress={() => this.CHANGE_PW()}>
-                    <Text style={{ fontSize: 18 }}>S U B M I T</Text>
-                </Button>
+            // <KeyboardAvoidingView style={styles.topContent} behavior="padding">
+            <View style={styles.container}>
+                <View style={styles.topContent}>
+                    <Image
+                        style={{ width: 100, height: 100, margin: 30 }}
+                        source={require('../../assets/images/forgot_pw.png')}
+                        resizeMode='center' />
+                    <Label style={styles.chagePasswordText}>Change Password</Label>
+                    <Label style={{ textAlign: 'center', margin: 30 }}>Please enter your new password</Label>
+                </View>
+                <View style={styles.bottomContent}>
+                    <Item floatingLabel>
+                        <Icon name='md-lock' />
+                        <Label>New password</Label>
+                        <Input
+                            value={this.state.new_PW}
+                            onChangeText={new_PW => this.setState({ new_PW })}
+                            secureTextEntry
+                        />
+                    </Item>
+                    <Item floatingLabel style={styles.formStyle}>
+                        <Icon name='md-lock' />
+                        <Label>Confirm new password</Label>
+                        <Input
+                            value={this.state.confirm_PW}
+                            onChangeText={confirm_PW => this.setState({ confirm_PW })}
+                            secureTextEntry
+                        />
+                    </Item>
+                    <Button block rounded info onPress={() => this.CHANGE_PW()}>
+                        <Text style={{ fontSize: 18 }}>S U B M I T</Text>
+                    </Button>
+                </View>
                 <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
                     <View style={styles.modalContent}>
                         <Text style={[styles.textModalStyle, { color: 'red' }]}>Oops! </Text>
@@ -91,14 +96,13 @@ export default class ChangePassword extends React.Component {
                         </TouchableOpacity>
                     </View>
                 </Modal>
-            </KeyboardAvoidingView>
+            </View>
         );
     };
 }
 
 const styles = StyleSheet.create({
     container: {
-        display: 'flex',
         flex: 1,
         flexDirection: 'column',
     },
@@ -111,16 +115,15 @@ const styles = StyleSheet.create({
         marginVertical: 20
     },
     topContent: {
-        flex: 3,
-        padding: 20,
-        justifyContent: 'center',
+        height: '50%',
+        // padding: 20,
+        justifyContent: 'space-evenly',
         alignItems: 'center',
         borderColor: 'rgba(0, 0, 0, 0.1)',
     },
     bottomContent: {
-        flex: 2,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
+        height: '50%',
+        paddingHorizontal: 20,
         borderColor: 'rgba(0, 0, 0, 0.1)',
     },
     buttonModal: {

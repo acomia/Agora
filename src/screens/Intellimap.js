@@ -612,7 +612,7 @@ const styles = StyleSheet.create({
     markerDetailsStyle: {
         backgroundColor: 'transparent',
         flexDirection: 'column',
-        height: SCREEN_HEIGHT > 750 ? SCREEN_HEIGHT / 3 : SCREEN_HEIGHT / 2.2,
+        height: SCREEN_HEIGHT > 750 ? '33%' : '51%',
         borderTopRightRadius: 10,
         borderTopLeftRadius: 10,
         borderColor: 'rgba(0, 0, 0, 0.1)',
