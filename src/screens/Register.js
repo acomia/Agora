@@ -138,13 +138,13 @@ export default class Login extends React.Component {
     function RenderValidID() {
       if (valid_photo == null)
         return (
-          <Thumbnail style={{ width: 68, height: 68, marginHorizontal: width * 0.1, borderRadius: 50 }} />
+          <Thumbnail style={{ width: 58, height: 58, marginHorizontal: 4, borderRadius: 50 }} />
         );
       else {
         return (
           valid_photo && (
             <Thumbnail
-              style={{ width: 68, height: 68, marginHorizontal: width * 0.1, borderRadius: 50 }}
+              style={{ width: 58, height: 58, marginHorizontal: 4, borderRadius: 50 }}
               source={{ uri: valid_photo.uri }}
             />
           )
@@ -155,13 +155,13 @@ export default class Login extends React.Component {
     function RenderIntID() {
       if (intid_photo == null)
         return (
-          <Thumbnail style={{ width: 68, height: 68, marginHorizontal: width * 0.1, borderRadius: 50 }} />
+          <Thumbnail style={{ width: 57, height: 57, marginHorizontal: 4, borderRadius: 50 }} />
         );
       else {
         return (
           intid_photo && (
             <Thumbnail
-              style={{ width: 68, height: 68, marginHorizontal: width * 0.1, borderRadius: 50 }}
+              style={{ width: 57, height: 57, marginHorizontal: 4, borderRadius: 50 }}
               source={{ uri: intid_photo.uri }}
             />
           )
@@ -376,9 +376,11 @@ export default class Login extends React.Component {
                         type="MaterialIcons"
                         name="photo-camera"
                         style={{ color: '#5fb650' }}
+                        onPress={() => {
+                          this.handleValidIDPhoto();}}
                       />
                       <Text style={{ color: '#5fb650' }}>
-                        Take valid ID photo
+                        Take Selfie w/ valid ID
                         </Text>
                     </Body>
                   </CardItem>
@@ -398,9 +400,11 @@ export default class Login extends React.Component {
                         type="MaterialIcons"
                         name="photo-camera"
                         style={{ color: '#5fb650' }}
+                        onPress={() => {
+                          this.handleIntIDPhoto();}}
                       />
                       <Text style={{ color: '#5fb650' }}>
-                        Take Intellicare ID photo
+                        Take Selfie w/ Intellicare ID
                         </Text>
                     </Body>
                   </CardItem>
@@ -418,7 +422,7 @@ export default class Login extends React.Component {
                 <Text style={{ align: "left" }}>Click Here to Read Terms of Service, Privacy Notice and Privacy Policy</Text>
               </Button>
             </View>
-            <View style={{ paddingHorizontal: 20, alignContent: 'center' }}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
               <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox color="#5fb650"
                   checked={this.state.check_agreement1}
@@ -431,7 +435,7 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal: 20, alignContent: 'center' }}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
               <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox color="#5fb650"
                   checked={this.state.check_agreement2}
@@ -444,7 +448,7 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal: 20, alignContent: 'center' }}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
               <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox color="#5fb650"
                   checked={this.state.check_agreement3}
@@ -459,7 +463,7 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal: 20, alignContent: 'center' }}>
+            <View style={{ paddingHorizontal:15, alignContent: 'center' }}>
               <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox color="#5fb650"
                   checked={this.state.check_opt}
@@ -822,7 +826,7 @@ const styles = StyleSheet.create({
   },
   textTermConditions: {
     color: '#000000',
-    fontSize: 15,
+    fontSize: 14,
   },
 
   //  Privacy Notice Style
