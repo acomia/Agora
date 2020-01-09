@@ -77,11 +77,12 @@ export default class ApprovedUtil extends React.Component {
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+    console.log('globaltokenko',global.storeToken)
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
-        'AccountNo': membacctposted,
+        'AccountNo': global.storeToken,
         'Content-Type': 'application/json;charset=UTF-8',
         // 'paramContract': '1',
       },
@@ -90,6 +91,7 @@ export default class ApprovedUtil extends React.Component {
       .then(response => {
         response.json().then(responseJson => {
           if (responseJson.data != null) {
+            console.log('teteteteest', responseJson.data )
             let totalUtilAmount = 0;
             this.setState({
               isLoading: false,
@@ -145,7 +147,7 @@ export default class ApprovedUtil extends React.Component {
 
   renderItem = ({ item }) => {
     return (
-      <TouchableOpacity>
+      // <TouchableOpacity>
         <ScrollView>
           <List style={styles.listStyle}>
             <DataTable Body>
@@ -157,7 +159,7 @@ export default class ApprovedUtil extends React.Component {
             </DataTable>
           </List>
         </ScrollView>
-      </TouchableOpacity>
+      // </TouchableOpacity>
     );
   };
 
@@ -225,6 +227,7 @@ export default class ApprovedUtil extends React.Component {
             />
           </View>
         </ScrollView>
+        </Content>
         <Footer style={styles.footerStyle}>
           <Content>
             <Item style={styles.footeritemStyle}>
@@ -237,7 +240,6 @@ export default class ApprovedUtil extends React.Component {
             </Item>
           </Content>
         </Footer>
-        </Content>
       </Container>
     );
   }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
+import { StyleSheet, View, Alert, StatusBar, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl } from 'react-native';
 import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
@@ -25,18 +25,31 @@ export default class PostedUtil extends React.Component {
       modalVisible: false,
       totalUtilAmount: 0,
       refreshing: false,
+      
     };
+  }
+
+  showAlert = () =>{
+    Alert.alert(
+      'Empty',
+      'Posted Utilization Empty',
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      {cancelable: false},
+    );
   }
 
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctpreapproved = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     console.log('acctno', membacctpreapproved)
+    console.log('globaltokenkopre',global.storeToken)
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
-        'AccountNo': membacctpreapproved,
+        'AccountNo': global.storeToken,
         'Content-Type': 'application/json;charset=UTF-8'
       },
     },
@@ -58,9 +71,11 @@ export default class PostedUtil extends React.Component {
               this.setState({ totalUtilAmount })
 
             } else {
-              alert('Posted Utilization Empty')
+              
+              // alert('Posted Utilization Empty')
               this.setState({ isLoading: false })
               this.setState({ refreshing: false })
+              this.showAlert()
               this.props.navigation.navigate('Membinfo')
             }
           });
@@ -74,7 +89,7 @@ export default class PostedUtil extends React.Component {
   renderItem = ({ item }) => {
     {console.log('data', item)}
     return (
-      <TouchableOpacity>
+      // <TouchableOpacity>
         <ScrollView>
           <List style={styles.listStyle}>
             <DataTable Body>
@@ -86,7 +101,7 @@ export default class PostedUtil extends React.Component {
             </DataTable>
           </List>
         </ScrollView >
-      </TouchableOpacity>
+      // </TouchableOpacity>
     );
   };
 

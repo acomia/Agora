@@ -37,7 +37,7 @@ export default class Profile extends React.Component {
       isLoading: true,
       selected: '',
       isImageViewVisible: false,
-      imgsrc: '../../assets/images/nav-coordinator.png',
+      imgsrc: '',
       membemail: '',
       imgPath: '',
     };
@@ -61,9 +61,6 @@ export default class Profile extends React.Component {
         const record = data.find(item => item.tag === 'govid');
         if (record) {
           varImagePath = record.path;
-        }
-        else {
-          console.log("govid not found");
         }
       })
       .catch(error => {

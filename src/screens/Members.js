@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, FlatList, Dimensions, Image, TouchableOpacity, StatusBar, } from 'react-native';
+import { StyleSheet, View, FlatList, Alert, Dimensions, Image, TouchableOpacity, StatusBar, } from 'react-native';
 import { Container, Header, Content, Button, Text, Icon, Left, Right, Body, Label, ListItem, Thumbnail, Item, Title, List, Badge, } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
@@ -27,9 +27,21 @@ export default class Members extends React.Component {
     }
   }
 
+  showAlert = () => {
+    Alert.alert(
+      'Member Not found',
+      'No Members Information Found',
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
+  }
+
   onLogout() {
     this.deleteToken();
   }
+
   async deleteToken() {
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
@@ -46,14 +58,9 @@ export default class Members extends React.Component {
     this.setState({
       isLoading: true
     })
-    // this.getacct()
-    // this.getToken()
-    // let xmemb = await AsyncStorage.getItem(MEMB_ACCOUNTNO)
-    console.log('acct1', membacct)
-    console.log('token1', 'bearer', token)
 
-    //global.storeToken = data.data.token
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/profile', {
+    
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -63,26 +70,30 @@ export default class Members extends React.Component {
       }
     })
       .then((response) => {
-        response.json()
-          .then((responseJson) => {
-            console.log('data', responseJson)
-            if (responseJson.data != null) {
-              console.log('sampledata', responseJson)
-              this.setState({
-                isLoading: false,
-                dataSource: [responseJson.data],
-              });
-            } else
-              if (response.Json = "Invalid Access Token") {
-                this.onLogout();
-              }
+        response.json().then((responseJson) => {
+          console.log('data1234', responseJson)
+          if (responseJson.data != null) {
+            console.log('sampledata', responseJson)
+            this.setState({
+              isLoading: false,
+              dataSource: responseJson.data,
+            });
+          } else {
+            if (responseJson.error_message == 'No Member Info Found!') {
+              this.showAlert();
+              alert('Members not found!')
+              this.setState({ isLoading: false })
 
-              else {
-                alert('Members not found!')
-                this.setState({ isLoading: false })
-                this.props.navigation.navigate('Dashboard')
-              }
-          })
+              this.props.navigation.navigate('Dashboard')
+            }
+          }
+
+          if (responseJson == 'Invalid Access Token') {
+            console.log('testsample22222', responseJson)
+            alert('Session Expired')
+            this.onLogout();
+          }
+        })
       })
       .catch((error) => {
         alert('Unable to connect to server' + error)
@@ -113,6 +124,7 @@ export default class Members extends React.Component {
   // }
 
   onUser = (item) => {
+    global.storeToken = item.acct
     this.props.navigation.navigate('MemberInfoPage', item);
   };
 
@@ -122,53 +134,43 @@ export default class Members extends React.Component {
     switch (xgender)     // Passing the variable to switch condition
     {
       case "M":
-        xgender =  <Thumbnail source={require('../../assets/images/man.png')} />
+        xgender = <Thumbnail source={require('../../assets/images/man.png')} />
         break;
       case "F":
-        xgender =  <Thumbnail source={require('../../assets/images/girl.png')} />
+        xgender = <Thumbnail source={require('../../assets/images/girl.png')} />
         break;
       default:
-        xgender =<Thumbnail source={require('../../assets/images/man.png')} />
-          break;
-      }
+        xgender = <Thumbnail source={require('../../assets/images/man.png')} />
+        break;
+    }
     return (
-      <Container>
-        <StatusBar translucent backgroundColor="transparent" />
+    <TouchableOpacity>
+      <ScrollView>
+        <List style={styles.listStyle}>
 
-        <ScrollView>
+          <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
 
-          <View style={styles.header}>
-            <Text style={styles.headerTitle}>Account Profiles</Text>
-          </View>
+            <Left>
+              {/* <Thumbnail source={require('../../assets/images/person-100.png')} /> */}
+              {xgender}
+            </Left>
 
-          <View style={styles.contentStyle}>
+            <Body style={{ borderBottomWidth: 0 }}>
+              <View style={styles.viewNameBadge}>
+                <Text style={styles.listFullname}>{item.fullname}</Text>
+              </View>
+              <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
+              <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
+              {/* <Text>{item.member_type}</Text> */}
+            </Body>
 
-            <List style={styles.listStyle}>
-
-              <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
-
-                <Left>
-                  {/* <Thumbnail source={require('../../assets/images/person-100.png')} /> */}
-                  {xgender}
-                </Left>
-
-                <Body style={{ borderBottomWidth: 0 }}>
-                  <View style={styles.viewNameBadge}>
-                    <Text style={styles.listFullname}>{item.fullname}</Text>
-                  </View>
-                  <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
-                  <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
-                  {/* <Text>{item.member_type}</Text> */}
-                </Body>
-
-              </ListItem>
-            </List>
-          </View>
-        </ScrollView>
-      </Container>
-
+          </ListItem>
+        </List>
+      </ScrollView>
+    </TouchableOpacity>
     );
   }
+
   renderSeparator = () => {
     return (
       <View
@@ -191,17 +193,30 @@ export default class Members extends React.Component {
         </View>
       )
     }
+   
     return (
-      <View style={StyleSheet.container}>
-        <FlatList
-          roundAvatar
-          data={this.state.dataSource}
-          renderItem={this.renderItem}
-          keyExtractor={(item, index) => item}
-          ItemSeparatorComponent={this.renderSeparator}
-        />
 
-      </View>
+      <Container>
+        <StatusBar translucent backgroundColor="transparent" />
+        <ScrollView>
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Account Profiles</Text>
+          </View>
+
+          <View style={styles.contentStyle}>
+
+
+            <FlatList
+              roundAvatar
+              data={this.state.dataSource}
+              renderItem={this.renderItem}
+              keyExtractor={(item, index) => item}
+              ItemSeparatorComponent={this.renderSeparator}
+            />
+          </View>
+        </ScrollView>
+      </Container>
+
     );
   }
 

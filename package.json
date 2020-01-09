@@ -11,6 +11,7 @@
     "@react-native-community/async-storage": "github:react-native-community/async-storage",
     "@twotalltotems/react-native-otp-input": "^1.1.2",
     "expo": "^35.0.0",
+    "gradle": "^1.0.9",
     "intl": "^1.2.5",
     "jetifier": "^1.6.4",
     "lodash": "^4.17.15",
