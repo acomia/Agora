@@ -25,6 +25,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ApprovedUtil from '../screens/ApprovedUtil';
 import PostedUtil from '../screens/PostedUtil';
 import EditProfile from '../screens/EditProfile';
+import Benefits from '../screens/Benefits';
 
 AppStack = createStackNavigator(
     {
@@ -179,6 +180,20 @@ AppStack = createStackNavigator(
               title: '',
               headerStyle: {
                 backgroundColor: '#258bf5',
+                elevation: 0,
+                shadowOpacity: 0,
+                borderBottomWidth: 0,
+                paddingTop: 20,
+              },
+              headerTintColor: '#fff',
+            },
+          },
+          BenefitsPage: {
+            screen: Benefits,
+            navigationOptions: {
+              title: '',
+              headerStyle: {
+                backgroundColor: '#5fb650',
                 elevation: 0,
                 shadowOpacity: 0,
                 borderBottomWidth: 0,

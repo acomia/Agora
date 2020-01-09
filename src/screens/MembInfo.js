@@ -107,7 +107,7 @@ export default class MembInfo extends React.Component {
               </Card>
             </View>
             <View style={styles.viewButtonBenefits}>
-              <Button success rounded iconRight>
+              <Button success rounded iconRight onPress={() => this.props.navigation.navigate('BenefitsPage')} >
                 <Text>View your Benefits</Text>
                 <Icon type="Ionicons" name="ios-arrow-dropright-circle" />
               </Button>
