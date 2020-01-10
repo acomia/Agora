@@ -127,7 +127,7 @@ export default class Login extends React.Component {
           <View style={styles.loginForm}>
             <Form>
               <Item floatingLabel>
-                <Label>Username</Label>
+                <Label>Email</Label>
                 <Input
                   style={styles.labelStyle}
                   onChangeText={username => this.setState({username})}

@@ -33,6 +33,8 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker';
 import CompressImage from 'react-native-compress-image';
 import Modal from 'react-native-modal'
+import MaskedInput from 'react-native-masked-input-text'
+
 
 const { width, height } = Dimensions.get('window');
 
@@ -55,7 +57,7 @@ export default class Login extends React.Component {
     lastname: '',
     street: '',
     municipal: '',
-    province:'',
+    province: '',
     gender: 'M',
     bdate: '',
     civil_stat: 'SINGLE',
@@ -128,10 +130,6 @@ export default class Login extends React.Component {
       this.setState({ confirm: false })
     }
   }
-
-
-
-
   render() {
     const { valid_photo, intid_photo } = this.state;
 
@@ -182,7 +180,7 @@ export default class Login extends React.Component {
             </Text> */}
 
             <Text style={styles.headerSubheader}>
-            (For Pricipal Members Only)
+              (For Pricipal Members Only)
             </Text>
           </View>
           <View style={styles.contentStyle}>
@@ -190,7 +188,7 @@ export default class Login extends React.Component {
               <View style={styles.formInfo}>
                 <Text style={styles.headerText}>Personal Information</Text>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>First name</Label>
+                  <Label>First name *</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.firstname}
@@ -198,7 +196,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Middle name</Label>
+                  <Label>Middle name *</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.middlename}
@@ -206,7 +204,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Last name</Label>
+                  <Label>Last name *</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.lastname}
@@ -260,7 +258,7 @@ export default class Login extends React.Component {
                   stackedLabel
                   style={styles.formStyle}
                   style={{ alignItems: 'flex-start' }}>
-                  <Label>Date of birth</Label>
+                  <Label>Date of birth *</Label>
                   <DatePicker
                     // defaultDate={new Date(2018, 4, 4)} style={{ alignSelf: Left }}
                     // minimumDate={new Date(2018, 1, 1)}
@@ -306,7 +304,7 @@ export default class Login extends React.Component {
               <View style={styles.formInfo}>
                 <Text style={styles.headerText}>Account Information</Text>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Intellicare Account No.</Label>
+                  <Label>Intellicare Account No. * <Text style={styles.sampleText}>(eg. 00-00-00000-00000-00)</Text> </Label> 
                   <Input
                     style={styles.labelStyle}
                     value={this.state.intellicare_acct}
@@ -314,9 +312,11 @@ export default class Login extends React.Component {
                       this.setState({ intellicare_acct })
                     }
                   />
+                  <MaskedInput mask={'xXas\\00?'} placeholder={'xXas00'} />
                 </Item>
+                
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Intellicare Card No.</Label>
+                  <Label>Intellicare Card No. * </Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.intellicare_no}
@@ -326,7 +326,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Username/Email Address</Label>
+                  <Label>Email Address * <Text style={styles.sampleText}>(eg. sample@email.com) </Text></Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.email}
@@ -334,7 +334,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Password</Label>
+                  <Label>Password *</Label>
                   <Input
                     style={styles.labelStyle}
                     secureTextEntry
@@ -354,7 +354,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Mobile No.</Label>
+                  <Label>Mobile No. *</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.mobile_no}
@@ -377,9 +377,10 @@ export default class Login extends React.Component {
                         name="photo-camera"
                         style={{ color: '#5fb650' }}
                         onPress={() => {
-                          this.handleValidIDPhoto();}}
+                          this.handleValidIDPhoto();
+                        }}
                       />
-                      <Text style={{ color: '#5fb650' }}>
+                      <Text style={{ color: '#5fb650', fontSize: 14 }}>
                         Take Selfie w/ valid ID
                         </Text>
                     </Body>
@@ -401,9 +402,10 @@ export default class Login extends React.Component {
                         name="photo-camera"
                         style={{ color: '#5fb650' }}
                         onPress={() => {
-                          this.handleIntIDPhoto();}}
+                          this.handleIntIDPhoto();
+                        }}
                       />
-                      <Text style={{ color: '#5fb650' }}>
+                      <Text style={{ color: '#5fb650', fontSize: 14 }}>
                         Take Selfie w/ Intellicare ID
                         </Text>
                     </Body>
@@ -419,7 +421,7 @@ export default class Login extends React.Component {
                 onPress={() => {
                   this.setState({ visibleModal: true })
                 }}>
-                <Text style={{ align: "left" }}>Click Here to Read Terms of Service, Privacy Notice and Privacy Policy</Text>
+                <Text style={{ textAlign: "center" }}>Click Here to Read Terms of Service, Privacy Notice and Privacy Policy</Text>
               </Button>
             </View>
             <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
@@ -463,7 +465,7 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal:15, alignContent: 'center' }}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
               <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox color="#5fb650"
                   checked={this.state.check_opt}
@@ -567,6 +569,13 @@ export default class Login extends React.Component {
   }
 
   handleSubmit = () => {
+    let valid_email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    if (valid_email.test(this.state.email) === false) {
+      return alert("Email address is not valid!");
+    }
+    else {
+      console.log("Email is Correct");
+    }
     if (this.state.email === null || this.state.email === '') {
       return alert('Email is Required');
     }
@@ -602,10 +611,10 @@ export default class Login extends React.Component {
     ImagePicker.launchCamera(options, response => {
       if (response) {
         console.log(response);
-        let imgtype = response.type ;
- 
+        let imgtype = response.type;
+
         CompressImage.createCompressedImage(response.path, '').then((responseimg) => {
-        
+
           console.log(responseimg);
           var vidphoto = {
             uri: responseimg.uri,
@@ -614,7 +623,7 @@ export default class Login extends React.Component {
             name: responseimg.name
           }
 
-          
+
           console.log(vidphoto);
           this.setState({ valid_photo: vidphoto });
           // response.uri is the URI of the new image that can now be displayed, uploaded...
@@ -624,7 +633,7 @@ export default class Login extends React.Component {
         }).catch((err) => {
           // Oops, something went wrong. Check that the filename is correct and
           // inspect err to get more details.
-        });    
+        });
       }
     });
   };
@@ -636,19 +645,19 @@ export default class Login extends React.Component {
     ImagePicker.launchCamera(options, response => {
       if (response) {
         console.log(response);
-        let imgtype = response.type ;
-   
+        let imgtype = response.type;
+
         CompressImage.createCompressedImage(response.path, '').then((responseimg) => {
-        
+
           console.log(responseimg);
           var intphoto = {
             uri: responseimg.uri,
-           type: imgtype,
+            type: imgtype,
             //name: response.fileName
             name: responseimg.name
           }
-   
-         console.log(intphoto);
+
+          console.log(intphoto);
           this.setState({ intid_photo: intphoto });
           // response.uri is the URI of the new image that can now be displayed, uploaded...
           // response.path is the path of the new image
@@ -712,18 +721,28 @@ export default class Login extends React.Component {
         },
       );
       let respJson = await resp.json();
-      //alert(respJson);
+     
       if (respJson.is_success === true) {
-        // alert('Successfully Registered! Please Confirm Your Email.');
+       
         this.SEND_EMAILVERIFICATION()
-        //NAN DITO YUNG OTP SCREEN NATIN LAB U
-
       }
-      else {
-        alert(respJson.error_message)
-      }
-
       
+
+      else {
+        console.log(respJson.error_message);
+        if (respJson.error_message === 'Account is invalid.')
+        {
+           alert('Invalid Account/Account format');
+          
+        }
+        else 
+        {
+           alert(respJson.error_message)
+         
+        }
+      }
+
+
       console.log(respJson);
     }
     catch (error) {
@@ -740,24 +759,24 @@ export default class Login extends React.Component {
     //     EmailAddress: this.state.email
     //   }
     // })
-      // .then(response => {
-      //   response.json()
-      //     .then((data) => {
-      //       if (data.error_message === 'Successfully generate verification code.') {
-              this.props.navigation.navigate('VerifyOTP', {
-                routeAddress: 'registration',
-                emailAddress: this.state.email,
-                f_NAME: this.state.firstname,
-                l_NAME: this.state.lastname
-              })
-      //       } else {
-      //         alert('error')
-      //       }
-      //     })
-      // })
-      // .catch((error) => {
-      //   alert('Error!' + error)
-      // })
+    // .then(response => {
+    //   response.json()
+    //     .then((data) => {
+    //       if (data.error_message === 'Successfully generate verification code.') {
+    this.props.navigation.navigate('VerifyOTP', {
+      routeAddress: 'registration',
+      emailAddress: this.state.email,
+      f_NAME: this.state.firstname,
+      l_NAME: this.state.lastname
+    })
+    //       } else {
+    //         alert('error')
+    //       }
+    //     })
+    // })
+    // .catch((error) => {
+    //   alert('Error!' + error)
+    // })
   }
 }
 
@@ -885,5 +904,9 @@ const styles = StyleSheet.create({
   headerSubheader: {
     fontSize: 12,
     color: '#a5d69c',
+  },
+  sampleText: {
+    fontSize: 12,
+    color: '#82817e',
   },
 });
