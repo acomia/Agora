@@ -9,8 +9,6 @@ const ACCESS_TOKEN = 'access_token';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight()
 
-const ACCESS_TOKEN = 'access_token';
-
 export default class OnBoarding extends React.Component {
 
   componentWillMount() {

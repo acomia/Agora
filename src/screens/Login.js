@@ -48,6 +48,7 @@ export default class Login extends React.Component {
     } catch (error) {
       console.log('CANT GET TOKEN');
     }
+  }
 
 async storeToken(accessToken)
 {
