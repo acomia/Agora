@@ -1,62 +1,33 @@
-import React from 'react'
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity } from 'react-native'
-import { Container, Icon, Tabs, Tab, TabHeading } from 'native-base'
-import { ScrollView } from 'react-native-gesture-handler';
-
+import React, { Component } from 'react'
+import { createBottomTabNavigator } from 'react-navigation-tabs';
+import Icon from 'react-native-vector-icons/Ionicons'
 import MembInfo from './MembInfo';
 import ApprovedUtil from './ApprovedUtil';
 import PostedUtil from './PostedUtil';
 
-export default class MemberInformation extends React.Component {
-    render() {
-        return (
-            <Container>
-                <Tabs tabBarPosition="overlayBottom" tabBarUnderlineStyle={{ backgroundColor: '#5fb650' }}>
-                    <Tab heading={
-                        <TabHeading style={styles.tabHeadingStyle}>
-                            <Icon name="ios-person" style={styles.tabIconStyle} />
-                        </TabHeading>
-                    }>
-                        <MembInfo />
-                    </Tab>
 
-                    <Tab heading={
-                        <TabHeading style={styles.tabHeadingStyle} >
-                            <Icon name="ios-checkmark-circle-outline" style={styles.tabIconStyle} />
-                        </TabHeading>
-                    }>
-                        <ApprovedUtil />
-
-                    </Tab>
-
-                    <Tab heading={
-                        <TabHeading style={styles.tabHeadingStyle}>
-                            <Icon name="md-paper" style={styles.tabIconStyle} />
-                        </TabHeading>
-                    }>
-                        <PostedUtil />
-                    </Tab>
-                </Tabs>
-            </Container>
-        );
-    };
-}
-
-const styles = StyleSheet.create(
-    {
-        tabStyle: {
-            padding: 30,
-        },
-        tabHeadingStyle: {
-            backgroundColor: '#f5f5f5',
-            flexDirection: "column",
-            borderBottomColor: "#5fb650",
-        },
-        tabIconStyle: {
-            color: "#5fb650"
-        },
-        tabTextStyle: {
-            color: "#5fb650"
-        }
+export default createBottomTabNavigator({
+  MembInfo: {
+    screen: MembInfo,
+    navigationOptions: {
+      tabBarLabel: 'Members Info',
+      tabBarIcon: <Icon name='md-person' size={24} color ='#5fb650'/>
     }
-)
+  },
+  ApprovedUtil: {
+    screen: ApprovedUtil,
+    navigationOptions: {
+      tabBarLabel: 'Approved Utilization',
+      tabBarIcon: <Icon name='md-checkmark-circle-outline' size={24}  color ='#5fb650' />
+    }
+  },
+  PostedUtil: {
+    screen: PostedUtil,
+    navigationOptions: {
+      tabBarLabel: 'Posted Utilization',
+      tabBarIcon: <Icon name='md-paper' size={24}  color ='#5fb650' />
+    }
+  }
+})
+
+  // export default createBottomTabNavigator(NavGroup);

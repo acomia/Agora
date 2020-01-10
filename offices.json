@@ -1,0 +1,86 @@
+[
+    {
+        "name": "FELIZA OFFICE",
+        "address": "4th, 7th, 11th Floors Feliza Building, 108 V.A. Rufino Street, Legaspi Village, Makati City, Philippines 1229",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 14.5564224,
+            "longitude": 121.0178166
+        },
+        "phone": "(02) 8789-4000",
+        "image_url": "https://geo1.ggpht.com/cbk?panoid=UFLRmVGCiR2RDMxlioRYsA&output=thumbnail&cb_client=search.gws-prod/local-details-getcard.gps&thumb=2&w=408&h=240&yaw=117.01444&pitch=0&thumbfov=100"
+    },
+    {
+        "name": "SKYLAND OFFICE",
+        "address": "LG Floor, Skyland Plaza Condominium, Senator Gil Puyat Avenue corner Tindalo Street, San Antonio Village, Makati City, Philippines 1203",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 14.5611054,
+            "longitude": 121.0138616
+        },
+        "phone": "(02) 7902-3400",
+        "image_url": "https://lh5.googleusercontent.com/p/AF1QipOpT5stOerS151ObYQIzHHkugO21MVmmImZH47V=w408-h544-k-no"
+    },
+    {
+        "name": "AXA OFFICE",
+        "address": "3rd,12th,18th Floors AXA Life Bldg. 1286 Senator Gil Puyat Avenue corner Tindalo Street, San Antonio Village, Makati City, Philippines 1203",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 14.561387,
+            "longitude": 121.0142298
+        },
+        "phone": "(02) 7902-3400",
+        "image_url": "https://lh5.googleusercontent.com/p/AF1QipMV6XWFFQXuCVUcw8iT5TQXq6zOsJt1QnFb1ZzV=w408-h544-k-no"
+    },
+    {
+        "name": "BACOLOD (WESTERN VISAYAS)",
+        "address": "Door 3-4, R.L. Jocson Bldg.,BS Aquino Drive, Bacolod City",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 10.6813796,
+            "longitude": 122.958427
+        },
+        "phone": "(034) 488-7080",
+        "image_url": "https://geo3.ggpht.com/cbk?panoid=SHS7QnDqiC3bC5kLVrcSJw&output=thumbnail&cb_client=search.gws-prod/maps/local-details-getcard.gps&thumb=2&w=408&h=240&yaw=67.91879&pitch=0&thumbfov=100"
+    },
+    {
+        "name": "CALAMBA OFFICE",
+        "address": "2nd Floor KIM KAT Building, Old National Hi-way., Brgy. Parian, Calamba City, Laguna",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 14.2171082,
+            "longitude": 121.1434739
+        },
+        "phone": "(049) 554-9900",
+        "image_url": "https://geo3.ggpht.com/cbk?panoid=xdTqgmF8LFqAP3UCOEOeyw&output=thumbnail&cb_client=search.gws-prod/maps/local-details-localweb.gps&thumb=2&w=408&h=240&yaw=207.7654&pitch=0&thumbfov=100"
+    },
+    {
+        "name": "CEBU (CENTRAL & EASTERN VISAYAS / NORTHERN MINDANAO)",
+        "address": "Room 601 6th Floor Metrobank Plaza Bldg.,Osmeña Boulevard. Cebu City",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 10.3085736,
+            "longitude": 123.8940345
+        },
+        "phone": "(032) 260-9800",
+        "image_url": "https://geo3.ggpht.com/cbk?panoid=-8HjT5bmpi3U8BWsir1dsQ&output=thumbnail&cb_client=search.gws-prod.gps&thumb=2&w=408&h=240&yaw=74.4172&pitch=0&thumbfov=100"
+    },
+    {
+        "name": "DAVAO (SOUTHERN MINDANAO)",
+        "address": "Suite B205-B206, 2nd Floor Plaza de Luisa Building, Ramon Magsaysay Avenue, Davao City",
+        "ofc_hrs": "8:30AM - 5:30PM",
+        "ofc_schedule": "Mon-Fri",
+        "coords": {
+            "latitude": 7.0737791,
+            "longitude": 125.6140423
+        },
+        "phone": "(082) 238-7070",
+        "image_url": "https://geo2.ggpht.com/cbk?panoid=Y18mRr0V4CpdrxxqTQhaNw&output=thumbnail&cb_client=search.gws-prod/maps/local-details-getcard.gps&thumb=2&w=408&h=240&yaw=315.22394&pitch=0&thumbfov=100"
+    }
+]
