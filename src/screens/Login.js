@@ -11,6 +11,7 @@ import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from "@react-native-community/netinfo";
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -22,6 +23,20 @@ const resetAction = StackActions.reset({
   actions: [NavigationActions.navigate({routeName: 'Dashboard'})],
 });
 
+// Subscribe
+const unsubscribe = NetInfo.addEventListener(state => {
+  console.log("Connection type", state.type);
+  console.log("Is connected?", state.isConnected);
+});
+
+// Unsubscribe
+unsubscribe();
+
+NetInfo.fetch().then(state => {
+  console.log("Connection type", state.type);
+  console.log("Is connected?", state.isConnected);
+});
+
 export default class Login extends React.Component {
   constructor() {
     super();
@@ -31,6 +46,8 @@ export default class Login extends React.Component {
     username: '',
     password: '',
   };
+
+ 
 
   async storeToken(accessToken) {
     try {
@@ -154,13 +171,27 @@ export default class Login extends React.Component {
               block
               success
               style={{marginTop: 50}}
-              onPress={() => this._postUser()}>
+              onPress={() => this.checkConnectivity()}>
               <Text> Login </Text>
             </Button>
           </View>
         </View>
       </Container>
     );
+  }
+
+
+  checkConnectivity(){
+    NetInfo.fetch().then(state => {
+     // console.log("Connection type2", state.type);
+      //console.log("Is connected?2", state.isConnected);
+      if (state.isConnected == true){
+        //alert('Online');
+        this._postUser();
+      }else{
+        alert('Check Internet Connection...');
+      }
+    });
   }
 
   _postUser() {

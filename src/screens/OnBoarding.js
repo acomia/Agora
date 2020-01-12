@@ -94,7 +94,7 @@ export default class OnBoarding extends React.Component {
                   </Body>
                 </CardItem>
               </Card>
-              <Card transparent style={styles.cardContainer}>
+              {/* <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
                   <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="book-open" style={styles.cardIconStyleGuidebook} />
@@ -105,7 +105,7 @@ export default class OnBoarding extends React.Component {
                     </Button>
                   </Body>
                 </CardItem>
-              </Card>
+              </Card> */}
             </ScrollView>
           </View>
         </ImageBackground>

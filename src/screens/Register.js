@@ -34,7 +34,7 @@ import ImagePicker from 'react-native-image-picker';
 import CompressImage from 'react-native-compress-image';
 import Modal from 'react-native-modal'
 import MaskedInput from 'react-native-masked-input-text'
-
+import NetInfo from "@react-native-community/netinfo";
 
 const { width, height } = Dimensions.get('window');
 
@@ -569,6 +569,13 @@ export default class Login extends React.Component {
 
   handleSubmit = () => {
     let valid_email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
+    NetInfo.fetch().then(state => {
+       if (state.isConnected == false){
+        return alert('Check Internet Connection...');    
+       }
+     });
+
     if (valid_email.test(this.state.email) === false) {
       return alert("Email address is not valid!");
     }
@@ -600,7 +607,8 @@ export default class Login extends React.Component {
     }
 
 
-    this._InsertRequest();
+   //this._InsertRequest();
+   this.checkConnectivity();
   };
 
   handleValidIDPhoto = () => {
@@ -670,6 +678,18 @@ export default class Login extends React.Component {
       }
     });
   };
+
+  checkConnectivity(){
+    NetInfo.fetch().then(state => {
+     // console.log("Connection type2", state.type);
+      //console.log("Is connected?2", state.isConnected);
+      if (state.isConnected == true){
+        this._InsertRequest();
+      }else{
+        alert('Check Internet Connection...');
+      }
+    });
+  }
 
   async _InsertRequest() {
     let formdata = new FormData();
