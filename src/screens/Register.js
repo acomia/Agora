@@ -175,10 +175,6 @@ export default class Login extends React.Component {
             <Text style={styles.headerTitle}>
               Create an account
             </Text>
-            {/* <Text style={{ fontSize: 20 }}>
-              (For Pricipal Members Only)
-            </Text> */}
-
             <Text style={styles.headerSubheader}>
               (For Pricipal Members Only)
             </Text>
@@ -187,6 +183,9 @@ export default class Login extends React.Component {
             <View style={styles.viewForm}>
               <View style={styles.formInfo}>
                 <Text style={styles.headerText}>Personal Information</Text>
+                <Text style={styles.reqField}>
+                 * Required Fields 
+                </Text>
                 <Item floatingLabel style={styles.formStyle}>
                   <Label>First name *</Label>
                   <Input
@@ -312,11 +311,11 @@ export default class Login extends React.Component {
                       this.setState({ intellicare_acct })
                     }
                   />
-                  <MaskedInput mask={'xXas\\00?'} placeholder={'xXas00'} />
+                  
                 </Item>
                 
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Intellicare Card No. * </Label>
+                  <Label>Intellicare Card No. * (eg. 1234567891234516)</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.intellicare_no}
@@ -908,5 +907,9 @@ const styles = StyleSheet.create({
   sampleText: {
     fontSize: 12,
     color: '#82817e',
+  },
+  reqField: {
+    fontSize: 12,
+    color: '#f54640',
   },
 });
