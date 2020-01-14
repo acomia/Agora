@@ -24,7 +24,6 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {DrawerActions} from 'react-navigation-drawer';
-import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 
 const MEMB_NAME = 'memb_name';
@@ -102,6 +101,46 @@ export default class Dashboard extends React.Component {
                 <TouchableNativeFeedback
                   onPress={() =>
                     this.props.navigation.navigate('DoctorSearchNavigation')
+                  }>
+                  <Card transparent>
+                    <CardItem style={[styles.cardMenuStyle]}>
+                      <Body>
+                        <Thumbnail
+                          source={require('../../assets/images/menu-provider.png')}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.cardMenuText}>
+                          Medical Providers
+                        </Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </TouchableNativeFeedback>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
+                <TouchableNativeFeedback
+                  onPress={() => this.props.navigation.navigate('ERCS1RequestPage')}>
+                  <Card transparent>
+                    <CardItem style={[styles.cardMenuStyle]}>
+                      <Body>
+                        <Thumbnail
+                          source={require('../../assets/images/menu-members.png')}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.cardMenuText}>
+                          Account Profiles
+                        </Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </TouchableNativeFeedback>
+              </View>
+              <View style={{flex: 1}}>
+                <TouchableNativeFeedback
+                  onPress={() =>
+                    this.props.navigation.navigate('ERCS2RequestPage')
                   }>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
