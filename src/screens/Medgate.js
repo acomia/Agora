@@ -29,20 +29,19 @@ import LinearGradient from 'react-native-linear-gradient';
 import Dialog from 'react-native-dialog';
 
 export default class SideBar extends React.Component {
+  constructor() {
+    super()
+    this.postMedgateToken = this.postMedgateToken.bind(this);
+    this.getMedgateCallbackRequest = this.getMedgateCallbackRequest.bind(this);
+  }
+  
   state = {
     dialogVisible: false,
-    cardNumber: '',
     mobileNumber: '',
     accessToken: '',
     tokenType: '',
     expiresIn: 0
   };
-
-  showAlert = () =>{
-    Alert.alert(
-       this.state.cardNumber
-    )
-  }
 
   showDialog = () => {
     this.setState({ dialogVisible: true });
@@ -54,27 +53,30 @@ export default class SideBar extends React.Component {
   };
 
   handleSubmit = () => {
-    console.log("cardNumber: " + this.state.cardNumber);
     console.log("mobileNumber: " + this.state.mobileNumber);
 
-    if (this.state.cardNumber===""){
-      alert('Please provide card number');
+    if (this.state.mobileNumber===''){
+      alert('Please provide mobile number!');
       return;
     }
 
-    if (this.state.mobileNumber===""){
-      alert('Please provide mobile number');
-      return;
-    }
+    this.postMedgateToken();
+    this.getMedgateCallbackRequest();
 
-    //Medgate Callback Request
-    this._postMedgateToken();
-    // this._getMedgateCallbackRequest();
-    
-    this.setState({ dialogVisible: false });
+    this.refresh();
   };
 
-  _postMedgateToken() {
+  refresh() {
+    this.setState({
+      mobileNumber: '',
+      accessToken: '',
+    });
+    this.setState({ dialogVisible: false });
+    console.log('state refresh');
+  }
+
+  //Get Token from Medgate
+  postMedgateToken() {
     var details = {
       'grantType': 'clientCredentials',
       'clientId': '1886D070-DC43-435E-94BD-56581D7097B7',
@@ -87,6 +89,7 @@ export default class SideBar extends React.Component {
       var encodedValue = encodeURIComponent(details[property]);
       formBody.push(encodedKey + "=" + encodedValue);
     }
+
     formBody = formBody.join("&");
     
     fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token', {
@@ -104,6 +107,7 @@ export default class SideBar extends React.Component {
         tokenType: responseData.tokenType,
         expiresIn: responseData.expiresIn
       });
+      console.log('authentication')
       console.log("accessToken:" + this.state.accessToken);
       console.log("tokenType:" + this.state.tokenType);
       console.log("expiresIn:" + this.state.expiresIn);
@@ -113,23 +117,39 @@ export default class SideBar extends React.Component {
     });
   }
 
-  _getMedgateCallbackRequest(token){
-    const data = {
-      phoneNumber: this.state.mobileNumber,
-      provider: 'Intellicare'
-    };
-    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=${encodeURIComponent(data.phoneNumber)}&provider=${encodeURIComponent(data.provider)}', {
+  //Medgate Callback Request
+  getMedgateCallbackRequest(){
+
+    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' + this.state.mobileNumber + '&provider=Intellicare', {  
       method: 'GET',
       headers: {
-        'Authorization': 'Bearer ' + token,
+        'Authorization': 'Bearer ' + this.state.accessToken,
       }
     })
     .then((response) => response.json())
     .then((responseData) => {
+
+      console.log('callback request');
+      console.log('token: ' + this.state.accessToken);
       console.log(responseData);
+    
+      if (responseData.isSuccess) 
+        alert(responseData.data);
+      else {
+        if (responseData.error['code']){
+          if (responseData.error['code']=='500')
+            alert('You already scheduled a callback earlier.');
+          else if (responseData.error['code']='400')
+            alert('400 error');
+        }
+        else
+          alert('Communication error.');
+      }
+
     })
     .catch(error => {
-      alert('Error!' + error);
+      //alert('Error!' + error);
+      alert('Unable to contact Medgate server.');
     });
   }
 
@@ -161,8 +181,6 @@ export default class SideBar extends React.Component {
               <Dialog.Description style={{padding: 20}}>
                 Need to speak to a doctor now? Provide your details and Medgate will call you.
               </Dialog.Description>
-              <Dialog.Input label="Intellicare Card Number" onChangeText={cardNumber => this.setState({cardNumber})}
-                  ></Dialog.Input>
               <Dialog.Input label="Mobile Number" onChangeText={mobileNumber => this.setState({mobileNumber})}
                   ></Dialog.Input>                  
               <Dialog.Button label="Cancel" onPress={this.handleCancel} />
