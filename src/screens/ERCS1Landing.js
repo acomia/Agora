@@ -28,7 +28,7 @@ import {
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 
-export default class ERCS2Landing extends React.Component {
+export default class ERCS1Landing extends React.Component {
   render() {
     return (
       <Container style={{backgroundColor: '#f5f5f5', paddingHorizontal: 30}}>
@@ -62,13 +62,23 @@ export default class ERCS2Landing extends React.Component {
             rounded
             iconLeft
             style={styles.buttonProceed}
-            onPress={() => this.props.navigation.navigate('ERCS2RequestPage')}>
+            onPress={() => this.props.navigation.navigate('ERCS1RequestPage')}>
             <Icon type="FontAwesome" name="pencil-square-o" />
-            <Text>Create request now</Text>
+            <Text>Create now</Text>
           </Button>
-          <Button iconLeft block light rounded>
-            <Icon type="MaterialCommunityIcons" name="history" style={{color: "#e74c3c" }}/>
-            <Text style={{color: '#e74c3c'}}>Transaction history</Text>
+          <Button
+            iconLeft
+            block
+            light
+            rounded
+            style={{justifyContent: 'center'}}
+            onPress={() => this.props.navigation.navigate('ERCS1HistoryPage')}>
+            <Icon
+              type="MaterialCommunityIcons"
+              name="history"
+              style={{color: '#5fb650'}}
+            />
+            <Text style={{color: '#5fb650'}}>Transaction history</Text>
           </Button>
         </View>
       </Container>
@@ -80,7 +90,8 @@ export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   buttonProceed: {
-    backgroundColor: '#e74c3c',
+    justifyContent: 'center',
+    backgroundColor: '#5fb650',
     marginBottom: 10,
   },
 });

@@ -44,7 +44,7 @@ export default class ERCS1Request extends React.Component {
           </Text>
           <Text style={styles.subHeader}>
             Kindly provide all necessary information to create your e-Referral
-            Control Sheet 1 (e-RCS1) which you can use for your Consultation.
+            Control Sheet 1 (e-RCS 1) which you can use for your Consultation.
           </Text>
         </View>
         <ScrollView style={styles.container}>
@@ -69,8 +69,8 @@ export default class ERCS1Request extends React.Component {
             <Input style={styles.formInput} />
           </View>
           <View style={styles.viewButton}>
-            <Button success style={styles.buttonStyle}  onPress={() => this.props.navigation.navigate('ERCS1SuccessPage')}>
-              <Title>Submit</Title>
+            <Button block rounded success style={styles.buttonStyle}  onPress={() => this.props.navigation.navigate('ERCS1SuccessPage')}>
+              <Text>Submit</Text>
             </Button>
           </View>
         </ScrollView>

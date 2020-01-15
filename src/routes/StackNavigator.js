@@ -26,9 +26,12 @@ import PostedUtil from '../screens/PostedUtil';
 import EditProfile from '../screens/EditProfile';
 import Benefits from '../screens/Benefits';
 import ERCS1Request from '../screens/ERCS1Request';
-import ERCS2Request from '../screens/ERCS2Request';
+import ERCS1Landing from '../screens/ERCS1Landing';
 import ERCS1Success from '../screens/ERCS1Success';
+import ERCS1History from '../screens/ERCS1History';
+import ERCS2Request from '../screens/ERCS2Request';
 import ERCS2Landing from '../screens/ERCS2Landing';
+import ERCS2Success from '../screens/ERCS2Success';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -47,6 +50,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -61,6 +65,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -87,6 +92,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -112,6 +118,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -126,6 +133,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -171,6 +179,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -185,6 +194,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -199,6 +209,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#fff',
     },
@@ -213,12 +224,40 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#2d2d2d',
     },
   },
   ERCS1SuccessPage: {
     screen: ERCS1Success,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  ERCS1LandingPage: {
+    screen: ERCS1Landing,
+    navigationOptions: {
+      header: null,
+    },
+  },
+  ERCS1HistoryPage: {
+    screen: ERCS1History,
+    navigationOptions: {
+      title: 'Transaction History',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS2SuccessPage: {
+    screen: ERCS2Success,
     navigationOptions: {
       header: null,
     },
@@ -233,6 +272,7 @@ AppStack = createStackNavigator({
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
+        height: 80,
       },
       headerTintColor: '#2d2d2d',
     },

@@ -122,7 +122,7 @@ export default class Dashboard extends React.Component {
               <View style={{flex: 1}}>
                 <TouchableNativeFeedback
                   onPress={() =>
-                    this.props.navigation.navigate('ERCS1RequestPage')
+                    this.props.navigation.navigate('ERCS1LandingPage')
                   }>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>

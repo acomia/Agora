@@ -28,7 +28,7 @@ import {
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 
-export default class ERCS1Success extends React.Component {
+export default class ERCS2Success extends React.Component {
   render() {
     return (
       <Container style={{display: 'flex'}}>
@@ -48,25 +48,40 @@ export default class ERCS1Success extends React.Component {
           <Icon
             type="SimpleLineIcons"
             name="check"
-            style={{fontSize: 100, color: '#5fb650'}}
+            style={{fontSize: 80, color: '#e74c3c', marginBottom: 20}}
           />
-          <Text style={styles.headerTitle}>Success!</Text>
+          <Text style={styles.headerTitle}>Done!</Text>
           <Text style={styles.subHeader}>
-            Your e-RCS 1 no. for this transaction is
+            Your e-RCS 2 no. for this transaction is
           </Text>
           <Text style={styles.ercsText}>M2001A002006</Text>
           <Text style={styles.subHeader1}>
-            We have sent your Referral Control Sheet 1 (RCS 1) form to your
-            registered e-mail address. You may print and present it to your
-            chosen facility to avail your consultation.
+            Our Customer Service Specialist is currently validating your
+            request. Once approved, we will send you an e-mail with the Referral
+            Control Sheet 2 (RCS 2) attached.
+          </Text>
+          <Text style={styles.subHeader1}>
+            You may print the form and proceed with the availment from your
+            chosen hospital/facility.
           </Text>
         </View>
         <View style={styles.viewButton}>
-          <Button iconLeft block rounded info style={styles.buttonResend}>
-          <Icon type="Ionicons" name="ios-mail" />
-            <Text>Resend e-mail</Text>
+          <Button
+            block
+            rounded
+            iconLeft
+            info
+            style={styles.buttonTransaction}
+            onPress={() => this.props.navigation.navigate('DashboardPage')}>
+            <Icon type="MaterialCommunityIcons" name="history" />
+            <Text>Transaction history</Text>
           </Button>
-          <Button iconLeft rounded success block style={styles.buttonHome} onPress={() => this.props.navigation.navigate('DashboardPage')}>
+          <Button
+            block
+            rounded
+            iconLeft
+            style={styles.buttonHome}
+            onPress={() => this.props.navigation.navigate('DashboardPage')}>
             <Icon type="Ionicons" name="md-home" />
             <Text>Go back home</Text>
           </Button>
@@ -81,9 +96,10 @@ export const {width, height} = Dimensions.get('window');
 const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: 'bold',
-    fontSize: 40,
-    color: '#5fb650',
+    fontSize: 25,
+    color: '#e74c3c',
     marginBottom: 30,
+    textAlign: 'center',
   },
   subHeader: {
     color: '#6d6e72',
@@ -91,22 +107,23 @@ const styles = StyleSheet.create({
   },
   subHeader1: {
     color: '#6d6e72',
-    textAlign: 'center',
+    textAlign: 'justify',
     marginTop: 30,
   },
   ercsText: {
-    color: '#5fb650',
+    color: '#e74c3c',
     fontWeight: 'bold',
     fontSize: 20,
   },
   buttonHome: {
-    backgroundColor: "#5fb650",
-    color: '#fff',
-  },
-  buttonResend:{
+    backgroundColor: '#e74c3c',
     color: '#fff',
     justifyContent: 'center',
-    marginBottom: 20
+  },
+  buttonTransaction: {
+    color: '#fff',
+    justifyContent: 'center',
+    marginBottom: 20,
   },
   viewButton: {
     flex: 1,

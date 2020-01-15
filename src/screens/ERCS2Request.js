@@ -73,7 +73,7 @@ export default class ERCS1Request extends React.Component {
             <Input style={styles.formInput} />
           </View>
           <View style={{paddingHorizontal: 20}}>
-            <Card style={{borderRadius: 10, justifyContent: "center"}}>
+            <Card style={{borderRadius: 10, justifyContent: 'center'}}>
               <CardItem style={{borderRadius: 10}}>
                 <Body style={{alignContent: 'center'}}>
                   <Icon
@@ -95,12 +95,13 @@ export default class ERCS1Request extends React.Component {
           </View>
           <View style={styles.viewButton}>
             <Button
-              success
+              block
+              rounded
               style={styles.buttonStyle}
               onPress={() =>
-                this.props.navigation.navigate('ERCS2LandingPage')
+                this.props.navigation.navigate('ERCS2SuccessPage')
               }>
-              <Title>Submit</Title>
+              <Text>Submit</Text>
             </Button>
           </View>
         </ScrollView>
@@ -143,6 +144,5 @@ const styles = StyleSheet.create({
   buttonStyle: {
     backgroundColor: '#e74c3c',
     color: '#fff',
-    justifyContent: 'center',
   },
 });
