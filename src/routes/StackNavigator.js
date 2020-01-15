@@ -28,6 +28,7 @@ import Benefits from '../screens/Benefits';
 import ERCS1Request from '../screens/ERCS1Request';
 import ERCS2Request from '../screens/ERCS2Request';
 import ERCS1Success from '../screens/ERCS1Success';
+import ERCS2Landing from '../screens/ERCS2Landing';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -224,6 +225,20 @@ AppStack = createStackNavigator({
   },
   ERCS2RequestPage: {
     screen: ERCS2Request,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        backgroundColor: '#fff',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+      },
+      headerTintColor: '#2d2d2d',
+    },
+  },
+  ERCS2LandingPage: {
+    screen: ERCS2Landing,
     navigationOptions: {
       header: null,
     },
