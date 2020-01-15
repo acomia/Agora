@@ -54,12 +54,23 @@ export default class SideBar extends React.Component {
   };
 
   handleSubmit = () => {
-    console.log("card number: " + this.state.cardNumber);
-    console.log("mobile number: " + this.state.mobileNumber);
+    console.log("cardNumber: " + this.state.cardNumber);
+    console.log("mobileNumber: " + this.state.mobileNumber);
+
+    if (this.state.cardNumber===""){
+      alert('Please provide card number');
+      return;
+    }
+
+    if (this.state.mobileNumber===""){
+      alert('Please provide mobile number');
+      return;
+    }
 
     //Medgate Callback Request
     this._postMedgateToken();
-
+    // this._getMedgateCallbackRequest();
+    
     this.setState({ dialogVisible: false });
   };
 
@@ -78,7 +89,7 @@ export default class SideBar extends React.Component {
     }
     formBody = formBody.join("&");
     
-    fetch(' https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token', {
+    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token', {
       method: 'POST',
       headers: {
         'Accept': 'application/json',
@@ -86,8 +97,36 @@ export default class SideBar extends React.Component {
       },
       body: formBody
     })
-    .then(response => {
-      console.log(response);
+    .then((response) => response.json())
+    .then((responseData => {
+      this.setState({
+        accessToken: responseData.accessToken,
+        tokenType: responseData.tokenType,
+        expiresIn: responseData.expiresIn
+      });
+      console.log("accessToken:" + this.state.accessToken);
+      console.log("tokenType:" + this.state.tokenType);
+      console.log("expiresIn:" + this.state.expiresIn);
+    }))
+    .catch(error => {
+      alert('Error!' + error);
+    });
+  }
+
+  _getMedgateCallbackRequest(token){
+    const data = {
+      phoneNumber: this.state.mobileNumber,
+      provider: 'Intellicare'
+    };
+    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=${encodeURIComponent(data.phoneNumber)}&provider=${encodeURIComponent(data.provider)}', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+      console.log(responseData);
     })
     .catch(error => {
       alert('Error!' + error);
@@ -114,7 +153,7 @@ export default class SideBar extends React.Component {
               onPress={this.showDialog}
               >
               <Icon type="Ionicons" name="ios-call" />
-              <Text>Request My Callback!</Text>
+              <Text>Request Callback!</Text>
             </Button>
           </View>
           <View>
