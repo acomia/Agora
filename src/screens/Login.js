@@ -8,7 +8,6 @@ import {
   StatusBar,
 } from 'react-native';
 import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
 import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from "@react-native-community/netinfo";
