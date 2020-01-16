@@ -74,7 +74,7 @@ export default class OnBoarding extends React.Component {
                 <CardItem style={styles.cardItemStyle}>
                   <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="map" style={styles.cardIconStyleIntellimap} />
-                    <Label style={{ textAlign: 'center' }}>Locate our Accreditted Facilities.</Label>
+                    <Label style={{ textAlign: 'center' }}>Locate our Accredited Facilities.</Label>
                     <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('IntellimapPage')}>
                       <Text style={styles.cardButtonText}>Intellimap</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -86,7 +86,7 @@ export default class OnBoarding extends React.Component {
                 <CardItem style={styles.cardItemStyle}>
                   <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="magnifier" style={styles.cardIconStyleProviders} />
-                    <Label style={{ textAlign: 'center' }}>Our Accreditted Doctors and Dentists.</Label>
+                    <Label style={{ textAlign: 'center' }}>Our Accredited Doctors and Dentists.</Label>
                     <Button iconRight rounded style={styles.cardButtonProviders} onPress={() => this.props.navigation.navigate('DoctorSearchNavigation')}>
                       <Text style={styles.cardButtonText}>Providers</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />

@@ -204,7 +204,7 @@ export default class ApprovedUtil extends React.Component {
           <View style={styles.header}>
             <Text style={styles.headerTitle}>Approved Utilization</Text>
             <Text style={styles.headerSubheader}>
-              Incurred buy not posted. Approved availments through Intellicare's
+              Incurred but not posted. Approved availments through Intellicare's
               Customer Service Department.
             </Text>
           </View>
