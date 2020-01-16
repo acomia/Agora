@@ -29,12 +29,6 @@ import LinearGradient from 'react-native-linear-gradient';
 import Dialog from 'react-native-dialog';
 
 export default class SideBar extends React.Component {
-  constructor() {
-    super()
-    this.postMedgateToken = this.postMedgateToken.bind(this);
-    this.getMedgateCallbackRequest = this.getMedgateCallbackRequest.bind(this);
-  }
-  
   state = {
     dialogVisible: false,
     mobileNumber: '',
@@ -140,17 +134,24 @@ export default class SideBar extends React.Component {
           if (responseData.error['code']=='500')
             alert('You already scheduled a callback earlier.');
           else if (responseData.error['code']='400')
-            alert('400 error');
+            alert(responseData.error['message']);
+          else
+            alert('Invalid request. Try again.');
         }
         else
           alert('Communication error.');
       }
-
+4
     })
     .catch(error => {
       //alert('Error!' + error);
       alert('Unable to contact Medgate server.');
     });
+  }
+
+  
+  componentDidMount(){
+    this.postMedgateToken();
   }
 
   render() {
