@@ -54,6 +54,11 @@ export default class SideBar extends React.Component {
       return;
     }
 
+    if (this.state.mobileNumber.length < 10){
+      alert('Please input a valid number!');
+      return;
+    }
+
     this.postMedgateToken();
     this.getMedgateCallbackRequest();
 
