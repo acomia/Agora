@@ -25,8 +25,14 @@ import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {DrawerActions} from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from "@react-native-community/netinfo";
 
 const MEMB_NAME = 'memb_name';
+
+NetInfo.fetch().then(state => {
+  console.log("Connection type", state.type);
+  console.log("Is connected?", state.isConnected);
+});
 
 export default class Dashboard extends React.Component {
   constructor(props) {
@@ -61,7 +67,7 @@ export default class Dashboard extends React.Component {
               style={styles.headerIconStyle}
               type="MaterialCommunityIcons"
               name="account-circle"
-              onPress={() => this.props.navigation.navigate('ProfilePage')}
+              //onPress={() => this.props.navigation.navigate('ProfilePage')}
             />
           </Right>
         </Header>
@@ -81,7 +87,8 @@ export default class Dashboard extends React.Component {
             <View style={{flexDirection: 'row'}}>
               <View style={{flex: 1, justifyContent: "center"}}>
                 <TouchableNativeFeedback
-                  onPress={() => this.props.navigation.navigate('MembersPage')}>
+                  //onPress={() => this.props.navigation.navigate('MembersPage')}>
+                  onPress={() => this.checkConnectivity('MembersPage')}>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
@@ -225,7 +232,23 @@ export default class Dashboard extends React.Component {
       </Container>
     );
   }
+
+  checkConnectivity(screen){
+    NetInfo.fetch().then(state => {
+     // console.log("Connection type2", state.type);
+      //console.log("Is connected?2", state.isConnected);
+      if (state.isConnected == true){
+        //alert('Online');
+        this.props.navigation.navigate(screen);
+      }else{
+        alert('Oops! Check Internet Connection...');
+      }
+    });
+  }
 }
+
+
+
 
 export const {width, height} = Dimensions.get('window');
 
