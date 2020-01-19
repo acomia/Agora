@@ -16,6 +16,7 @@ const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
+const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -115,6 +116,8 @@ export default class Login extends React.Component {
     }
   }
 
+
+
   async getname() {
     try {
       let membname = await AsyncStorage.getItem(MEMB_NAME);
@@ -124,6 +127,24 @@ export default class Login extends React.Component {
     }
   }
 
+
+  async storemembemail(memb_email) {
+    try {
+      await AsyncStorage.setItem(MEMB_EMAIL, memb_email);
+      this.getemail();
+    } catch (error) {
+      console.log('CANT STORE MEMB EMAIL');
+    }
+  }
+
+  async getemail() {
+    try {
+      let membemail = await AsyncStorage.getItem(MEMB_EMAIL);
+      console.log('memb email is: ' + membemail);
+    } catch (error) {
+      console.log('CANT GET EMAIL');
+    }
+  }
   render() {
     return (
       <Container>
@@ -211,14 +232,17 @@ export default class Login extends React.Component {
             let accessToken = data.access_token;
             this.storeToken(accessToken);
 
-            // let memberId = data.data.id.toString();
-            // this.storememberId(memberId); 
+            let memberId = data.data.recordid;
+            this.storememberId(memberId); 
 
             let memb_Accountno = data.data.accountno;
             this.storeacct(memb_Accountno);
 
             let memb_name = data.data.firstname;
             this.storemembname(memb_name);
+
+            let memb_email = data.data.email;
+            this.storemembemail(memb_email);
 
             this.props.navigation.dispatch(resetAction);
           } else {

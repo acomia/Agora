@@ -31,6 +31,7 @@ import {
 } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 import { SearchBar } from 'react-native-elements'
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
@@ -42,6 +43,13 @@ import Spinner from 'react-native-spinkit'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_EMAIL = 'memb_email';
+const MEMBER_ID = 'member_id';
+
+const resetAction = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
+});
 
 export default class ERCS1Request extends React.Component {
   _isMounted = false;
@@ -49,12 +57,13 @@ export default class ERCS1Request extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      PickerValueHolder: '',
+      PickerValueHolder: 'I',
       MembPickerValueHolder: '',
-      DoctorSpeciallty : '',
+      DoctorSpeciallty: '',
       RCSconsultype: [],
       Rcsmemb: [],
       RCSdoctorspecialty: [],
+      sched: '',
       isLoading: false,
       searchTextChanged: false,
       search: '',
@@ -65,6 +74,7 @@ export default class ERCS1Request extends React.Component {
       dataSourceIllness: [],
       dataSourceIllnessSpec: [],
       providercode: '',
+      docphone: '',
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -131,7 +141,7 @@ export default class ERCS1Request extends React.Component {
     })
       .then((response) => {
         response.json().then((provider) => {
-          console.log('providerko',provider)
+          console.log('providerko', provider)
           this.setState({
             dataSource: provider.data,
           })
@@ -182,51 +192,165 @@ export default class ERCS1Request extends React.Component {
     })
       .then((response) => {
         response.json().then((illnessSpec) => {
-          console.log('illness',illnessSpec)
+          console.log('illness', illnessSpec)
           this.setState({
-            dataSourceIllnessSpec: illnessSpec.data,
+            dataSourceIllnessSpec: illnessSpec.data[0],
           });
+          dataSourceIllnessSpec = illnessSpec.data[0]
 
-         
-          this.DoctorScpec()
+          console.log('illness2', dataSourceIllnessSpec)
+
+          this.DoctorScpec = this.DoctorScpec.bind(this)
+          this.DoctorScpec();
         })
       })
       .catch((error) => {
         alert('Error!' + error)
       })
   }
-  
-  DoctorScpec(){
-    return(
-    console.log('illness2',dataSourceIllnessSpec)
-    );
-  }
-  // async DoctorScpec (){
-  //   fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=', {
-  //     method: 'GET',
-  //     headers: {
-  //       'Authorization': 'Bearer ' + token,
-  //       'HospitalCode': this.state.providercode,
-  //       'Specialty' : this.state.dataSourceIllnessSpec.specialty_name
-  //     },
-  //     params: {
-  //       'name': '',
-  //     },
-  //   })
-  //     .then((response) => {
-  //       console.log('hero', this.state.dataSourceIllnessSpec)
-  //       response.json().then((doctorspec) => {
-  //         { console.log('specialltydocto', doctorspec.data) }
-  //         this.setState({
-  //           RCSdoctorspecialty: doctorspec.data,
-  //         })
 
-  //       })
-  //     })
-  //     .catch((error) => {
-  //       alert('Error!' + error)
-  //     })
+  // DoctorScpec(){
+  //   return(
+  //   console.log('illness2',dataSourceIllnessSpec)
+  //   );
   // }
+
+  async DoctorScpec() {
+
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let specname = await this.state.dataSourceIllnessSpec.specialty_name
+    console.log(token);
+    console.log(this.state.providercode);
+    console.log('specname', specname);
+
+    try {
+      fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=', {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'HospitalCode': this.state.providercode,
+          'Specialty': specname
+        },
+        params: {
+          'name': '',
+        },
+      })
+        .then((response) => {
+          console.log('hero', this.state.dataSourceIllnessSpec)
+          console.log('hero22', response)
+          response.json().then((doctorspec) => {
+            console.log('hero23', doctorspec)
+            if (doctorspec.data != null) {
+              this.setState({
+                RCSdoctorspecialty: doctorspec.data,
+              })
+              RCSdoctorspecialty = doctorspec.data
+              console.log('value', RCSdoctorspecialty)
+            }
+            else {
+              this.setState({
+                RCSdoctorspecialty: []
+              })
+              alert("No Doctors Found!")
+            }
+
+          })
+        })
+        .catch((error) => {
+          alert('Error!' + error)
+        })
+    }
+    catch (error) {
+      console.log(error);
+    }
+  }
+
+
+  async _postUser() {
+
+    console.log('acctno', this.state.MembPickerValueHolder)
+    // console.log('illness', specname)
+    console.log('doctors name2', this.state.DoctorSpeciallty.firstname + '' + this.state.DoctorSpeciallty.lastname);
+    console.log('doctors code', this.state.DoctorSpeciallty.doctor_code);
+    console.log('doc phone', this.state.DoctorSpeciallty.phone);
+
+    console.log('hospitalname', this.state.search)
+    console.log('hospitalcode', this.state.providercode)
+    console.log('clinichrs', this.state.sched)
+    console.log('consultype', this.state.PickerValueHolder)
+    let email = await AsyncStorage.getItem(MEMB_EMAIL);
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let mid = await AsyncStorage.getItem(MEMBER_ID);
+    let specname = await this.state.dataSourceIllnessSpec.specialty_name
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/submit', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify({
+        acctno: this.state.MembPickerValueHolder,
+        illness: specname,
+        doctor_name: this.state.DoctorSpeciallty.firstname + ' ' + this.state.DoctorSpeciallty.lastname,
+        doctor_code: this.state.DoctorSpeciallty.doctor_code,
+        doctor_phone: this.state.DoctorSpeciallty.phone,
+        hospital_name: this.state.search,
+        hospital_code: this.state.providercode,
+        hospital_schedule: this.state.sched,
+        consult_type: this.state.PickerValueHolder
+      }),
+    })
+      .then(response => {
+        console.log('email',email)
+        console.log('acctno',this.state.MembPickerValueHolder)
+        console.log('membid',mid)
+        response.json().then(data => {
+          
+          let rcs = data.data.ercsno
+          console.log('rcsno',rcs)
+          if (data.is_success === true) {
+            fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no='+rcs, {
+              method: 'GET',
+              params: {
+                'no': rcs,
+              },
+              headers: {
+                'Authorization': 'Bearer ' + token,
+                'EmailAddress': email,
+                'AccountNo': this.state.MembPickerValueHolder,
+                'AccountID': mid,
+                'Content-Type': 'application/x-www-form-urlencoded',
+              },
+            })
+              .then(response => {
+                response.json().then(data => {
+                  console.log('final',data)
+                  if (data.is_success === true) {
+                    alert('finaltest');
+                    this.props.navigation.dispatch(resetAction);
+                  } else {
+                    alert(data.error_message);
+                  }
+
+                });
+              })
+              .catch(error => {
+                alert('Error!' + error);
+              });
+
+          } else {
+            alert('error in saving',data.error_message);
+          }
+
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+
+
+  }
+
 
   SearchFilterFunction(text) {
     const newData = this.arrayholder.filter(function (item) {
@@ -286,6 +410,7 @@ export default class ERCS1Request extends React.Component {
     return (
       this.setState({
         search: provider.provider_name,
+        sched: provider.clinic_hrs,
         found: 1,
         providercode: provider.provider_code
       })
@@ -386,7 +511,7 @@ export default class ERCS1Request extends React.Component {
               selectedValue={this.state.PickerValueHolder}
               onValueChange={(modeValue, itemIndex) => this.setState({ PickerValueHolder: modeValue })}>
               {this.state.RCSconsultype.map((item, key) => (
-                <Picker.Item label={item.description} value={item.description} key={key} />)
+                <Picker.Item label={item.description} value={item.code} key={key} />)
               )}
             </Picker>
           </View>
@@ -400,7 +525,7 @@ export default class ERCS1Request extends React.Component {
               inputContainerStyle={{ backgroundColor: 'white', height: 34, bottom: 6 }}
               inputStyle={{ fontSize: 12 }}
               onChangeText={text => this.SearchFilterFunction(text)}
-              onClear={() => this.setState({ searchData: [], destination: '' })}
+              onClear={() => this.setState({ searchData: [], destination: '', searchIllness: '' })}
               placeholder="Search Hospital/Provider..."
               value={this.state.search}
             />
@@ -459,7 +584,7 @@ export default class ERCS1Request extends React.Component {
           </View>
           <View style={styles.formStyle}>
             <Text style={styles.formLabel}>Choose doctor</Text>
-            {/* <Picker mode="dropdown"
+            <Picker mode="dropdown"
               style={{ width: undefined }}
               iosIcon={<Icon name="arrow-down" />}
               placeholderStyle={{ color: '#bdc3c7' }}
@@ -469,16 +594,19 @@ export default class ERCS1Request extends React.Component {
                 marginHorizontal: 20,
                 justifyContent: 'center',
               }}
-              selectedValue={this.state.DoctirSpeciallty}
-              onValueChange={(modeValue, itemIndex) => this.setState({ DoctorSpeciallty: modeValue })}>
+              selectedValue={this.state.DoctorSpeciallty}
+              onValueChange={(modeValue, itemIndex) => {
+                this.setState({ DoctorSpeciallty: modeValue })
+                ; console.log('pciker', modeValue)
+              }}>
               {this.state.RCSdoctorspecialty.map((item, key) => (
-                <Picker.Item label={item.firstname} value={item.doctor_code} key={key} />)
+                <Picker.Item label={item.firstname + ' ' + item.lastname} value={item} key={key} />)
               )}
-            </Picker> */}
+            </Picker>
           </View>
           <View style={styles.viewButton}>
             {/* <Button success style={styles.buttonStyle} onPress={() => this.props.navigation.navigate('ERCS1SuccessPage')}> */}
-            <Button success style={styles.buttonStyle} onPress={() => this.postRCS1()}>
+            <Button success style={styles.buttonStyle} onPress={() => this._postUser()}>
               <Title>Submit</Title>
             </Button>
           </View>
