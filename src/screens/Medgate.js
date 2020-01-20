@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  Alert,
   StyleSheet,
   View,
   Dimensions,
@@ -25,8 +26,139 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
+import Dialog from 'react-native-dialog';
 
 export default class SideBar extends React.Component {
+  state = {
+    dialogVisible: false,
+    mobileNumber: '',
+    accessToken: '',
+    tokenType: '',
+    expiresIn: 0
+  };
+
+  showDialog = () => {
+    this.setState({ dialogVisible: true });
+  };
+
+  handleCancel = () => {
+    console.log("click cancel");
+    this.setState({ dialogVisible: false });
+  };
+
+  handleSubmit = () => {
+    console.log("mobileNumber: " + this.state.mobileNumber);
+
+    if (this.state.mobileNumber===''){
+      alert('Please provide mobile number!');
+      return;
+    }
+
+    if (this.state.mobileNumber.length < 10){
+      alert('Please input a valid number!');
+      return;
+    }
+
+    this.postMedgateToken();
+    this.getMedgateCallbackRequest();
+
+    this.refresh();
+  };
+
+  refresh() {
+    this.setState({
+      mobileNumber: '',
+      accessToken: '',
+    });
+    this.setState({ dialogVisible: false });
+    console.log('state refresh');
+  }
+
+  //Get Token from Medgate
+  postMedgateToken() {
+    var details = {
+      'grantType': 'clientCredentials',
+      'clientId': '1886D070-DC43-435E-94BD-56581D7097B7',
+      'clientSecret': '111E76AE-7F6D-4924-8095-083300DFC7D0'
+    };
+    
+    var formBody = [];
+    for (var property in details) {
+      var encodedKey = encodeURIComponent(property);
+      var encodedValue = encodeURIComponent(details[property]);
+      formBody.push(encodedKey + "=" + encodedValue);
+    }
+
+    formBody = formBody.join("&");
+    
+    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: formBody
+    })
+    .then((response) => response.json())
+    .then((responseData => {
+      this.setState({
+        accessToken: responseData.accessToken,
+        tokenType: responseData.tokenType,
+        expiresIn: responseData.expiresIn
+      });
+      console.log('authentication')
+      console.log("accessToken:" + this.state.accessToken);
+      console.log("tokenType:" + this.state.tokenType);
+      console.log("expiresIn:" + this.state.expiresIn);
+    }))
+    .catch(error => {
+      alert('Error!' + error);
+    });
+  }
+
+  //Medgate Callback Request
+  getMedgateCallbackRequest(){
+
+    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' + this.state.mobileNumber + '&provider=Intellicare', {  
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + this.state.accessToken,
+      }
+    })
+    .then((response) => response.json())
+    .then((responseData) => {
+
+      console.log('callback request');
+      console.log('token: ' + this.state.accessToken);
+      console.log(responseData);
+    
+      if (responseData.isSuccess) 
+        alert(responseData.data);
+      else {
+        if (responseData.error['code']){
+          if (responseData.error['code']=='500')
+            alert('You already scheduled a callback earlier.');
+          else if (responseData.error['code']='400')
+            alert(responseData.error['message']);
+          else
+            alert('Invalid request. Try again.');
+        }
+        else
+          alert('Communication error.');
+      }
+4
+    })
+    .catch(error => {
+      //alert('Error!' + error);
+      alert('Unable to contact Medgate server.');
+    });
+  }
+
+  
+  componentDidMount(){
+    this.postMedgateToken();
+  }
+
   render() {
     return (
       <Container style={styles.container}>
@@ -40,6 +172,29 @@ export default class SideBar extends React.Component {
             />
           </View>
           <View style={{padding: 50}}>
+            <Button
+              iconLeft
+              rounded
+              style={{backgroundColor: '#258bf5', flexDirection: 'column'}}
+              onPress={this.showDialog}
+              >
+              <Icon type="Ionicons" name="ios-call" />
+              <Text>Request Callback!</Text>
+            </Button>
+          </View>
+          <View>
+            <Dialog.Container visible={this.state.dialogVisible}>
+              <Dialog.Description style={{padding: 20}}>
+                Need to speak to a doctor now? Provide your details and Medgate will call you.
+              </Dialog.Description>
+              <Dialog.Input label="Mobile Number" onChangeText={mobileNumber => this.setState({mobileNumber})}
+                  ></Dialog.Input>                  
+              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+              <Dialog.Button label="Submit" bold={true} onPress={this.handleSubmit} 
+              />
+            </Dialog.Container>
+          </View>            
+          <View style={{padding: 20}}>
             <Text style={styles.title}>
               Call Doc. Anytime. Anywhere. No lines.™
             </Text>
@@ -134,15 +289,6 @@ export default class SideBar extends React.Component {
             <Text style={{color: '#2d2d2d', fontSize: 14}}>
               Call Doc. Anytime. Anywhere. No lines.™
             </Text>
-            <View style={{marginTop: 30}}>
-              <Button
-                iconLeft
-                rounded
-                style={{backgroundColor: '#258bf5', flexDirection: 'column'}}>
-                <Icon type="Ionicons" name="ios-call" />
-                <Text>Call a Doctor now!</Text>
-              </Button>
-            </View>
           </View>
         </ScrollView>
       </Container>

@@ -6,8 +6,11 @@ import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
 import { StackActions, NavigationActions } from 'react-navigation';
 
-const MEMB_ACCOUNTNO = 'memb_accountno';
 const ACCESS_TOKEN = 'access_token';
+const MEMBER_ID = 'member_id';
+const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_NAME = 'memb_name';
+const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -45,7 +48,10 @@ export default class Members extends React.Component {
   async deleteToken() {
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(MEMBER_ID);
       await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
+      await AsyncStorage.removeItem(MEMB_NAME);
+      await AsyncStorage.removeItem(MEMB_EMAIL);
       this.props.navigation.dispatch(resetAction);
     } catch {
       console.log('Something went wrong');

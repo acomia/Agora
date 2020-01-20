@@ -24,116 +24,261 @@ import {
   Icon,
   Item,
 } from 'native-base';
+import { ScrollView } from 'react-native-gesture-handler';
+import { DataTable } from 'react-native-paper';
+import AsyncStorage from '@react-native-community/async-storage';
+import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
+
+const ACCESS_TOKEN = 'access_token';
 
 export default class Benefits extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      benefitsDataSource: [],
+      tableHead: ['GENERAL BENEFITS', 'HMO', 'TPA'],
+      // h_ip : '',
+      // tableIP: ['In - Patient', this.state.h_ip, 'No'],
+    };
+  }
+
+  async componentDidMount() {
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    console.log('globaltokenko', global.storeToken)
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/benefits', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'AccountNo': global.storeToken,
+        'Content-Type': 'application/json;charset=UTF-8',
+        // 'paramContract': '1',
+      },
+    },
+    )
+      .then(response => {
+        response.json().then(responseJson => {
+          if (responseJson.data != null) {
+            console.log('teteteteest', responseJson.data)
+            this.setState({
+              benefitsDataSource: responseJson.data,
+            });
+          }
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+  }
+
+
   render() {
+    const state = this.state;
+    console.log('logs', this.state.benefitsDataSource)
+    console.log('logs2', this.state.benefitsDataSource.h_ip)
     return (
       <Container>
-        <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Benefits</Text>
-        </View>
-        <View style={styles.contentStyle}>
-          <View style={styles.sectionMembInfo}>
-            <Text style={styles.headerText}>
-              Your general benefits include:
-            </Text>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>In-Patient</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.labelStatus}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Out-Patient</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Emergency</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Dental</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Maternity</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Philhealth</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>APE</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>AD&D</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>OPD Medicine</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Hospital Allowance</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
-            <Item style={styles.itemStyle}>
-              <Left>
-                <Text style={styles.itemLabel}>Exclusions</Text>
-              </Left>
-              <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}></Label>
-              </Body>
-            </Item>
+        <ScrollView>
+          <StatusBar translucent backgroundColor="transparent" />
+          <View style={styles.header}>
+            <Text style={styles.headerTitle}>Benefits</Text>
           </View>
-        </View>
+          <View style={styles.contentStyle}>
+            <View style={styles.sectionMembInfo}>
+              <Text style={styles.headerText}>
+                Your general benefits include:
+            </Text>
+              <View style={styles.container}>
+                <Table borderStyle={{ borderColor: 'transparent', }}>
+                  <Row data={state.tableHead} flexArr={[2, 1, 1]} style={styles.head} textStyle={styles.text} />
+                </Table>
+              </View>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>In-Patient</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_ip ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_ip ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.labelStatus}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Out-Patient</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_opd ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_opd ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Emergency</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_er ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_er ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Dental</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_dental ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_dental ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Maternity</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_ob ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_ob ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Philhealth</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_ph ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_ph ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>APE</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_ape ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_ape ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>AD&D</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_db ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_db ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>OPD Medicine</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_opmed ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_opmed ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+
+              <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Hospital Allowance</Text>
+                </Left>
+                <View style={{ flex: 1, flexDirection: 'row', justifyContent: 'space-around' }}>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.h_ha ? 'Yes' : 'No'}</Text>
+                  </Left>
+                  <Left>
+                    <Text style={styles.itemgrid}>{this.state.benefitsDataSource.t_ha ? 'Yes' : 'No'}</Text>
+                  </Left>
+                </View>
+                {/* <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body> */}
+              </Item>
+              {/* <Item style={styles.itemStyle}>
+                <Left>
+                  <Text style={styles.itemLabel}>Exclusions</Text>
+                </Left>
+                <Body style={styles.itemBody}>
+                  <Label style={styles.itemInfo}></Label>
+                </Body>
+              </Item> */}
+            </View>
+          </View>
+        </ScrollView>
       </Container>
     );
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -154,7 +299,7 @@ const styles = StyleSheet.create({
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -169,6 +314,12 @@ const styles = StyleSheet.create({
   itemLabel: {
     color: '#6d6e72',
     fontWeight: 'bold',
+    flex: 2,
+  },
+  itemgrid: {
+    color: '#6d6e72',
+ 
+    flex: 1,
   },
   itemInfo: {
     color: '#b2bec3',
@@ -188,4 +339,15 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
   },
+  headerStyle: {
+    color: '#6d6e72',
+    fontSize: 30,
+    fontWeight: 'bold',
+    justifyContent: 'center',
+
+  },
+  container: { flex: 1, padding: 16, paddingTop: 30, backgroundColor: '#fff' },
+  head: { height: 40, backgroundColor: '#fff', flexDirection: 'row', justifyContent: 'space-around' },
+  text: { fontSize: 15, color: '#5fb650', },
+  row: { flexDirection: 'row', backgroundColor: '#fff' },
 });

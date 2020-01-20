@@ -24,10 +24,15 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {DrawerActions} from 'react-navigation-drawer';
-import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from "@react-native-community/netinfo";
 
 const MEMB_NAME = 'memb_name';
+
+NetInfo.fetch().then(state => {
+  console.log("Connection type", state.type);
+  console.log("Is connected?", state.isConnected);
+});
 
 export default class Dashboard extends React.Component {
   constructor(props) {
@@ -62,7 +67,7 @@ export default class Dashboard extends React.Component {
               style={styles.headerIconStyle}
               type="MaterialCommunityIcons"
               name="account-circle"
-              onPress={() => this.props.navigation.navigate('ProfilePage')}
+              //onPress={() => this.props.navigation.navigate('ProfilePage')}
             />
           </Right>
         </Header>
@@ -80,14 +85,15 @@ export default class Dashboard extends React.Component {
           </View>
           <View style={styles.MenucontentStyle}>
             <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
+              <View style={{flex: 1, justifyContent: "center"}}>
                 <TouchableNativeFeedback
-                  onPress={() => this.props.navigation.navigate('MembersPage')}>
+                  //onPress={() => this.props.navigation.navigate('MembersPage')}>
+                  onPress={() => this.checkConnectivity('MembersPage')}>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
                         <Thumbnail
-                          source={require('../../assets/images/menu-members.png')}
+                          source={require('../../assets/images/profiles.png')}
                           resizeMode="contain"
                         />
                         <Text style={styles.cardMenuText}>
@@ -107,12 +113,50 @@ export default class Dashboard extends React.Component {
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
                         <Thumbnail
-                          source={require('../../assets/images/menu-provider.png')}
+                          source={require('../../assets/images/hospital.png')}
                           resizeMode="contain"
                         />
                         <Text style={styles.cardMenuText}>
                           Medical Providers
                         </Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </TouchableNativeFeedback>
+              </View>
+            </View>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
+                <TouchableNativeFeedback
+                  onPress={() =>
+                    this.props.navigation.navigate('ERCS1LandingPage')
+                  }>
+                  <Card transparent>
+                    <CardItem style={[styles.cardMenuStyle]}>
+                      <Body>
+                        <Thumbnail
+                          source={require('../../assets/images/consultation.png')}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.cardMenuText}>Create e-RCS 1</Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </TouchableNativeFeedback>
+              </View>
+              <View style={{flex: 1}}>
+                <TouchableNativeFeedback
+                  onPress={() =>
+                    this.props.navigation.navigate('ERCS2LandingPage')
+                  }>
+                  <Card transparent>
+                    <CardItem style={[styles.cardMenuStyle]}>
+                      <Body>
+                        <Thumbnail
+                          source={require('../../assets/images/laboratory.png')}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.cardMenuText}>Request for e-RCS 2</Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -188,7 +232,23 @@ export default class Dashboard extends React.Component {
       </Container>
     );
   }
+
+  checkConnectivity(screen){
+    NetInfo.fetch().then(state => {
+     // console.log("Connection type2", state.type);
+      //console.log("Is connected?2", state.isConnected);
+      if (state.isConnected == true){
+        //alert('Online');
+        this.props.navigation.navigate(screen);
+      }else{
+        alert('Oops! Check Internet Connection...');
+      }
+    });
+  }
 }
+
+
+
 
 export const {width, height} = Dimensions.get('window');
 

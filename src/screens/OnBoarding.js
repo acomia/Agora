@@ -74,7 +74,7 @@ export default class OnBoarding extends React.Component {
                 <CardItem style={styles.cardItemStyle}>
                   <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="map" style={styles.cardIconStyleIntellimap} />
-                    <Label style={{ textAlign: 'center' }}>Locate our Accreditted Facilities.</Label>
+                    <Label style={{ textAlign: 'center' }}>Locate our Accredited Facilities.</Label>
                     <Button iconRight rounded style={styles.cardButtonIntellimap} onPress={() => this.props.navigation.navigate('IntellimapPage')}>
                       <Text style={styles.cardButtonText}>Intellimap</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -86,7 +86,7 @@ export default class OnBoarding extends React.Component {
                 <CardItem style={styles.cardItemStyle}>
                   <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="magnifier" style={styles.cardIconStyleProviders} />
-                    <Label style={{ textAlign: 'center' }}>Our Accreditted Doctors and Dentists.</Label>
+                    <Label style={{ textAlign: 'center' }}>Our Accredited Doctors and Dentists.</Label>
                     <Button iconRight rounded style={styles.cardButtonProviders} onPress={() => this.props.navigation.navigate('DoctorSearchNavigation')}>
                       <Text style={styles.cardButtonText}>Providers</Text>
                       <Icon type="Ionicons" name='ios-arrow-forward' />
@@ -94,7 +94,7 @@ export default class OnBoarding extends React.Component {
                   </Body>
                 </CardItem>
               </Card>
-              <Card transparent style={styles.cardContainer}>
+              {/* <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
                   <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon type="SimpleLineIcons" name="book-open" style={styles.cardIconStyleGuidebook} />
@@ -105,7 +105,7 @@ export default class OnBoarding extends React.Component {
                     </Button>
                   </Body>
                 </CardItem>
-              </Card>
+              </Card> */}
             </ScrollView>
           </View>
         </ImageBackground>
@@ -237,120 +237,3 @@ const styles = StyleSheet.create(
 
   }
 )
-
-
-
-{/* <View style={styles.container}>
-          <View style={styles.Section1}>
-            <View style={styles.swiperContainer}>
-              <SwiperFlatList
-                autoplay
-                autoplayDelay={35}
-                autoplayLoop
-                index={2}
-                showPagination
-                paginationDefaultColor="#fff"
-                paginationActiveColor="#5fb650">
-                <View style={styles.child}>
-                  <ImageBackground source={require('../../assets/images/photo1.jpg')} style={styles.backgroundImage} />
-                </View>
-                <View style={styles.child}>
-                  <ImageBackground source={require('../../assets/images/photo2.jpg')} style={styles.backgroundImage} />
-                </View>
-                <View style={styles.child}>
-                  <ImageBackground source={require('../../assets/images/photo3.jpg')} style={styles.backgroundImage} />
-                </View>
-                <View style={styles.child}>
-                  <ImageBackground source={require('../../assets/images/photo4.jpg')} style={styles.backgroundImage} />
-                </View>
-                <View style={styles.child}>
-                  <ImageBackground source={require('../../assets/images/photo5.jpg')} style={styles.backgroundImage} />
-                </View>
-              </SwiperFlatList>
-            </View>
-            <View style={styles.Section2}>
-              <Text style={styles.AppTitle}>
-                <H1 style={styles.AppTitle}>Intellicare Mobile App</H1>
-              </Text>
-              <Text style={styles.AppDescription}>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-                      </Text>
-              <View style={styles.Buttons}>
-                <Button rounded success style={{ flex: 1, marginHorizontal: 10 }} onPress={() => this.props.navigation.navigate('LoginPage')}>
-                  <Text> Login </Text>
-                </Button>
-                <Button rounded bordered light style={{backgroundColor:"#fff", flex: 1, marginHorizontal: 10 }}>
-                  <Text style={{ color: '#5fb650' }} onPress={() => this.props.navigation.navigate('Intellimap')}> Sign Up </Text>
-                </Button>
-              </View>
-            </View>
-          </View>
-        </View> */}
-
-// buttonLogin: {
-//       color: '#2ecc71',
-//       padding: 20,
-//     },
-//     container: {
-//       display: 'flex',
-//       flex: 1,
-//     },
-//     Section1: {
-//       flex: 1,
-//       backgroundColor: '#f5f5f5',
-
-//     },
-//     Section2: {
-//       flex: 1,
-//       height: height * 1.0,
-//       padding: 20,
-//       paddingBottom: 100,
-//       position: 'absolute',
-//       justifyContent: 'flex-end'
-//     },
-//     content1: {
-//       flex: 6,
-//     },
-//     linkSkip: {
-//       color: '#2ecc71',
-//       fontWeight: "bold",
-//       alignSelf: 'flex-end'
-//     },
-//     AppTitle: {
-//       color: '#5fb650',
-//       alignSelf: "center",
-//       fontWeight: "bold",
-//       padding: 10,
-//     },
-//     AppDescription: {
-//       color: '#fff',
-//       fontSize: 14,
-//       textAlign: "center",
-//     },
-//     Buttons: {
-//       flexDirection: 'row',
-//       padding: 20,
-//     },
-//     child: {
-//       flex: 1,
-//       height: height * 1.0,
-//       width,
-//       justifyContent: 'center'
-//     },
-//     text: {
-//       fontSize: width * 0.50,
-//       textAlign: 'center'
-//     },
-//     swiperContainer: {
-//       flex: 1,
-//       alignItems: "center",
-//       backgroundColor: 'white',
-//     },
-//     backgroundImage: {
-//       flex: 1,
-//       resizeMode: "stretch",
-//     },
-//     paginationStyle: {
-//       color: "#fff",
-//       backgroundColor: "#fff",
-//     },

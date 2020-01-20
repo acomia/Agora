@@ -8,18 +8,33 @@ import {
   StatusBar,
 } from 'react-native';
 import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
 import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
+import NetInfo from "@react-native-community/netinfo";
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
+const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   actions: [NavigationActions.navigate({routeName: 'Dashboard'})],
+});
+
+// Subscribe
+const unsubscribe = NetInfo.addEventListener(state => {
+  console.log("Connection type", state.type);
+  console.log("Is connected?", state.isConnected);
+});
+
+// Unsubscribe
+unsubscribe();
+
+NetInfo.fetch().then(state => {
+  console.log("Connection type", state.type);
+  console.log("Is connected?", state.isConnected);
 });
 
 export default class Login extends React.Component {
@@ -31,6 +46,8 @@ export default class Login extends React.Component {
     username: '',
     password: '',
   };
+
+ 
 
   async storeToken(accessToken) {
     try {
@@ -186,6 +203,8 @@ async getToken()
     }
   }
 
+
+
   async getname() {
     try {
       let membname = await AsyncStorage.getItem(MEMB_NAME);
@@ -195,6 +214,24 @@ async getToken()
     }
   }
 
+
+  async storemembemail(memb_email) {
+    try {
+      await AsyncStorage.setItem(MEMB_EMAIL, memb_email);
+      this.getemail();
+    } catch (error) {
+      console.log('CANT STORE MEMB EMAIL');
+    }
+  }
+
+  async getemail() {
+    try {
+      let membemail = await AsyncStorage.getItem(MEMB_EMAIL);
+      console.log('memb email is: ' + membemail);
+    } catch (error) {
+      console.log('CANT GET EMAIL');
+    }
+  }
   render() {
     return (
       <Container>
@@ -214,7 +251,7 @@ async getToken()
           <View style={styles.loginForm}>
             <Form>
               <Item floatingLabel>
-                <Label>Username</Label>
+                <Label>Email</Label>
                 <Input
                   style={styles.labelStyle}
                   onChangeText={username => this.setState({username})}
@@ -241,13 +278,27 @@ async getToken()
               block
               success
               style={{marginTop: 50}}
-              onPress={() => this._postUser()}>
+              onPress={() => this.checkConnectivity()}>
               <Text> Login </Text>
             </Button>
           </View>
         </View>
       </Container>
     );
+  }
+
+
+  checkConnectivity(){
+    NetInfo.fetch().then(state => {
+     // console.log("Connection type2", state.type);
+      //console.log("Is connected?2", state.isConnected);
+      if (state.isConnected == true){
+        //alert('Online');
+        this._postUser();
+      }else{
+        alert('Check Internet Connection...');
+      }
+    });
   }
 
   _postUser() {
@@ -268,14 +319,17 @@ async getToken()
             let accessToken = data.access_token;
             this.storeToken(accessToken);
 
-            // let memberId = data.data.id.toString();
-            // this.storememberId(memberId); 
+            let memberId = data.data.recordid;
+            this.storememberId(memberId); 
 
             let memb_Accountno = data.data.accountno;
             this.storeacct(memb_Accountno);
 
             let memb_name = data.data.firstname;
             this.storemembname(memb_name);
+
+            let memb_email = data.data.email;
+            this.storemembemail(memb_email);
 
             this.props.navigation.dispatch(resetAction);
           } else {
