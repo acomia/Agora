@@ -34,9 +34,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 import { StackActions, NavigationActions } from 'react-navigation';
 
 import { SearchBar } from 'react-native-elements'
-const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
-const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight()
-const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight()
 import SearchableDropdown from 'react-native-searchable-dropdown';
 import Spinner from 'react-native-spinkit'
 
@@ -45,23 +42,38 @@ const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_EMAIL = 'memb_email';
 const MEMBER_ID = 'member_id';
+const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
+const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight()
+const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight()
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
+  //key: 'DashboardPage',
+  // params: {
+  //   rcsNo: this.state.rcsNo,
+  //   acctNo: this.state.MembPickerValueHolder},
+  actions: [NavigationActions.navigate( {routeName: 'ERCS1SuccessPage'} )],
 });
+// const resetAction = NavigationActions.navigate({
+//   routeName: 'ERCS1SuccessPage',
+//   params: { rcsNo:  global.rcsNum },
+//   key: 'DashboardPage',
+//   //action: NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' }),
+// });
 
 export default class ERCS1Request extends React.Component {
   _isMounted = false;
 
   constructor(props) {
-    super(props);
+    super(props)
+    global.rcsNum ='';
+    global.acctNum = '';
     this.state = {
       PickerValueHolder: 'I',
       MembPickerValueHolder: '',
       DoctorSpeciallty: '',
       RCSconsultype: [],
-      Rcsmemb: [],
+      Rcsmemb:[],
       RCSdoctorspecialty: [],
       sched: '',
       isLoading: false,
@@ -75,6 +87,7 @@ export default class ERCS1Request extends React.Component {
       dataSourceIllnessSpec: [],
       providercode: '',
       docphone: '',
+      rcsNo: '',
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -101,6 +114,7 @@ export default class ERCS1Request extends React.Component {
           this.setState({
             Rcsmemb: responseJson.data
           })
+          Rcsmemb = responseJson.data
           // this.arrayholder = responseJson.data
         })
       })
@@ -168,6 +182,7 @@ export default class ERCS1Request extends React.Component {
             dataSourceIllness: illness.data,
             isLoading: false
           })
+          dataSourceIllnessSpec = illness.data
           this.arrayholderIllness = illness.data
         })
       })
@@ -193,6 +208,7 @@ export default class ERCS1Request extends React.Component {
       .then((response) => {
         response.json().then((illnessSpec) => {
           console.log('illness', illnessSpec)
+          console.log('basicillness',  this.state.searchIllness)
           this.setState({
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
@@ -273,11 +289,26 @@ export default class ERCS1Request extends React.Component {
     console.log('doctors name2', this.state.DoctorSpeciallty.firstname + '' + this.state.DoctorSpeciallty.lastname);
     console.log('doctors code', this.state.DoctorSpeciallty.doctor_code);
     console.log('doc phone', this.state.DoctorSpeciallty.phone);
-
+    console.log('illness', dataSourceIllnessSpec);
     console.log('hospitalname', this.state.search)
     console.log('hospitalcode', this.state.providercode)
     console.log('clinichrs', this.state.sched)
     console.log('consultype', this.state.PickerValueHolder)
+   
+    if (this.state.search === null || this.state.search === '') {
+      return alert('Hospital/Facility is Required');
+    }
+    if (this.state.email === null || this.state.email === '') {
+      return alert('Email is Required');
+    }
+    if (this.state.MembPickerValueHolder === null || this.state.MembPickerValueHolder === '') {
+      return alert('Account Number  is Required');
+    }
+    if ( this.state.searchIllness === null || this.state.searchIllness === '') {
+      return alert('Chief Complaint  is Required');
+    }
+   
+
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
@@ -301,15 +332,17 @@ export default class ERCS1Request extends React.Component {
       }),
     })
       .then(response => {
-        console.log('email',email)
-        console.log('acctno',this.state.MembPickerValueHolder)
-        console.log('membid',mid)
+        console.log('email', email)
+        console.log('acctno', this.state.MembPickerValueHolder)
+        console.log('membid', mid)
         response.json().then(data => {
-          
+
+         // this.setState({ rcsNo: data.data.ercsno });
+         // rcsNo = data.data.ercsno;
           let rcs = data.data.ercsno
-          console.log('rcsno',rcs)
+          console.log('rcsno', this.state.rcsNo);
           if (data.is_success === true) {
-            fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no='+rcs, {
+            fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' + rcs, {
               method: 'GET',
               params: {
                 'no': rcs,
@@ -324,9 +357,11 @@ export default class ERCS1Request extends React.Component {
             })
               .then(response => {
                 response.json().then(data => {
-                  console.log('final',data)
+                  console.log('final', data)
                   if (data.is_success === true) {
-                    alert('finaltest');
+                    global.rcsNum = rcs;
+                    global.acctNum = this.state.MembPickerValueHolder;
+                    global.mid = mid
                     this.props.navigation.dispatch(resetAction);
                   } else {
                     alert(data.error_message);
@@ -339,7 +374,7 @@ export default class ERCS1Request extends React.Component {
               });
 
           } else {
-            alert('error in saving',data.error_message);
+            alert('error in saving', data.error_message);
           }
 
         });
@@ -439,7 +474,7 @@ export default class ERCS1Request extends React.Component {
 
   render() {
     // const { RCSprovider } = this.state;
-
+    const { navigate } = this.props.navigation;
     const { spinnerStyle, spinnerTextStyle } = styles
 
     if (this.state.isLoading) {
@@ -483,8 +518,8 @@ export default class ERCS1Request extends React.Component {
               placeholderStyle={{ color: '#bdc3c7' }}
               placeholderIconColor="#007aff"
               style={{
-                marginVertical: 10,
-                marginHorizontal: 20,
+                marginVertical: 5,
+                marginHorizontal: 10,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.MembPickerValueHolder}
@@ -504,8 +539,8 @@ export default class ERCS1Request extends React.Component {
               placeholderStyle={{ color: '#bdc3c7' }}
               placeholderIconColor="#007aff"
               style={{
-                marginVertical: 10,
-                marginHorizontal: 20,
+                marginVertical: 5,
+                marginHorizontal: 10,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.PickerValueHolder}
@@ -521,9 +556,10 @@ export default class ERCS1Request extends React.Component {
             <SearchBar
               round
               lightTheme
-              searchIcon={{ size: 18 }}
-              inputContainerStyle={{ backgroundColor: 'white', height: 34, bottom: 6 }}
-              inputStyle={{ fontSize: 12 }}
+              searchIcon={{ size: 15 }}
+              containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
+              inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
+              inputStyle={{ fontSize: 15 }}
               onChangeText={text => this.SearchFilterFunction(text)}
               onClear={() => this.setState({ searchData: [], destination: '', searchIllness: '' })}
               placeholder="Search Hospital/Provider..."
@@ -535,10 +571,10 @@ export default class ERCS1Request extends React.Component {
                 data={this.state.dataSource}
                 ItemSeparatorComponent={this.ListViewItemSeparator}
                 renderItem={({ item }) => (
-                  <View style={{ backgroundColor: '#fff', marginLeft: 14 }}>
+                  <View style={{ backgroundColor: '#ffffff', marginLeft: 14 }}>
                     <ListItem>
                       <TouchableOpacity onPress={this.provideronpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 14 }}>{item.provider_name}</Text>
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 20 }}>{item.provider_name}</Text>
                         <Text style={{ alignSelf: 'flex-start', fontSize: 10 }}>{item.street},
                                {item.subd_brgy}, {item.city}</Text>
                         <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text>
@@ -556,8 +592,9 @@ export default class ERCS1Request extends React.Component {
               round
               lightTheme
               searchIcon={{ size: 18 }}
-              inputContainerStyle={{ backgroundColor: 'white', height: 34, bottom: 6 }}
-              inputStyle={{ fontSize: 12 }}
+              containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
+              inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
+              inputStyle={{ fontSize: 15 }}
               onChangeText={text => this.SearchIllnesFilterFunction(text)}
               onClear={() => this.setState({ searchData1: [], destination1: '' })}
               placeholder="Search Illness..."
@@ -572,7 +609,7 @@ export default class ERCS1Request extends React.Component {
                   <View style={{ backgroundColor: '#fff', marginLeft: 14 }}>
                     <ListItem>
                       <TouchableOpacity onPress={this.illnessonpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 14 }}>{item.illness}</Text>
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 20 }}>{item.illness}</Text>
 
                         {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
@@ -597,7 +634,7 @@ export default class ERCS1Request extends React.Component {
               selectedValue={this.state.DoctorSpeciallty}
               onValueChange={(modeValue, itemIndex) => {
                 this.setState({ DoctorSpeciallty: modeValue })
-                ; console.log('pciker', modeValue)
+                  ; console.log('pciker', modeValue)
               }}>
               {this.state.RCSdoctorspecialty.map((item, key) => (
                 <Picker.Item label={item.firstname + ' ' + item.lastname} value={item} key={key} />)
@@ -623,9 +660,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   headerStyle: {
-    height: 150,
+    height: 105,
     justifyContent: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 15,
   },
   headerTitle: {
     fontWeight: 'bold',
@@ -646,7 +683,7 @@ const styles = StyleSheet.create({
     color: '#6d6e72',
   },
   formStyle: {
-    marginVertical: 10,
+    marginVertical: 1,
   },
   viewButton: {
     margin: 20
