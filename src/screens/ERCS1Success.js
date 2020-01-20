@@ -27,9 +27,59 @@ import {
   Item,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
+import { StackActions, NavigationActions } from 'react-navigation';
+import AsyncStorage from '@react-native-community/async-storage';
+
+const ACCESS_TOKEN = 'access_token';
+const MEMB_EMAIL = 'memb_email';
+const MEMBER_ID = 'member_id';
 
 export default class ERCS1Success extends React.Component {
+
+  async _resendemail() {
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let email = await AsyncStorage.getItem(MEMB_EMAIL);
+    let mid = await AsyncStorage.getItem(MEMBER_ID);
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' + global.rcsNum, {
+      method: 'GET',
+      params: {
+        'no': global.rcsNum,
+      },
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'EmailAddress': email,
+        'AccountNo': global.acctNum,
+        'AccountID': mid,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => {
+        response.json().then(data => {
+          console.log('final', data)
+          if (data.is_success === true) {
+          
+            
+            alert('Resend Email Successfully')
+          } else {
+            alert(data.error_message);
+          }
+
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+    }
+
   render() {
+
+    
+    // const { navigation } = this.props;  
+    // const rcsNumber = navigation.getParam('rcsNo', '');  
+    // const acctNUmber = navigation.getParam('acctNo', '');  
+  
+    console.log('sa kabila rcs',global.rcsNum)
+    console.log('sa kabila accc',global.acctNum)
     return (
       <Container style={{display: 'flex'}}>
         <StatusBar
@@ -54,7 +104,7 @@ export default class ERCS1Success extends React.Component {
           <Text style={styles.subHeader}>
             Your e-RCS 1 no. for this transaction is
           </Text>
-          <Text style={styles.ercsText}>M2001A002006</Text>
+          <Text style={styles.ercsText}>{global.rcsNum}</Text>
           <Text style={styles.subHeader1}>
             We have sent your Referral Control Sheet 1 (RCS 1) form to your
             registered e-mail address. You may print and present it to your
@@ -62,7 +112,7 @@ export default class ERCS1Success extends React.Component {
           </Text>
         </View>
         <View style={styles.viewButton}>
-          <Button iconLeft block rounded info style={styles.buttonResend}>
+          <Button iconLeft block rounded info style={styles.buttonResend} onPress={() => this._resendemail()}>
           <Icon type="Ionicons" name="ios-mail" />
             <Text>Resend e-mail</Text>
           </Button>
