@@ -89,6 +89,7 @@ export default class ERCS1Request extends React.Component {
       providercode: '',
       docphone: '',
       rcsNo: '',
+      acctno: '',
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -117,6 +118,9 @@ export default class ERCS1Request extends React.Component {
             Rcsmemb: responseJson.data
           })
           Rcsmemb = responseJson.data
+          this.state.acctno = this.state.Rcsmemb[0].acct
+          console.log('rcsmembacctno1', this.state.Rcsmemb[0])
+          console.log('rcsmembacctno', this.state.acctno)
           // this.arrayholder = responseJson.data
         })
       })
@@ -289,8 +293,8 @@ export default class ERCS1Request extends React.Component {
     // this.setState({
     //   isLoading: true,
     // });
-    console.log('acctno', this.state.MembPickerValueHolder.acct)
-    console.log('acctnumberko', this.state.Rcsmemb)
+    console.log('acctno', this.state.acctno)
+    console.log('acctnumberko', this.state.acctno)
     console.log('doctors name2', this.state.DoctorSpeciallty.firstname + '' + this.state.DoctorSpeciallty.lastname);
     console.log('doctors code', this.state.DoctorSpeciallty.doctor_code);
     console.log('doc phone', this.state.DoctorSpeciallty.phone);
@@ -306,7 +310,7 @@ export default class ERCS1Request extends React.Component {
     if (this.state.email === null || this.state.email === '') {
       return alert('Email is Required');
     }
-    if (this.state.MembPickerValueHolder.acct === null || this.state.MembPickerValueHolder.acct === '') {
+    if (this.state.acctno === null || this.state.acctno === '') {
       return alert('Account Number  is Required');
     }
     if (this.state.searchIllness === null || this.state.searchIllness === '') {
@@ -326,7 +330,7 @@ export default class ERCS1Request extends React.Component {
         'Content-Type': 'application/json;charset=UTF-8',
       },
       body: JSON.stringify({
-        acctno: this.state.MembPickerValueHolder.acct,
+        acctno: this.state.acctno,
         illness: specname,
         doctor_name: this.state.DoctorSpeciallty.firstname + ' ' + this.state.DoctorSpeciallty.lastname,
         doctor_code: this.state.DoctorSpeciallty.doctor_code,
@@ -339,7 +343,7 @@ export default class ERCS1Request extends React.Component {
     })
       .then(response => {
         console.log('email', email)
-        console.log('acctno', acctno)
+        console.log('acctno', this.state.acctno)
         console.log('membid', mid)
         response.json().then(data => {
           console.log('ercsno', data)
@@ -358,7 +362,7 @@ export default class ERCS1Request extends React.Component {
               headers: {
                 'Authorization': 'Bearer ' + token,
                 'EmailAddress': email,
-                'AccountNo': this.state.MembPickerValueHolder.acct,
+                'AccountNo': this.state.acctno,
                 'AccountID': mid,
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
@@ -368,7 +372,7 @@ export default class ERCS1Request extends React.Component {
                   console.log('final', data)
                   if (data.is_success === true) {
                     global.rcsNum = rcs;
-                    global.acctNum = this.state.MembPickerValueHolder;
+                    global.acctNum = this.state.acctno;
                     global.mid = mid
                     this.props.navigation.dispatch(resetAction);
                   } else {
@@ -531,17 +535,30 @@ export default class ERCS1Request extends React.Component {
                 marginHorizontal: 10,
                 justifyContent: 'center',
               }}
+              // selectedValue={this.state.MembPickerValueHolder}
+              // onValueChange={(modeValue, itemIndex) => {
+              //   this.setState({ MembPickerValueHolder: modeValue })
+              //     ; console.log('acctnumberko', modeValue);
+              //     this.setState({
+              //       MembPickerValueHolder: acctno
+              //     })
+              // }}>
+              // {this.state.Rcsmemb.map((item, key) => (
+              //   <Picker.Item label={item.fullname} value={item.acct} key={key} />)
+              // )}
               selectedValue={this.state.MembPickerValueHolder}
               onValueChange={(modeValue, itemIndex) => {
                 this.setState({ MembPickerValueHolder: modeValue })
-                  ; console.log('acctnumberko', modeValue)
+                  ; console.log('pciker', modeValue)
+                  this.setState
+                  ({
+                    acctno : modeValue
+                  })
               }}>
               {this.state.Rcsmemb.map((item, key) => (
                 <Picker.Item label={item.fullname} value={item.acct} key={key} />)
               )}
             </Picker>
-
-
           </View>
           <View style={styles.formStyle}>
             <Text style={styles.formLabel}>Type of consultation</Text>
@@ -639,8 +656,8 @@ export default class ERCS1Request extends React.Component {
               placeholderStyle={{ color: '#bdc3c7' }}
               placeholderIconColor="#007aff"
               style={{
-                marginVertical: 0,
-                marginHorizontal: 0,
+                marginVertical: 10,
+                marginHorizontal: 20,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.DoctorSpeciallty}
@@ -649,8 +666,8 @@ export default class ERCS1Request extends React.Component {
                   ; console.log('pciker', modeValue)
               }}>
               {this.state.RCSdoctorspecialty.map((item, key) => (
-                <Picker.Item label={item.firstname + ' ' + item.lastname + '\n' + item.room + '\n' + item.major_specialty} value={item} key={key} />)
-              )}     
+                <Picker.Item style={{ width: 500, height: 300 }} label={item.firstname + ' ' + item.lastname + '\n' + item.room + '\n' + item.major_specialty} value={item} key={key} />)
+              )}
             </Picker>
           </View>
           <View style={styles.viewButton}>
