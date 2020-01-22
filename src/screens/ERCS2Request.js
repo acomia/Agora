@@ -729,7 +729,9 @@ export default class ERCS1Request extends React.Component {
                   File Name:{' '}
                   {this.state.fileThree.name ? this.state.fileThree.name : ''}
                 </Text>
+                <View>
                 <Button
+                  visible = 'false'
                   success
                   style={styles.removeButton}
                 // onPress={() =>
@@ -738,6 +740,7 @@ export default class ERCS1Request extends React.Component {
                 >
                   <Title>Remove</Title>
                 </Button>
+                </View>
               </View>
 
               {/* single file selection */}
@@ -772,6 +775,7 @@ export default class ERCS1Request extends React.Component {
     formdata.append('prescription1', this.state.fileOne);
     formdata.append('prescription2', this.state.fileTwo);
     formdata.append('prescription3', this.state.fileThree);
+    
 
     console.log(formdata)
 
