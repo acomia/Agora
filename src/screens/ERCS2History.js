@@ -25,11 +25,12 @@ import {
   ListItem,
   List,
   Icon,
+  Badge,
   Item,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 
-export default class ERCS1History extends React.Component {
+export default class ERCS2History extends React.Component {
   render() {
     return (
       <ScrollView>
@@ -42,14 +43,17 @@ export default class ERCS1History extends React.Component {
           <List>
             <ListItem noIndent>
               <Body>
-                <Text style={styles.ERCSNumber}>M2001A002006</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.ERCSNumber}>M2001A002006</Text>
+                  <Badge style={styles.badgeStyle}>
+                    <Text style={styles.badgeText}>Approved</Text>
+                  </Badge>
+                </View>
                 <View style={styles.rowDetails}>
-                  <Icon
-                    type="EvilIcons"
-                    name="user"
-                    style={styles.iconLabel}
-                  />
-                  <Text note>Dela Cruz, Juan</Text>
+                  <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
+                  <Text note style={styles.textPatient}>
+                    Dela Cruz, Juan
+                  </Text>
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
@@ -71,7 +75,13 @@ export default class ERCS1History extends React.Component {
               <Right>
                 <Text note>01/01/2020</Text>
                 <Button transparent>
-                  <Text style={styles.buttonCancel}>Cancel</Text>
+                  <Text
+                    style={styles.buttonView}
+                    onPress={() =>
+                      this.props.navigation.navigate('ERCS2DetailsPage')
+                    }>
+                    View
+                  </Text>
                 </Button>
               </Right>
             </ListItem>
@@ -88,7 +98,7 @@ const styles = StyleSheet.create({
   ERCSNumber: {
     fontWeight: 'bold',
     fontSize: 20,
-    color: '#5fb650',
+    color: '#e74c3c',
   },
   iconLabel: {
     color: '#6d6e72',
@@ -96,8 +106,18 @@ const styles = StyleSheet.create({
     marginLeft: 18,
     marginTop: 1,
   },
-  buttonCancel: {
-    color: '#e74c3c',
+  buttonView: {
+    color: '#3498db',
+  },
+  badgeStyle: {
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+    padding: 0,
+  },
+  badgeText: {
+    color: '#6d6e72',
+    fontStyle: 'italic',
+    fontSize: 12,
   },
   rowDetails: {
     flexDirection: 'row',

@@ -72,7 +72,7 @@ export default class ERCS2Success extends React.Component {
             iconLeft
             info
             style={styles.buttonTransaction}
-            onPress={() => this.props.navigation.navigate('DashboardPage')}>
+            onPress={() => this.props.navigation.navigate('ERCS2HistoryPage')}>
             <Icon type="MaterialCommunityIcons" name="history" />
             <Text>Transaction history</Text>
           </Button>

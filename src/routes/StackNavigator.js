@@ -32,6 +32,11 @@ import ERCS1History from '../screens/ERCS1History';
 import ERCS2Request from '../screens/ERCS2Request';
 import ERCS2Landing from '../screens/ERCS2Landing';
 import ERCS2Success from '../screens/ERCS2Success';
+import ERCS2History from '../screens/ERCS2History';
+import ERCS2Details from '../screens/ERCS2Details';
+import ERCS2CancelDetails from '../screens/ERCS2CancelDetails';
+import ERCS2DisapprovedDetails from '../screens/ERCS2DisapprovedDetails';
+import ERCS2DisapprovedProcedure from '../screens/ERCS2DisapprovedProcedure';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -281,6 +286,81 @@ AppStack = createStackNavigator({
     screen: ERCS2Landing,
     navigationOptions: {
       header: null,
+    },
+  },
+  ERCS2HistoryPage: {
+    screen: ERCS2History,
+    navigationOptions: {
+      title: 'Transaction History',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS2DetailsPage: {
+    screen: ERCS2Details,
+    navigationOptions: {
+      title: 'Details',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS2CancelDetailsPage: {
+    screen: ERCS2CancelDetails,
+    navigationOptions: {
+      title: 'Cancellation Details',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS2DisapprovedDetailsPage: {
+    screen: ERCS2DisapprovedDetails,
+    navigationOptions: {
+      title: 'Dispapproval Details',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS2DisapprovedProcedurePage: {
+    screen: ERCS2DisapprovedProcedure,
+    navigationOptions: {
+      title: 'Disapproved Procedures',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
     },
   },
 });

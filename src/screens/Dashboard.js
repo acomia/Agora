@@ -6,6 +6,7 @@ import {
   Image,
   ImageBackground,
   TouchableNativeFeedback,
+  StatusBar,
 } from 'react-native';
 import {
   Container,
@@ -25,13 +26,13 @@ import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {DrawerActions} from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
 
 const MEMB_NAME = 'memb_name';
 
 NetInfo.fetch().then(state => {
-  console.log("Connection type", state.type);
-  console.log("Is connected?", state.isConnected);
+  console.log('Connection type', state.type);
+  console.log('Is connected?', state.isConnected);
 });
 
 export default class Dashboard extends React.Component {
@@ -51,6 +52,11 @@ export default class Dashboard extends React.Component {
 
     return (
       <Container style={{display: 'flex', flex: 1, backgroundColor: '#f5f5f5'}}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
         <Header style={styles.headerStyle}>
           <Left>
             <Button
@@ -85,7 +91,7 @@ export default class Dashboard extends React.Component {
           </View>
           <View style={styles.MenucontentStyle}>
             <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1, justifyContent: "center"}}>
+              <View style={{flex: 1, justifyContent: 'center'}}>
                 <TouchableNativeFeedback
                   //onPress={() => this.props.navigation.navigate('MembersPage')}>
                   onPress={() => this.checkConnectivity('MembersPage')}>
@@ -93,6 +99,7 @@ export default class Dashboard extends React.Component {
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/profiles.png')}
                           resizeMode="contain"
                         />
@@ -113,6 +120,7 @@ export default class Dashboard extends React.Component {
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/hospital.png')}
                           resizeMode="contain"
                         />
@@ -135,6 +143,7 @@ export default class Dashboard extends React.Component {
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/consultation.png')}
                           resizeMode="contain"
                         />
@@ -153,10 +162,13 @@ export default class Dashboard extends React.Component {
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/laboratory.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>Request for e-RCS 2</Text>
+                        <Text style={styles.cardMenuText}>
+                          Request for e-RCS 2
+                        </Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -233,22 +245,19 @@ export default class Dashboard extends React.Component {
     );
   }
 
-  checkConnectivity(screen){
+  checkConnectivity(screen) {
     NetInfo.fetch().then(state => {
-     // console.log("Connection type2", state.type);
+      // console.log("Connection type2", state.type);
       //console.log("Is connected?2", state.isConnected);
-      if (state.isConnected == true){
+      if (state.isConnected == true) {
         //alert('Online');
         this.props.navigation.navigate(screen);
-      }else{
+      } else {
         alert('Oops! Check Internet Connection...');
       }
     });
   }
 }
-
-
-
 
 export const {width, height} = Dimensions.get('window');
 
