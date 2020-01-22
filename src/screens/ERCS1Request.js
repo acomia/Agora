@@ -286,9 +286,9 @@ export default class ERCS1Request extends React.Component {
 
 
   async _postUser() {
-    this.setState({
-      isLoading: true,
-    });
+    // this.setState({
+    //   isLoading: true,
+    // });
     console.log('acctno', this.state.MembPickerValueHolder.acct)
     console.log('acctnumberko', this.state.Rcsmemb)
     console.log('doctors name2', this.state.DoctorSpeciallty.firstname + '' + this.state.DoctorSpeciallty.lastname);
@@ -339,7 +339,7 @@ export default class ERCS1Request extends React.Component {
     })
       .then(response => {
         console.log('email', email)
-        console.log('acctno', this.state.MembPickerValueHolder.acct)
+        console.log('acctno', acctno)
         console.log('membid', mid)
         response.json().then(data => {
           console.log('ercsno', data)
