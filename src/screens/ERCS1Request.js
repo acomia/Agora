@@ -52,7 +52,8 @@ const resetAction = StackActions.reset({
   // params: {
   //   rcsNo: this.state.rcsNo,
   //   acctNo: this.state.MembPickerValueHolder},
-  actions: [NavigationActions.navigate( {routeName: 'ERCS1SuccessPage'} )],
+
+  actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
 });
 // const resetAction = NavigationActions.navigate({
 //   routeName: 'ERCS1SuccessPage',
@@ -66,17 +67,17 @@ export default class ERCS1Request extends React.Component {
 
   constructor(props) {
     super(props)
-    global.rcsNum ='';
+    global.rcsNum = '';
     global.acctNum = '';
     this.state = {
       PickerValueHolder: 'I',
       MembPickerValueHolder: '',
       DoctorSpeciallty: '',
       RCSconsultype: [],
-      Rcsmemb:[],
+      Rcsmemb: [],
       RCSdoctorspecialty: [],
       sched: '',
-      isLoading: false,
+      isLoading: true,
       searchTextChanged: false,
       search: '',
       searchIllness: '',
@@ -98,9 +99,10 @@ export default class ERCS1Request extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
 
-    this.setState({
-      isLoading: true
-    });
+    // this.setState({
+    //   isLoading: true
+    // });
+    // getting the principal and dependent of the acct
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts', {
       method: 'GET',
       headers: {
@@ -121,7 +123,7 @@ export default class ERCS1Request extends React.Component {
       .catch((error) => {
         alert('Error!' + error)
       })
-
+    // available consultype 
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype', {
       method: 'GET',
       headers: {
@@ -141,7 +143,7 @@ export default class ERCS1Request extends React.Component {
       .catch((error) => {
         alert('Error!' + error)
       })
-
+    // gathering a hospital  
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=', {
       method: 'GET',
       headers: {
@@ -158,6 +160,7 @@ export default class ERCS1Request extends React.Component {
           console.log('providerko', provider)
           this.setState({
             dataSource: provider.data,
+            isLoading: false,
           })
           this.arrayholder = provider.data
         })
@@ -165,7 +168,7 @@ export default class ERCS1Request extends React.Component {
       .catch((error) => {
         alert('Error!' + error)
       })
-
+    // gathering the illness 
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=', {
       method: 'GET',
       headers: {
@@ -177,10 +180,9 @@ export default class ERCS1Request extends React.Component {
     })
       .then((response) => {
         response.json().then((illness) => {
-          { console.log('illness', illness.data) }
           this.setState({
             dataSourceIllness: illness.data,
-            isLoading: false
+
           })
           dataSourceIllnessSpec = illness.data
           this.arrayholderIllness = illness.data
@@ -198,6 +200,7 @@ export default class ERCS1Request extends React.Component {
 
   async _IllnessSpeciallty() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    // gathering the illness specialty
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty', {
       method: 'GET',
       headers: {
@@ -208,7 +211,7 @@ export default class ERCS1Request extends React.Component {
       .then((response) => {
         response.json().then((illnessSpec) => {
           console.log('illness', illnessSpec)
-          console.log('basicillness',  this.state.searchIllness)
+          console.log('basicillness', this.state.searchIllness)
           this.setState({
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
@@ -238,7 +241,7 @@ export default class ERCS1Request extends React.Component {
     console.log(token);
     console.log(this.state.providercode);
     console.log('specname', specname);
-
+    // gathering of the doctors base on the location and illness specialty
     try {
       fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=', {
         method: 'GET',
@@ -283,9 +286,11 @@ export default class ERCS1Request extends React.Component {
 
 
   async _postUser() {
-
-    console.log('acctno', this.state.MembPickerValueHolder)
-    // console.log('illness', specname)
+    this.setState({
+      isLoading: true,
+    });
+    console.log('acctno', this.state.MembPickerValueHolder.acct)
+    console.log('acctnumberko', this.state.Rcsmemb)
     console.log('doctors name2', this.state.DoctorSpeciallty.firstname + '' + this.state.DoctorSpeciallty.lastname);
     console.log('doctors code', this.state.DoctorSpeciallty.doctor_code);
     console.log('doc phone', this.state.DoctorSpeciallty.phone);
@@ -294,25 +299,26 @@ export default class ERCS1Request extends React.Component {
     console.log('hospitalcode', this.state.providercode)
     console.log('clinichrs', this.state.sched)
     console.log('consultype', this.state.PickerValueHolder)
-   
+
     if (this.state.search === null || this.state.search === '') {
       return alert('Hospital/Facility is Required');
     }
     if (this.state.email === null || this.state.email === '') {
       return alert('Email is Required');
     }
-    if (this.state.MembPickerValueHolder === null || this.state.MembPickerValueHolder === '') {
+    if (this.state.MembPickerValueHolder.acct === null || this.state.MembPickerValueHolder.acct === '') {
       return alert('Account Number  is Required');
     }
-    if ( this.state.searchIllness === null || this.state.searchIllness === '') {
+    if (this.state.searchIllness === null || this.state.searchIllness === '') {
       return alert('Chief Complaint  is Required');
     }
-   
+
 
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
     let specname = await this.state.dataSourceIllnessSpec.specialty_name
+    // submit to save record
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/submit', {
       method: 'POST',
       headers: {
@@ -320,7 +326,7 @@ export default class ERCS1Request extends React.Component {
         'Content-Type': 'application/json;charset=UTF-8',
       },
       body: JSON.stringify({
-        acctno: this.state.MembPickerValueHolder,
+        acctno: this.state.MembPickerValueHolder.acct,
         illness: specname,
         doctor_name: this.state.DoctorSpeciallty.firstname + ' ' + this.state.DoctorSpeciallty.lastname,
         doctor_code: this.state.DoctorSpeciallty.doctor_code,
@@ -333,14 +339,16 @@ export default class ERCS1Request extends React.Component {
     })
       .then(response => {
         console.log('email', email)
-        console.log('acctno', this.state.MembPickerValueHolder)
+        console.log('acctno', this.state.MembPickerValueHolder.acct)
         console.log('membid', mid)
         response.json().then(data => {
+          console.log('ercsno', data)
+          // this.setState({ rcsNo: data.data.ercsno });
+          // rcsNo = data.data.ercsno;
 
-         // this.setState({ rcsNo: data.data.ercsno });
-         // rcsNo = data.data.ercsno;
           let rcs = data.data.ercsno
           console.log('rcsno', this.state.rcsNo);
+          // send to email
           if (data.is_success === true) {
             fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' + rcs, {
               method: 'GET',
@@ -350,7 +358,7 @@ export default class ERCS1Request extends React.Component {
               headers: {
                 'Authorization': 'Bearer ' + token,
                 'EmailAddress': email,
-                'AccountNo': this.state.MembPickerValueHolder,
+                'AccountNo': this.state.MembPickerValueHolder.acct,
                 'AccountID': mid,
                 'Content-Type': 'application/x-www-form-urlencoded',
               },
@@ -516,6 +524,7 @@ export default class ERCS1Request extends React.Component {
               style={{ width: undefined }}
               iosIcon={<Icon name="arrow-down" />}
               placeholderStyle={{ color: '#bdc3c7' }}
+              defaultValue={this.state.MembPickerValueHolder.acct}
               placeholderIconColor="#007aff"
               style={{
                 marginVertical: 5,
@@ -523,7 +532,10 @@ export default class ERCS1Request extends React.Component {
                 justifyContent: 'center',
               }}
               selectedValue={this.state.MembPickerValueHolder}
-              onValueChange={(modeValue, itemIndex) => this.setState({ MembPickerValueHolder: modeValue })}>
+              onValueChange={(modeValue, itemIndex) => {
+                this.setState({ MembPickerValueHolder: modeValue })
+                  ; console.log('acctnumberko', modeValue)
+              }}>
               {this.state.Rcsmemb.map((item, key) => (
                 <Picker.Item label={item.fullname} value={item.acct} key={key} />)
               )}
@@ -577,7 +589,7 @@ export default class ERCS1Request extends React.Component {
                         <Text style={{ alignSelf: 'flex-start', fontSize: 20 }}>{item.provider_name}</Text>
                         <Text style={{ alignSelf: 'flex-start', fontSize: 10 }}>{item.street},
                                {item.subd_brgy}, {item.city}</Text>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text>
+                        {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
                     </ListItem>
                   </View>
@@ -627,8 +639,8 @@ export default class ERCS1Request extends React.Component {
               placeholderStyle={{ color: '#bdc3c7' }}
               placeholderIconColor="#007aff"
               style={{
-                marginVertical: 10,
-                marginHorizontal: 20,
+                marginVertical: 0,
+                marginHorizontal: 0,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.DoctorSpeciallty}
@@ -637,8 +649,8 @@ export default class ERCS1Request extends React.Component {
                   ; console.log('pciker', modeValue)
               }}>
               {this.state.RCSdoctorspecialty.map((item, key) => (
-                <Picker.Item label={item.firstname + ' ' + item.lastname} value={item} key={key} />)
-              )}
+                <Picker.Item label={item.firstname + ' ' + item.lastname + '\n' + item.room + '\n' + item.major_specialty} value={item} key={key} />)
+              )}     
             </Picker>
           </View>
           <View style={styles.viewButton}>
