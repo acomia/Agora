@@ -97,7 +97,7 @@ export default class ERCS2History extends React.Component {
             });
           } else {
             if (responseJson.error_message == 'No RCS Transaction Found!') {
-              this.showAlert();
+              //this.showAlert();
               alert('No RCS Transaction found!')
               this.setState({ isLoading: false })
 
@@ -180,7 +180,7 @@ export default class ERCS2History extends React.Component {
                 <Text
                   style={styles.buttonView}
                   onPress={() =>
-                    this.props.navigation.navigate('ERCS2DetailsPage')
+                    this.props.navigation.navigate('ERCS2DetailsPage',{rcsnum2 : item.ercsno})
                   }>
                   View
                 </Text>

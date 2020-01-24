@@ -23,9 +23,118 @@ import {
   Body,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
+
+const ACCESS_TOKEN = 'access_token';
+const MEMBER_ID = 'member_id';
+const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_NAME = 'memb_name';
+const MEMB_EMAIL = 'memb_email';
 
 export default class ERCS2Details extends React.Component {
+
+  constructor(props) {
+    super(props)
+    global.storeToken = ''
+    this.state = {
+      isLoading: false,
+      dataSource: [],
+      rcsnum2: '',
+      confirm: true,
+    }
+  }
+
+  onLogout() {
+    this.deleteToken();
+  }
+
+  async deleteToken() {
+    try {
+      await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(MEMBER_ID);
+      await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
+      await AsyncStorage.removeItem(MEMB_NAME);
+      await AsyncStorage.removeItem(MEMB_EMAIL);
+      this.props.navigation.dispatch(resetAction);
+    } catch {
+      console.log('Something went wrong');
+    }
+  }
+
+  async componentDidMount() {
+    const { navigation } = this.props;
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+    this.setState({
+      isLoading: true,
+    })
+   let rcsno = navigation.getParam('rcsnum2', '')
+    
+   console.log(rcsno);
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history/details?ercs=' + rcsno , {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        // 'paramContract': '1',
+        // 'Content-Type': 'application/json;charset=UTF-8'
+      },
+      params:{
+        'ercs': rcsno
+      }
+    })
+      .then((response) => {
+        console.log('det',response);
+        response.json().then((responseJson) => {
+          console.log('rcsdet', responseJson)
+          if (responseJson.data != null) {
+            console.log('rcsdetails', responseJson)
+            this.setState({
+              isLoading: false,
+              dataSource: responseJson.data,
+            });
+          } else {
+            //if (responseJson.error_message == 'No RCS Transaction Found!') {
+              //this.showAlert();
+              alert('No RCS Transaction found!')
+              this.setState({ isLoading: false })
+
+              this.props.navigation.navigate('ERCS1HistoryPage')
+            //}
+          }
+
+          if (responseJson == 'Invalid Access Token') {
+            console.log('invalidToken', responseJson)
+            alert('Session Expired')
+            this.onLogout();
+          }
+        })
+      })
+      .catch((error) => {
+        alert('Unable to connect to server' + error)
+      })
+  }
+
+
   render() {
+    var xstatus = this.state.dataSource.status
+    switch (xstatus)     // Passing the variable to switch condition
+    {
+      case "A":
+        xstatus = 'Approved'
+        break;
+      case "D":
+        xstatus = 'DisApproved'
+        break;
+      case "W":
+        xstatus = 'Pending'
+        break;
+      case "C":
+        xstatus = 'Cancelled'
+          break;
+      default:
+        xstatus = 'Pending'
+        break;
+    }
     return (
       <Container>
         <ScrollView backgroundColor="#f5f5f5">
@@ -38,12 +147,12 @@ export default class ERCS2Details extends React.Component {
             <List>
               <ListItem noIndent style={{borderBottomWidth: 0}}>
                 <Left>
-                  <Text style={styles.ERCSNumber}>M2001A002006</Text>
+                  <Text style={styles.ERCSNumber}>{this.state.dataSource.ercsno}</Text>
                 </Left>
                 <Right>
                   {/* <Text style={styles.StatusApproved}>Approved</Text> */}
                   {/* <Text style={styles.StatusCancelled}>Cancelled</Text> */}
-                  <Text style={styles.StatusOthers}>Disapproved</Text>
+                  <Text style={styles.StatusOthers}>{xstatus}</Text>
                   {/*<Text style={styles.StatusOthers}>Waiting</Text> */}
                 </Right>
               </ListItem>
@@ -55,7 +164,7 @@ export default class ERCS2Details extends React.Component {
                   name="check-circle"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>VDM-121920-1</Text>
+                <Text style={styles.textRcsDetails}>{this.state.dataSource.approval_code}</Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon
@@ -63,7 +172,7 @@ export default class ERCS2Details extends React.Component {
                   name="smile"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>Juan Dela Cruz</Text>
+                <Text style={styles.textRcsDetails}>{this.state.dataSource.patient}</Text>
               </View>
             </View>
             <View style={{flexDirection: 'row'}}>
@@ -73,7 +182,7 @@ export default class ERCS2Details extends React.Component {
                   name="calendar"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>01/01/2020</Text>
+                <Text style={styles.textRcsDetails}>{this.state.dataSource.ercs_date}</Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon
@@ -81,7 +190,7 @@ export default class ERCS2Details extends React.Component {
                   name="clock"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>01/04/2020</Text>
+                <Text style={styles.textRcsDetails}>{this.state.dataSource.validity_date}</Text>
               </View>
             </View>
             <View style={{flexDirection: 'row'}}>
@@ -91,7 +200,7 @@ export default class ERCS2Details extends React.Component {
                   name="map-pin"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>Makati Medical Center</Text>
+                <Text style={styles.textRcsDetails}>{this.state.dataSource.hospital}</Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon
@@ -99,7 +208,7 @@ export default class ERCS2Details extends React.Component {
                   name="user"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>Dr. Juan Dela Cruz</Text>
+                <Text style={styles.textRcsDetails}>{this.state.dataSource.doctor}</Text>
               </View>
             </View>
             {/* <View>
@@ -199,11 +308,13 @@ export default class ERCS2Details extends React.Component {
             </Text>
           </View>
           <View style={styles.viewButton}>
-            <Button iconLeft block rounded info style={styles.buttonSend}>
+            <Button disabled={this.state.dataSource.status === 'A' ? false : true} 
+              iconLeft block rounded info style={styles.buttonSend}>
               <Icon type="FontAwesome" name="send-o" />
               <Text>Send to e-mail</Text>
             </Button>
-            <Button block rounded iconLeft style={styles.buttonCancel}>
+            <Button  disabled={this.state.dataSource.status === 'A' ? false : true}
+              block rounded iconLeft style={styles.buttonCancel}>
               <Icon type="MaterialCommunityIcons" name="cancel" />
               <Text>Cancel this Request</Text>
             </Button>

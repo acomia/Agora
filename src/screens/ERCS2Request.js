@@ -42,6 +42,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -468,8 +469,8 @@ export default class ERCS2Request extends React.Component {
               placeholderStyle={{ color: '#bdc3c7' }}
               placeholderIconColor="#007aff"
               style={{
-                marginVertical: 10,
-                // marginHorizontal: 20,
+                marginVertical: 5,
+                marginHorizontal: 20,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.MembPickerValueHolder}
@@ -485,8 +486,9 @@ export default class ERCS2Request extends React.Component {
               round
               lightTheme
               searchIcon={{ size: 18 }}
-              inputContainerStyle={{ backgroundColor: 'white', height: 34 }}
-              inputStyle={{ fontSize: 12 }}
+              containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
+              inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
+              inputStyle={{ fontSize: 15 }}
               onChangeText={text => this.SearchFilterFunction(text)}
               onClear={() => this.setState({ searchData: [], destination: '' })}
               placeholder="Search Hospital/Provider..."
@@ -520,8 +522,9 @@ export default class ERCS2Request extends React.Component {
               round
               lightTheme
               searchIcon={{ size: 18 }}
-              inputContainerStyle={{ backgroundColor: 'white', height: 34 }}
-              inputStyle={{ fontSize: 12 }}
+              containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
+              inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
+              inputStyle={{ fontSize: 15 }}
               onChangeText={text => this.SearchIllnesFilterFunction(text)}
               onClear={() => this.setState({ searchData1: [], destination1: '' })}
               placeholder="Chief Complaint..."
@@ -536,7 +539,7 @@ export default class ERCS2Request extends React.Component {
                   <View style={{ backgroundColor: '#fff', marginLeft: 14 }}>
                     <ListItem>
                       <TouchableOpacity onPress={this.illnessonpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 14 }}>{item.illness}</Text>
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.illness}</Text>
                       </TouchableOpacity>
                     </ListItem>
                   </View>
@@ -770,7 +773,7 @@ const styles = StyleSheet.create({
     // marginHorizontal: 20,
   },
   formLabel: {
-    // marginHorizontal: 20,
+     marginHorizontal: 20,
     color: '#6d6e72',
   },
   formStyle: {

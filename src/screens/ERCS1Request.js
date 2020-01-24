@@ -525,9 +525,10 @@ export default class ERCS1Request extends React.Component {
                   <View style={{ backgroundColor: '#ffffff', marginLeft: 14 }}>
                     <ListItem>
                       <TouchableOpacity onPress={this.provideronpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.provider_name}</Text>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 13 }}>{item.street},
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 14 }}>{item.provider_name}</Text>
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 10 }}>{item.street},
                                {item.subd_brgy}, {item.city}</Text>
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text>
                       </TouchableOpacity>
                     </ListItem>
                   </View>
