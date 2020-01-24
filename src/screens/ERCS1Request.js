@@ -5,7 +5,7 @@ import {
   ActivityIndicator,
   StatusBar,
   TouchableNativeFeedback,
-  Modal,
+
   TouchableHighlight,
   Alert,
   Dimensions,
@@ -32,35 +32,20 @@ import {
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import { StackActions, NavigationActions } from 'react-navigation';
-
 import { SearchBar } from 'react-native-elements'
-import SearchableDropdown from 'react-native-searchable-dropdown';
 import Spinner from 'react-native-spinkit'
-
+import Modal from 'react-native-modal'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_EMAIL = 'memb_email';
 const MEMBER_ID = 'member_id';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
-const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight()
-const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight()
 
 const resetAction = StackActions.reset({
-  index: 0, // <-- currect active route from actions array
-  //key: 'DashboardPage',
-  // params: {
-  //   rcsNo: this.state.rcsNo,
-  //   acctNo: this.state.MembPickerValueHolder},
-
+  index: 0,
   actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
 });
-// const resetAction = NavigationActions.navigate({
-//   routeName: 'ERCS1SuccessPage',
-//   params: { rcsNo:  global.rcsNum },
-//   key: 'DashboardPage',
-//   //action: NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' }),
-// });
 
 export default class ERCS1Request extends React.Component {
   _isMounted = false;
@@ -90,6 +75,9 @@ export default class ERCS1Request extends React.Component {
       docphone: '',
       rcsNo: '',
       acctno: '',
+      visibleModal: false,
+      docspec: '',
+      confirm: true,
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -100,9 +88,6 @@ export default class ERCS1Request extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
 
-    // this.setState({
-    //   isLoading: true
-    // });
     // getting the principal and dependent of the acct
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts', {
       method: 'GET',
@@ -220,9 +205,6 @@ export default class ERCS1Request extends React.Component {
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
           dataSourceIllnessSpec = illnessSpec.data[0]
-
-          console.log('illness2', dataSourceIllnessSpec)
-
           this.DoctorScpec = this.DoctorScpec.bind(this)
           this.DoctorScpec();
         })
@@ -232,19 +214,13 @@ export default class ERCS1Request extends React.Component {
       })
   }
 
-  // DoctorScpec(){
-  //   return(
-  //   console.log('illness2',dataSourceIllnessSpec)
-  //   );
-  // }
 
   async DoctorScpec() {
-
+    this.setState({
+      isLoading: true
+    })
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let specname = await this.state.dataSourceIllnessSpec.specialty_name
-    console.log(token);
-    console.log(this.state.providercode);
-    console.log('specname', specname);
     // gathering of the doctors base on the location and illness specialty
     try {
       fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=', {
@@ -259,16 +235,13 @@ export default class ERCS1Request extends React.Component {
         },
       })
         .then((response) => {
-          console.log('hero', this.state.dataSourceIllnessSpec)
-          console.log('hero22', response)
           response.json().then((doctorspec) => {
-            console.log('hero23', doctorspec)
             if (doctorspec.data != null) {
               this.setState({
+                isLoading: false,
                 RCSdoctorspecialty: doctorspec.data,
               })
               RCSdoctorspecialty = doctorspec.data
-              console.log('value', RCSdoctorspecialty)
             }
             else {
               this.setState({
@@ -288,22 +261,20 @@ export default class ERCS1Request extends React.Component {
     }
   }
 
+  _onPressButton() {
+    return (
+      <View>
+        <ScrollView
+
+        ></ScrollView>
+      </View>
+    )
+  }
 
   async _postUser() {
-    // this.setState({
-    //   isLoading: true,
-    // });
-    console.log('acctno', this.state.acctno)
-    console.log('acctnumberko', this.state.acctno)
-    console.log('doctors name2', this.state.DoctorSpeciallty.firstname + '' + this.state.DoctorSpeciallty.lastname);
-    console.log('doctors code', this.state.DoctorSpeciallty.doctor_code);
-    console.log('doc phone', this.state.DoctorSpeciallty.phone);
-    console.log('illness', dataSourceIllnessSpec);
-    console.log('hospitalname', this.state.search)
-    console.log('hospitalcode', this.state.providercode)
-    console.log('clinichrs', this.state.sched)
-    console.log('consultype', this.state.PickerValueHolder)
-
+    this.setState({
+      isLoading: true
+    })
     if (this.state.search === null || this.state.search === '') {
       return alert('Hospital/Facility is Required');
     }
@@ -316,7 +287,6 @@ export default class ERCS1Request extends React.Component {
     if (this.state.searchIllness === null || this.state.searchIllness === '') {
       return alert('Chief Complaint  is Required');
     }
-
 
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
@@ -332,9 +302,9 @@ export default class ERCS1Request extends React.Component {
       body: JSON.stringify({
         acctno: this.state.acctno,
         illness: specname,
-        doctor_name: this.state.DoctorSpeciallty.firstname + ' ' + this.state.DoctorSpeciallty.lastname,
-        doctor_code: this.state.DoctorSpeciallty.doctor_code,
-        doctor_phone: this.state.DoctorSpeciallty.phone,
+        doctor_name: this.state.docspec.firstname + ' ' + this.state.docspec.lastname,
+        doctor_code: this.state.docspec.doctor_code,
+        doctor_phone: this.state.docspec.phone,
         hospital_name: this.state.search,
         hospital_code: this.state.providercode,
         hospital_schedule: this.state.sched,
@@ -342,16 +312,8 @@ export default class ERCS1Request extends React.Component {
       }),
     })
       .then(response => {
-        console.log('email', email)
-        console.log('acctno', this.state.acctno)
-        console.log('membid', mid)
         response.json().then(data => {
-          console.log('ercsno', data)
-          // this.setState({ rcsNo: data.data.ercsno });
-          // rcsNo = data.data.ercsno;
-
           let rcs = data.data.ercsno
-          console.log('rcsno', this.state.rcsNo);
           // send to email
           if (data.is_success === true) {
             fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' + rcs, {
@@ -369,12 +331,16 @@ export default class ERCS1Request extends React.Component {
             })
               .then(response => {
                 response.json().then(data => {
-                  console.log('final', data)
                   if (data.is_success === true) {
+
                     global.rcsNum = rcs;
                     global.acctNum = this.state.acctno;
                     global.mid = mid
+                    this.setState({
+                      isLoading: false
+                    })
                     this.props.navigation.dispatch(resetAction);
+
                   } else {
                     alert(data.error_message);
                   }
@@ -394,8 +360,6 @@ export default class ERCS1Request extends React.Component {
       .catch(error => {
         alert('Error!' + error);
       });
-
-
   }
 
 
@@ -407,8 +371,6 @@ export default class ERCS1Request extends React.Component {
       return itemData.indexOf(textData) > -1;
     });
     this.setState({
-      //setting the filtered newData on datasource
-      //After setting the data it will automatically re-render the view
       dataSource: newData,
       search: text,
       searchTextChanged: true,
@@ -424,8 +386,6 @@ export default class ERCS1Request extends React.Component {
       return itemDataillness.indexOf(textDataillness) > -1;
     });
     this.setState({
-      //setting the filtered newData on datasource
-      //After setting the data it will automatically re-render the view
       dataSourceIllness: newDataillness,
       searchIllness: text,
       searchTextChanged: true,
@@ -448,12 +408,6 @@ export default class ERCS1Request extends React.Component {
 
   provideronpress = provider => () => {
     //Item sparator view
-    console.log('search', provider);
-    // this.state.search = this.location.provider_name;
-
-    console.log('found', this.state.found);
-    console.log('search2', provider.provider_name);
-
     return (
       this.setState({
         search: provider.provider_name,
@@ -464,45 +418,24 @@ export default class ERCS1Request extends React.Component {
     );
   };
 
+  buttonEnable = () => {
+    this.setState({
+      confirm: false
+      })
+  }
   illnessonpress = location1 => () => {
     //Item sparator view
-    // this.state.search = this.location.provider_name;
+   
     return (
-      this.postRCS1(),
       this._IllnessSpeciallty(),
-
+      this.buttonEnable(),
       this.setState({ searchIllness: location1.illness, foundillness: 1 })
     );
   };
 
-  postRCS1() {
-    //Item sparator view
-    // this.state.search = this.location.provider_name;
-    return (
-      console.log('Providercode', this.state.providercode)
-    );
-  };
-
-
   render() {
-    // const { RCSprovider } = this.state;
     const { navigate } = this.props.navigation;
     const { spinnerStyle, spinnerTextStyle } = styles
-
-    if (this.state.isLoading) {
-      return (
-        <View style={spinnerStyle}>
-          <Spinner
-            color={'green'}
-            size={50}
-            type={'ChasingDots'}
-          />
-          <Text style={spinnerTextStyle}>Fetching Provider data...</Text>
-        </View>
-      )
-    }
-    // { console.log('membko', this.state.RCSconsultype) }
-    // { console.log('providerko', this.state.RCSprovider) }
     const { dataSource, dataSourceIllness } = this.state
     return (
       <Container>
@@ -522,7 +455,7 @@ export default class ERCS1Request extends React.Component {
           </Text>
         </View>
         <ScrollView style={styles.container}>
-          <View style={styles.formStyle}>
+          <View>
             <Text style={styles.formLabel}>Choose member</Text>
             <Picker mode="dropdown"
               style={{ width: undefined }}
@@ -532,27 +465,17 @@ export default class ERCS1Request extends React.Component {
               placeholderIconColor="#007aff"
               style={{
                 marginVertical: 5,
-                marginHorizontal: 10,
+                marginHorizontal: 20,
                 justifyContent: 'center',
               }}
-              // selectedValue={this.state.MembPickerValueHolder}
-              // onValueChange={(modeValue, itemIndex) => {
-              //   this.setState({ MembPickerValueHolder: modeValue })
-              //     ; console.log('acctnumberko', modeValue);
-              //     this.setState({
-              //       MembPickerValueHolder: acctno
-              //     })
-              // }}>
-              // {this.state.Rcsmemb.map((item, key) => (
-              //   <Picker.Item label={item.fullname} value={item.acct} key={key} />)
-              // )}
+
               selectedValue={this.state.MembPickerValueHolder}
               onValueChange={(modeValue, itemIndex) => {
                 this.setState({ MembPickerValueHolder: modeValue })
                   ; console.log('pciker', modeValue)
-                  this.setState
+                this.setState
                   ({
-                    acctno : modeValue
+                    acctno: modeValue
                   })
               }}>
               {this.state.Rcsmemb.map((item, key) => (
@@ -560,7 +483,7 @@ export default class ERCS1Request extends React.Component {
               )}
             </Picker>
           </View>
-          <View style={styles.formStyle}>
+          <View>
             <Text style={styles.formLabel}>Type of consultation</Text>
             <Picker mode="dropdown"
               style={{ width: undefined }}
@@ -569,7 +492,7 @@ export default class ERCS1Request extends React.Component {
               placeholderIconColor="#007aff"
               style={{
                 marginVertical: 5,
-                marginHorizontal: 10,
+                marginHorizontal: 20,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.PickerValueHolder}
@@ -579,13 +502,12 @@ export default class ERCS1Request extends React.Component {
               )}
             </Picker>
           </View>
-          <View style={styles.formStyle}>
-
+          <View style={{ paddingVertical: 10 }}>
             <Text style={styles.formLabel}>Choose hospital/facility</Text>
             <SearchBar
               round
               lightTheme
-              searchIcon={{ size: 15 }}
+              searchIcon={{ size: 18 }}
               containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
               inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
               inputStyle={{ fontSize: 15 }}
@@ -603,10 +525,9 @@ export default class ERCS1Request extends React.Component {
                   <View style={{ backgroundColor: '#ffffff', marginLeft: 14 }}>
                     <ListItem>
                       <TouchableOpacity onPress={this.provideronpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 20 }}>{item.provider_name}</Text>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 10 }}>{item.street},
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.provider_name}</Text>
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 13 }}>{item.street},
                                {item.subd_brgy}, {item.city}</Text>
-                        {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
                     </ListItem>
                   </View>
@@ -615,7 +536,7 @@ export default class ERCS1Request extends React.Component {
               /> : null}
 
           </View>
-          <View style={styles.formStyle}>
+          <View style={{ paddingVertical: 10 }}>
             <Text style={styles.formLabel}>Chief complaint</Text>
             <SearchBar
               round
@@ -638,46 +559,89 @@ export default class ERCS1Request extends React.Component {
                   <View style={{ backgroundColor: '#fff', marginLeft: 14 }}>
                     <ListItem>
                       <TouchableOpacity onPress={this.illnessonpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 20 }}>{item.illness}</Text>
+                        
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.illness}</Text>
 
                         {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
                     </ListItem>
                   </View>
                 )}
-                keyExtractor={item => item.provider_name}
+                keyExtractor={item => item.illness}
               /> : null}
           </View>
-          <View style={styles.formStyle}>
-            <Text style={styles.formLabel}>Choose doctor</Text>
-            <Picker mode="dropdown"
-              style={{ width: undefined }}
-              iosIcon={<Icon name="arrow-down" />}
-              placeholderStyle={{ color: '#bdc3c7' }}
-              placeholderIconColor="#007aff"
-              style={{
-                marginVertical: 10,
-                marginHorizontal: 20,
-                justifyContent: 'center',
-              }}
-              selectedValue={this.state.DoctorSpeciallty}
-              onValueChange={(modeValue, itemIndex) => {
-                this.setState({ DoctorSpeciallty: modeValue })
-                  ; console.log('pciker', modeValue)
-              }}>
-              {this.state.RCSdoctorspecialty.map((item, key) => (
-                <Picker.Item style={{ width: 500, height: 300 }} label={item.firstname + ' ' + item.lastname + '\n' + item.room + '\n' + item.major_specialty} value={item} key={key} />)
-              )}
-            </Picker>
+          <View>
+            <Button
+              disabled={this.state.confirm}
+              rounded
+              onPress={() => { this.setState({ visibleModal: true }) }}
+              style={{ marginVertical: 10 }}
+            >
+              <Icon
+                type="Ionicons"
+                name="md-arrow-dropdown"
+                style={{ color: '#2d2d2d' }}
+              />
+              <Text>Choose Doctor</Text>
+            </Button>
+            <View style={{ marginVertical: 10, paddingLeft: 10, alignSelf: 'center' }}>
+              <Text style={{ fontSize: 18, textAlign: 'center' }}>
+                {this.state.docspec === '' ? '' : this.state.docspec.firstname + ' ' + this.state.docspec.lastname}</Text>
+              <Text style={{ color: 'silver', fontSize: 12, textAlign: 'center' }}>{this.state.docspec === '' ? '' : this.state.docspec.room}</Text>
+              <Text style={{ color: 'silver', fontSize: 12, textAlign: 'center' }}>{this.state.docspec === '' ? '' : this.state.docspec.schedule}</Text>
+              <Text style={{ color: 'silver', fontSize: 12, textAlign: 'center' }}>{this.state.docspec === '' ? '' : this.state.docspec.phone}</Text>
+            </View>
+            <Modal
+              isVisible={this.state.visibleModal}
+              animationInTiming={1000}
+              animationOutTiming={1000}
+              style={{ height: '50%' }}
+            >
+              <View style={styles.modalContainerStyle}>
+                <View style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
+                  <Button rounded transparent onPress={() => { this.setState({ visibleModal: false }) }}>
+                    <Icon
+                      type="Ionicons"
+                      name="md-close"
+                      style={{ color: '#2d2d2d' }}
+                    />
+                  </Button>
+                </View>
+                <ScrollView>
+                  {this.state.RCSdoctorspecialty.map((item, key) => (
+                    <ListItem key={key}>
+                      <TouchableOpacity onPress={() => { this.setState({ docspec: item, visibleModal: false }) }}>
+                        <View>
+                          <Text style={{ color: 'black', fontSize: 15 }}>{item.firstname + ' ' + item.lastname}</Text>
+                          <Text style={{ color: 'silver', fontSize: 12 }}>{item.room}</Text>
+                          <Text style={{ color: 'silver', fontSize: 12 }}>{item.major_specialty}</Text>
+                          <Text style={{ color: 'silver', fontSize: 12 }}>{item.phone}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </ListItem>
+                  ))}
+                </ScrollView>
+              </View>
+            </Modal>
           </View>
-          <View style={styles.viewButton}>
-            {/* <Button success style={styles.buttonStyle} onPress={() => this.props.navigation.navigate('ERCS1SuccessPage')}> */}
-            <Button success style={styles.buttonStyle} onPress={() => this._postUser()}>
+          <View style={{ bottom: 10 }}>
+            <Button rounded success style={styles.buttonStyle} onPress={() => this._postUser()}>
               <Title>Submit</Title>
             </Button>
           </View>
         </ScrollView>
-      </Container>
+        {
+          (this.state.isLoading) &&
+          <View style={spinnerStyle}>
+            <Spinner
+              color={'#5fb650'}
+              size={60}
+              type={'Circle'}
+              
+            />
+          </View>
+        }
+      </Container >
     );
   }
 }
@@ -686,7 +650,9 @@ export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
+    marginHorizontal: 20,
+    marginTop: 10
   },
   headerStyle: {
     height: 105,
@@ -712,10 +678,7 @@ const styles = StyleSheet.create({
     color: '#6d6e72',
   },
   formStyle: {
-    marginVertical: 1,
-  },
-  viewButton: {
-    margin: 20
+    marginVertical: 10,
   },
   buttonStyle: {
     backgroundColor: "#5fb650",
@@ -737,4 +700,12 @@ const styles = StyleSheet.create({
   textStyle: {
     padding: 10,
   },
+  modalContainerStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    marginLeft: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    padding: 10
+  }
 });

@@ -48,13 +48,13 @@ export default class ERCS2Success extends React.Component {
           <Icon
             type="SimpleLineIcons"
             name="check"
-            style={{fontSize: 80, color: '#e74c3c', marginBottom: 20}}
+            style={{fontSize: 80, color: '#e74c3c', marginBottom: 5}}
           />
           <Text style={styles.headerTitle}>Done!</Text>
           <Text style={styles.subHeader}>
             Your e-RCS 2 no. for this transaction is
           </Text>
-          <Text style={styles.ercsText}>M2001A002006</Text>
+          <Text style={styles.ercsText}>{global.rcs2Num}</Text>
           <Text style={styles.subHeader1}>
             Our Customer Service Specialist is currently validating your
             request. Once approved, we will send you an e-mail with the Referral

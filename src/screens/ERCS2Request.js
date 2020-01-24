@@ -26,7 +26,6 @@ import {
   Right,
   Body,
   Label,
-  Thumbnail,
   ListItem,
   Icon,
   Item,
@@ -50,56 +49,57 @@ const resetAction = StackActions.reset({
 });
 
 
-const items = [
-  // this is the parent or 'item'
-  {
-    name: 'Doctors',
-    id: 0,
-    // these are the children or 'sub items'
-    children: [
-      {
-        name: 'Apple',
-        id: 10,
-      },
-      {
-        name: 'Strawberry',
-        id: 17,
-      },
-      {
-        name: 'Pineapple',
-        id: 13,
-      },
-      {
-        name: 'Banana',
-        id: 14,
-      },
-      {
-        name: 'Watermelon',
-        id: 15,
-      },
-      {
-        name: 'Kiwi fruit',
-        id: 16,
-      },
-    ],
-  },
-];
+// const items = [
+//   // this is the parent or 'item'
+//   {
+//     name: 'Procedures',
+//     id: 0,
+//     // these are the children or 'sub items'
+//     children: [
+//       {
+//         name: 'Apple',
+//         id: 10,
+//       },
+//       {
+//         name: 'Strawberry',
+//         id: 17,
+//       },
+//       {
+//         name: 'Pineapple',
+//         id: 13,
+//       },
+//       {
+//         name: 'Banana',
+//         id: 14,
+//       },
+//       {
+//         name: 'Watermelon',
+//         id: 15,
+//       },
+//       {
+//         name: 'Kiwi fruit',
+//         id: 16,
+//       },
+//     ],
+//   },
+// ];
 
-export default class ERCS1Request extends React.Component {
+export default class ERCS2Request extends React.Component {
   _isMounted = false;
 
   constructor() {
     super();
+    global.rcs2Num = '';
     this.state = {
+      isLoading: false,
       MembPickerValueHolder: "",
       member: "",
       facility: "",
       illness: "",
       Rcsmemb: [],
       selectedItems: [],
-      fileOne: '',
-      fileTwo: '',
-      fileThree: '',
+      selectedObject: [],
+      multipleFile: [],
       search: '',
       searchIllness: '',
       found: 0,
@@ -109,7 +109,9 @@ export default class ERCS1Request extends React.Component {
       dataSourceIllnessSpec: [],
       providercode: '',
       DoctorSpeciallty: '',
-      RCSdoctorspecialty: []
+      RCSdoctorspecialty: [],
+      proceduresData: [],
+      newListofItems: []
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -117,8 +119,27 @@ export default class ERCS1Request extends React.Component {
 
   onSelectedItemsChange = (selectedItems) => {
     this.setState({ selectedItems });
-    console.log(selectedItems)
   };
+
+  onSelectedItemObjectsChange = (selectedObject) => {
+
+
+    this.setState({ selectedObject })
+
+    var newList = [];
+    for (var i = 0; i < selectedObject.length; i++) {
+      newList.push({
+        procedure_id: selectedObject[i].procedure_id,
+        procedure_rate: selectedObject[i].procedure_rate,
+        category_name: selectedObject[i].category_name,
+        category_id: selectedObject[i].category_id
+      });
+    }
+
+    this.setState({ newListofItems: newList })
+    console.log('deleted', newList)
+
+  }
 
   async componentDidMount() {
     this._isMounted = true;
@@ -136,7 +157,6 @@ export default class ERCS1Request extends React.Component {
     })
       .then((response) => {
         response.json().then((responseJson) => {
-          { console.log('RCSconsultype', responseJson.data) }
           this.setState({
             Rcsmemb: responseJson.data
           })
@@ -160,7 +180,6 @@ export default class ERCS1Request extends React.Component {
     })
       .then((response) => {
         response.json().then((provider) => {
-          console.log('providerko', provider)
           this.setState({
             dataSource: provider.data,
           })
@@ -173,7 +192,26 @@ export default class ERCS1Request extends React.Component {
 
 
     //GET PROCEDURES
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+      .then((response) => {
+        response.json()
+          .then((data) => {
+            if (data.error_message === null) {
+              this.setState({ proceduresData: [{ procedure_name: 'Procedures', procedure_id: 0, children: data.data }] })
 
+            } else {
+              alert('Unable to generate the procedures!')
+            }
+          })
+          .catch((error) => {
+            alert('Error!' + error)
+          })
+      })
     //GET PROCEDURES
 
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=', {
@@ -187,7 +225,6 @@ export default class ERCS1Request extends React.Component {
     })
       .then((response) => {
         response.json().then((illness) => {
-          { console.log('illness', illness.data) }
           this.setState({
             dataSourceIllness: illness.data,
             isLoading: false
@@ -217,8 +254,6 @@ export default class ERCS1Request extends React.Component {
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
           dataSourceIllnessSpec = illnessSpec.data[0]
-
-          console.log('illness2', dataSourceIllnessSpec)
 
           this.DoctorScpec = this.DoctorScpec.bind(this)
           this.DoctorScpec();
@@ -251,15 +286,12 @@ export default class ERCS1Request extends React.Component {
         },
       })
         .then((response) => {
-
           response.json().then((doctorspec) => {
-            console.log('hero23', doctorspec)
             if (doctorspec.data != null) {
               this.setState({
                 RCSdoctorspecialty: doctorspec.data,
               })
               RCSdoctorspecialty = doctorspec.data
-              console.log('value', RCSdoctorspecialty)
             }
             else {
               this.setState({
@@ -267,7 +299,6 @@ export default class ERCS1Request extends React.Component {
               })
               alert("No Doctors Found!")
             }
-
           })
         })
         .catch((error) => {
@@ -278,13 +309,6 @@ export default class ERCS1Request extends React.Component {
       console.log(error);
     }
   }
-
-
-
-
-
-
-
 
   SearchFilterFunction(text) {
     const newData = this.arrayholder.filter(function (item) {
@@ -335,12 +359,6 @@ export default class ERCS1Request extends React.Component {
 
   provideronpress = provider => () => {
     //Item sparator view
-    console.log('search', provider);
-    // this.state.search = this.location.provider_name;
-
-    console.log('found', this.state.found);
-    console.log('search2', provider.provider_name);
-
     return (
       this.setState({
         search: provider.provider_name,
@@ -352,115 +370,69 @@ export default class ERCS1Request extends React.Component {
 
   illnessonpress = location1 => () => {
     //Item sparator view
-    // this.state.search = this.location.provider_name;
     return (
-      // this.postRCS1(),
       this._IllnessSpeciallty(),
-
       this.setState({ searchIllness: location1.illness, foundillness: 1 })
     );
   };
 
-
-
-  async selectFileOne() {
+  async selectMultipleFile() {
+    //Opening Document Picker for selection of multiple file
     try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
-
+      const results = await DocumentPicker.pickMultiple({
+        type: [DocumentPicker.types.allFiles],
       });
-
-
-      console.log('res : ' + JSON.stringify(res));
-      console.log('URI : ' + res.uri);
-      console.log('Type : ' + res.type);
-      console.log('File Name : ' + res.name);
-      console.log('File Size : ' + res.size);
-
-      var tempfileOne = {
-        uri: res.uri,
-        type: res.type,
-        name: res.name
+      //Validation for more than 3 file was selected
+      if (results.length > 3) {
+        return alert("Cannot upload more than 3 file!")
       }
-      this.setState({ fileOne: tempfileOne });
-
+      //Validation for total allow MB
+      for (const res of results) {
+        //Printing the log realted to the file
+        console.log('File Size : ' + res.size);
+      }
+      // results.map((item) => {
+      //   const fileSize = 0
+      //   fileSize = fileSize + item.size
+      // })
+      //Setting the state to show multiple file attributes
+      this.setState({ multipleFile: results });
     } catch (err) {
-
+      //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
-
-        // alert('Canceled from single doc picker');
+        //If user canceled the document selection
+        alert('Canceled from multiple doc picker');
       } else {
-
+        //For Unknown Error
         alert('Unknown Error: ' + JSON.stringify(err));
         throw err;
       }
     }
   }
 
-  async selectFileTwo() {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
-      });
-
-      console.log('res : ' + JSON.stringify(res));
-      console.log('URI : ' + res.uri);
-      console.log('Type : ' + res.type);
-      console.log('File Name : ' + res.name);
-      console.log('File Size : ' + res.size);
-
-      var tempfileTwo = {
-        uri: res.uri,
-        type: res.type,
-        name: res.name
-      }
-      this.setState({ fileTwo: tempfileTwo });
-
-    } catch (err) {
-
-      if (DocumentPicker.isCancel(err)) {
-
-        // alert('Canceled from single doc picker');
-      } else {
-
-        alert('Unknown Error: ' + JSON.stringify(err));
-        throw err;
-      }
-    }
+  removeFile(item) {
+    const newFile = this.state.multipleFile;
+    newFile.splice(item, 1);
+    this.setState({ multipleFile: newFile })
   }
 
-  async selectFileThree() {
-    try {
-      const res = await DocumentPicker.pick({
-        type: [DocumentPicker.types.images],
+  onConfirmProcedure(item) {
 
+    console.log('test', item)
 
+    var newList = [];
+    for (var i = 0; i < item.length; i++) {
+      newList.push({
+        procedure_id: item[i].procedure_id,
+        procedure_rate: item[i].procedure_rate,
+        category_name: item[i].category_name,
+        category_id: item[i].category_id
       });
-
-      console.log('res : ' + JSON.stringify(res));
-      console.log('URI : ' + res.uri);
-      console.log('Type : ' + res.type);
-      console.log('File Name : ' + res.name);
-      console.log('File Size : ' + res.size);
-
-      var tempfilethree = {
-        uri: res.uri,
-        type: res.type,
-        name: res.name
-      }
-      this.setState({ fileThree: tempfilethree });
-
-    } catch (err) {
-
-      if (DocumentPicker.isCancel(err)) {
-
-        // alert('Canceled from single doc picker');
-      } else {
-
-        alert('Unknown Error: ' + JSON.stringify(err));
-        throw err;
-      }
     }
+
+    this.setState({ newListofItems: newList })
+    console.log('updated', newList)
+
   }
 
   componentWillUnmount() {
@@ -468,7 +440,7 @@ export default class ERCS1Request extends React.Component {
   }
 
   render() {
-    const { dataSource, dataSourceIllness } = this.state
+    const { dataSource, dataSourceIllness, proceduresData } = this.state
     return (
       <Container style={{ display: 'flex' }}>
         <StatusBar
@@ -485,8 +457,8 @@ export default class ERCS1Request extends React.Component {
             </Text>
           </View>
         </View>
-        <ScrollView style={styles.container}>
 
+        <ScrollView style={styles.container}>
           <View style={styles.formStyle}>
             <Text style={styles.formLabel}>Choose Member</Text>
             <Picker mode="dropdown"
@@ -497,7 +469,7 @@ export default class ERCS1Request extends React.Component {
               placeholderIconColor="#007aff"
               style={{
                 marginVertical: 10,
-                marginHorizontal: 20,
+                // marginHorizontal: 20,
                 justifyContent: 'center',
               }}
               selectedValue={this.state.MembPickerValueHolder}
@@ -507,18 +479,13 @@ export default class ERCS1Request extends React.Component {
               )}
             </Picker>
           </View>
-
-          {/* <View style={styles.formStyle}>
-            <Text style={styles.formLabel}>Choose hospital/facility</Text>
-            <Input style={styles.formInput} />
-          </View> */}
           <View style={styles.formStyle}>
             <Text style={styles.formLabel}>Choose hospital/facility</Text>
             <SearchBar
               round
               lightTheme
               searchIcon={{ size: 18 }}
-              inputContainerStyle={{ backgroundColor: 'white', height: 34, bottom: 6 }}
+              inputContainerStyle={{ backgroundColor: 'white', height: 34 }}
               inputStyle={{ fontSize: 12 }}
               onChangeText={text => this.SearchFilterFunction(text)}
               onClear={() => this.setState({ searchData: [], destination: '' })}
@@ -553,7 +520,7 @@ export default class ERCS1Request extends React.Component {
               round
               lightTheme
               searchIcon={{ size: 18 }}
-              inputContainerStyle={{ backgroundColor: 'white', height: 34, bottom: 6 }}
+              inputContainerStyle={{ backgroundColor: 'white', height: 34 }}
               inputStyle={{ fontSize: 12 }}
               onChangeText={text => this.SearchIllnesFilterFunction(text)}
               onClear={() => this.setState({ searchData1: [], destination1: '' })}
@@ -570,8 +537,6 @@ export default class ERCS1Request extends React.Component {
                     <ListItem>
                       <TouchableOpacity onPress={this.illnessonpress(item)}>
                         <Text style={{ alignSelf: 'flex-start', fontSize: 14 }}>{item.illness}</Text>
-
-                        {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
                     </ListItem>
                   </View>
@@ -580,19 +545,21 @@ export default class ERCS1Request extends React.Component {
               /> : null}
           </View>
           <View style={styles.formStyle}>
-            {/* <Text style={styles.formLabel}>Laboratory procedure/s</Text> */}
             <SectionedMultiSelect
               style={styles.formLabel}
-              items={items}
-              uniqueKey="id"
+              items={proceduresData}
+              uniqueKey="procedure_id"
               subKey="children"
+              displayKey="procedure_name"
               selectText="Select Procedure"
               searchPlaceholderText="Choose Procedures"
               showDropDowns={false}
               showRemoveAll={true}
               readOnlyHeadings={true}
+              onSelectedItemObjectsChange={this.onSelectedItemObjectsChange}
               onSelectedItemsChange={this.onSelectedItemsChange}
               selectedItems={this.state.selectedItems}
+              onConfirm={() => this.onConfirmProcedure(this.state.selectedObject)}
             />
           </View>
           <View style={styles.formStyle}>
@@ -618,13 +585,11 @@ export default class ERCS1Request extends React.Component {
             </Picker>
           </View>
 
-          <View style={{ paddingHorizontal: 20 }}>
+          <View>
             <Card style={{ borderRadius: 10, justifyContent: "center" }}>
-
-              {/* single file selection */}
               <TouchableOpacity
                 activeOpacity={0.5}
-                onPress={this.selectFileOne.bind(this)}>
+                onPress={this.selectMultipleFile.bind(this)}>
                 <CardItem style={{ borderRadius: 10 }}>
                   <Body style={{ alignContent: 'center' }}>
                     <Icon
@@ -643,152 +608,104 @@ export default class ERCS1Request extends React.Component {
                   </Body>
                 </CardItem>
               </TouchableOpacity>
-              <View>
-                <Text style={styles.textStyle}>
-                  File Name:{' '}
-                  {this.state.fileOne.name ? this.state.fileOne.name : ''}
-                </Text>
-                <Button
-                  success
-                  style={styles.removeButton}
-                // onPress={() =>
-                //   this.props.navigation.navigate('ERCS2LandingPage')
-                // }
-                >
-                  <Title>Remove</Title>
-                </Button>
-              </View>
-
-              {/* single file selection */}
-
-              {/* single file selection */}
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={this.selectFileTwo.bind(this)}>
-                <CardItem style={{ borderRadius: 10 }}>
-                  <Body style={{ alignContent: 'center' }}>
-                    <Icon
-                      type="Ionicons"
-                      name="md-attach"
-                      style={{ color: '#2d2d2d', alignSelf: 'center' }}
-                    />
-                    <Text
-                      style={{
-                        color: '#2d2d2d',
-                        fontSize: 14,
-                        alignSelf: 'center',
-                      }}>
-                      Upload file/s
-                  </Text>
-                  </Body>
-                </CardItem>
-              </TouchableOpacity>
-              <View>
-                <Text style={styles.textStyle}>
-                  File Name:{' '}
-                  {this.state.fileTwo.name ? this.state.fileTwo.name : ''}
-                </Text>
-                <Button
-                  success
-                  style={styles.removeButton}
-                // onPress={() =>
-                //   this.props.navigation.navigate('ERCS2LandingPage')
-                // }
-                >
-                  <Title>Remove</Title>
-                </Button>
-              </View>
-
-              {/* single file selection */}
-
-
-              {/* single file selection */}
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={this.selectFileThree.bind(this)}>
-                <CardItem style={{ borderRadius: 10 }}>
-                  <Body style={{ alignContent: 'center' }}>
-                    <Icon
-                      type="Ionicons"
-                      name="md-attach"
-                      style={{ color: '#2d2d2d', alignSelf: 'center' }}
-                    />
-                    <Text
-                      style={{
-                        color: '#2d2d2d',
-                        fontSize: 14,
-                        alignSelf: 'center',
-                      }}>
-                      Upload file/s
-                  </Text>
-                  </Body>
-                </CardItem>
-              </TouchableOpacity>
-              <View>
-                <Text style={styles.textStyle}>
-                  File Name:{' '}
-                  {this.state.fileThree.name ? this.state.fileThree.name : ''}
-                </Text>
-                <View>
-                <Button
-                  visible = 'false'
-                  success
-                  style={styles.removeButton}
-                // onPress={() =>
-                //   this.props.navigation.navigate('ERCS2LandingPage')
-                // }
-                >
-                  <Title>Remove</Title>
-                </Button>
-                </View>
-              </View>
-
-              {/* single file selection */}
-
-
+              <ScrollView style={{ flex: 1 }}>
+                {/*Showing the data of selected Multiple files*/}
+                {this.state.multipleFile.map((item, key) => (
+                  <View key={key} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+                    <Text style={styles.textStyle}>
+                      File Name: {item.name ? item.name : ''}
+                    </Text>
+                    <TouchableOpacity style={{ marginTop: 5, marginRight: 10 }} onPress={() => this.removeFile(key)}>
+                      <Icon type="Ionicons" name="md-close" style={{ color: 'red' }} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
             </Card>
           </View>
-
-
-
-          <View style={styles.viewButton}>
+          <View style={{ paddingVertical: 20 }}>
             <Button
-              success
+              danger rounded
               style={styles.buttonStyle}
               onPress={() => {
-                this._InsertRequest();
+                this.handleSubmit();
               }}>
-              <Title>Submit</Title>
+              <Text>Submit</Text>
             </Button>
           </View>
         </ScrollView>
+        {(this.state.isLoading) &&
+          <View style={styles.spinnerStyle}>
+            <Spinner color={'green'} size={60} type={'Circle'} />
+          </View>
+        }
       </Container>
     );
   }
+  
+  handleSubmit = () => {
+  
+    if ( this.state.newListofItems === null) {
+      return alert('Please atleast one(1) procedure');
+    }
+
+    if (this.state.multipleFile === null) {
+      return alert('Please provide atleast one(1) document');
+    }
+
+    if (this.state.DoctorSpeciallty.doctor_code  === null) {
+      return alert('Please choose a doctor');
+    }
+
+    if (this.state.searchIllness === null || this.state.searchIllness === '') {
+      return alert('Please provide complaint');
+    }
+   
+    this._InsertRequest();
+  }
+
+
+
 
   async _InsertRequest() {
-
+    
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
 
     let formdata = new FormData();
-
-    formdata.append('prescription1', this.state.fileOne);
-    formdata.append('prescription2', this.state.fileTwo);
-    formdata.append('prescription3', this.state.fileThree);
-    
-
-    console.log(formdata)
-
+  
     formdata.append(
-      'ercs_procedures',
+      'ercs_details',
       JSON.stringify({
-        acctno: this.state.email,
+        acctno:  this.state.MembPickerValueHolder,
         ercs1no: 'WITHOUT eRCS1',
         doctor_code: this.state.DoctorSpeciallty.doctor_code,
         hospital_code: this.state.providercode,
         posted_by: 'MOBILE',
       }),
     );
+
+ 
+  const jsonproc =  this.state.newListofItems
+  
+  console.log(jsonproc)
+  formdata.append(
+    'ercs_procedures',
+    JSON.stringify(
+      jsonproc
+    ),
+  );
+  
+  this.state.multipleFile.forEach((item, i) => {
+    var num = i+1 ;
+    formdata.append("prescription"+num, {
+      uri: item.uri,
+      type: item.type,
+      name: item.name
+    });
+  });
+   
+    
+    console.log(formdata)
 
     try {
       let resp = await fetch(
@@ -802,9 +719,14 @@ export default class ERCS1Request extends React.Component {
           body: formdata,
         },
       );
+      console.log(resp)
       let respJson = await resp.json();
-
+      
       if (respJson.is_success === true) {
+
+        let tmprcs2Num = respJson.data.ercsno 
+        
+        global.rcs2Num = tmprcs2Num
 
         this.props.navigation.dispatch(resetAction);
       }
@@ -826,6 +748,9 @@ export default class ERCS1Request extends React.Component {
 export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  container: {
+    paddingHorizontal: 20
+  },
   headerStyle: {
     height: 150,
     justifyContent: 'center',
@@ -842,27 +767,41 @@ const styles = StyleSheet.create({
   formInput: {
     backgroundColor: '#f5f5f5',
     marginVertical: 10,
-    marginHorizontal: 20,
+    // marginHorizontal: 20,
   },
   formLabel: {
-    marginHorizontal: 20,
+    // marginHorizontal: 20,
     color: '#6d6e72',
   },
   formStyle: {
     marginVertical: 10,
   },
-  viewButton: {
-    margin: 20,
-  },
   removeButton: {
     flexDirection: "row",
     flex: 1,
     justifyContent: 'center'
-
   },
   buttonStyle: {
-    backgroundColor: '#e74c3c',
-    color: '#fff',
     justifyContent: 'center',
+  },
+  textStyle: {
+    backgroundColor: '#fff',
+    fontSize: 15,
+    marginVertical: 10,
+    marginLeft: 10,
+    color: 'black',
+    width: '90%'
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    opacity: 0.2,
+    backgroundColor: 'black',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 });
