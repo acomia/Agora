@@ -23,9 +23,22 @@ import {
   Body,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
+import { StackActions, NavigationActions } from 'react-navigation';
+
+
+
+
 
 export default class ERCS2DisapprovedDetails extends React.Component {
+  
   render() {
+
+    const { navigation } = this.props;
+    let status = navigation.getParam('status', '');
+    let appvdby = navigation.getParam('appvdby', '');
+    let appvddate = navigation.getParam('appvddate', '');
+    let remarks = navigation.getParam('remarks', '');
     return (
       <Container style={styles.container}>
         <StatusBar
@@ -37,24 +50,24 @@ export default class ERCS2DisapprovedDetails extends React.Component {
           <List>
             <ListItem noIndent>
               <Left style={{flex: 2}}>
-                <Text>Disapproved by</Text>
+                <Text>{status === 'A' || status === 'C' ? 'Approved by' : 'Disapproved by'}</Text>
               </Left>
               <Right style={{flex: 3}}>
-                <Text note>User</Text>
+                <Text note>{appvdby}</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>
               <Left style={{flex: 2}}>
-                <Text>Disapproved at</Text>
+                <Text>{status === 'A' || status === 'C'  ? 'Approved at' : 'Disapproved at'}</Text>
               </Left>
               <Right style={{flex: 3}}>
-                <Text note>01/01/2020 12:01:00</Text>
+                <Text note>{appvddate}</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>
               <View style={{flexDirection: 'column'}}>
-                <Text>Reason of Disapproval</Text>
-                <Text note>Others / change of mind</Text>
+                <Text>{status === 'A' || status === 'C' ? '' : 'Reason of Disapproval'}</Text>
+                <Text note>{remarks}</Text>
               </View>
             </ListItem>
           </List>

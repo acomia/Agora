@@ -8,6 +8,7 @@ import {
   Modal,
   TouchableHighlight,
   Alert,
+  FlatList,
   Dimensions,
 } from 'react-native';
 import {
@@ -23,9 +24,18 @@ import {
   Body,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 export default class ERCS2DisapprovedProcedure extends React.Component {
   render() {
+    const { navigation } = this.props;
+    let status = navigation.getParam('procstatus', '');
+    let appvdby = navigation.getParam('procappvdby', '');
+    let appvddate = navigation.getParam('procappvddate', '');
+    let remarks = navigation.getParam('procremarks', '');
+    let procdata = navigation.getParam('procdata', []);
+   console.log('summproc',procdata);
     return (
       <Container style={{flex: 1, backgroundColor: '#f5f5f5'}}>
         <StatusBar
@@ -37,10 +47,10 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
           <List>
             <ListItem noIndent>
               <Left style={{flex: 2}}>
-                <Text>Disapproved by</Text>
+                <Text>Disapproved by </Text>
               </Left>
               <Right style={{flex: 3}}>
-                <Text note>User</Text>
+                <Text note>{appvdby}</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>
@@ -48,21 +58,38 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
                 <Text>Disapproved at</Text>
               </Left>
               <Right style={{flex: 3}}>
-                <Text note>01/01/2020 12:01:00</Text>
+                <Text note>{appvddate}</Text>
               </Right>
             </ListItem>
           </List>
         </View>
         <View style={styles.viewSection}>
           <Text style={styles.cardTitle}>Summary of Procedures</Text>
-          <Text
-            style={{
-              color: '#c4c4c4',
-              textAlign: 'center',
-              justifyContent: 'center',
-            }}>
-            Data table here...
-          </Text>
+            <FlatList
+              roundAvatar
+              data={procdata}
+              renderItem={({item}) => 
+              <View>
+                <View>
+                  <Text
+                    style={{
+                      color: '#c4c4c4',
+                      textAlign: 'center',
+                      justifyContent: 'center',
+                  }}>{item.status === 'D' ? item.procedure_name : null}</Text>
+                </View>
+                <View>
+                  <Text
+                    style={{
+                      color: '#c4c4c4',
+                      textAlign: 'center',
+                      justifyContent: 'center',
+                  }}>{item.status === 'D' ? item.category : null}</Text>
+                </View>
+              </View>}
+              //keyExtractor={(item, index) => item}
+              //ItemSeparatorComponent={this.renderSeparator}
+          />
         </View>
       </Container>
     );

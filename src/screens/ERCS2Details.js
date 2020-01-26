@@ -48,6 +48,7 @@ export default class ERCS2Details extends React.Component {
       isLoading: false,
       dataSource: [],
       dataProcSource: [],
+      dataDocSource :  [],
       rcsnum2: '',
       confirm: true,
     }
@@ -142,20 +143,16 @@ export default class ERCS2Details extends React.Component {
             if (responseJson.data != null) {
               console.log('rcsdetailsproc', responseJson)
               this.setState({
-                isLoading: false,
                 dataProcSource: responseJson.data,
               });
-              
             } else {
               //if (responseJson.error_message == 'No RCS Transaction Found!') {
                 //this.showAlert();
                 alert('No RCS Procedures found!')
-                this.setState({ isLoading: false })
-  
-                this.props.navigation.navigate('ERCS1HistoryPage')
+                this.setState({ isLoading: false });
+                this.props.navigation.navigate('ERCS1HistoryPage');
               //}
             }
-  
             if (responseJson == 'Invalid Access Token') {
               console.log('invalidToken', responseJson)
               alert('Session Expired')
@@ -167,6 +164,47 @@ export default class ERCS2Details extends React.Component {
         .catch((error) => {
           alert('Unable to connect to server' + error)
         })
+
+        fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history/documents?ercs=' + rcsno , {
+          method: 'GET',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            // 'paramContract': '1',
+            // 'Content-Type': 'application/json;charset=UTF-8'
+          },
+          params:{
+            'ercs': rcsno
+          }
+        })
+          .then((response) => {
+            console.log('docs',response);
+            response.json().then((responseJson) => {
+              console.log('rcsdetdocs', responseJson)
+              if (responseJson.data != null) {
+                console.log('rcsdetailsdocs', responseJson)
+                this.setState({
+                  isLoading: false,
+                  dataDocSource: responseJson.data,
+                });
+              } else {
+                //if (responseJson.error_message == 'No RCS Transaction Found!') {
+                  //this.showAlert();
+                  alert('No RCS Documents Uploaded found!')
+                  this.setState({ isLoading: false });
+                  this.props.navigation.navigate('ERCS1HistoryPage');
+                //}
+              }
+              if (responseJson == 'Invalid Access Token') {
+                console.log('invalidToken', responseJson)
+                alert('Session Expired')
+                this.onLogout();
+                this.props.navigation.navigate('Dashboard')
+              }
+            })
+          })
+          .catch((error) => {
+            alert('Unable to connect to server' + error)
+          })
   }
 
   
@@ -365,7 +403,7 @@ export default class ERCS2Details extends React.Component {
               <View style={styles.divider} />
               <View style={{flexDirection: 'row'}}>
                 <Left style={{marginHorizontal: 20}}>
-                  <Text note>Request had been disapproved</Text>
+                  <Text note>Request had been  {xstatus}</Text>
                 </Left>
                 <Right style={{alignSelf: 'flex-end'}}>
                   <Button
@@ -374,6 +412,12 @@ export default class ERCS2Details extends React.Component {
                     onPress={() =>
                       this.props.navigation.navigate(
                         'ERCS2DisapprovedDetailsPage',
+                         {
+                           status : this.state.dataSource.status,
+                           appvdby: this.state.dataSource.approve_by,
+                           appvddate:  this.state.dataSource.approve_date,
+                           remarks: this.state.dataSource.remarks
+                          }
                       )
                     }>
                     <Text style={styles.buttonChangeDetails}>
@@ -396,7 +440,7 @@ export default class ERCS2Details extends React.Component {
                         color: '#c4c4c4',
                         textAlign: 'center',
                         justifyContent: 'center',
-                    }}>{item.status === 'A' || item.status === 'W' ? item.procedure_name : null}</Text>}
+                    }}>{item.status === 'A' || item.status === 'W' || item.status === 'C' ? item.procedure_name : null}</Text>}
                     //keyExtractor={(item, index) => item}
                     //ItemSeparatorComponent={this.renderSeparator}
                   />
@@ -404,7 +448,6 @@ export default class ERCS2Details extends React.Component {
           </View>
           <View style={styles.viewOtherDetails}>
             <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
-
             <View>
                      <FlatList
                     roundAvatar
@@ -432,6 +475,13 @@ export default class ERCS2Details extends React.Component {
                     onPress={() =>
                       this.props.navigation.navigate(
                         'ERCS2DisapprovedProcedurePage',
+                        {
+                          procstatus : this.state.dataSource.status,
+                          procappvdby: this.state.dataSource.approve_by,
+                          procappvddate:  this.state.dataSource.approve_date,
+                          procremarks: this.state.dataSource.remarks,
+                          procdata: this.state.dataProcSource
+                         }
                       )
                     }>
                     Check Details
@@ -442,14 +492,21 @@ export default class ERCS2Details extends React.Component {
           </View>
           <View style={styles.viewOtherDetails}>
             <Text style={styles.cardTitle}>UPLOADED REQUIREMENTS</Text>
-            <Text
-              style={{
-                color: '#c4c4c4',
-                textAlign: 'center',
-                justifyContent: 'center',
-              }}>
-              Uploaded requirements here...
-            </Text>
+            <View>
+                     <FlatList
+                    roundAvatar
+                    data={this.state.dataDocSource}
+                    renderItem={({item}) => 
+                    <Text
+                      style={{
+                        color: '#c4c4c4',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                    }}>{item.file_name}</Text>}
+                    //keyExtractor={(item, index) => item}
+                    //ItemSeparatorComponent={this.renderSeparator}
+                  />
+            </View> 
           </View>
           <View style={styles.viewButton}>
             <Button disabled={this.state.dataSource.status === 'A' ? false : true} 
