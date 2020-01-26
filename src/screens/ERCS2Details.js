@@ -8,6 +8,7 @@ import {
   Modal,
   TouchableHighlight,
   Alert,
+  FlatList,
   Dimensions,
 } from 'react-native';
 import {
@@ -24,12 +25,19 @@ import {
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
+
+const resetAction = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({ routeName: 'ERCS2LandingPage' })],
+});
 
 export default class ERCS2Details extends React.Component {
 
@@ -39,6 +47,7 @@ export default class ERCS2Details extends React.Component {
     this.state = {
       isLoading: false,
       dataSource: [],
+      dataProcSource: [],
       rcsnum2: '',
       confirm: true,
     }
@@ -89,7 +98,7 @@ export default class ERCS2Details extends React.Component {
           if (responseJson.data != null) {
             console.log('rcsdetails', responseJson)
             this.setState({
-              isLoading: false,
+              //isLoading: false,
               dataSource: responseJson.data,
             });
           } else {
@@ -106,14 +115,135 @@ export default class ERCS2Details extends React.Component {
             console.log('invalidToken', responseJson)
             alert('Session Expired')
             this.onLogout();
+            this.props.navigation.navigate('Dashboard')
           }
         })
       })
       .catch((error) => {
         alert('Unable to connect to server' + error)
       })
+
+
+      fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history/procedures?ercs=' + rcsno , {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          // 'paramContract': '1',
+          // 'Content-Type': 'application/json;charset=UTF-8'
+        },
+        params:{
+          'ercs': rcsno
+        }
+      })
+        .then((response) => {
+          console.log('proc',response);
+          response.json().then((responseJson) => {
+            console.log('rcsdetproc', responseJson)
+            if (responseJson.data != null) {
+              console.log('rcsdetailsproc', responseJson)
+              this.setState({
+                isLoading: false,
+                dataProcSource: responseJson.data,
+              });
+              
+            } else {
+              //if (responseJson.error_message == 'No RCS Transaction Found!') {
+                //this.showAlert();
+                alert('No RCS Procedures found!')
+                this.setState({ isLoading: false })
+  
+                this.props.navigation.navigate('ERCS1HistoryPage')
+              //}
+            }
+  
+            if (responseJson == 'Invalid Access Token') {
+              console.log('invalidToken', responseJson)
+              alert('Session Expired')
+              this.onLogout();
+              this.props.navigation.navigate('Dashboard')
+            }
+          })
+        })
+        .catch((error) => {
+          alert('Unable to connect to server' + error)
+        })
   }
 
+  
+  async _sendemail() {
+    <ActivityIndicator size="small" color="white" />
+    const { navigation } = this.props;
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let email = await AsyncStorage.getItem(MEMB_EMAIL);
+    let mid = await AsyncStorage.getItem(MEMBER_ID);
+    let rcsno = navigation.getParam('rcsnum2', '');
+    let acctNum = navigation.getParam('acctno', '');
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' + rcsno, {
+      method: 'GET',
+      params: {
+        'no': rcsno,
+      },
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'EmailAddress': email,
+        'AccountNo': acctNum,
+        'AccountID': mid,
+        //'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => {
+        response.json().then(data => {
+          console.log('finalRcs2', data)
+          if (data.is_success === true) {
+            alert('RCS sent to Email Successfully')
+          } else {
+            alert(data.error_message);
+          }
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+    }  
+
+    async _cancelRCS() {
+      <ActivityIndicator size="small" color="white" />
+      const { navigation } = this.props;
+      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      let rcsno = navigation.getParam('rcsnum2', '');
+      let acctNum = navigation.getParam('acctno', '');
+      let ercsid = navigation.getParam('ercsid', '');
+      let appcode = navigation.getParam('approvalcode', '');
+      fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/cancel', {
+        method: 'PUT',
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify({
+          acctno: acctNum,
+          ercsno: rcsno,
+          ercs_id: ercsid,
+          approval_code: this.state.dataSource.approval_code,
+          remarks: 'Cancel by Member',
+        }),
+      })
+        .then(response => {
+          response.json().then(data => {
+            console.log('finalRcs2Cancel', data)
+            if (data.is_success === true) {
+              alert('RCS Cancel Successfully');
+              this.props.navigation.navigate('ERCS2LandingPage');
+            } else {
+              alert(data.error_message);
+            }
+          });
+        })
+        .catch(error => {
+          alert('Error!' + error);
+        });
+      }  
+  
 
   render() {
     var xstatus = this.state.dataSource.status
@@ -255,27 +385,41 @@ export default class ERCS2Details extends React.Component {
             </View>
           </View>
           <View style={styles.viewOtherDetails}>
-            <Text style={styles.cardTitle}>APPROVED PROCEDURES</Text>
-            <Text
-              style={{
-                color: '#c4c4c4',
-                textAlign: 'center',
-                justifyContent: 'center',
-              }}>
-              Approved procedures here...
-            </Text>
+            <Text style={styles.cardTitle}>APPROVED PROCEDURES</Text> 
+            <View>
+                     <FlatList
+                    roundAvatar
+                    data={this.state.dataProcSource}
+                    renderItem={({item}) => 
+                    <Text
+                      style={{
+                        color: '#c4c4c4',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                    }}>{item.status === 'A' || item.status === 'W' ? item.procedure_name : null}</Text>}
+                    //keyExtractor={(item, index) => item}
+                    //ItemSeparatorComponent={this.renderSeparator}
+                  />
+            </View>         
           </View>
           <View style={styles.viewOtherDetails}>
             <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
 
-            <Text
-              style={{
-                color: '#c4c4c4',
-                textAlign: 'center',
-                justifyContent: 'center',
-              }}>
-              Disapproved procedures here...
-            </Text>
+            <View>
+                     <FlatList
+                    roundAvatar
+                    data={this.state.dataProcSource}
+                    renderItem={({item}) => 
+                    <Text
+                      style={{
+                        color: '#c4c4c4',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                    }}>{item.status === 'D' ? item.procedure_name : null}</Text>}
+                    //keyExtractor={(item, index) => item}
+                    //ItemSeparatorComponent={this.renderSeparator}
+                  />
+            </View> 
             <View style={styles.divider} />
             <View>
               <Left />
@@ -309,12 +453,14 @@ export default class ERCS2Details extends React.Component {
           </View>
           <View style={styles.viewButton}>
             <Button disabled={this.state.dataSource.status === 'A' ? false : true} 
-              iconLeft block rounded info style={styles.buttonSend}>
+              iconLeft block rounded info style={styles.buttonSend}
+              onPress={() => this._sendemail()}>
               <Icon type="FontAwesome" name="send-o" />
               <Text>Send to e-mail</Text>
             </Button>
             <Button  disabled={this.state.dataSource.status === 'A' ? false : true}
-              block rounded iconLeft style={styles.buttonCancel}>
+              block rounded iconLeft style={styles.buttonCancel}
+              onPress={() => this._cancelRCS()}>
               <Icon type="MaterialCommunityIcons" name="cancel" />
               <Text>Cancel this Request</Text>
             </Button>
@@ -395,8 +541,8 @@ const styles = StyleSheet.create({
   },
   viewOtherDetails: {
     backgroundColor: '#fff',
-    marginTop: 5,
-    paddingBottom: 5,
+    //marginTop: 5,
+    //paddingBottom: 5,
   },
   StatusApproved: {
     color: '#5fb650',

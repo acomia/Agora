@@ -32,12 +32,19 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
+
+const resetAction = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({ routeName: 'ERCS2LandingPage' })],
+});
 
 export default class ERCS2History extends React.Component {
 
@@ -46,7 +53,8 @@ export default class ERCS2History extends React.Component {
     global.storeToken = ''
     this.state = {
       isLoading: false,
-      dataSource: []
+      dataSource: [],
+      membacctnum: '',
     }
   }
 
@@ -71,7 +79,8 @@ export default class ERCS2History extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     this.setState({
-      isLoading: true
+      isLoading: true,
+      membacctnum: membacct
     })
 
     
@@ -138,6 +147,7 @@ export default class ERCS2History extends React.Component {
         xstatus = 'Pending'
         break;
     }
+    
     return (
       
       <ScrollView>
@@ -180,7 +190,12 @@ export default class ERCS2History extends React.Component {
                 <Text
                   style={styles.buttonView}
                   onPress={() =>
-                    this.props.navigation.navigate('ERCS2DetailsPage',{rcsnum2 : item.ercsno})
+                    this.props.navigation.navigate('ERCS2DetailsPage',{
+                      rcsnum2 : item.ercsno,
+                      acctno: this.state.membacctnum,
+                      ercsid: item.record_id,
+                      approvalcode: item.approval_code
+                    })
                   }>
                   View
                 </Text>
