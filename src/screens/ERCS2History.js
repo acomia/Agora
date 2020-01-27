@@ -2,37 +2,26 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  ActivityIndicator,
   StatusBar,
-  TouchableNativeFeedback,
-  Modal,
-  TouchableHighlight,
-  Alert,
   Dimensions,
   FlatList,
 } from 'react-native';
 import {
   Container,
-  Header,
-  Input,
   Button,
   Text,
-  Title,
-  Left,
   Right,
   Body,
-  Label,
-  Thumbnail,
   ListItem,
   List,
   Icon,
   Badge,
-  Item,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
 import { StackActions, NavigationActions } from 'react-navigation';
+import moment from 'moment'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -83,15 +72,15 @@ export default class ERCS2History extends React.Component {
       membacctnum: membacct
     })
 
-    
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' + membacct , {
+
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' + membacct, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
         // 'paramContract': '1',
         // 'Content-Type': 'application/json;charset=UTF-8'
       },
-      params:{
+      params: {
         'acct': membacct
       }
     })
@@ -99,7 +88,6 @@ export default class ERCS2History extends React.Component {
         response.json().then((responseJson) => {
           console.log('rcshist', responseJson)
           if (responseJson.data != null) {
-            console.log('rcshistory', responseJson)
             this.setState({
               isLoading: false,
               dataSource: responseJson.data,
@@ -142,69 +130,67 @@ export default class ERCS2History extends React.Component {
         break;
       case "C":
         xstatus = 'Cancelled'
-          break;
+        break;
       default:
         xstatus = 'Pending'
         break;
     }
-    
     return (
-      
       <ScrollView>
-      <View>
-        <List>
-          <ListItem noIndent>
-            <Body>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
-                <Badge style={styles.badgeStyle}>
-                  <Text style={styles.badgeText}>{xstatus}</Text>
-                </Badge>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
-                <Text note style={styles.textPatient}>
-                  {item.patient}
+        <View>
+          <List>
+            <ListItem noIndent>
+              <Body>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
+                  <Badge style={styles.badgeStyle}>
+                    <Text style={styles.badgeText}>{xstatus}</Text>
+                  </Badge>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
+                  <Text note style={styles.textPatient}>
+                    {item.patient}
+                  </Text>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="location"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.hospital}</Text>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="clock"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.validity_date === '' ? 'N/A' : moment(item.validity_date).format('L')}</Text>
+                </View>
+              </Body>
+              <Right>
+                <Text note>{item.ercs_date === '' ? 'N/A' : moment(item.ercs_date).format('L')}</Text>
+                <Button transparent>
+                  <Text
+                    style={styles.buttonView}
+                    onPress={() =>
+                      this.props.navigation.navigate('ERCS2DetailsPage', {
+                        rcsnum2: item.ercsno,
+                        acctno: this.state.membacctnum,
+                        ercsid: item.record_id,
+                        approvalcode: item.approval_code
+                      })
+                    }>
+                    View
                 </Text>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="location"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.hospital}</Text>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="clock"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.validity_date}</Text>
-              </View>
-            </Body>
-            <Right>
-              <Text note>{item.ercs_date}</Text>
-              <Button transparent>
-                <Text
-                  style={styles.buttonView}
-                  onPress={() =>
-                    this.props.navigation.navigate('ERCS2DetailsPage',{
-                      rcsnum2 : item.ercsno,
-                      acctno: this.state.membacctnum,
-                      ercsid: item.record_id,
-                      approvalcode: item.approval_code
-                    })
-                  }>
-                  View
-                </Text>
-              </Button>
-            </Right>
-          </ListItem>
-        </List>
-      </View>
-    </ScrollView>
+                </Button>
+              </Right>
+            </ListItem>
+          </List>
+        </View>
+      </ScrollView>
     );
   }
 
@@ -220,35 +206,34 @@ export default class ERCS2History extends React.Component {
     const { spinnerStyle, spinnerTextStyle } = styles
     return (
       <Container>
-      <StatusBar translucent backgroundColor="transparent" />
-      <ScrollView>
- 
+        <StatusBar translucent backgroundColor="transparent" />
+        <ScrollView>
+
           <FlatList
             roundAvatar
             data={this.state.dataSource}
             renderItem={this.renderItem}
-            keyExtractor={(item, index) => item}
+            keyExtractor={(item) => item.ercsno}
             ItemSeparatorComponent={this.renderSeparator}
           />
 
-      </ScrollView>
-      {
+        </ScrollView>
+        {
           (this.state.isLoading) &&
-          <View styles={spinnerStyle}>
+          <View style={spinnerStyle}>
             <Spinner
-              color={'#5fb650'}
+              color={'green'}
               size={60}
               type={'Circle'}
-              
             />
           </View>
         }
-     </Container> 
+      </Container>
     );
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
@@ -282,8 +267,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //position: 'absolute',
-    opacity: 0.2,
+    position: 'absolute',
+    opacity: 0.5,
     backgroundColor: 'black',
     left: 0,
     right: 0,

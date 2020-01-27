@@ -569,7 +569,7 @@ export default class ERCS1Request extends React.Component {
           <View>
             <Button
               disabled={this.state.confirm}
-              rounded
+              block rounded iconLeft
               onPress={() => { this.setState({ visibleModal: true }) }}
               style={{ marginVertical: 10 }}
             >
