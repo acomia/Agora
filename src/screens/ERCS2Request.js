@@ -25,24 +25,24 @@ import {
   Icon,
   Item,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
-import { DataTable } from 'react-native-paper';
+import {ScrollView} from 'react-native-gesture-handler';
+import {DataTable} from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
+import {Table, TableWrapper, Row, Cell} from 'react-native-table-component';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import { SearchBar } from 'react-native-elements'
-import Spinner from 'react-native-spinkit'
+import {SearchBar} from 'react-native-elements';
+import Spinner from 'react-native-spinkit';
 import DocumentPicker from 'react-native-document-picker';
-import { StackActions, NavigationActions } from 'react-navigation';
-import Modal from 'react-native-modal'
+import {StackActions, NavigationActions} from 'react-navigation';
+import Modal from 'react-native-modal';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
-const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth()
+const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({ routeName: 'ERCS2SuccessPage' })],
+  actions: [NavigationActions.navigate({routeName: 'ERCS2SuccessPage'})],
 });
 
 export default class ERCS2Request extends React.Component {
@@ -53,10 +53,10 @@ export default class ERCS2Request extends React.Component {
     global.rcs2Num = '';
     this.state = {
       isLoading: false,
-      MembPickerValueHolder: "",
-      member: "",
-      facility: "",
-      illness: "",
+      MembPickerValueHolder: '',
+      member: '',
+      facility: '',
+      illness: '',
       Rcsmemb: [],
       selectedItems: [],
       selectedObject: [],
@@ -73,18 +73,18 @@ export default class ERCS2Request extends React.Component {
       RCSdoctorspecialty: [],
       proceduresData: [],
       newListofItems: [],
-      confirmSpec: true
+      confirmSpec: true,
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
   }
 
-  onSelectedItemsChange = (selectedItems) => {
-    this.setState({ selectedItems });
+  onSelectedItemsChange = selectedItems => {
+    this.setState({selectedItems});
   };
 
-  onSelectedItemObjectsChange = (selectedObject) => {
-    this.setState({ selectedObject })
+  onSelectedItemObjectsChange = selectedObject => {
+    this.setState({selectedObject});
 
     var newList = [];
     for (var i = 0; i < selectedObject.length; i++) {
@@ -92,183 +92,204 @@ export default class ERCS2Request extends React.Component {
         procedure_id: selectedObject[i].procedure_id,
         procedure_rate: selectedObject[i].procedure_rate,
         category_name: selectedObject[i].category_name,
-        category_id: selectedObject[i].category_id
+        category_id: selectedObject[i].category_id,
       });
     }
-    this.setState({ newListofItems: newList })
-  }
+    this.setState({newListofItems: newList});
+  };
 
   async componentDidMount() {
     this._isMounted = true;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     this.setState({
-      isLoading: true
+      isLoading: true,
     });
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'AccountNo': membacct,
-      }
-    })
-      .then((response) => {
-        response.json().then((responseJson) => {
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          AccountNo: membacct,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(responseJson => {
           this.setState({
-            Rcsmemb: responseJson.data
-          })
-
-        })
+            Rcsmemb: responseJson.data,
+          });
+        });
       })
-      .catch((error) => {
-        alert('Error!' + error)
-      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
 
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'AccountNo': membacct,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          AccountNo: membacct,
+        },
+        params: {
+          name: '',
+          location: '',
+        },
       },
-      params: {
-        'name': '',
-        'location': '',
-      },
-    })
-      .then((response) => {
-        response.json().then((provider) => {
+    )
+      .then(response => {
+        response.json().then(provider => {
           this.setState({
             dataSource: provider.data,
-          })
-          this.arrayholder = provider.data
-          
+          });
+          this.arrayholder = provider.data;
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+
+    //GET PROCEDURES
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    ).then(response => {
+      response
+        .json()
+        .then(data => {
+          if (data.error_message === null) {
+            this.setState({
+              proceduresData: [
+                {
+                  procedure_name: 'Procedures',
+                  procedure_id: 0,
+                  children: data.data,
+                },
+              ],
+            });
+          } else {
+            alert('Unable to generate the procedures!');
+          }
         })
-      })
-      .catch((error) => {
-        alert('Error!' + error)
-      })
-
-
-    //GET PROCEDURES
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then((response) => {
-        response.json()
-          .then((data) => {
-            if (data.error_message === null) {
-              this.setState({ proceduresData: [{ procedure_name: 'Procedures', procedure_id: 0, children: data.data }] })
-
-            } else {
-              alert('Unable to generate the procedures!')
-            }
-          })
-          .catch((error) => {
-            alert('Error!' + error)
-          })
-      })
+        .catch(error => {
+          alert('Error!' + error);
+        });
+    });
     //GET PROCEDURES
 
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+        params: {
+          gender: '',
+        },
       },
-      params: {
-        'gender': '',
-      },
-    })
-      .then((response) => {
-        response.json().then((illness) => {
+    )
+      .then(response => {
+        response.json().then(illness => {
           this.setState({
             dataSourceIllness: illness.data,
-            isLoading: false
-          })
-          this.arrayholderIllness = illness.data
-        })
+            isLoading: false,
+          });
+          this.arrayholderIllness = illness.data;
+        });
       })
-      .catch((error) => {
-        alert('Error!' + error)
-      })
-
+      .catch(error => {
+        alert('Error!' + error);
+      });
   }
 
   async _IllnessSpeciallty() {
-    this.setState({ isLoading: true })
+    this.setState({isLoading: true});
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'illness': this.state.searchIllness
-      }
-    })
-      .then((response) => {
-        response.json().then((illnessSpec) => {
-          console.log('illness', illnessSpec)
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          illness: this.state.searchIllness,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(illnessSpec => {
+          console.log('illness', illnessSpec);
           this.setState({
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
-          dataSourceIllnessSpec = illnessSpec.data[0]
+          dataSourceIllnessSpec = illnessSpec.data[0];
 
-          this.DoctorScpec = this.DoctorScpec.bind(this)
+          this.DoctorScpec = this.DoctorScpec.bind(this);
           this.DoctorScpec();
-        })
+        });
       })
-      .catch((error) => {
-        alert('Error!' + error)
-      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
   }
 
   async DoctorScpec() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    let specname = await this.state.dataSourceIllnessSpec.specialty_name
+    let specname = await this.state.dataSourceIllnessSpec.specialty_name;
     try {
-      fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/doctors?name=', {
-        method: 'GET',
-        headers: {
-          'Authorization': 'Bearer ' + token,
-          'Hospital': this.state.providercode,
-         // 'Specialty': specname
+      fetch(
+        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/doctors?name=',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            Hospital: this.state.providercode,
+            // 'Specialty': specname
+          },
+          params: {
+            name: '',
+          },
         },
-        params: {
-          'name': '',
-        },
-      })
-        .then((response) => {
-          response.json().then((doctorspec) => {
+      )
+        .then(response => {
+          response.json().then(doctorspec => {
             if (doctorspec.data != null) {
               this.setState({
                 RCSdoctorspecialty: doctorspec.data,
                 isLoading: false,
-                confirmSpec: false
-              })
-              RCSdoctorspecialty = doctorspec.data
-            }
-            else {
+                confirmSpec: false,
+              });
+              RCSdoctorspecialty = doctorspec.data;
+            } else {
               this.setState({
-                RCSdoctorspecialty: []
-              })
-              alert("No Doctors Found!")
+                RCSdoctorspecialty: [],
+              });
+              alert('No Doctors Found!');
             }
-          })
+          });
         })
-        .catch((error) => {
-          alert('Error!' + error)
-        })
-    }
-    catch (error) {
+        .catch(error => {
+          alert('Error!' + error);
+        });
+    } catch (error) {
       console.log(error);
     }
   }
 
   SearchFilterFunction(text) {
-    const newData = this.arrayholder.filter(function (item) {
+    const newData = this.arrayholder.filter(function(item) {
       //applying filter for the inserted text in search bar
-      const itemData = item.provider_name ? item.provider_name.toUpperCase() : ''.toUpperCase();
+      const itemData = item.provider_name
+        ? item.provider_name.toUpperCase()
+        : ''.toUpperCase();
       const textData = text.toUpperCase();
       return itemData.indexOf(textData) > -1;
     });
@@ -279,13 +300,15 @@ export default class ERCS2Request extends React.Component {
       search: text,
       searchTextChanged: true,
       providercode: '',
-      found: 0
+      found: 0,
     });
   }
 
   SearchIllnesFilterFunction(text) {
-    const newDataillness = this.arrayholderIllness.filter(function (item) {
-      const itemDataillness = item.illness ? item.illness.toUpperCase() : ''.toUpperCase();
+    const newDataillness = this.arrayholderIllness.filter(function(item) {
+      const itemDataillness = item.illness
+        ? item.illness.toUpperCase()
+        : ''.toUpperCase();
       const textDataillness = text.toUpperCase();
       return itemDataillness.indexOf(textDataillness) > -1;
     });
@@ -295,40 +318,25 @@ export default class ERCS2Request extends React.Component {
       dataSourceIllness: newDataillness,
       searchIllness: text,
       searchTextChanged: true,
-      foundillness: 0
+      foundillness: 0,
     });
   }
-
-  ListViewItemSeparator = () => {
-    //Item sparator view
-    return (
-      <View
-        style={{
-          height: 0.3,
-          width: '90%',
-          backgroundColor: '#080808',
-        }}
-      />
-    );
-  };
 
   provideronpress = provider => () => {
     //Item sparator view
     this.setState({
       search: provider.provider_name,
       found: 1,
-      providercode: provider.provider_code
+      providercode: provider.provider_code,
     });
-    return (
-      this.DoctorScpec()
-    );
+    return this.DoctorScpec();
   };
 
   illnessonpress = location1 => () => {
     //Item sparator view
     return (
       this._IllnessSpeciallty(),
-      this.setState({ searchIllness: location1.illness, foundillness: 1 })
+      this.setState({searchIllness: location1.illness, foundillness: 1})
     );
   };
 
@@ -340,7 +348,7 @@ export default class ERCS2Request extends React.Component {
       });
       //Validation for more than 3 file was selected
       if (results.length > 3) {
-        return alert("Cannot upload more than 3 file!")
+        return alert('Cannot upload more than 3 file!');
       }
       //Validation for total allow MB
       for (const res of results) {
@@ -352,7 +360,7 @@ export default class ERCS2Request extends React.Component {
       //   fileSize = fileSize + item.size
       // })
       //Setting the state to show multiple file attributes
-      this.setState({ multipleFile: results });
+      this.setState({multipleFile: results});
     } catch (err) {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
@@ -369,12 +377,11 @@ export default class ERCS2Request extends React.Component {
   removeFile(item) {
     const newFile = this.state.multipleFile;
     newFile.splice(item, 1);
-    this.setState({ multipleFile: newFile })
+    this.setState({multipleFile: newFile});
   }
 
   onConfirmProcedure(item) {
-
-    console.log('test', item)
+    console.log('test', item);
 
     var newList = [];
     for (var i = 0; i < item.length; i++) {
@@ -382,10 +389,10 @@ export default class ERCS2Request extends React.Component {
         procedure_id: item[i].procedure_id,
         procedure_rate: item[i].procedure_rate,
         category_name: item[i].category_name,
-        category_id: item[i].category_id
+        category_id: item[i].category_id,
       });
     }
-    this.setState({ newListofItems: newList })
+    this.setState({newListofItems: newList});
   }
 
   componentWillUnmount() {
@@ -393,234 +400,299 @@ export default class ERCS2Request extends React.Component {
   }
 
   render() {
-    const { dataSource, dataSourceIllness, proceduresData } = this.state
+    const {dataSource, dataSourceIllness, proceduresData} = this.state;
     return (
       <Container>
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle="dark-content"
-        />
-        <View>
-          <View style={styles.headerStyle}>
-            <Text style={styles.headerTitle}>Request for e-RCS 2</Text>
-            <Text style={styles.subHeader}>
-              Kindly provide all necessary information needed to request for
-              Referral Control Sheet 2 (RCS 2).
-            </Text>
-          </View>
-        </View>
-
-        <ScrollView style={styles.container}>
-          <View style={styles.formStyle}>
-            <Text style={styles.formLabel}>Choose Member</Text>
-            <Picker mode="dropdown"
-              style={{ width: undefined }}
-              placeholder="Select Member"
-              iosIcon={<Icon name="arrow-down" />}
-              placeholderStyle={{ color: '#bdc3c7' }}
-              placeholderIconColor="#007aff"
-              style={{
-                marginVertical: 5,
-                marginHorizontal: 20,
-                justifyContent: 'center',
-              }}
-              selectedValue={this.state.MembPickerValueHolder}
-              onValueChange={(modeValue, itemIndex) => this.setState({ MembPickerValueHolder: modeValue })}>
-              {this.state.Rcsmemb.map((item, key) => (
-                <Picker.Item label={item.fullname} value={item.acct} key={key} />)
-              )}
-            </Picker>
-          </View>
-          <View style={styles.formStyle}>
-            <Text style={styles.formLabel}>Choose hospital/facility</Text>
-            <SearchBar
-              round
-              lightTheme
-              searchIcon={{ size: 18 }}
-              containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
-              inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
-              inputStyle={{ fontSize: 15 }}
-              onChangeText={text => this.SearchFilterFunction(text)}
-              onClear={() => this.setState({ searchData: [], destination: '' })}
-              placeholder="Search Hospital/Provider..."
-              value={this.state.search}
-            />
-            {dataSource.length > 0 && this.state.searchTextChanged && this.state.search !== ''
-              && this.state.found === 0 ?
-              <FlatList
-                data={this.state.dataSource}
-                ItemSeparatorComponent={this.ListViewItemSeparator}
-                renderItem={({ item }) => (
-                  <View style={{ backgroundColor: '#fff', marginLeft: 14 }}>
-                    <ListItem>
-                      <TouchableOpacity onPress={this.provideronpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 14 }}>{item.provider_name}</Text>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 10 }}>{item.street},
-                   {item.subd_brgy}, {item.city}</Text>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text>
-                      </TouchableOpacity>
-                    </ListItem>
-                  </View>
-                )}
-                keyExtractor={item => item.provider_name}
-              /> : null}
-          </View>
-          {/* <View style={styles.formStyle}>
-            <Text style={styles.formLabel}>Chief complaint</Text>
-            <SearchBar
-              round
-              lightTheme
-              searchIcon={{ size: 18 }}
-              containerStyle={{ width: SCREEN_WIDTH, height: 40, backgroundColor: 'transparent', }}
-              inputContainerStyle={{ height: 34, bottom: 6, backgroundColor: 'transparent' }}
-              inputStyle={{ fontSize: 15 }}
-              onChangeText={text => this.SearchIllnesFilterFunction(text)}
-              onClear={() => this.setState({ searchData1: [], destination1: '' })}
-              placeholder="Chief Complaint..."
-              value={this.state.searchIllness}
-            />
-            {dataSourceIllness.length > 0 && this.state.searchTextChanged && this.state.searchIllness !== ''
-              && this.state.foundillness === 0 ?
-              <FlatList
-                data={this.state.dataSourceIllness}
-                ItemSeparatorComponent={this.ListViewItemSeparator}
-                renderItem={({ item }) => (
-                  <View style={{ backgroundColor: '#fff', marginLeft: 14 }}>
-                    <ListItem>
-                      <TouchableOpacity onPress={this.illnessonpress(item)}>
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.illness}</Text>
-                      </TouchableOpacity>
-                    </ListItem>
-                  </View>
-                )}
-                keyExtractor={item => item.illness}
-              /> : null}
-          </View> */}
-          <View style={styles.formStyle}>
-            <SectionedMultiSelect
-              style={styles.formLabel}
-              items={proceduresData}
-              uniqueKey="procedure_id"
-              subKey="children"
-              displayKey="procedure_name"
-              selectText="Select Procedure"
-              searchPlaceholderText="Choose Procedures"
-              showDropDowns={false}
-              showRemoveAll={true}
-              readOnlyHeadings={true}
-              onSelectedItemObjectsChange={this.onSelectedItemObjectsChange}
-              onSelectedItemsChange={this.onSelectedItemsChange}
-              selectedItems={this.state.selectedItems}
-              onConfirm={() => this.onConfirmProcedure(this.state.selectedObject)}
-            />
-          </View>
+        <ScrollView>
+          <StatusBar
+            translucent
+            backgroundColor="transparent"
+            barStyle="light-content"
+          />
           <View>
-            <Button
-              disabled={this.state.confirmSpec}
-              block rounded iconLeft
-              onPress={() => { this.setState({ visibleModal: true }) }}
-              style={{ marginVertical: 10 }}
-            >
-              <Icon
-                type="Ionicons"
-                name="md-arrow-dropdown"
-              />
-              <Text>Choose Doctor</Text>
-            </Button>
-            <View style={{ marginVertical: 10, paddingLeft: 10, alignSelf: 'center' }}>
-              <Text style={{ fontSize: 18, textAlign: 'center' }}>
-                {this.state.DoctorSpeciallty === '' ? '' : 'DR. ' + this.state.DoctorSpeciallty.firstname + ' ' + this.state.DoctorSpeciallty.lastname}</Text>
-              <Text style={styles.doctorSpecialtyTextStyle}>{this.state.DoctorSpeciallty === '' ? '' : this.state.DoctorSpeciallty.room}</Text>
-              <Text style={styles.doctorSpecialtyTextStyle}>{this.state.DoctorSpeciallty === '' ? '' : this.state.DoctorSpeciallty.schedule}</Text>
-              <Text style={styles.doctorSpecialtyTextStyle}>{this.state.DoctorSpeciallty === '' ? '' : this.state.DoctorSpeciallty.phone}</Text>
+            <View style={styles.headerStyle}>
+              <Text style={styles.subHeader}>
+                Kindly provide all necessary information needed to request for
+                Referral Control Sheet 2 (RCS 2).
+              </Text>
             </View>
-            <Modal
-              isVisible={this.state.visibleModal}
-              animationInTiming={1000}
-              animationOutTiming={1000}
-            >
-              <View style={styles.modalContainerStyle}>
-                <View style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
-                  <Button rounded transparent onPress={() => { this.setState({ visibleModal: false }) }}>
-                    <Icon
-                      type="Ionicons"
-                      name="md-close"
-                      style={{ color: '#2d2d2d' }}
-                    />
-                  </Button>
+          </View>
+          <View style={styles.divider} />
+          <View style={styles.container}>
+            <View style={styles.formStyle}>
+              <Text style={styles.formLabel}>Choose Member</Text>
+              <Picker
+                mode="dropdown"
+                iosIcon={<Icon name="arrow-down" />}
+                selectedValue={this.state.MembPickerValueHolder}
+                onValueChange={(modeValue, itemIndex) =>
+                  this.setState({MembPickerValueHolder: modeValue})
+                }>
+                {this.state.Rcsmemb.map((item, key) => (
+                  <Picker.Item
+                    label={item.fullname}
+                    value={item.acct}
+                    key={key}
+                  />
+                ))}
+              </Picker>
+            </View>
+            <View style={styles.formStyle}>
+              <Text style={styles.formLabel}>Choose hospital/facility</Text>
+              <SearchBar
+                round
+                lightTheme
+                searchIcon={{size: 18, color: '#cacaca'}}
+                containerStyle={{
+                  height: 45,
+                  marginVertical: 10,
+                  backgroundColor: '#f5f5f5',
+                  borderBottomColor: '#f5f5f5',
+                  borderTopColor: '#f5f5f5',
+                  justifyContent: 'center',
+                }}
+                inputContainerStyle={{
+                  justifyContent: 'center',
+                  height: 45,
+                  backgroundColor: 'transparent',
+                }}
+                inputStyle={{justifyContent: 'center', fontSize: 14}}
+                onChangeText={text => this.SearchFilterFunction(text)}
+                onClear={() => this.setState({searchData: [], destination: ''})}
+                placeholderTextColor="#cacaca"
+                placeholder="Hospital/provider's name..."
+                value={this.state.search}
+              />
+              {dataSource.length > 0 &&
+              this.state.searchTextChanged &&
+              this.state.search !== '' &&
+              this.state.found === 0 ? (
+                <FlatList
+                  data={this.state.dataSource}
+                  renderItem={({item}) => (
+                    <View style={{backgroundColor: '#fff'}}>
+                      <ListItem>
+                        <TouchableOpacity onPress={this.provideronpress(item)}>
+                          <Text style={{alignSelf: 'flex-start', fontSize: 14, fontWeight: 'bold', color: '#e74c3c'}}>
+                            {item.provider_name}
+                          </Text>
+                          <Text style={{alignSelf: 'flex-start', fontSize: 10, color: '#c4c4c4'}}>
+                            {item.street},{item.subd_brgy}, {item.city}
+                          </Text>
+                          <Text style={{alignSelf: 'flex-start', fontSize: 12, color: '#c4c4c4'}}>
+                            Schedule: {item.clinic_hrs}
+                          </Text>
+                        </TouchableOpacity>
+                      </ListItem>
+                    </View>
+                  )}
+                  keyExtractor={item => item.provider_name}
+                />
+              ) : null}
+            </View>
+            <View style={styles.formStyle}>
+              <SectionedMultiSelect
+                backgroundColor="#f5f5f5"
+                color="#c4c4c4"
+                items={proceduresData}
+                uniqueKey="procedure_id"
+                subKey="children"
+                displayKey="procedure_name"
+                selectText="Select Procedure"
+                searchPlaceholderText="Choose Procedures"
+                showDropDowns={false}
+                showRemoveAll={true}
+                readOnlyHeadings={true}
+                onSelectedItemObjectsChange={this.onSelectedItemObjectsChange}
+                onSelectedItemsChange={this.onSelectedItemsChange}
+                selectedItems={this.state.selectedItems}
+                onConfirm={() =>
+                  this.onConfirmProcedure(this.state.selectedObject)
+                }
+              />
+            </View>
+            <View style={styles.formStyle}>
+              <Text style={styles.formLabel}>Requesting physician</Text>
+              <Button
+                disabled={this.state.confirmSpec}
+                iconRight
+                onPress={() => {
+                  this.setState({visibleModal: true});
+                }}
+                style={{
+                  marginVertical: 10,
+                  backgroundColor: '#f5f5f5',
+                  elevation: 0,
+                  shadowOpacity: 0,
+                }}>
+                <Text style={{textTransform: 'capitalize', color: '#cacaca'}}>
+                  Choose Doctor
+                </Text>
+                <Icon
+                  type="Ionicons"
+                  name="md-arrow-dropdown"
+                  style={{color: '#2d2d2d', fontSize: 18}}
+                />
+              </Button>
+              <View style={{flexDirection: 'column', paddingHorizontal: 10}}>
+                <Text
+                  style={{
+                    alignSelf: 'flex-start',
+                    color: '#e74c3c',
+                    fontWeight: 'bold',
+                    fontSize: 14,
+                  }}>
+                  {this.state.DoctorSpeciallty === ''
+                    ? ''
+                    : 'DR. ' +
+                      this.state.DoctorSpeciallty.firstname +
+                      ' ' +
+                      this.state.DoctorSpeciallty.lastname}
+                </Text>
+                <Text style={styles.doctorSpecialtyTextStyle}>
+                  {this.state.DoctorSpeciallty === ''
+                    ? ''
+                    : 'Phone no: ' + this.state.DoctorSpeciallty.phone}
+                </Text>
+                <Text style={styles.doctorSpecialtyTextStyle}>
+                  {this.state.DoctorSpeciallty === ''
+                    ? ''
+                    : 'Room No: ' + this.state.DoctorSpeciallty.room}
+                </Text>
+                <Text style={styles.doctorSpecialtyTextStyle}>
+                  {this.state.DoctorSpeciallty === ''
+                    ? ''
+                    : 'Schedule: ' + this.state.DoctorSpeciallty.schedule}
+                </Text>
+              </View>
+              <Modal
+                isVisible={this.state.visibleModal}
+                animationInTiming={1000}
+                animationOutTiming={1000}>
+                <View style={styles.modalContainerStyle}>
+                  <View
+                    style={{backgroundColor: 'white', alignItems: 'flex-end'}}>
+                    <Button
+                      rounded
+                      transparent
+                      onPress={() => {
+                        this.setState({visibleModal: false});
+                      }}>
+                      <Icon
+                        type="Ionicons"
+                        name="md-close"
+                        style={{color: '#2d2d2d'}}
+                      />
+                    </Button>
+                  </View>
+                  <ScrollView>
+                    {this.state.RCSdoctorspecialty.map((item, key) => (
+                      <ListItem key={key}>
+                        <TouchableOpacity
+                          onPress={() => {
+                            this.setState({
+                              DoctorSpeciallty: item,
+                              visibleModal: false,
+                            });
+                          }}>
+                          <View>
+                            <Text
+                              style={{
+                                color: '#2d2d2d',
+                                fontSize: 14,
+                                color: '#e74c3c',
+                                fontWeight: 'bold',
+                                alignSelf: 'flex-start'
+                              }}>
+                              DR. {item.firstname + ' ' + item.lastname}
+                            </Text>
+                            <Text style={styles.doctorSpecialtyModalTextStyle}>
+                              {item.major_specialty}
+                            </Text>
+                            <Text style={styles.doctorSpecialtyModalTextStyle}>
+                              Room No: {item.room}
+                            </Text>
+                            <Text style={styles.doctorSpecialtyModalTextStyle}>
+                              Schedule: {item.schedule}
+                            </Text>
+                            <Text style={styles.doctorSpecialtyModalTextStyle}>
+                              Phone No: {item.phone}
+                            </Text>
+                          </View>
+                        </TouchableOpacity>
+                      </ListItem>
+                    ))}
+                  </ScrollView>
                 </View>
-                <ScrollView>
-                  {this.state.RCSdoctorspecialty.map((item, key) => (
-                    <ListItem key={key}>
-                      <TouchableOpacity onPress={() => { this.setState({ DoctorSpeciallty: item, visibleModal: false }) }}>
-                        <View>
-                          <Text style={{ color: 'black', fontSize: 15, textAlign: 'center' }}>{item.firstname + ' ' + item.lastname}</Text>
-                          <Text style={styles.doctorSpecialtyModalTextStyle}>{item.room}</Text>
-                          <Text style={styles.doctorSpecialtyModalTextStyle}>{item.major_specialty}</Text>
-                          <Text style={styles.doctorSpecialtyModalTextStyle}>{item.phone}</Text>
-                        </View>
+              </Modal>
+            </View>
+            <View style={styles.formStyle}>
+              <Card style={{borderRadius: 10, justifyContent: 'center'}}>
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  onPress={this.selectMultipleFile.bind(this)}>
+                  <CardItem style={{borderRadius: 10}}>
+                    <Body style={{alignContent: 'center'}}>
+                      <Icon
+                        type="Ionicons"
+                        name="md-attach"
+                        style={{color: '#2d2d2d', alignSelf: 'center'}}
+                      />
+                      <Text
+                        style={{
+                          color: '#2d2d2d',
+                          fontSize: 14,
+                          alignSelf: 'center',
+                        }}>
+                        Upload file/s
+                      </Text>
+                    </Body>
+                  </CardItem>
+                </TouchableOpacity>
+                <ScrollView style={{flex: 1}}>
+                  {/*Showing the data of selected Multiple files*/}
+                  {this.state.multipleFile.map((item, key) => (
+                    <View
+                      key={key}
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'space-between',
+                      }}>
+                      <Text style={styles.textStyle}>
+                        File Name: {item.name ? item.name : ''}
+                      </Text>
+                      <TouchableOpacity
+                        style={{marginTop: 5, marginRight: 10}}
+                        onPress={() => this.removeFile(key)}>
+                        <Icon
+                          type="Ionicons"
+                          name="md-close"
+                          style={{color: 'red'}}
+                        />
                       </TouchableOpacity>
-                    </ListItem>
+                    </View>
                   ))}
                 </ScrollView>
-              </View>
-            </Modal>
-          </View>
-          <View>
-            <Card style={{ borderRadius: 10, justifyContent: "center" }}>
-              <TouchableOpacity
-                activeOpacity={0.5}
-                onPress={this.selectMultipleFile.bind(this)}>
-                <CardItem style={{ borderRadius: 10 }}>
-                  <Body style={{ alignContent: 'center' }}>
-                    <Icon
-                      type="Ionicons"
-                      name="md-attach"
-                      style={{ color: '#2d2d2d', alignSelf: 'center' }}
-                    />
-                    <Text
-                      style={{
-                        color: '#2d2d2d',
-                        fontSize: 14,
-                        alignSelf: 'center',
-                      }}>
-                      Upload file/s
-                  </Text>
-                  </Body>
-                </CardItem>
-              </TouchableOpacity>
-              <ScrollView style={{ flex: 1 }}>
-                {/*Showing the data of selected Multiple files*/}
-                {this.state.multipleFile.map((item, key) => (
-                  <View key={key} style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-                    <Text style={styles.textStyle}>
-                      File Name: {item.name ? item.name : ''}
-                    </Text>
-                    <TouchableOpacity style={{ marginTop: 5, marginRight: 10 }} onPress={() => this.removeFile(key)}>
-                      <Icon type="Ionicons" name="md-close" style={{ color: 'red' }} />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </ScrollView>
-            </Card>
-          </View>
-          <View style={{ paddingVertical: 20 }}>
-            <Button
-              danger rounded
-              style={styles.buttonStyle}
-              onPress={() => {
-                this.handleSubmit();
-              }}>
-              <Text>Submit</Text>
-            </Button>
+              </Card>
+            </View>
+            <View style={{paddingVertical: 20}}>
+              <Button
+                danger
+                rounded
+                style={styles.buttonStyle}
+                onPress={() => {
+                  this.handleSubmit();
+                }}>
+                <Text>Submit</Text>
+              </Button>
+            </View>
           </View>
         </ScrollView>
-        {(this.state.isLoading) &&
+        {this.state.isLoading && (
           <View style={styles.spinnerStyle}>
-            <Spinner color={'green'} size={60} type={'Circle'} />
+            <Spinner color={'#e74c3c'} size={60} type={'ThreeBounce'} />
           </View>
-        }
+        )}
       </Container>
     );
   }
@@ -641,12 +713,11 @@ export default class ERCS2Request extends React.Component {
     // if (this.state.searchIllness === null || this.state.searchIllness === '') {
     //   return alert('Please provide complaint');
     // }
-    this.setState({ isLoading: true })
+    this.setState({isLoading: true});
     this._InsertRequest();
-  }
+  };
 
   async _InsertRequest() {
-
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
 
     let formdata = new FormData();
@@ -662,21 +733,16 @@ export default class ERCS2Request extends React.Component {
       }),
     );
 
-    const jsonproc = this.state.newListofItems
+    const jsonproc = this.state.newListofItems;
 
-    formdata.append(
-      'ercs_procedures',
-      JSON.stringify(
-        jsonproc
-      ),
-    );
+    formdata.append('ercs_procedures', JSON.stringify(jsonproc));
 
     this.state.multipleFile.forEach((item, i) => {
       var num = i + 1;
-      formdata.append("prescription" + num, {
+      formdata.append('prescription' + num, {
         uri: item.uri,
         type: item.type,
-        name: item.name
+        name: item.name,
       });
     });
 
@@ -686,8 +752,8 @@ export default class ERCS2Request extends React.Component {
         {
           method: 'POST',
           headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'multipart/form-data'
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data',
           },
           body: formdata,
         },
@@ -695,32 +761,29 @@ export default class ERCS2Request extends React.Component {
       let respJson = await resp.json();
 
       if (respJson.is_success === true) {
+        let tmprcs2Num = respJson.data.ercsno;
 
-        let tmprcs2Num = respJson.data.ercsno
-
-        global.rcs2Num = tmprcs2Num
-        this.setState({ isLoading: false })
+        global.rcs2Num = tmprcs2Num;
+        this.setState({isLoading: false});
         this.props.navigation.dispatch(resetAction);
+      } else {
+        alert(respJson.error_message);
+        this.setState({isLoading: false});
       }
-      else {
-        alert(respJson.error_message)
-        this.setState({ isLoading: false })
-      }
-    }
-    catch (error) {
+    } catch (error) {
       console.log(error);
     }
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
-    paddingHorizontal: 20
+    paddingHorizontal: 20,
   },
   headerStyle: {
-    height: 150,
+    height: 90,
     justifyContent: 'center',
     paddingHorizontal: 20,
   },
@@ -731,6 +794,7 @@ const styles = StyleSheet.create({
   },
   subHeader: {
     color: '#6d6e72',
+    fontSize: 14,
   },
   formInput: {
     backgroundColor: '#f5f5f5',
@@ -738,17 +802,17 @@ const styles = StyleSheet.create({
     // marginHorizontal: 20,
   },
   formLabel: {
-    marginHorizontal: 20,
     marginBottom: 5,
     color: '#6d6e72',
   },
   formStyle: {
-    marginVertical: 10,
+    marginTop: 20,
+    marginBottom: 10,
   },
   removeButton: {
-    flexDirection: "row",
+    flexDirection: 'row',
     flex: 1,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   buttonStyle: {
     justifyContent: 'center',
@@ -759,15 +823,14 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     marginLeft: 10,
     color: 'black',
-    width: '90%'
+    width: '90%',
   },
   spinnerStyle: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.5,
-    backgroundColor: 'black',
+    backgroundColor: '#ffff',
     left: 0,
     right: 0,
     top: 0,
@@ -779,16 +842,20 @@ const styles = StyleSheet.create({
     // marginLeft: 10,
     borderRadius: 10,
     backgroundColor: 'white',
-    padding: 10
+    padding: 10,
   },
   doctorSpecialtyModalTextStyle: {
-    color: 'silver',
+    color: '#cacaca',
     fontSize: 12,
-    textAlign: 'center'
+    alignSelf: 'flex-start',
   },
   doctorSpecialtyTextStyle: {
-    color: 'silver',
+    color: '#cacaca',
     fontSize: 12,
-    textAlign: 'center'
-  }
+    alignSelf: 'flex-start',
+  },
+  divider: {
+    borderBottomWidth: 0.5,
+    borderBottomColor: '#f5f5f5',
+  },
 });

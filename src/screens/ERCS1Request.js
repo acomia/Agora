@@ -104,24 +104,27 @@ export default class ERCS1Request extends React.Component {
             console.log('member', responseJson.data);
           }
           this.setState({
-            Rcsmemb: responseJson.data
-          })
-          Rcsmemb = responseJson.data
-          this.state.acctno = this.state.Rcsmemb[0].acct
-        })
+            Rcsmemb: responseJson.data,
+          });
+          Rcsmemb = responseJson.data;
+          this.state.acctno = this.state.Rcsmemb[0].acct;
+        });
       })
-      .catch((error) => {
-        alert('Error!' + error)
-      })
-    // available consultype 
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-      }
-    })
-      .then((response) => {
-        response.json().then((consulttype) => {
+      .catch(error => {
+        alert('Error!' + error);
+      });
+    // available consultype
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(consulttype => {
           this.setState({
             RCSconsultype: consulttype.data,
           });
@@ -192,15 +195,18 @@ export default class ERCS1Request extends React.Component {
   async _IllnessSpeciallty() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     // gathering the illness specialty
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty', {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        'illness': this.state.searchIllness
-      }
-    })
-      .then((response) => {
-        response.json().then((illnessSpec) => {
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          illness: this.state.searchIllness,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(illnessSpec => {
           this.setState({
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
@@ -408,9 +414,9 @@ export default class ERCS1Request extends React.Component {
 
   buttonEnable = () => {
     this.setState({
-      confirm: false
-    })
-  }
+      confirm: false,
+    });
+  };
   illnessonpress = location1 => () => {
     //Item sparator view
 
@@ -445,7 +451,6 @@ export default class ERCS1Request extends React.Component {
             <Picker
               mode="dropdown"
               iosIcon={<Icon name="arrow-down" />}
-              inputContainerStyle={{color: '#cacaca'}}
               defaultValue={this.state.MembPickerValueHolder.acct}
               selectedValue={this.state.MembPickerValueHolder}
               onValueChange={(modeValue, itemIndex) => {
@@ -454,8 +459,7 @@ export default class ERCS1Request extends React.Component {
                 this.setState({
                   acctno: modeValue,
                 });
-              }}
-              inputStyle={{color: '#cacaca'}}>
+              }}>
               {this.state.Rcsmemb.map((item, key) => (
                 <Picker.Item
                   label={item.fullname}
@@ -492,7 +496,6 @@ export default class ERCS1Request extends React.Component {
               round
               searchIcon={{size: 18, color: '#cacaca'}}
               containerStyle={{
-                width: SCREEN_WIDTH,
                 height: 45,
                 marginVertical: 10,
                 backgroundColor: '#f5f5f5',
@@ -599,8 +602,9 @@ export default class ERCS1Request extends React.Component {
                   <View style={{backgroundColor: '#fff'}}>
                     <ListItem>
                       <TouchableOpacity onPress={this.illnessonpress(item)}>
-
-                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.illness}</Text>
+                        <Text style={{alignSelf: 'flex-start', fontSize: 15}}>
+                          {item.illness}
+                        </Text>
 
                         {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
@@ -716,7 +720,7 @@ export default class ERCS1Request extends React.Component {
                           <Text
                             style={{
                               color: '#5fb650',
-                              fontSize: 15,
+                              fontSize: 14,
                               fontWeight: 'bold',
                               alignSelf: 'flex-start',
                             }}>
@@ -815,7 +819,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 5,
     color: '#2d3436',
     fontWeight: 'bold',
-    fontSize: 12
+    fontSize: 12,
   },
   formStyle: {
     marginVertical: 10,

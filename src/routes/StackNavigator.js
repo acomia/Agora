@@ -270,16 +270,16 @@ AppStack = createStackNavigator({
   ERCS2RequestPage: {
     screen: ERCS2Request,
     navigationOptions: {
-      title: '',
+      title: 'Request for e-RCS2',
       headerStyle: {
-        backgroundColor: '#fff',
+        backgroundColor: '#e74c3c',
         elevation: 0,
         shadowOpacity: 0,
         borderBottomWidth: 0,
         paddingTop: 20,
         height: 80,
       },
-      headerTintColor: '#2d2d2d',
+      headerTintColor: '#fff',
     },
   },
   ERCS2LandingPage: {
