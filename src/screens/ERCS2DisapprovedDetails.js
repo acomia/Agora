@@ -26,14 +26,8 @@ import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import { StackActions, NavigationActions } from 'react-navigation';
 
-
-
-
-
 export default class ERCS2DisapprovedDetails extends React.Component {
-  
   render() {
-
     const { navigation } = this.props;
     let status = navigation.getParam('status', '');
     let appvdby = navigation.getParam('appvdby', '');
@@ -50,7 +44,7 @@ export default class ERCS2DisapprovedDetails extends React.Component {
           <List>
             <ListItem noIndent>
               <Left style={{flex: 2}}>
-                <Text>{status === 'A' || status === 'C' ? 'Approved by' : 'Disapproved by'}</Text>
+                <Text>Disapproved by</Text>
               </Left>
               <Right style={{flex: 3}}>
                 <Text note>{appvdby}</Text>
@@ -58,7 +52,7 @@ export default class ERCS2DisapprovedDetails extends React.Component {
             </ListItem>
             <ListItem noIndent>
               <Left style={{flex: 2}}>
-                <Text>{status === 'A' || status === 'C'  ? 'Approved at' : 'Disapproved at'}</Text>
+                <Text>Disapproved at</Text>
               </Left>
               <Right style={{flex: 3}}>
                 <Text note>{appvddate}</Text>
@@ -66,7 +60,7 @@ export default class ERCS2DisapprovedDetails extends React.Component {
             </ListItem>
             <ListItem noIndent>
               <View style={{flexDirection: 'column'}}>
-                <Text>{status === 'A' || status === 'C' ? '' : 'Reason of Disapproval'}</Text>
+                <Text>Reason of Disapproval</Text>
                 <Text note>{remarks}</Text>
               </View>
             </ListItem>

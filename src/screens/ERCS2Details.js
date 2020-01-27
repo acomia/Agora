@@ -48,7 +48,6 @@ export default class ERCS2Details extends React.Component {
       dataProcSource: [],
       dataDocSource: [],
       rcsnum2: '',
-      confirm: true,
       visibleModal: false
     }
   }
@@ -282,6 +281,7 @@ export default class ERCS2Details extends React.Component {
     const { StatusApproved, StatusCancelled, StatusOthers } = styles
     var xstatus = this.state.dataSource.status
     var statusStyle = ''
+    var statRemarks = ''
     switch (xstatus)     // Passing the variable to switch condition
     {
       case "A":
@@ -290,6 +290,7 @@ export default class ERCS2Details extends React.Component {
         break;
       case "D":
         xstatus = 'DisApproved'
+        statRemarks = 'Request had been DisApproved'
         statusStyle = StatusOthers
         break;
       case "W":
@@ -298,6 +299,7 @@ export default class ERCS2Details extends React.Component {
         break;
       case "C":
         xstatus = 'Cancelled'
+        statRemarks = 'Cancelled by you'
         statusStyle = StatusCancelled
         break;
       default:
@@ -331,7 +333,7 @@ export default class ERCS2Details extends React.Component {
                   name="check-circle"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.approval_code}</Text>
+                <Text style={styles.textRcsDetails}>{xstatus === 'Cancelled' ? 'N/A' : this.state.dataSource.approval_code}</Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon
@@ -357,7 +359,7 @@ export default class ERCS2Details extends React.Component {
                   name="clock"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.validity_date === '' ? 'N/A' : moment(this.state.dataSource.validity_date).format('L')}</Text>
+                <Text style={styles.textRcsDetails}>{xstatus === 'Cancelled' ? 'N/A' : this.state.dataSource.validity_date === '' ? 'N/A' : moment(this.state.dataSource.validity_date).format('L')}</Text>
               </View>
             </View>
             <View style={{ flexDirection: 'row' }}>
@@ -398,55 +400,38 @@ export default class ERCS2Details extends React.Component {
                 </Right>
               </View>
             </View> */}
-
-            <View>
-              <View style={styles.divider} />
-              <View style={{flexDirection: 'row'}}>
-                <Left style={{marginHorizontal: 20}}>
-                  <Text note>Request had been disapproved</Text>
-                </Left>
-                <Right style={{alignSelf: 'flex-end'}}>
-                  <Button
-                    light
-                    style={{margin: 10, elevation: 0, shadowOpacity: 0}}
-                    onPress={() =>
-                      this.props.navigation.navigate('ERCS2CancelDetailsPage')
-                    }>
-                    <Text style={styles.buttonChangeDetails}>
-                      Check Details
+            {xstatus === 'Approved' || xstatus === 'Pending' ? null :
+              <View>
+                <View style={styles.divider} />
+                <View style={{ flexDirection: 'row' }}>
+                  <Left style={{ marginHorizontal: 20 }}>
+                    <Text note>{statRemarks}</Text>
+                  </Left>
+                  <Right style={{ alignSelf: 'flex-end' }}>
+                    <Button
+                      light
+                      style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
+                      onPress={() => {
+                        xstatus === 'Cancelled' ?
+                          this.props.navigation.navigate('ERCS2CancelDetailsPage') :
+                          this.props.navigation.navigate(
+                            'ERCS2DisapprovedDetailsPage',
+                            {
+                              status: this.state.dataSource.status,
+                              appvdby: this.state.dataSource.approve_by,
+                              appvddate: this.state.dataSource.approve_date,
+                              remarks: this.state.dataSource.remarks
+                            }
+                          )
+                      }
+                      }>
+                      <Text style={styles.buttonChangeDetails}>
+                        Check Details
                     </Text>
-                  </Button>
-                </Right>
-              </View>
-            </View>
-            <View>
-              <View style={styles.divider} />
-              <View style={{ flexDirection: 'row' }}>
-                <Left style={{ marginHorizontal: 20 }}>
-                  <Text note>Request had been  {xstatus}</Text>
-                </Left>
-                <Right style={{ alignSelf: 'flex-end' }}>
-                  <Button
-                    light
-                    style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
-                    onPress={() =>
-                      this.props.navigation.navigate(
-                        'ERCS2DisapprovedDetailsPage',
-                        {
-                          status: this.state.dataSource.status,
-                          appvdby: this.state.dataSource.approve_by,
-                          appvddate: this.state.dataSource.approve_date,
-                          remarks: this.state.dataSource.remarks
-                        }
-                      )
-                    }>
-                    <Text style={styles.buttonChangeDetails}>
-                      Check Details
-                    </Text>
-                  </Button>
-                </Right>
-              </View>
-            </View>
+                    </Button>
+                  </Right>
+                </View>
+              </View>}
           </View>
           <View style={styles.viewOtherDetails}>
             <Text style={styles.cardTitle}>APPROVED PROCEDURES</Text>
@@ -457,8 +442,9 @@ export default class ERCS2Details extends React.Component {
                 renderItem={({ item }) =>
                   <View style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
                     {item.status === 'A' || item.status === 'W' ?
-                      <Text style={{ color: '#c4c4c4', borderWidth: 0.7, borderRadius: 6, borderColor: 'silver', backgroundColor: '#f5f5f5', padding: 5, }}>
-                        {item.procedure_name}</Text> : null}
+                      <Text style={styles.procedureListTextStyle}>{item.procedure_name}</Text> :
+                      null
+                    }
                   </View>
                 }
                 keyExtractor={item => item.procedure_id}
@@ -474,8 +460,9 @@ export default class ERCS2Details extends React.Component {
                 renderItem={({ item }) =>
                   <View style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
                     {item.status === 'D' ?
-                      <Text style={{ color: '#c4c4c4', borderWidth: 0.7, borderRadius: 6, borderColor: 'silver', backgroundColor: '#f5f5f5', padding: 5, }}>
-                        {item.procedure_name}</Text> : null}
+                      <Text style={styles.procedureListTextStyle}>{item.procedure_name}</Text> :
+                      null
+                    }
                   </View>
                 }
                 keyExtractor={item => item.procedure_id}
@@ -527,15 +514,17 @@ export default class ERCS2Details extends React.Component {
             </View>
           </View>
           <View style={styles.viewButton}>
-            <Button disabled={this.state.dataSource.status === 'A' ? false : true}
-              iconLeft block rounded info style={styles.buttonSend}
+            <Button
+              disabled={xstatus === 'Approved' ? false : true} block rounded iconLeft
+              style={xstatus === 'Approved' ? [styles.buttonSend, { backgroundColor: '#5DADE2' }] : styles.buttonSend}
               onPress={() => this._sendemail()}>
               <Icon type="FontAwesome" name="send-o" />
               <Text>Send to e-mail</Text>
             </Button>
             <Button
-              disabled={this.state.dataSource.status === 'A' ? false : true}
-              danger block rounded iconLeft
+              disabled={xstatus === 'Approved' ? false : true} 
+              block rounded iconLeft
+              style={xstatus === 'Approved' ? styles.buttonCancel : null}
               onPress={() => { this.setState({ visibleModal: true }) }}>
               <Icon type="MaterialCommunityIcons" name="cancel" />
               <Text>Cancel this Request</Text>
@@ -613,6 +602,9 @@ const styles = StyleSheet.create({
   buttonSend: {
     marginBottom: 20,
   },
+  buttonCancel: {
+    backgroundColor: 'red'
+  },
   viewButton: {
     margin: 20,
   },
@@ -688,5 +680,13 @@ const styles = StyleSheet.create({
     color: '#5fb650',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  procedureListTextStyle: {
+    color: '#c4c4c4',
+    borderWidth: 0.7,
+    borderRadius: 6,
+    borderColor: 'silver',
+    backgroundColor: '#f5f5f5',
+    padding: 5
   }
 });
