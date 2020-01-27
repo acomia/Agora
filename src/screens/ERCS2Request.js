@@ -2,12 +2,7 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  ActivityIndicator,
   StatusBar,
-  TouchableNativeFeedback,
-  Modal,
-  TouchableHighlight,
-  Alert,
   Picker,
   Dimensions,
   FlatList,
@@ -39,6 +34,7 @@ import { SearchBar } from 'react-native-elements'
 import Spinner from 'react-native-spinkit'
 import DocumentPicker from 'react-native-document-picker';
 import { StackActions, NavigationActions } from 'react-navigation';
+import Modal from 'react-native-modal'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
@@ -48,42 +44,6 @@ const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   actions: [NavigationActions.navigate({ routeName: 'ERCS2SuccessPage' })],
 });
-
-
-// const items = [
-//   // this is the parent or 'item'
-//   {
-//     name: 'Procedures',
-//     id: 0,
-//     // these are the children or 'sub items'
-//     children: [
-//       {
-//         name: 'Apple',
-//         id: 10,
-//       },
-//       {
-//         name: 'Strawberry',
-//         id: 17,
-//       },
-//       {
-//         name: 'Pineapple',
-//         id: 13,
-//       },
-//       {
-//         name: 'Banana',
-//         id: 14,
-//       },
-//       {
-//         name: 'Watermelon',
-//         id: 15,
-//       },
-//       {
-//         name: 'Kiwi fruit',
-//         id: 16,
-//       },
-//     ],
-//   },
-// ];
 
 export default class ERCS2Request extends React.Component {
   _isMounted = false;
@@ -112,7 +72,8 @@ export default class ERCS2Request extends React.Component {
       DoctorSpeciallty: '',
       RCSdoctorspecialty: [],
       proceduresData: [],
-      newListofItems: []
+      newListofItems: [],
+      confirmSpec: true
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -123,8 +84,6 @@ export default class ERCS2Request extends React.Component {
   };
 
   onSelectedItemObjectsChange = (selectedObject) => {
-
-
     this.setState({ selectedObject })
 
     var newList = [];
@@ -136,10 +95,7 @@ export default class ERCS2Request extends React.Component {
         category_id: selectedObject[i].category_id
       });
     }
-
     this.setState({ newListofItems: newList })
-    console.log('deleted', newList)
-
   }
 
   async componentDidMount() {
@@ -185,6 +141,7 @@ export default class ERCS2Request extends React.Component {
             dataSource: provider.data,
           })
           this.arrayholder = provider.data
+          
         })
       })
       .catch((error) => {
@@ -240,6 +197,7 @@ export default class ERCS2Request extends React.Component {
   }
 
   async _IllnessSpeciallty() {
+    this.setState({ isLoading: true })
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty', {
       method: 'GET',
@@ -266,21 +224,15 @@ export default class ERCS2Request extends React.Component {
   }
 
   async DoctorScpec() {
-
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let specname = await this.state.dataSourceIllnessSpec.specialty_name
-
-    console.log(token);
-    console.log(this.state.providercode);
-    console.log('specname', specname);
-
     try {
-      fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=', {
+      fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/doctors?name=', {
         method: 'GET',
         headers: {
           'Authorization': 'Bearer ' + token,
-          'HospitalCode': this.state.providercode,
-          'Specialty': specname
+          'Hospital': this.state.providercode,
+         // 'Specialty': specname
         },
         params: {
           'name': '',
@@ -291,6 +243,8 @@ export default class ERCS2Request extends React.Component {
             if (doctorspec.data != null) {
               this.setState({
                 RCSdoctorspecialty: doctorspec.data,
+                isLoading: false,
+                confirmSpec: false
               })
               RCSdoctorspecialty = doctorspec.data
             }
@@ -360,12 +314,13 @@ export default class ERCS2Request extends React.Component {
 
   provideronpress = provider => () => {
     //Item sparator view
+    this.setState({
+      search: provider.provider_name,
+      found: 1,
+      providercode: provider.provider_code
+    });
     return (
-      this.setState({
-        search: provider.provider_name,
-        found: 1,
-        providercode: provider.provider_code
-      })
+      this.DoctorScpec()
     );
   };
 
@@ -430,10 +385,7 @@ export default class ERCS2Request extends React.Component {
         category_id: item[i].category_id
       });
     }
-
     this.setState({ newListofItems: newList })
-    console.log('updated', newList)
-
   }
 
   componentWillUnmount() {
@@ -443,7 +395,7 @@ export default class ERCS2Request extends React.Component {
   render() {
     const { dataSource, dataSourceIllness, proceduresData } = this.state
     return (
-      <Container style={{ display: 'flex' }}>
+      <Container>
         <StatusBar
           translucent
           backgroundColor="transparent"
@@ -514,9 +466,7 @@ export default class ERCS2Request extends React.Component {
                 keyExtractor={item => item.provider_name}
               /> : null}
           </View>
-
-
-          <View style={styles.formStyle}>
+          {/* <View style={styles.formStyle}>
             <Text style={styles.formLabel}>Chief complaint</Text>
             <SearchBar
               round
@@ -544,9 +494,9 @@ export default class ERCS2Request extends React.Component {
                     </ListItem>
                   </View>
                 )}
-                keyExtractor={item => item.provider_name}
+                keyExtractor={item => item.illness}
               /> : null}
-          </View>
+          </View> */}
           <View style={styles.formStyle}>
             <SectionedMultiSelect
               style={styles.formLabel}
@@ -565,29 +515,58 @@ export default class ERCS2Request extends React.Component {
               onConfirm={() => this.onConfirmProcedure(this.state.selectedObject)}
             />
           </View>
-          <View style={styles.formStyle}>
-            <Text style={styles.formLabel}>Choose doctor</Text>
-            <Picker mode="dropdown"
-              style={{ width: undefined }}
-              iosIcon={<Icon name="arrow-down" />}
-              placeholderStyle={{ color: '#bdc3c7' }}
-              placeholderIconColor="#007aff"
-              style={{
-                marginVertical: 10,
-                marginHorizontal: 20,
-                justifyContent: 'center',
-              }}
-              selectedValue={this.state.DoctorSpeciallty}
-              onValueChange={(modeValue, itemIndex) => {
-                this.setState({ DoctorSpeciallty: modeValue })
-                  ; console.log('pciker', modeValue)
-              }}>
-              {this.state.RCSdoctorspecialty.map((item, key) => (
-                <Picker.Item label={item.firstname + ' ' + item.lastname} value={item} key={key} />)
-              )}
-            </Picker>
+          <View>
+            <Button
+              disabled={this.state.confirmSpec}
+              block rounded iconLeft
+              onPress={() => { this.setState({ visibleModal: true }) }}
+              style={{ marginVertical: 10 }}
+            >
+              <Icon
+                type="Ionicons"
+                name="md-arrow-dropdown"
+              />
+              <Text>Choose Doctor</Text>
+            </Button>
+            <View style={{ marginVertical: 10, paddingLeft: 10, alignSelf: 'center' }}>
+              <Text style={{ fontSize: 18, textAlign: 'center' }}>
+                {this.state.DoctorSpeciallty === '' ? '' : 'DR. ' + this.state.DoctorSpeciallty.firstname + ' ' + this.state.DoctorSpeciallty.lastname}</Text>
+              <Text style={styles.doctorSpecialtyTextStyle}>{this.state.DoctorSpeciallty === '' ? '' : this.state.DoctorSpeciallty.room}</Text>
+              <Text style={styles.doctorSpecialtyTextStyle}>{this.state.DoctorSpeciallty === '' ? '' : this.state.DoctorSpeciallty.schedule}</Text>
+              <Text style={styles.doctorSpecialtyTextStyle}>{this.state.DoctorSpeciallty === '' ? '' : this.state.DoctorSpeciallty.phone}</Text>
+            </View>
+            <Modal
+              isVisible={this.state.visibleModal}
+              animationInTiming={1000}
+              animationOutTiming={1000}
+            >
+              <View style={styles.modalContainerStyle}>
+                <View style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
+                  <Button rounded transparent onPress={() => { this.setState({ visibleModal: false }) }}>
+                    <Icon
+                      type="Ionicons"
+                      name="md-close"
+                      style={{ color: '#2d2d2d' }}
+                    />
+                  </Button>
+                </View>
+                <ScrollView>
+                  {this.state.RCSdoctorspecialty.map((item, key) => (
+                    <ListItem key={key}>
+                      <TouchableOpacity onPress={() => { this.setState({ DoctorSpeciallty: item, visibleModal: false }) }}>
+                        <View>
+                          <Text style={{ color: 'black', fontSize: 15, textAlign: 'center' }}>{item.firstname + ' ' + item.lastname}</Text>
+                          <Text style={styles.doctorSpecialtyModalTextStyle}>{item.room}</Text>
+                          <Text style={styles.doctorSpecialtyModalTextStyle}>{item.major_specialty}</Text>
+                          <Text style={styles.doctorSpecialtyModalTextStyle}>{item.phone}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    </ListItem>
+                  ))}
+                </ScrollView>
+              </View>
+            </Modal>
           </View>
-
           <View>
             <Card style={{ borderRadius: 10, justifyContent: "center" }}>
               <TouchableOpacity
@@ -645,10 +624,9 @@ export default class ERCS2Request extends React.Component {
       </Container>
     );
   }
-  
+
   handleSubmit = () => {
-  
-    if ( this.state.newListofItems === null) {
+    if (this.state.newListofItems === null) {
       return alert('Please atleast one(1) procedure');
     }
 
@@ -656,30 +634,27 @@ export default class ERCS2Request extends React.Component {
       return alert('Please provide atleast one(1) document');
     }
 
-    if (this.state.DoctorSpeciallty.doctor_code  === null) {
+    if (this.state.DoctorSpeciallty.doctor_code === null) {
       return alert('Please choose a doctor');
     }
 
-    if (this.state.searchIllness === null || this.state.searchIllness === '') {
-      return alert('Please provide complaint');
-    }
-   
+    // if (this.state.searchIllness === null || this.state.searchIllness === '') {
+    //   return alert('Please provide complaint');
+    // }
+    this.setState({ isLoading: true })
     this._InsertRequest();
   }
 
-
-
-
   async _InsertRequest() {
-    
+
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
 
     let formdata = new FormData();
-  
+
     formdata.append(
       'ercs_details',
       JSON.stringify({
-        acctno:  this.state.MembPickerValueHolder,
+        acctno: this.state.MembPickerValueHolder,
         ercs1no: 'WITHOUT eRCS1',
         doctor_code: this.state.DoctorSpeciallty.doctor_code,
         hospital_code: this.state.providercode,
@@ -687,28 +662,23 @@ export default class ERCS2Request extends React.Component {
       }),
     );
 
- 
-  const jsonproc =  this.state.newListofItems
-  
-  console.log(jsonproc)
-  formdata.append(
-    'ercs_procedures',
-    JSON.stringify(
-      jsonproc
-    ),
-  );
-  
-  this.state.multipleFile.forEach((item, i) => {
-    var num = i+1 ;
-    formdata.append("prescription"+num, {
-      uri: item.uri,
-      type: item.type,
-      name: item.name
+    const jsonproc = this.state.newListofItems
+
+    formdata.append(
+      'ercs_procedures',
+      JSON.stringify(
+        jsonproc
+      ),
+    );
+
+    this.state.multipleFile.forEach((item, i) => {
+      var num = i + 1;
+      formdata.append("prescription" + num, {
+        uri: item.uri,
+        type: item.type,
+        name: item.name
+      });
     });
-  });
-   
-    
-    console.log(formdata)
 
     try {
       let resp = await fetch(
@@ -722,30 +692,25 @@ export default class ERCS2Request extends React.Component {
           body: formdata,
         },
       );
-      console.log(resp)
       let respJson = await resp.json();
-      
+
       if (respJson.is_success === true) {
 
-        let tmprcs2Num = respJson.data.ercsno 
-        
-        global.rcs2Num = tmprcs2Num
+        let tmprcs2Num = respJson.data.ercsno
 
+        global.rcs2Num = tmprcs2Num
+        this.setState({ isLoading: false })
         this.props.navigation.dispatch(resetAction);
       }
       else {
         alert(respJson.error_message)
+        this.setState({ isLoading: false })
       }
-
-      console.log(respJson);
     }
     catch (error) {
       console.log(error);
     }
   }
-
-
-
 }
 
 export const { width, height } = Dimensions.get('window');
@@ -773,7 +738,8 @@ const styles = StyleSheet.create({
     // marginHorizontal: 20,
   },
   formLabel: {
-     marginHorizontal: 20,
+    marginHorizontal: 20,
+    marginBottom: 5,
     color: '#6d6e72',
   },
   formStyle: {
@@ -800,11 +766,29 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.2,
+    opacity: 0.5,
     backgroundColor: 'black',
     left: 0,
     right: 0,
     top: 0,
     bottom: 0,
   },
+  modalContainerStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    // marginLeft: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    padding: 10
+  },
+  doctorSpecialtyModalTextStyle: {
+    color: 'silver',
+    fontSize: 12,
+    textAlign: 'center'
+  },
+  doctorSpecialtyTextStyle: {
+    color: 'silver',
+    fontSize: 12,
+    textAlign: 'center'
+  }
 });
