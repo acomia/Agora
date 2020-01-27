@@ -104,33 +104,24 @@ export default class ERCS1Request extends React.Component {
             console.log('member', responseJson.data);
           }
           this.setState({
-            Rcsmemb: responseJson.data,
-          });
-          Rcsmemb = responseJson.data;
-          this.state.acctno = this.state.Rcsmemb[0].acct;
-          console.log('rcsmembacctno1', this.state.Rcsmemb[0]);
-          console.log('rcsmembacctno', this.state.acctno);
-          // this.arrayholder = responseJson.data
-        });
+            Rcsmemb: responseJson.data
+          })
+          Rcsmemb = responseJson.data
+          this.state.acctno = this.state.Rcsmemb[0].acct
+        })
       })
-      .catch(error => {
-        alert('Error!' + error);
-      });
-    // available consultype
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    )
-      .then(response => {
-        response.json().then(consulttype => {
-          {
-            console.log('RCSconsultype', consulttype.data);
-          }
+      .catch((error) => {
+        alert('Error!' + error)
+      })
+    // available consultype 
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+      }
+    })
+      .then((response) => {
+        response.json().then((consulttype) => {
           this.setState({
             RCSconsultype: consulttype.data,
           });
@@ -201,20 +192,15 @@ export default class ERCS1Request extends React.Component {
   async _IllnessSpeciallty() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     // gathering the illness specialty
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          illness: this.state.searchIllness,
-        },
-      },
-    )
-      .then(response => {
-        response.json().then(illnessSpec => {
-          console.log('illness', illnessSpec);
-          console.log('basicillness', this.state.searchIllness);
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty', {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        'illness': this.state.searchIllness
+      }
+    })
+      .then((response) => {
+        response.json().then((illnessSpec) => {
           this.setState({
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
@@ -302,7 +288,8 @@ export default class ERCS1Request extends React.Component {
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
-    let specname = await this.state.dataSourceIllnessSpec.specialty_name;
+    let specname = await this.state.searchIllness;
+    //let specname = await this.state.dataSourceIllnessSpec.specialty_name
     // submit to save record
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/submit',
@@ -421,9 +408,9 @@ export default class ERCS1Request extends React.Component {
 
   buttonEnable = () => {
     this.setState({
-      confirm: false,
-    });
-  };
+      confirm: false
+    })
+  }
   illnessonpress = location1 => () => {
     //Item sparator view
 
@@ -612,9 +599,10 @@ export default class ERCS1Request extends React.Component {
                   <View style={{backgroundColor: '#fff'}}>
                     <ListItem>
                       <TouchableOpacity onPress={this.illnessonpress(item)}>
-                        <Text style={{alignSelf: 'flex-start', fontSize: 15}}>
-                          {item.illness}
-                        </Text>
+
+                        <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>{item.illness}</Text>
+
+                        {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                       </TouchableOpacity>
                     </ListItem>
                   </View>
