@@ -114,7 +114,7 @@ export default class ERCS1Success extends React.Component {
           <Text style={styles.subHeader1}>
             We have sent your Referral Control Sheet 1 (RCS 1) form to your
             registered e-mail address. You may print and present it to your
-            chosen facility to avail your consultation.
+            chosen facility and avail your consultation.
           </Text>
         </View>
         <View style={styles.viewButton}>

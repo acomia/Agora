@@ -399,6 +399,27 @@ export default class ERCS2Details extends React.Component {
                 </Right>
               </View>
             </View> */}
+
+            <View>
+              <View style={styles.divider} />
+              <View style={{flexDirection: 'row'}}>
+                <Left style={{marginHorizontal: 20}}>
+                  <Text note>Request had been disapproved</Text>
+                </Left>
+                <Right style={{alignSelf: 'flex-end'}}>
+                  <Button
+                    light
+                    style={{margin: 10, elevation: 0, shadowOpacity: 0}}
+                    onPress={() =>
+                      this.props.navigation.navigate('ERCS2CancelDetailsPage')
+                    }>
+                    <Text style={styles.buttonChangeDetails}>
+                      Check Details
+                    </Text>
+                  </Button>
+                </Right>
+              </View>
+            </View>
             <View>
               <View style={styles.divider} />
               <View style={{flexDirection: 'row'}}>

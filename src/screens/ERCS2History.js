@@ -32,7 +32,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -43,19 +43,18 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'ERCS2LandingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'ERCS2LandingPage'})],
 });
 
 export default class ERCS2History extends React.Component {
-
   constructor(props) {
-    super(props)
-    global.storeToken = ''
+    super(props);
+    global.storeToken = '';
     this.state = {
       isLoading: false,
       dataSource: [],
       membacctnum: '',
-    }
+    };
   }
 
   onLogout() {
@@ -80,26 +79,29 @@ export default class ERCS2History extends React.Component {
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     this.setState({
       isLoading: true,
-      membacctnum: membacct
-    })
+      membacctnum: membacct,
+    });
 
-    
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' + membacct , {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        // 'paramContract': '1',
-        // 'Content-Type': 'application/json;charset=UTF-8'
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' +
+        membacct,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          // 'paramContract': '1',
+          // 'Content-Type': 'application/json;charset=UTF-8'
+        },
+        params: {
+          acct: membacct,
+        },
       },
-      params:{
-        'acct': membacct
-      }
-    })
-      .then((response) => {
-        response.json().then((responseJson) => {
-          console.log('rcshist', responseJson)
+    )
+      .then(response => {
+        response.json().then(responseJson => {
+          console.log('rcshist', responseJson);
           if (responseJson.data != null) {
-            console.log('rcshistory', responseJson)
+            console.log('rcshistory', responseJson);
             this.setState({
               isLoading: false,
               dataSource: responseJson.data,
@@ -107,122 +109,120 @@ export default class ERCS2History extends React.Component {
           } else {
             if (responseJson.error_message == 'No RCS Transaction Found!') {
               //this.showAlert();
-              alert('No RCS Transaction found!')
-              this.setState({ isLoading: false })
+              alert('No RCS Transaction found!');
+              this.setState({isLoading: false});
 
-              this.props.navigation.navigate('Dashboard')
+              this.props.navigation.navigate('Dashboard');
             }
           }
 
           if (responseJson == 'Invalid Access Token') {
-            console.log('invalidToken', responseJson)
-            alert('Session Expired')
+            console.log('invalidToken', responseJson);
+            alert('Session Expired');
             this.onLogout();
           }
-        })
+        });
       })
-      .catch((error) => {
-        alert('Unable to connect to server' + error)
-      })
+      .catch(error => {
+        alert('Unable to connect to server' + error);
+      });
   }
 
-
-  renderItem = ({ item }) => {
-    var xstatus = item.status
-    switch (xstatus)     // Passing the variable to switch condition
-    {
-      case "A":
-        xstatus = 'Approved'
+  renderItem = ({item}) => {
+    var xstatus = item.status;
+    switch (
+      xstatus // Passing the variable to switch condition
+    ) {
+      case 'A':
+        xstatus = 'Approved';
         break;
-      case "D":
-        xstatus = 'DisApproved'
+      case 'D':
+        xstatus = 'DisApproved';
         break;
-      case "W":
-        xstatus = 'Pending'
+      case 'W':
+        xstatus = 'Pending';
         break;
-      case "C":
-        xstatus = 'Cancelled'
-          break;
+      case 'C':
+        xstatus = 'Cancelled';
+        break;
       default:
-        xstatus = 'Pending'
+        xstatus = 'Pending';
         break;
     }
-    
+
     return (
-      
       <ScrollView>
-      <View>
-        <List>
-          <ListItem noIndent>
-            <Body>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
-                <Badge style={styles.badgeStyle}>
-                  <Text style={styles.badgeText}>{xstatus}</Text>
-                </Badge>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
-                <Text note style={styles.textPatient}>
-                  {item.patient}
-                </Text>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="location"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.hospital}</Text>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="clock"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.validity_date}</Text>
-              </View>
-            </Body>
-            <Right>
-              <Text note>{item.ercs_date}</Text>
-              <Button transparent>
-                <Text
-                  style={styles.buttonView}
-                  onPress={() =>
-                    this.props.navigation.navigate('ERCS2DetailsPage',{
-                      rcsnum2 : item.ercsno,
-                      acctno: this.state.membacctnum,
-                      ercsid: item.record_id,
-                      approvalcode: item.approval_code
-                    })
-                  }>
-                  View
-                </Text>
-              </Button>
-            </Right>
-          </ListItem>
-        </List>
-      </View>
-    </ScrollView>
+        <View>
+          <List>
+            <ListItem noIndent>
+              <Body>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
+                  <Badge style={styles.badgeStyle}>
+                    <Text style={styles.badgeText}>{xstatus}</Text>
+                  </Badge>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
+                  <Text note style={styles.textPatient}>
+                    {item.patient}
+                  </Text>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="location"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.hospital}</Text>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="clock"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.validity_date}</Text>
+                </View>
+              </Body>
+              <Right>
+                <Text note>{item.ercs_date}</Text>
+                <Button transparent>
+                  <Text
+                    style={styles.buttonView}
+                    onPress={() =>
+                      this.props.navigation.navigate('ERCS2DetailsPage', {
+                        rcsnum2: item.ercsno,
+                        acctno: this.state.membacctnum,
+                        ercsid: item.record_id,
+                        approvalcode: item.approval_code,
+                      })
+                    }>
+                    View
+                  </Text>
+                </Button>
+              </Right>
+            </ListItem>
+          </List>
+        </View>
+      </ScrollView>
     );
-  }
+  };
 
   renderSeparator = () => {
-    return (
-      <View
-        style={{ height: 0, backgroundColor: 'gray' }}>
-      </View>
-    )
-  }
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
+  };
 
   render() {
-    const { spinnerStyle, spinnerTextStyle } = styles
+    const {spinnerStyle, spinnerTextStyle} = styles;
     return (
       <Container>
-      <StatusBar translucent backgroundColor="transparent" />
-      <ScrollView>
- 
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
+        <ScrollView>
           <FlatList
             roundAvatar
             data={this.state.dataSource}
@@ -230,20 +230,13 @@ export default class ERCS2History extends React.Component {
             keyExtractor={(item, index) => item}
             ItemSeparatorComponent={this.renderSeparator}
           />
-
-      </ScrollView>
-      {
-          (this.state.isLoading) &&
+        </ScrollView>
+        {this.state.isLoading && (
           <View styles={spinnerStyle}>
-            <Spinner
-              color={'#5fb650'}
-              size={60}
-              type={'Circle'}
-              
-            />
+            <Spinner color={'#5fb650'} size={60} type={'Circle'} />
           </View>
-        }
-     </Container> 
+        )}
+      </Container>
     );
   }
 }
