@@ -2,37 +2,30 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  ActivityIndicator,
   StatusBar,
-  TouchableNativeFeedback,
-  Modal,
-  TouchableHighlight,
-  Alert,
   Dimensions,
   FlatList,
 } from 'react-native';
 import {
   Container,
-  Header,
-  Input,
   Button,
   Text,
-  Title,
-  Left,
   Right,
   Body,
-  Label,
-  Thumbnail,
   ListItem,
   List,
   Icon,
   Badge,
-  Item,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
+<<<<<<< HEAD
 import {StackActions, NavigationActions} from 'react-navigation';
+=======
+import { StackActions, NavigationActions } from 'react-navigation';
+import moment from 'moment'
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -82,6 +75,7 @@ export default class ERCS2History extends React.Component {
       membacctnum: membacct,
     });
 
+<<<<<<< HEAD
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' +
         membacct,
@@ -102,6 +96,24 @@ export default class ERCS2History extends React.Component {
           console.log('rcshist', responseJson);
           if (responseJson.data != null) {
             console.log('rcshistory', responseJson);
+=======
+
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' + membacct, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'Bearer ' + token,
+        // 'paramContract': '1',
+        // 'Content-Type': 'application/json;charset=UTF-8'
+      },
+      params: {
+        'acct': membacct
+      }
+    })
+      .then((response) => {
+        response.json().then((responseJson) => {
+          console.log('rcshist', responseJson)
+          if (responseJson.data != null) {
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
             this.setState({
               isLoading: false,
               dataSource: responseJson.data,
@@ -145,18 +157,31 @@ export default class ERCS2History extends React.Component {
       case 'C':
         xstatus = 'Cancelled';
         break;
+<<<<<<< HEAD
+=======
+      case "C":
+        xstatus = 'Cancelled'
+        break;
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
       default:
         xstatus = 'Pending';
         break;
     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
     return (
       <ScrollView>
         <View>
           <List>
             <ListItem noIndent>
               <Body>
+<<<<<<< HEAD
                 <View style={{flexDirection: 'row'}}>
+=======
+                <View style={{ flexDirection: 'row' }}>
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={styles.badgeStyle}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
@@ -182,11 +207,19 @@ export default class ERCS2History extends React.Component {
                     name="clock"
                     style={styles.iconLabel}
                   />
+<<<<<<< HEAD
                   <Text note>{item.validity_date}</Text>
                 </View>
               </Body>
               <Right>
                 <Text note>{item.ercs_date}</Text>
+=======
+                  <Text note>{item.validity_date === '' ? 'N/A' : moment(item.validity_date).format('L')}</Text>
+                </View>
+              </Body>
+              <Right>
+                <Text note>{item.ercs_date === '' ? 'N/A' : moment(item.ercs_date).format('L')}</Text>
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
                 <Button transparent>
                   <Text
                     style={styles.buttonView}
@@ -195,11 +228,19 @@ export default class ERCS2History extends React.Component {
                         rcsnum2: item.ercsno,
                         acctno: this.state.membacctnum,
                         ercsid: item.record_id,
+<<<<<<< HEAD
                         approvalcode: item.approval_code,
                       })
                     }>
                     View
                   </Text>
+=======
+                        approvalcode: item.approval_code
+                      })
+                    }>
+                    View
+                </Text>
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
                 </Button>
               </Right>
             </ListItem>
@@ -217,31 +258,52 @@ export default class ERCS2History extends React.Component {
     const {spinnerStyle, spinnerTextStyle} = styles;
     return (
       <Container>
+<<<<<<< HEAD
         <StatusBar
           translucent
           backgroundColor="transparent"
           barStyle="light-content"
         />
         <ScrollView>
+=======
+        <StatusBar translucent backgroundColor="transparent" />
+        <ScrollView>
+
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
           <FlatList
             roundAvatar
             data={this.state.dataSource}
             renderItem={this.renderItem}
-            keyExtractor={(item, index) => item}
+            keyExtractor={(item) => item.ercsno}
             ItemSeparatorComponent={this.renderSeparator}
           />
+<<<<<<< HEAD
         </ScrollView>
         {this.state.isLoading && (
           <View styles={spinnerStyle}>
             <Spinner color={'#5fb650'} size={60} type={'Circle'} />
           </View>
         )}
+=======
+
+        </ScrollView>
+        {
+          (this.state.isLoading) &&
+          <View style={spinnerStyle}>
+            <Spinner
+              color={'green'}
+              size={60}
+              type={'Circle'}
+            />
+          </View>
+        }
+>>>>>>> d3417ff270ca50d38e4be6d63100717d3d71c377
       </Container>
     );
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
@@ -275,8 +337,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //position: 'absolute',
-    opacity: 0.2,
+    position: 'absolute',
+    opacity: 0.5,
     backgroundColor: 'black',
     left: 0,
     right: 0,
