@@ -207,7 +207,8 @@ export default class ERCS2Details extends React.Component {
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
     let rcsno = navigation.getParam('rcsnum2', '');
-    let acctNum = navigation.getParam('acctno', '');
+    let acctNum = this.state.dataSource.acctno;
+    //let acctNum = navigation.getParam('acctno', '');
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' + rcsno, {
       method: 'GET',
       params: {
@@ -241,7 +242,8 @@ export default class ERCS2Details extends React.Component {
     this.setState({ visibleModal: false, isLoading: true })
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let rcsno = navigation.getParam('rcsnum2', '');
-    let acctNum = navigation.getParam('acctno', '');
+    let acctNum = this.state.dataSource.acctno;
+    //let acctNum = navigation.getParam('acctno', '');
     let ercsid = navigation.getParam('ercsid', '');
     let appcode = navigation.getParam('approvalcode', '');
     fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/cancel', {
