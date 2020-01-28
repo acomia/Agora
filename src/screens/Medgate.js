@@ -200,7 +200,7 @@ export default class SideBar extends React.Component {
             </Text>
             <Text style={styles.subtitle}>
               Get your hassle-free medical consultation. Our Filipino specialist
-              doctors are just a phone call away to give you the case you
+              doctors are just a phone call away to give you the care you
               deserve.
             </Text>
           </View>
