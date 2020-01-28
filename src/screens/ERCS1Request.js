@@ -344,6 +344,7 @@ export default class ERCS1Request extends React.Component {
               .then(response => {
                 response.json().then(data => {
                   if (data.is_success === true) {
+
                     global.rcsNum = rcs;
                     global.acctNum = this.state.acctno;
                     global.mid = mid;
@@ -351,6 +352,7 @@ export default class ERCS1Request extends React.Component {
                       isLoading: false,
                     });
                     this.props.navigation.dispatch(resetAction);
+
                   } else {
                     alert(data.error_message);
                   }

@@ -552,9 +552,9 @@ export default class ERCS2Details extends React.Component {
           (this.state.isLoading) &&
           <View style={styles.spinnerStyle}>
             <Spinner
-              color={'green'}
+              color={'#e74c3c'}
               size={60}
-              type={'Circle'}
+              type={'ThreeBounce'}
             />
           </View>
         }
@@ -657,8 +657,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.5,
-    backgroundColor: 'black',
+    backgroundColor: '#ffff',
     left: 0,
     right: 0,
     top: 0,

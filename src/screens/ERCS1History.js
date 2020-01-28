@@ -223,9 +223,9 @@ export default class ERCS1History extends React.Component {
         (this.state.isLoading) &&
         <View style={spinnerStyle}>
           <Spinner
-            color={'green'}
+            color={'#5fb650'}
             size={60}
-            type={'Circle'}
+            type={'ThreeBounce'}
           />
         </View>
       }
@@ -259,8 +259,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.5,
-    backgroundColor: 'black',
+    backgroundColor: '#ffff',
     left: 0,
     right: 0,
     top: 0,

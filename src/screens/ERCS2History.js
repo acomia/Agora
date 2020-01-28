@@ -136,11 +136,6 @@ export default class ERCS2History extends React.Component {
     }
     return (
       <ScrollView>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
         <View>
           <List>
             <ListItem noIndent>
@@ -209,7 +204,7 @@ export default class ERCS2History extends React.Component {
         <StatusBar
           translucent
           backgroundColor="transparent"
-          //barStyle="light-content"
+          barStyle="light-content"
         />
         <ScrollView>
           <FlatList
@@ -225,6 +220,44 @@ export default class ERCS2History extends React.Component {
             <Spinner color={'#5fb650'} size={60} type={'Circle'} />
           </View>
         )}
+      </Container>
+    );
+  }
+
+  renderSeparator = () => {
+    return (
+      <View
+        style={{ height: 0, backgroundColor: 'gray' }}>
+      </View>
+    )
+  }
+
+  render() {
+    const { spinnerStyle, spinnerTextStyle } = styles
+    return (
+      <Container>
+        <StatusBar translucent backgroundColor="transparent" />
+        <ScrollView>
+
+          <FlatList
+            roundAvatar
+            data={this.state.dataSource}
+            renderItem={this.renderItem}
+            keyExtractor={(item) => item.ercsno}
+            ItemSeparatorComponent={this.renderSeparator}
+          />
+
+        </ScrollView>
+        {
+          (this.state.isLoading) &&
+          <View style={spinnerStyle}>
+            <Spinner
+              color={'#e74c3c'}
+              size={60}
+              type={'ThreeBounce'}
+            />
+          </View>
+        }
       </Container>
     );
   }
@@ -265,8 +298,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.5,
-    backgroundColor: 'black',
+    backgroundColor: '#ffff',
     left: 0,
     right: 0,
     top: 0,
