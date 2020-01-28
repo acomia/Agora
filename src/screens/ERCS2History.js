@@ -136,6 +136,11 @@ export default class ERCS2History extends React.Component {
     }
     return (
       <ScrollView>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle="light-content"
+      />
         <View>
           <List>
             <ListItem noIndent>
@@ -204,7 +209,7 @@ export default class ERCS2History extends React.Component {
         <StatusBar
           translucent
           backgroundColor="transparent"
-          barStyle="light-content"
+          //barStyle="light-content"
         />
         <ScrollView>
           <FlatList
