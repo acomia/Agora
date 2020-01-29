@@ -169,7 +169,7 @@ export default class VerifyOTP extends React.Component {
                         <View style={styles.tyModal}>
                             <Text style={styles.tyTextModal}>Thank you for registering with us.</Text>
                             <Text style={styles.tyTextModal}>Please give us time to verify your identity</Text>
-                            <Text style={styles.tyTextModal}>Within 24-hours, we will send a confirmation link to your email so that you can enjoy the services we offer in this App.</Text>
+                            <Text style={styles.tyTextModal}>Within 48-hours, we will send a confirmation link to your email so that you can enjoy the services we offer in this App.</Text>
                         </View>
                         <Text style={{ fontSize: 16, color: '#fff', alignSelf: 'center', margin: 10 }}>Swipe up to continue...</Text>
                     </View>
