@@ -27,8 +27,9 @@ import {
   List,
   Icon,
   Item,
+  Badge,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
 import { StackActions, NavigationActions } from 'react-navigation';
@@ -126,72 +127,84 @@ export default class ERCS1History extends React.Component {
   }
 
   renderItem = ({ item }) => {
+    const { StatusApproved, StatusCancelled, StatusPending, StatusDisapproved } = styles
     var xstatus = item.status
+    var statusStyle = ''
     switch (xstatus)     // Passing the variable to switch condition
     {
       case "A":
         xstatus = 'Approved'
+        statusStyle = StatusApproved
         break;
       case "D":
         xstatus = 'DisApproved'
+        statusStyle = StatusDisapproved
         break;
       case "W":
         xstatus = 'Pending'
+        statusStyle = StatusPending
         break;
       case "C":
         xstatus = 'Cancelled'
+        statusStyle = StatusCancelled
         break;
       default:
         xstatus = 'Pending'
+        statusStyle = StatusPending
         break;
     }
     return (
       <ScrollView>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle="light-content"
-      />
-      <View>
-        <List>
-          <ListItem noIndent>
-            <Body>
-              <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="user"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.patient}</Text>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="location"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.hospital}</Text>
-              </View>
-              <View style={styles.rowDetails}>
-                <Icon
-                  type="EvilIcons"
-                  name="clock"
-                  style={styles.iconLabel}
-                />
-                <Text note>{item.validity_date === '' ? 'N/A' : moment(item.validity_date).format('L')}</Text>
-              </View>
-            </Body>
-            <Right>
-              <Text note>{item.ercs_date === '' ? 'N/A' : moment(item.ercs_date).format('L')}</Text>
-              {/* <Button transparent>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
+        <View>
+          <List>
+            <ListItem noIndent>
+              <Body>
+                <View style={{ flexDirection: 'row' }}>
+                  <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
+                  <Badge style={[statusStyle]}>
+                    <Text style={styles.badgeText}>{xstatus}</Text>
+                  </Badge>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="user"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.patient}</Text>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="location"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.hospital}</Text>
+                </View>
+                <View style={styles.rowDetails}>
+                  <Icon
+                    type="EvilIcons"
+                    name="clock"
+                    style={styles.iconLabel}
+                  />
+                  <Text note>{item.validity_date === '' ? 'N/A' : moment(item.validity_date).format('L')}</Text>
+                </View>
+              </Body>
+              <Right>
+                <Text note>{item.ercs_date === '' ? 'N/A' : moment(item.ercs_date).format('L')}</Text>
+                {/* <Button transparent>
                 <Text style={styles.buttonCancel}>Cancel</Text>
               </Button> */}
-            </Right>
-          </ListItem>
-        </List>
-      </View>
-    </ScrollView>
+              </Right>
+            </ListItem>
+          </List>
+        </View>
+      </ScrollView>
     );
   }
 
@@ -207,34 +220,34 @@ export default class ERCS1History extends React.Component {
     const { spinnerStyle, spinnerTextStyle } = styles
     return (
       <Container>
-      <StatusBar translucent backgroundColor="transparent" />
-      <ScrollView>
+        <StatusBar translucent backgroundColor="transparent" />
+        <ScrollView>
 
-        <FlatList
-          roundAvatar
-          data={this.state.dataSource}
-          renderItem={this.renderItem}
-          keyExtractor={(item) => item.ercsno}
-          ItemSeparatorComponent={this.renderSeparator}
-        />
-
-      </ScrollView>
-      {
-        (this.state.isLoading) &&
-        <View style={spinnerStyle}>
-          <Spinner
-            color={'#5fb650'}
-            size={60}
-            type={'ThreeBounce'}
+          <FlatList
+            roundAvatar
+            data={this.state.dataSource}
+            renderItem={this.renderItem}
+            keyExtractor={(item) => item.ercsno}
+            ItemSeparatorComponent={this.renderSeparator}
           />
-        </View>
-      }
-    </Container>
+
+        </ScrollView>
+        {
+          (this.state.isLoading) &&
+          <View style={spinnerStyle}>
+            <Spinner
+              color={'#5fb650'}
+              size={60}
+              type={'ThreeBounce'}
+            />
+          </View>
+        }
+      </Container>
     );
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
@@ -264,5 +277,30 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
+  badgeText: {
+    color: '#ffff',
+    fontStyle: 'italic',
+    fontSize: 12,
+  },
+  StatusApproved: {
+    borderRadius: 5,
+    backgroundColor: '#5fb650',
+    padding: 0,
+  },
+  StatusCancelled:{
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+    padding: 0,
+  },
+  StatusPending: {
+    borderRadius: 5,
+    backgroundColor: '#F4D03F',
+    padding: 0,
+  },
+  StatusDisapproved:{
+    borderRadius: 5,
+    backgroundColor: '#FF5733',
+    padding: 0,
   },
 });

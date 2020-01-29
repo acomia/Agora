@@ -115,23 +115,29 @@ export default class ERCS2History extends React.Component {
 
   renderItem = ({item}) => {
     var xstatus = item.status;
+    const { StatusApproved, StatusCancelled, StatusPending, StatusDisapproved } = styles
     switch (
       xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
+        statusStyle = StatusApproved
         break;
       case 'D':
         xstatus = 'DisApproved';
+        statusStyle = StatusDisapproved
         break;
       case 'W':
         xstatus = 'Pending';
+        statusStyle = StatusPending
         break;
       case 'C':
         xstatus = 'Cancelled';
+        statusStyle = StatusCancelled
         break;
       default:
         xstatus = 'Pending';
+        statusStyle = StatusPending
         break;
     }
     return (
@@ -142,7 +148,7 @@ export default class ERCS2History extends React.Component {
               <Body>
                 <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
-                  <Badge style={styles.badgeStyle}>
+                  <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
                   </Badge>
                 </View>
@@ -286,7 +292,7 @@ const styles = StyleSheet.create({
     padding: 0,
   },
   badgeText: {
-    color: '#6d6e72',
+    color: '#ffff',
     fontStyle: 'italic',
     fontSize: 12,
   },
@@ -303,5 +309,25 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
+  StatusApproved: {
+    borderRadius: 5,
+    backgroundColor: '#5fb650',
+    padding: 0,
+  },
+  StatusCancelled:{
+    borderRadius: 5,
+    backgroundColor: '#f5f5f5',
+    padding: 0,
+  },
+  StatusPending: {
+    borderRadius: 5,
+    backgroundColor: '#F4D03F',
+    padding: 0,
+  },
+  StatusDisapproved:{
+    borderRadius: 5,
+    backgroundColor: '#FF5733',
+    padding: 0,
   },
 });
