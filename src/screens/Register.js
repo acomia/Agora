@@ -184,7 +184,7 @@ export default class Login extends React.Component {
               <View style={styles.formInfo}>
                 <Text style={styles.headerText}>Personal Information</Text>
                 <Text style={styles.reqField}>
-                 * Required Fields 
+                  * Required Fields
                 </Text>
                 <Item floatingLabel style={styles.formStyle}>
                   <Label>First name *</Label>
@@ -303,7 +303,7 @@ export default class Login extends React.Component {
               <View style={styles.formInfo}>
                 <Text style={styles.headerText}>Account Information</Text>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Intellicare Account No. * <Text style={styles.sampleText}>(eg. 00-00-00000-00000-00)</Text> </Label> 
+                  <Label>Intellicare Account No. * <Text style={styles.sampleText}>(eg. 00-00-00000-00000-00)</Text> </Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.intellicare_acct}
@@ -311,9 +311,9 @@ export default class Login extends React.Component {
                       this.setState({ intellicare_acct })
                     }
                   />
-                  
+
                 </Item>
-                
+
                 <Item floatingLabel style={styles.formStyle}>
                   <Label>Intellicare Card No. * (eg. 1234567891234516)</Label>
                   <Input
@@ -360,15 +360,20 @@ export default class Login extends React.Component {
                     onChangeText={mobile_no => this.setState({ mobile_no })}
                   />
                 </Item>
+                <TouchableOpacity
+                   onPress={() => {
+                    this.handleValidIDPhoto();
+                  }}>
                 <Card style={{ borderRadius: 10 }}>
                   <CardItem style={{ borderRadius: 10, flexDirection: 'row' }}>
                     <Body style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Button
                         iconLeft
                         transparent
-                        onPress={() => {
-                          this.handleValidIDPhoto();
-                        }}>
+                        // onPress={() => {
+                        //   this.handleValidIDPhoto();
+                        // }}
+                        >
                         {RenderValidID()}
                       </Button>
                       <Icon
@@ -385,15 +390,21 @@ export default class Login extends React.Component {
                     </Body>
                   </CardItem>
                 </Card>
+                </TouchableOpacity>
+                <TouchableOpacity
+                   onPress={() => {
+                    this.handleIntIDPhoto();
+                  }}>
                 <Card style={{ borderRadius: 10 }}>
                   <CardItem style={{ borderRadius: 10, flexDirection: 'row' }}>
                     <Body style={{ flexDirection: 'row', alignItems: 'center' }}>
                       <Button
                         iconLeft
                         transparent
-                        onPress={() => {
-                          this.handleIntIDPhoto();
-                        }}>
+                        // onPress={() => {
+                        //   this.handleIntIDPhoto();
+                        // }}
+                        >
                         {RenderIntID()}
                       </Button>
                       <Icon
@@ -410,6 +421,7 @@ export default class Login extends React.Component {
                     </Body>
                   </CardItem>
                 </Card>
+                </TouchableOpacity>
               </View>
             </View>
             <View style={styles.viewButtonSignUp}>
@@ -571,10 +583,10 @@ export default class Login extends React.Component {
     let valid_email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
     NetInfo.fetch().then(state => {
-       if (state.isConnected == false){
-        return alert('Check Internet Connection...');    
-       }
-     });
+      if (state.isConnected == false) {
+        return alert('Check Internet Connection...');
+      }
+    });
 
     if (valid_email.test(this.state.email) === false) {
       return alert("Email address is not valid!");
@@ -607,8 +619,8 @@ export default class Login extends React.Component {
     }
 
 
-   //this._InsertRequest();
-   this.checkConnectivity();
+    //this._InsertRequest();
+    this.checkConnectivity();
   };
 
   handleValidIDPhoto = () => {
@@ -616,7 +628,7 @@ export default class Login extends React.Component {
       noData: true,
     };
     ImagePicker.launchCamera(options, response => {
-      if (response) {
+      if (!response.didCancel) {
         console.log(response);
         let imgtype = response.type;
 
@@ -650,7 +662,7 @@ export default class Login extends React.Component {
       noData: true,
     };
     ImagePicker.launchCamera(options, response => {
-      if (response) {
+      if (!response.didCancel) {
         console.log(response);
         let imgtype = response.type;
 
@@ -674,18 +686,18 @@ export default class Login extends React.Component {
           // Oops, something went wrong. Check that the filename is correct and
           // inspect err to get more details.
         });
-
       }
+
     });
   };
 
-  checkConnectivity(){
+  checkConnectivity() {
     NetInfo.fetch().then(state => {
-     // console.log("Connection type2", state.type);
+      // console.log("Connection type2", state.type);
       //console.log("Is connected?2", state.isConnected);
-      if (state.isConnected == true){
+      if (state.isConnected == true) {
         this._InsertRequest();
-      }else{
+      } else {
         alert('Check Internet Connection...');
       }
     });
@@ -694,6 +706,9 @@ export default class Login extends React.Component {
   async _InsertRequest() {
     let formdata = new FormData();
 
+    let nstring = this.setState.intellicare_no
+    this.setState.intellicare_no = nstring.replace(/[^0-9]/gi,'')
+    
     formdata.append('gov_id', this.state.valid_photo);
     formdata.append('int_id', this.state.intid_photo);
 
@@ -740,24 +755,22 @@ export default class Login extends React.Component {
         },
       );
       let respJson = await resp.json();
-     
+
       if (respJson.is_success === true) {
-       
+
         this.SEND_EMAILVERIFICATION()
       }
-      
+
 
       else {
         console.log(respJson.error_message);
-        if (respJson.error_message === 'Account is invalid.')
-        {
-           alert('Invalid Account/Account format');
-          
+        if (respJson.error_message === 'Account is invalid.') {
+          alert('Invalid Account/Account format');
+
         }
-        else 
-        {
-           alert(respJson.error_message)
-         
+        else {
+          alert(respJson.error_message)
+
         }
       }
 
