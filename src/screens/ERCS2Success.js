@@ -31,9 +31,8 @@ import {ScrollView} from 'react-native-gesture-handler';
 export default class ERCS2Success extends React.Component {
   render() {
     return (
-      <Container style={{display: 'flex'}}>
+      <Container>
         <StatusBar
-          translucent
           backgroundColor="transparent"
           barStyle="dark-content"
         />

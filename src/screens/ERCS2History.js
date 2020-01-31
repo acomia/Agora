@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  Dimensions,
-  FlatList,
-} from 'react-native';
+import {StyleSheet, View, StatusBar, Dimensions, FlatList} from 'react-native';
 import {
   Container,
   Button,
@@ -17,11 +11,11 @@ import {
   Icon,
   Badge,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import { StackActions, NavigationActions } from 'react-navigation';
-import moment from 'moment'
+import {StackActions, NavigationActions} from 'react-navigation';
+import moment from 'moment';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -71,21 +65,24 @@ export default class ERCS2History extends React.Component {
       membacctnum: membacct,
     });
 
-
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' + membacct, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        // 'paramContract': '1',
-        // 'Content-Type': 'application/json;charset=UTF-8'
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' +
+        membacct,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          // 'paramContract': '1',
+          // 'Content-Type': 'application/json;charset=UTF-8'
+        },
+        params: {
+          acct: membacct,
+        },
       },
-      params: {
-        'acct': membacct
-      }
-    })
-      .then((response) => {
-        response.json().then((responseJson) => {
-          console.log('rcshist', responseJson)
+    )
+      .then(response => {
+        response.json().then(responseJson => {
+          console.log('rcshist', responseJson);
           if (responseJson.data != null) {
             this.setState({
               isLoading: false,
@@ -115,38 +112,48 @@ export default class ERCS2History extends React.Component {
 
   renderItem = ({item}) => {
     var xstatus = item.status;
-    const { StatusApproved, StatusCancelled, StatusPending, StatusDisapproved } = styles
+    const {
+      StatusApproved,
+      StatusCancelled,
+      StatusPending,
+      StatusDisapproved,
+    } = styles;
     switch (
       xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
-        statusStyle = StatusApproved
+        statusStyle = StatusApproved;
         break;
       case 'D':
-        xstatus = 'DisApproved';
-        statusStyle = StatusDisapproved
+        xstatus = 'Disapproved';
+        statusStyle = StatusDisapproved;
         break;
       case 'W':
         xstatus = 'Pending';
-        statusStyle = StatusPending
+        statusStyle = StatusPending;
         break;
       case 'C':
         xstatus = 'Cancelled';
-        statusStyle = StatusCancelled
+        statusStyle = StatusCancelled;
         break;
       default:
         xstatus = 'Pending';
-        statusStyle = StatusPending
+        statusStyle = StatusPending;
         break;
     }
     return (
       <ScrollView>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle="light-content"
+        />
         <View>
           <List>
             <ListItem noIndent>
               <Body>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
@@ -172,11 +179,19 @@ export default class ERCS2History extends React.Component {
                     name="clock"
                     style={styles.iconLabel}
                   />
-                  <Text note>{item.validity_date === '' ? 'N/A' : moment(item.validity_date).format('L')}</Text>
+                  <Text note>
+                    {item.validity_date === ''
+                      ? 'N/A'
+                      : moment(item.validity_date).format('L')}
+                  </Text>
                 </View>
               </Body>
               <Right>
-                <Text note>{item.ercs_date === '' ? 'N/A' : moment(item.ercs_date).format('L')}</Text>
+                <Text note>
+                  {item.ercs_date === ''
+                    ? 'N/A'
+                    : moment(item.ercs_date).format('L')}
+                </Text>
                 <Button transparent>
                   <Text
                     style={styles.buttonView}
@@ -185,11 +200,11 @@ export default class ERCS2History extends React.Component {
                         rcsnum2: item.ercsno,
                         acctno: this.state.membacctnum,
                         ercsid: item.record_id,
-                        approvalcode: item.approval_code
+                        approvalcode: item.approval_code,
                       })
                     }>
                     View
-                </Text>
+                  </Text>
                 </Button>
               </Right>
             </ListItem>
@@ -217,7 +232,7 @@ export default class ERCS2History extends React.Component {
             roundAvatar
             data={this.state.dataSource}
             renderItem={this.renderItem}
-            keyExtractor={(item) => item.ercsno}
+            keyExtractor={item => item.ercsno}
             ItemSeparatorComponent={this.renderSeparator}
           />
         </ScrollView>
@@ -231,56 +246,46 @@ export default class ERCS2History extends React.Component {
   }
 
   renderSeparator = () => {
-    return (
-      <View
-        style={{ height: 0, backgroundColor: 'gray' }}>
-      </View>
-    )
-  }
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
+  };
 
   render() {
-    const { spinnerStyle, spinnerTextStyle } = styles
+    const {spinnerStyle, spinnerTextStyle} = styles;
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
         <ScrollView>
-
           <FlatList
             roundAvatar
             data={this.state.dataSource}
             renderItem={this.renderItem}
-            keyExtractor={(item) => item.ercsno}
+            keyExtractor={item => item.ercsno}
             ItemSeparatorComponent={this.renderSeparator}
           />
-
         </ScrollView>
-        {
-          (this.state.isLoading) &&
+        {this.state.isLoading && (
           <View style={spinnerStyle}>
-            <Spinner
-              color={'#e74c3c'}
-              size={60}
-              type={'ThreeBounce'}
-            />
+            <Spinner color={'#e74c3c'} size={60} type={'ThreeBounce'} />
           </View>
-        }
+        )}
       </Container>
     );
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
     fontWeight: 'bold',
     fontSize: 20,
     color: '#e74c3c',
+    marginLeft: 0,
   },
   iconLabel: {
     color: '#6d6e72',
     fontSize: 20,
-    marginLeft: 18,
+    marginLeft: 5,
     marginTop: 1,
   },
   buttonView: {
@@ -315,9 +320,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#5fb650',
     padding: 0,
   },
-  StatusCancelled:{
+  StatusCancelled: {
     borderRadius: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#FF5733',
     padding: 0,
   },
   StatusPending: {
@@ -325,7 +330,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4D03F',
     padding: 0,
   },
-  StatusDisapproved:{
+  StatusDisapproved: {
     borderRadius: 5,
     backgroundColor: '#FF5733',
     padding: 0,

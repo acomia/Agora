@@ -41,7 +41,7 @@ export default class ERCS1Landing extends React.Component {
         <View style={{flex: 3, paddingVertical: 100}}>
           <SwiperFlatList
             autoplay
-            autoplayDelay={2}
+            autoplayDelay={5}
             autoplayLoop
             index={0}
             showPagination
@@ -55,10 +55,9 @@ export default class ERCS1Landing extends React.Component {
                 style={styles.swiperImage}
                 resizeMode="contain"
               />
-              <Text style={styles.swiperTitle}>Create your form</Text>
+              <Text style={styles.swiperTitle}>Step 1: Fill-out your form</Text>
               <Text style={styles.swiperSubtitle}>
-                Fill-out the form with the necessary information needed and you
-                are good to go.
+                Provide the necessary information needed to complete your form.
               </Text>
             </View>
             <View style={[styles.child, {backgroundColor: 'transparent'}]}>
@@ -67,7 +66,9 @@ export default class ERCS1Landing extends React.Component {
                 style={styles.swiperImage}
                 resizeMode="contain"
               />
-              <Text style={styles.swiperTitle}>Print a copy of your form</Text>
+              <Text style={styles.swiperTitle}>
+                Step 2: Print a copy of your form
+              </Text>
               <Text style={styles.swiperSubtitle}>
                 We'll send you an e-mail with the form attached in it. You just
                 need to print and present it to your doctor.
@@ -79,22 +80,12 @@ export default class ERCS1Landing extends React.Component {
                 style={styles.swiperImage}
                 resizeMode="contain"
               />
-              <Text style={styles.swiperTitle}>Consult your doctor</Text>
+              <Text style={styles.swiperTitle}>
+                Step 3: Consult your doctor
+              </Text>
               <Text style={styles.swiperSubtitle}>
                 Have a talk with your doctor through a medical consultation.
                 They'll tell you exactly what you need to do.
-              </Text>
-            </View>
-            <View style={[styles.child, {backgroundColor: 'transparent'}]}>
-              <Image
-                source={require('../../assets/images/clock.png')}
-                style={styles.swiperImage}
-                resizeMode="contain"
-              />
-              <Text style={styles.swiperTitle}>Check your transactions</Text>
-              <Text style={styles.swiperSubtitle}>
-                We've created a page where you can go back to your recent
-                consultations. We care about your history, we really do.
               </Text>
             </View>
           </SwiperFlatList>
@@ -158,6 +149,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 25,
     marginBottom: 10,
+    textAlign: 'center',
   },
   swiperSubtitle: {
     color: '#6d6e72',
