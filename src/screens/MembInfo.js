@@ -45,6 +45,7 @@ export default class MembInfo extends React.Component {
       company,
       civil_status,
       relation,
+      intellicare,
     } = this.props.navigation.state.params;
     var membstat = civil_status; // Assigned a value to the variable text
     switch (
@@ -95,11 +96,20 @@ export default class MembInfo extends React.Component {
                       flex: 1,
                       justifyContent: 'center',
                     }}>
-                    <Image
+                    {intellicare === false ?  <Image
                       source={require('../../assets/images/avega-logo.png')}
                       resizeMode="contain"
                       style={styles.avegaLogo}
-                    />
+                    /> :  <ImageBackground
+                      source={require('../../assets/images/virtual-card-header.png')}
+                      resizeMode="contain"
+                      style={styles.intellicareLogoOld}
+                    /> } 
+                    {/* <Image
+                      source={require('../../assets/images/avega-logo.png')}
+                      resizeMode="contain"
+                      style={styles.avegaLogo}
+                    /> */}
                     {/* <Image
                       source={require('../../assets/images/intellicarelogo.png')}
                       resizeMode="contain"
@@ -310,6 +320,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     alignSelf: 'flex-end',
   },
+  intellicareLogoOld: {
+    width: width * 0.90,
+    height: height * 0.10,
+    borderTopStartRadius: 10,
+    overflow: "hidden",
+    marginTop: -14
+},
   sectionMembInfo: {
     marginVertical: 10,
   },
