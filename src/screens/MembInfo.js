@@ -5,6 +5,7 @@ import {
   Dimensions,
   ImageBackground,
   StatusBar,
+  Image,
 } from 'react-native';
 import {
   Container,
@@ -22,45 +23,59 @@ import {
   Content,
 } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
-import { ScrollView } from 'react-native-gesture-handler';
-import moment from 'moment'
+import {ScrollView} from 'react-native-gesture-handler';
+import moment from 'moment';
 // import { stat } from 'fs';
 
 export default class MembInfo extends React.Component {
-
   render() {
-
-    const { fullname, acct, cardno, birth_date, gender, status, member_type, card_printed_date, employee_id, room_and_board, maximum_limit, coverage_period, company, civil_status, relation } = this.props.navigation.state.params
+    const {
+      fullname,
+      acct,
+      cardno,
+      birth_date,
+      gender,
+      status,
+      member_type,
+      card_printed_date,
+      employee_id,
+      room_and_board,
+      maximum_limit,
+      coverage_period,
+      company,
+      civil_status,
+      relation,
+    } = this.props.navigation.state.params;
     var membstat = civil_status; // Assigned a value to the variable text
-    switch (membstat)     // Passing the variable to switch condition
-    {
-      case "A":
-        membstat = 'ANNULLED'
+    switch (
+      membstat // Passing the variable to switch condition
+    ) {
+      case 'A':
+        membstat = 'ANNULLED';
         break;
-      case "M":
-        membstat = 'MARRIED'
+      case 'M':
+        membstat = 'MARRIED';
         break;
-      case "P":
-        membstat = 'SINGLE PARENT'
+      case 'P':
+        membstat = 'SINGLE PARENT';
         break;
-      case "S":
-        membstat = 'SINGLE'
+      case 'S':
+        membstat = 'SINGLE';
         break;
-      case "W":
-        membstat = 'WIDOWED'
+      case 'W':
+        membstat = 'WIDOWED';
         break;
-      case "X":
-        membstat = 'SEPARATED'
+      case 'X':
+        membstat = 'SEPARATED';
         break;
-      case "C":
-        membstat = 'DOMESTIC PARTNER/COMMON LAW SPOUSE'
+      case 'C':
+        membstat = 'DOMESTIC PARTNER/COMMON LAW SPOUSE';
         break;
       default:
-        membstat = ''
+        membstat = '';
         break;
     }
     return (
-
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
         <ScrollView>
@@ -72,32 +87,47 @@ export default class MembInfo extends React.Component {
               <Card style={styles.mainCardStyle}>
                 <LinearGradient
                   colors={['#fff', '#ececec']}
-                  start={{ x: 0, y: 0 }}
-                  end={{ x: 1, y: 0 }}
-                  style={{ flex: 1, borderRadius: 20 }}>
-                  <View style={{ flex: 1 }}>
-                    <ImageBackground
-                      source={require('../../assets/images/virtual-card-header.png')}
+                  start={{x: 0, y: 0}}
+                  end={{x: 1, y: 0}}
+                  style={{flex: 1, borderRadius: 20}}>
+                  <View
+                    style={{
+                      flex: 1,
+                      justifyContent: 'center',
+                    }}>
+                    <Image
+                      source={require('../../assets/images/avega-logo.png')}
+                      resizeMode="contain"
+                      style={styles.avegaLogo}
+                    />
+                    {/* <Image
+                      source={require('../../assets/images/intellicarelogo.png')}
                       resizeMode="contain"
                       style={styles.intellicareLogo}
-                    />
+                    /> */}
                   </View>
                   <View style={styles.cardInfo}>
                     <Label style={styles.cardName}>{fullname}</Label>
                     <Label style={styles.cardDetails}>{company}</Label>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Label style={styles.titlecardDetails}>Account No:{' '}</Label>
+                    <View style={{flexDirection: 'row'}}>
+                      <Label style={styles.titlecardDetails}>
+                        Account No:{' '}
+                      </Label>
                       <Label style={styles.cardDetails}>{acct}</Label>
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{flexDirection: 'row'}}>
                       <Label style={styles.titlecardDetails}>Card No: </Label>
                       <Label style={styles.cardDetails}>{cardno}</Label>
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
-                      <Label style={styles.titlecardDetails}>Birthdate (mm/dd/yyyy):{' '}</Label>
-                      <Label style={styles.cardDetails}>{moment(birth_date).format('L')}</Label>
+                    <View style={{flexDirection: 'row'}}>
+                      <Label style={styles.titlecardDetails}>
+                        Birthdate (mm/dd/yyyy):{' '}
+                      </Label>
+                      <Label style={styles.cardDetails}>
+                        {moment(birth_date).format('L')}
+                      </Label>
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{flexDirection: 'row'}}>
                       <Label style={styles.titlecardDetails}>Gender: </Label>
                       <Label style={styles.cardDetails}>{gender}</Label>
                     </View>
@@ -107,7 +137,11 @@ export default class MembInfo extends React.Component {
               </Card>
             </View>
             <View style={styles.viewButtonBenefits}>
-              <Button success rounded iconRight onPress={() => this.props.navigation.navigate('BenefitsPage')} >
+              <Button
+                success
+                rounded
+                iconRight
+                onPress={() => this.props.navigation.navigate('BenefitsPage')}>
                 <Text>View your Benefits</Text>
                 <Icon type="Ionicons" name="ios-arrow-dropright-circle" />
               </Button>
@@ -183,7 +217,9 @@ export default class MembInfo extends React.Component {
                 <Text style={styles.itemLabel}>Card Printed Date</Text>
               </Left>
               <Body style={styles.itemBody}>
-                <Label style={styles.itemInfo}>{moment(card_printed_date).format('L')}</Label>
+                <Label style={styles.itemInfo}>
+                  {moment(card_printed_date).format('L')}
+                </Label>
               </Body>
             </Item>
           </View>
@@ -193,7 +229,7 @@ export default class MembInfo extends React.Component {
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -230,7 +266,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderColor: '#f5f5f5',
     shadowColor: '#2d2d2d',
-    shadowOffset: { width: 0, height: 3 },
+    shadowOffset: {width: 0, height: 3},
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 10,
@@ -238,6 +274,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     width: width * 0.9,
     padding: 0,
+    justifyContent: 'center',
   },
   cardInfo: {
     flex: 2,
@@ -254,18 +291,24 @@ const styles = StyleSheet.create({
   cardDetails: {
     fontSize: 14,
     textTransform: 'uppercase',
-    color: "#6d6e72",
+    color: '#6d6e72',
   },
   titlecardDetails: {
     fontSize: 14,
-    color: "#6d6e72"
+    color: '#6d6e72',
+  },
+  avegaLogo: {
+    height: 60,
+    width: 120,
+    marginHorizontal: 20,
+    alignSelf: 'flex-start',
   },
   intellicareLogo: {
-    width: width * 0.9,
-    height: height * 0.1,
-    borderTopStartRadius: 20,
-    overflow: 'hidden',
-    marginTop: -3,
+    height: 50,
+    width: 150,
+    marginHorizontal: 20,
+    marginBottom: 10,
+    alignSelf: 'flex-end',
   },
   sectionMembInfo: {
     marginVertical: 10,
@@ -276,6 +319,8 @@ const styles = StyleSheet.create({
   itemLabel: {
     color: '#6d6e72',
     fontWeight: 'bold',
+    flex: 1,
+    alignItems: 'flex-start'
   },
   itemInfo: {
     color: '#b2bec3',
@@ -283,6 +328,7 @@ const styles = StyleSheet.create({
   },
   itemBody: {
     alignItems: 'flex-end',
+    flex: 2,
   },
   labelStatus: {
     color: 'green',

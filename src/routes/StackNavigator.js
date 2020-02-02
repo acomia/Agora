@@ -192,7 +192,7 @@ AppStack = createStackNavigator({
   MedgatePage: {
     screen: Medgate,
     navigationOptions: {
-      title: '',
+      title: 'Medgate Philippines',
       headerStyle: {
         backgroundColor: '#258bf5',
         elevation: 0,

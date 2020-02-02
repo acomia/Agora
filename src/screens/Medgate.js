@@ -34,27 +34,27 @@ export default class SideBar extends React.Component {
     mobileNumber: '',
     accessToken: '',
     tokenType: '',
-    expiresIn: 0
+    expiresIn: 0,
   };
 
   showDialog = () => {
-    this.setState({ dialogVisible: true });
+    this.setState({dialogVisible: true});
   };
 
   handleCancel = () => {
-    console.log("click cancel");
-    this.setState({ dialogVisible: false });
+    console.log('click cancel');
+    this.setState({dialogVisible: false});
   };
 
   handleSubmit = () => {
-    console.log("mobileNumber: " + this.state.mobileNumber);
+    console.log('mobileNumber: ' + this.state.mobileNumber);
 
-    if (this.state.mobileNumber===''){
+    if (this.state.mobileNumber === '') {
       alert('Please provide mobile number!');
       return;
     }
 
-    if (this.state.mobileNumber.length < 10){
+    if (this.state.mobileNumber.length < 10) {
       alert('Please input a valid number!');
       return;
     }
@@ -70,92 +70,93 @@ export default class SideBar extends React.Component {
       mobileNumber: '',
       accessToken: '',
     });
-    this.setState({ dialogVisible: false });
+    this.setState({dialogVisible: false});
     console.log('state refresh');
   }
 
   //Get Token from Medgate
   postMedgateToken() {
     var details = {
-      'grantType': 'clientCredentials',
-      'clientId': '1886D070-DC43-435E-94BD-56581D7097B7',
-      'clientSecret': '111E76AE-7F6D-4924-8095-083300DFC7D0'
+      grantType: 'clientCredentials',
+      clientId: '1886D070-DC43-435E-94BD-56581D7097B7',
+      clientSecret: '111E76AE-7F6D-4924-8095-083300DFC7D0',
     };
-    
+
     var formBody = [];
     for (var property in details) {
       var encodedKey = encodeURIComponent(property);
       var encodedValue = encodeURIComponent(details[property]);
-      formBody.push(encodedKey + "=" + encodedValue);
+      formBody.push(encodedKey + '=' + encodedValue);
     }
 
-    formBody = formBody.join("&");
-    
-    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token', {
-      method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/x-www-form-urlencoded'
+    formBody = formBody.join('&');
+
+    fetch(
+      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formBody,
       },
-      body: formBody
-    })
-    .then((response) => response.json())
-    .then((responseData => {
-      this.setState({
-        accessToken: responseData.accessToken,
-        tokenType: responseData.tokenType,
-        expiresIn: responseData.expiresIn
+    )
+      .then(response => response.json())
+      .then(responseData => {
+        this.setState({
+          accessToken: responseData.accessToken,
+          tokenType: responseData.tokenType,
+          expiresIn: responseData.expiresIn,
+        });
+        console.log('authentication');
+        console.log('accessToken:' + this.state.accessToken);
+        console.log('tokenType:' + this.state.tokenType);
+        console.log('expiresIn:' + this.state.expiresIn);
+      })
+      .catch(error => {
+        alert('Error!' + error);
       });
-      console.log('authentication')
-      console.log("accessToken:" + this.state.accessToken);
-      console.log("tokenType:" + this.state.tokenType);
-      console.log("expiresIn:" + this.state.expiresIn);
-    }))
-    .catch(error => {
-      alert('Error!' + error);
-    });
   }
 
   //Medgate Callback Request
-  getMedgateCallbackRequest(){
+  getMedgateCallbackRequest() {
+    fetch(
+      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+        this.state.mobileNumber +
+        '&provider=Intellicare',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + this.state.accessToken,
+        },
+      },
+    )
+      .then(response => response.json())
+      .then(responseData => {
+        console.log('callback request');
+        console.log('token: ' + this.state.accessToken);
+        console.log(responseData);
 
-    fetch('https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' + this.state.mobileNumber + '&provider=Intellicare', {  
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + this.state.accessToken,
-      }
-    })
-    .then((response) => response.json())
-    .then((responseData) => {
-
-      console.log('callback request');
-      console.log('token: ' + this.state.accessToken);
-      console.log(responseData);
-    
-      if (responseData.isSuccess) 
-        alert(responseData.data);
-      else {
-        if (responseData.error['code']){
-          if (responseData.error['code']=='500')
-            alert('You already scheduled a callback earlier.');
-          else if (responseData.error['code']='400')
-            alert(responseData.error['message']);
-          else
-            alert('Invalid request. Try again.');
+        if (responseData.isSuccess) alert(responseData.data);
+        else {
+          if (responseData.error['code']) {
+            if (responseData.error['code'] == '500')
+              alert('You already scheduled a callback earlier.');
+            else if ((responseData.error['code'] = '400'))
+              alert(responseData.error['message']);
+            else alert('Invalid request. Try again.');
+          } else alert('Communication error.');
         }
-        else
-          alert('Communication error.');
-      }
-4
-    })
-    .catch(error => {
-      //alert('Error!' + error);
-      alert('Unable to contact Medgate server.');
-    });
+        4;
+      })
+      .catch(error => {
+        //alert('Error!' + error);
+        alert('Unable to contact Medgate server.');
+      });
   }
 
-  
-  componentDidMount(){
+  componentDidMount() {
     this.postMedgateToken();
   }
 
@@ -164,37 +165,14 @@ export default class SideBar extends React.Component {
       <Container style={styles.container}>
         <StatusBar translucent backgroundColor="transparent" />
         <ScrollView>
-          <View style={styles.header}>
+          {/* <View style={styles.header}>
             <Image
               source={require('../../assets/images/medgatelogo-white.png')}
               style={styles.medgate}
               resizeMode="contain"
             />
-          </View>
-          <View style={{padding: 50}}>
-            <Button
-              iconLeft
-              rounded
-              style={{backgroundColor: '#258bf5', flexDirection: 'column'}}
-              onPress={this.showDialog}
-              >
-              <Icon type="Ionicons" name="ios-call" />
-              <Text>Request Callback!</Text>
-            </Button>
-          </View>
-          <View>
-            <Dialog.Container visible={this.state.dialogVisible}>
-              <Dialog.Description style={{padding: 20}}>
-                Need to speak to a doctor now? Provide your details and Medgate will call you.
-              </Dialog.Description>
-              <Dialog.Input label="Mobile Number" onChangeText={mobileNumber => this.setState({mobileNumber})}
-                  ></Dialog.Input>                  
-              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
-              <Dialog.Button label="Submit" bold={true} onPress={this.handleSubmit} 
-              />
-            </Dialog.Container>
-          </View>            
-          <View style={{padding: 20}}>
+          </View> */}
+          {/* <View style={{padding: 20}}>
             <Text style={styles.title}>
               Call Doc. Anytime. Anywhere. No lines.™
             </Text>
@@ -203,83 +181,110 @@ export default class SideBar extends React.Component {
               doctors are just a phone call away to give you the care you
               deserve.
             </Text>
+          </View> */}
+          <View style={styles.swiperFeatures}>
+            <SwiperFlatList
+              autoplay
+              autoplayDelay={10}
+              autoplayLoop
+              index={0}
+              paginationDefaultColor="#c4c4c4"
+              paginationActiveColor="#258bf5"
+              showPagination
+              paginationStyle={{marginVertical: 0}}
+              paginationStyleItem={{
+                height: 10,
+                width: 10,
+                marginHorizontal: 5,
+              }}>
+              <View style={styles.child}>
+                <View style={styles.MedgateContents}>
+                  <Image
+                    source={require('../../assets/images/card-calldoc.png')}
+                    style={styles.Telemedicine}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.cardTitle}>Call Doc</Text>
+                  <Text style={styles.cardDetails}>Manila: 028 705 0700</Text>
+                  <Text style={styles.cardDetails}>Globe: 0917 829 9996</Text>
+                  <Text style={styles.cardDetails}>Smart: 0998 990 7540</Text>
+                  <Text style={styles.cardDetails}>Sun: 0925 714 7794</Text>
+                </View>
+              </View>
+              <View style={styles.child}>
+                <View style={styles.MedgateContents}>
+                  <Image
+                    source={require('../../assets/images/card-triage.png')}
+                    style={styles.Telemedicine}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.cardTitle}>Triage</Text>
+                  <Text style={styles.cardDetails}>
+                    A telemedicine assistant will assess your concern and
+                    transfer you to our specialist doctor
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.child}>
+                <View style={styles.MedgateContents}>
+                  <Image
+                    source={require('../../assets/images/card-consult.png')}
+                    style={styles.Telemedicine}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.cardTitle}>Consult</Text>
+                  <Text style={styles.cardDetails}>
+                    Speak to a Medgate specialist doctor through your mobile
+                    phone
+                  </Text>
+                </View>
+              </View>
+              <View style={styles.child}>
+                <View style={styles.MedgateContents}>
+                  <Image
+                    source={require('../../assets/images/card-etreatment.png')}
+                    style={styles.Telemedicine}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.cardTitle}>E-treatment</Text>
+                  <Text style={styles.cardDetails}>
+                    Receive your e-prescription and care plan via email
+                  </Text>
+                </View>
+              </View>
+            </SwiperFlatList>
           </View>
-          <LinearGradient
-            colors={['#258bf5', '#1473d6']}
-            style={{paddingVertical: 20}}>
-            <View style={{flex: 1}}>
-              <Text style={styles.HowToUse}>How to Use?</Text>
-            </View>
-            <View style={styles.swiperFeatures}>
-              <SwiperFlatList
-                autoplay
-                autoplayDelay={10}
-                autoplayLoop
-                index={0}
-                paginationDefaultColor="#fff"
-                paginationActiveColor="#40ecb8"
-                showPagination
-                paginationStyle={{marginVertical: 0}}>
-                <View style={styles.child}>
-                  <View style={styles.MedgateContents}>
-                    <Image
-                      source={require('../../assets/images/card-calldoc.png')}
-                      style={styles.Telemedicine}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.cardTitle}>Call Doc</Text>
-                    <Text style={styles.cardDetails}>Manila: 028 705 0700</Text>
-                    <Text style={styles.cardDetails}>Globe: 0917 829 9996</Text>
-                    <Text style={styles.cardDetails}>Smart: 0998 990 7540</Text>
-                    <Text style={styles.cardDetails}>Sun: 0925 714 7794</Text>
-                  </View>
-                </View>
-                <View style={styles.child}>
-                  <View style={styles.MedgateContents}>
-                    <Image
-                      source={require('../../assets/images/card-triage.png')}
-                      style={styles.Telemedicine}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.cardTitle}>Triage</Text>
-                    <Text style={styles.cardDetails}>
-                      A telemedicine assistant will assess your concern and
-                      transfer you to our specialist doctor
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.child}>
-                  <View style={styles.MedgateContents}>
-                    <Image
-                      source={require('../../assets/images/card-consult.png')}
-                      style={styles.Telemedicine}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.cardTitle}>Consult</Text>
-                    <Text style={styles.cardDetails}>
-                      Speak to a Medgate specialist doctor through your mobile
-                      phone
-                    </Text>
-                  </View>
-                </View>
-                <View style={styles.child}>
-                  <View style={styles.MedgateContents}>
-                    <Image
-                      source={require('../../assets/images/card-etreatment.png')}
-                      style={styles.Telemedicine}
-                      resizeMode="contain"
-                    />
-                    <Text style={styles.cardTitle}>E-treatment</Text>
-                    <Text style={styles.cardDetails}>
-                      Receive your e-prescription and care plan via email
-                    </Text>
-                  </View>
-                </View>
-              </SwiperFlatList>
-            </View>
-          </LinearGradient>
 
-          <View style={{padding: 50, backgroundColor: '#fff'}}>
+          <View style={{padding: 50, flex: 1}}>
+            <Button
+              iconLeft
+              rounded
+              style={{backgroundColor: '#258bf5', flexDirection: 'column'}}
+              onPress={this.showDialog}>
+              <Icon type="Ionicons" name="ios-call" />
+              <Text>Request Callback!</Text>
+            </Button>
+          </View>
+          <View>
+            <Dialog.Container visible={this.state.dialogVisible}>
+              <Dialog.Description style={{padding: 20}}>
+                Need to speak to a doctor now? Provide your details and Medgate
+                will call you.
+              </Dialog.Description>
+              <Dialog.Input
+                label="Mobile Number"
+                onChangeText={mobileNumber =>
+                  this.setState({mobileNumber})
+                }></Dialog.Input>
+              <Dialog.Button label="Cancel" onPress={this.handleCancel} />
+              <Dialog.Button
+                label="Submit"
+                bold={true}
+                onPress={this.handleSubmit}
+              />
+            </Dialog.Container>
+          </View>
+          {/* <View style={{padding: 50, backgroundColor: '#fff'}}>
             <Text style={{fontSize: 24, color: '#258bf5', fontWeight: 'bold'}}>
               Easy, fast, secure.
             </Text>
@@ -289,7 +294,7 @@ export default class SideBar extends React.Component {
             <Text style={{color: '#2d2d2d', fontSize: 14}}>
               Call Doc. Anytime. Anywhere. No lines.™
             </Text>
-          </View>
+          </View> */}
         </ScrollView>
       </Container>
     );
@@ -300,7 +305,7 @@ export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
   },
   header: {
     backgroundColor: '#258bf5',
@@ -329,10 +334,10 @@ const styles = StyleSheet.create({
   },
   HowToUse: {
     fontSize: 24,
-    color: '#fff',
+    color: '#258bf5',
     fontWeight: 'bold',
     alignSelf: 'center',
-    marginTop: 10,
+    paddingVertical: 30,
   },
   WhatIsMedgate: {
     fontSize: 20,
@@ -346,16 +351,9 @@ const styles = StyleSheet.create({
   },
   MedgateContents: {
     flex: 5,
-    paddingVertical: 40,
+    paddingVertical: 20,
     paddingHorizontal: 40,
-    marginHorizontal: 60,
-    borderRadius: 20,
-    backgroundColor: '#fff',
-    shadowColor: '#fff',
-    shadowOffset: {width: 3, height: 3},
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 2,
+    marginHorizontal: 40,
     justifyContent: 'center',
   },
   Telemedicine: {
@@ -366,7 +364,8 @@ const styles = StyleSheet.create({
   },
 
   swiperFeatures: {
-    flex: 1,
+    flex: 2,
+    justifyContent: 'center',
   },
   child: {
     marginBottom: 20,

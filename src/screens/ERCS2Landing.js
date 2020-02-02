@@ -15,7 +15,7 @@ export default class ERCS2Landing extends React.Component {
         <View style={{flex: 3, paddingVertical: 100}}>
           <SwiperFlatList
             autoplay
-            autoplayDelay={2}
+            autoplayDelay={5}
             autoplayLoop
             index={0}
             showPagination
@@ -30,11 +30,11 @@ export default class ERCS2Landing extends React.Component {
                 resizeMode="contain"
               />
               <Text style={styles.swiperTitle}>
-                Select laboratory procedures
+                Step 1: Select laboratory procedures
               </Text>
               <Text style={styles.swiperSubtitle}>
-                Fill-out the form with the necessary information needed and you
-                are good to go.
+                Provide the necessary information needed to complete your
+                request.
               </Text>
             </View>
             <View style={[styles.child, {backgroundColor: 'transparent'}]}>
@@ -44,11 +44,11 @@ export default class ERCS2Landing extends React.Component {
                 resizeMode="contain"
               />
               <Text style={styles.swiperTitle}>
-                Upload your medical prescriptions
+                Step 2: Upload your medical prescriptions
               </Text>
               <Text style={styles.swiperSubtitle}>
-                We'll send you an e-mail with the form attached in it. You just
-                need to print and present it to your doctor.
+                You may upload your medical prescriptions provided by your
+                doctor for our reference.
               </Text>
             </View>
             <View style={[styles.child, {backgroundColor: 'transparent'}]}>
@@ -57,10 +57,9 @@ export default class ERCS2Landing extends React.Component {
                 style={styles.swiperImage}
                 resizeMode="contain"
               />
-              <Text style={styles.swiperTitle}>Wait for approval</Text>
+              <Text style={styles.swiperTitle}>Step 3: Wait for approval</Text>
               <Text style={styles.swiperSubtitle}>
-                Have a talk with your doctor through a medical consultation.
-                They'll tell you exactly what you need to do.
+                Wait for a couple of minutes for us to validate your request.
               </Text>
             </View>
             <View style={[styles.child, {backgroundColor: 'transparent'}]}>
@@ -70,11 +69,11 @@ export default class ERCS2Landing extends React.Component {
                 resizeMode="contain"
               />
               <Text style={styles.swiperTitle}>
-                Avail your diagnostic procedures
+                Step 4: Avail your diagnostic procedures
               </Text>
               <Text style={styles.swiperSubtitle}>
-                We've created a page where you can go back to your recent
-                consultations. We care about your history, we really do.
+                Once approved, you may print and avail your diagnostic
+                procedures in your chosen facility.
               </Text>
             </View>
           </SwiperFlatList>
@@ -94,6 +93,7 @@ export default class ERCS2Landing extends React.Component {
             block
             light
             rounded
+            style={{backgroundColor: '#fff'}}
             onPress={() => this.props.navigation.navigate('ERCS2HistoryPage')}>
             <Icon
               type="MaterialCommunityIcons"
@@ -134,9 +134,9 @@ const styles = StyleSheet.create({
   swiperTitle: {
     color: '#e74c3c',
     fontWeight: 'bold',
-    fontSize: 25,
+    fontSize: 20,
     marginBottom: 10,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   swiperSubtitle: {
     color: '#6d6e72',

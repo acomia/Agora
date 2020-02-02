@@ -91,21 +91,22 @@ export default class Dashboard extends React.Component {
           </View>
           <View style={styles.MenucontentStyle}>
             <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1, justifyContent: 'center'}}>
+              <View style={{flex: 1}}>
                 <TouchableNativeFeedback
                   //onPress={() => this.props.navigation.navigate('MembersPage')}>
                   onPress={() => this.checkConnectivity('MembersPage')}>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
-                      <Body>
+                      <Body
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
                         <Thumbnail
-                          small
-                          source={require('../../assets/images/profiles.png')}
+                          source={require('../../assets/images/menu-members.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>
-                          Account Profiles
-                        </Text>
+                        <Text style={styles.cardMenuText}>Profiles</Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -118,15 +119,16 @@ export default class Dashboard extends React.Component {
                   }>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
-                      <Body>
+                      <Body
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
                         <Thumbnail
-                          small
-                          source={require('../../assets/images/hospital.png')}
+                          source={require('../../assets/images/menu-provider.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>
-                          Medical Providers
-                        </Text>
+                        <Text style={styles.cardMenuText}>Providers</Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -141,13 +143,18 @@ export default class Dashboard extends React.Component {
                   }>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
-                      <Body>
+                      <Body
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
                         <Thumbnail
-                          small
-                          source={require('../../assets/images/consultation.png')}
+                          source={require('../../assets/images/menu-consultation.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>Create e-RCS 1</Text>
+                        <Text style={styles.cardMenuText}>
+                          Request for eConsultation Form
+                        </Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -160,14 +167,17 @@ export default class Dashboard extends React.Component {
                   }>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
-                      <Body>
+                      <Body
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
                         <Thumbnail
-                          small
-                          source={require('../../assets/images/laboratory.png')}
+                          source={require('../../assets/images/menu-diagnostics.png')}
                           resizeMode="contain"
                         />
                         <Text style={styles.cardMenuText}>
-                          Request for e-RCS 2
+                          Request for eDiagnostic Procedures Form
                         </Text>
                       </Body>
                     </CardItem>
@@ -176,7 +186,7 @@ export default class Dashboard extends React.Component {
               </View>
             </View>
             <Card transparent>
-              <CardItem style={[styles.cardMenuStyle]}>
+              <CardItem style={[styles.cardMenuStyle1]}>
                 <Left>
                   <Thumbnail
                     source={require('../../assets/images/map.png')}
@@ -186,7 +196,7 @@ export default class Dashboard extends React.Component {
                     <Text style={styles.cardMenuTextIntellimap}>
                       Intellimap
                     </Text>
-                    <Text style={styles.cardMenuText}>
+                    <Text style={styles.cardMenuText1}>
                       Search for our Accredited Hospitals, Diagnostic and
                       Specialty Clinics, and Dental Clinics without leaving the
                       app!
@@ -202,41 +212,40 @@ export default class Dashboard extends React.Component {
                 </Left>
               </CardItem>
             </Card>
-            <Card transparent>
-              <CardItem style={[styles.cardMenuStyle]}>
-                <Body style={{marginLeft: 15}}>
-                  <Image
-                    source={require('../../assets/images/medgatelogo.png')}
-                    resizeMode="contain"
-                    style={{width: width * 0.5, height: height * 0.08}}
-                  />
 
-                  <Text style={styles.cardMenuText}>
-                    {/* Get your hassle-free medical consultation. Our Filipino
-                    specialist doctors are just a phone call away to give you
-                    the case you deserve. */}
-                    Download the Medgate Philippines app now!
-                  </Text>
-                  <Text
-                    style={{
-                      color: '#258bf5',
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                      paddingBottom: 5,
-                    }}>
-                    Call Doc. Anytime. Anywhere. No lines.™
-                  </Text>
-                  <Button
-                    iconLeft
-                    rounded
-                    style={styles.cardButtonMedgate}
-                    onPress={() =>
-                      this.props.navigation.navigate('MedgatePage')
-                    }>
-                    <Icon type="Ionicons" name="ios-call" />
-                    <Text style={styles.cardButtonText}>Call a Doctor now</Text>
-                  </Button>
-                </Body>
+            <Card transparent>
+              <CardItem style={[styles.cardMenuStyle1]}>
+                <Left>
+                  <Thumbnail
+                    source={require('../../assets/images/medgate.png')}
+                    resizeMode="contain"
+                  />
+                  <Body style={{marginLeft: 15}}>
+                    <Text
+                      style={{
+                        color: '#258bf5',
+                        fontSize: 20,
+                        fontWeight: 'bold',
+                      }}>
+                      Medgate Philippines
+                    </Text>
+                    <Text style={styles.cardMenuText1}>
+                      Call Doc. Anytime. Anywhere. No lines.™
+                    </Text>
+                    <Button
+                      block
+                      iconLeft
+                      style={styles.cardButtonMedgate}
+                      onPress={() =>
+                        this.props.navigation.navigate('MedgatePage')
+                      }>
+                      <Icon type="Ionicons" name="ios-call" />
+                      <Text style={styles.cardButtonText}>
+                        Call a Doctor now
+                      </Text>
+                    </Button>
+                  </Body>
+                </Left>
               </CardItem>
             </Card>
           </View>
@@ -358,6 +367,18 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   cardMenuStyle: {
+    height: 150,
+    margin: 5,
+    borderRadius: 10,
+    shadowColor: '#f5f5f5',
+    shadowOffset: {width: 5, height: 10},
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 2,
+    borderWidth: 0,
+    justifyContent: 'center',
+  },
+  cardMenuStyle1: {
     margin: 5,
     borderRadius: 5,
     shadowColor: '#f5f5f5',
@@ -370,6 +391,13 @@ const styles = StyleSheet.create({
   cardMenuText: {
     color: '#6d6e72',
     fontSize: 14,
+    marginTop: 10,
+    textAlign: 'center',
+  },
+  cardMenuText1: {
+    color: '#6d6e72',
+    fontSize: 14,
+    marginTop: 10,
   },
   cardMenuTextIntellimap: {
     color: '#5fb650',
@@ -386,10 +414,10 @@ const styles = StyleSheet.create({
   cardButtonMedgate: {
     marginTop: 10,
     backgroundColor: '#258bf5',
-    alignSelf: 'center',
   },
   cardButtonText: {
     color: '#fff',
+    alignSelf: 'center',
   },
   cardText: {
     color: '#5fb650',

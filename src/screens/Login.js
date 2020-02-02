@@ -10,7 +10,8 @@ import {
 import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
 import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -25,16 +26,16 @@ const resetAction = StackActions.reset({
 
 // Subscribe
 const unsubscribe = NetInfo.addEventListener(state => {
-  console.log("Connection type", state.type);
-  console.log("Is connected?", state.isConnected);
+  console.log('Connection type', state.type);
+  console.log('Is connected?', state.isConnected);
 });
 
 // Unsubscribe
 unsubscribe();
 
 NetInfo.fetch().then(state => {
-  console.log("Connection type", state.type);
-  console.log("Is connected?", state.isConnected);
+  console.log('Connection type', state.type);
+  console.log('Is connected?', state.isConnected);
 });
 
 export default class Login extends React.Component {
@@ -46,8 +47,6 @@ export default class Login extends React.Component {
     username: '',
     password: '',
   };
-
- 
 
   async storeToken(accessToken) {
     try {
@@ -116,8 +115,6 @@ export default class Login extends React.Component {
     }
   }
 
-
-
   async getname() {
     try {
       let membname = await AsyncStorage.getItem(MEMB_NAME);
@@ -126,7 +123,6 @@ export default class Login extends React.Component {
       console.log('CANT GET NAME');
     }
   }
-
 
   async storemembemail(memb_email) {
     try {
@@ -147,20 +143,22 @@ export default class Login extends React.Component {
   }
   render() {
     return (
-      <Container>
-          <StatusBar translucent backgroundColor="transparent" />
+      <ScrollView>
+        <StatusBar translucent backgroundColor="transparent" />
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Sign In</Text>
         </View>
         <View style={styles.contentStyle}>
-          <Image
-            source={require('../../assets/images/intellicarelogo.png')}
-            style={styles.imageStyle}
-            resizeMode="contain"
-          />
-          <Label style={styles.fullertonLabel}>
-            A Member of Fullerton Health
-          </Label>
+          {/* <View style={{flex: 1, justifyContent: 'center'}}>
+            <Image
+              source={require('../../assets/images/intellicarelogo.png')}
+              style={styles.imageStyle}
+              resizeMode="contain"
+            />
+            <Label style={styles.fullertonLabel}>
+              A Member of Fullerton Health
+            </Label>
+          </View> */}
           <View style={styles.loginForm}>
             <Form>
               <Item floatingLabel>
@@ -196,44 +194,45 @@ export default class Login extends React.Component {
             </Button>
           </View>
         </View>
-      </Container>
+      </ScrollView>
     );
   }
 
-
-  checkConnectivity(){
+  checkConnectivity() {
     NetInfo.fetch().then(state => {
-     // console.log("Connection type2", state.type);
+      // console.log("Connection type2", state.type);
       //console.log("Is connected?2", state.isConnected);
-      if (state.isConnected == true){
+      if (state.isConnected == true) {
         //alert('Online');
         this._postUser();
-      }else{
+      } else {
         alert('Check Internet Connection...');
       }
     });
   }
 
   _postUser() {
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify({
+          email: this.state.username,
+          password: this.state.password,
+        }),
       },
-      body: JSON.stringify({
-        email: this.state.username,
-        password: this.state.password,
-      }),
-    })
+    )
       .then(response => {
         response.json().then(data => {
           if (data.is_success == true) {
-           
             let accessToken = data.access_token;
             this.storeToken(accessToken);
 
             let memberId = data.data.recordid;
-            this.storememberId(memberId); 
+            this.storememberId(memberId);
 
             let memb_Accountno = data.data.accountno;
             this.storeacct(memb_Accountno);
@@ -298,7 +297,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   imageStyle: {
-    height: '15%',
+    height: 30,
     width: width * 0.5,
     alignSelf: 'center',
   },

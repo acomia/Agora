@@ -29,11 +29,11 @@ import {
   Item,
   Badge,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import { StackActions, NavigationActions } from 'react-navigation';
-import moment from 'moment'
+import {StackActions, NavigationActions} from 'react-navigation';
+import moment from 'moment';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -44,20 +44,18 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'ERCS1LandingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'ERCS1LandingPage'})],
 });
 
-
 export default class ERCS1History extends React.Component {
-
   constructor(props) {
-    super(props)
-    global.storeToken = ''
+    super(props);
+    global.storeToken = '';
     this.state = {
       isLoading: false,
       dataSource: [],
       membacctnum: '',
-    }
+    };
   }
 
   onLogout() {
@@ -77,28 +75,31 @@ export default class ERCS1History extends React.Component {
     }
   }
 
-
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     this.setState({
       isLoading: true,
-      membacctnum: membacct
-    })
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs/history?acct=' + membacct, {
-      method: 'GET',
-      headers: {
-        'Authorization': 'Bearer ' + token,
-        // 'paramContract': '1',
-        // 'Content-Type': 'application/json;charset=UTF-8'
+      membacctnum: membacct,
+    });
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs/history?acct=' +
+        membacct,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          // 'paramContract': '1',
+          // 'Content-Type': 'application/json;charset=UTF-8'
+        },
+        params: {
+          acct: membacct,
+        },
       },
-      params: {
-        'acct': membacct
-      }
-    })
-      .then((response) => {
-        response.json().then((responseJson) => {
-          console.log('rcs1hist', responseJson)
+    )
+      .then(response => {
+        response.json().then(responseJson => {
+          console.log('rcs1hist', responseJson);
           if (responseJson.data != null) {
             this.setState({
               isLoading: false,
@@ -107,50 +108,56 @@ export default class ERCS1History extends React.Component {
           } else {
             if (responseJson.error_message == 'No RCS Transaction Found!') {
               //this.showAlert();
-              alert('No ERCS1 Transaction found!')
-              this.setState({ isLoading: false })
+              alert('No ERCS1 Transaction found!');
+              this.setState({isLoading: false});
 
-              this.props.navigation.navigate('Dashboard')
+              this.props.navigation.navigate('Dashboard');
             }
           }
 
           if (responseJson == 'Invalid Access Token') {
-            console.log('invalidToken', responseJson)
-            alert('Session Expired')
+            console.log('invalidToken', responseJson);
+            alert('Session Expired');
             this.onLogout();
           }
-        })
+        });
       })
-      .catch((error) => {
-        alert('Unable to connect to server' + error)
-      })
+      .catch(error => {
+        alert('Unable to connect to server' + error);
+      });
   }
 
-  renderItem = ({ item }) => {
-    const { StatusApproved, StatusCancelled, StatusPending, StatusDisapproved } = styles
-    var xstatus = item.status
-    var statusStyle = ''
-    switch (xstatus)     // Passing the variable to switch condition
-    {
-      case "A":
-        xstatus = 'Approved'
-        statusStyle = StatusApproved
+  renderItem = ({item}) => {
+    const {
+      StatusApproved,
+      StatusCancelled,
+      StatusPending,
+      StatusDisapproved,
+    } = styles;
+    var xstatus = item.status;
+    var statusStyle = '';
+    switch (
+      xstatus // Passing the variable to switch condition
+    ) {
+      case 'A':
+        xstatus = 'Approved';
+        statusStyle = StatusApproved;
         break;
-      case "D":
-        xstatus = 'DisApproved'
-        statusStyle = StatusDisapproved
+      case 'D':
+        xstatus = 'DisApproved';
+        statusStyle = StatusDisapproved;
         break;
-      case "W":
-        xstatus = 'Pending'
-        statusStyle = StatusPending
+      case 'W':
+        xstatus = 'Pending';
+        statusStyle = StatusPending;
         break;
-      case "C":
-        xstatus = 'Cancelled'
-        statusStyle = StatusCancelled
+      case 'C':
+        xstatus = 'Cancelled';
+        statusStyle = StatusCancelled;
         break;
       default:
-        xstatus = 'Pending'
-        statusStyle = StatusPending
+        xstatus = 'Pending';
+        statusStyle = StatusPending;
         break;
     }
     return (
@@ -164,18 +171,14 @@ export default class ERCS1History extends React.Component {
           <List>
             <ListItem noIndent>
               <Body>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
                   </Badge>
                 </View>
                 <View style={styles.rowDetails}>
-                  <Icon
-                    type="EvilIcons"
-                    name="user"
-                    style={styles.iconLabel}
-                  />
+                  <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
                   <Text note>{item.patient}</Text>
                 </View>
                 <View style={styles.rowDetails}>
@@ -192,73 +195,71 @@ export default class ERCS1History extends React.Component {
                     name="clock"
                     style={styles.iconLabel}
                   />
-                  <Text note>{item.validity_date === '' ? 'N/A' : moment(item.validity_date).format('L')}</Text>
+                  <Text note>
+                    {item.validity_date === ''
+                      ? 'N/A'
+                      : moment(item.validity_date).format('L')}
+                  </Text>
                 </View>
               </Body>
               <Right>
-                <Text note>{item.ercs_date === '' ? 'N/A' : moment(item.ercs_date).format('L')}</Text>
-                {/* <Button transparent>
-                <Text style={styles.buttonCancel}>Cancel</Text>
-              </Button> */}
+                <Text note>
+                  {item.ercs_date === ''
+                    ? 'N/A'
+                    : moment(item.ercs_date).format('L')}
+                </Text>
+                <Button transparent>
+                  <Text style={styles.buttonView}>View</Text>
+                </Button>
               </Right>
             </ListItem>
           </List>
         </View>
       </ScrollView>
     );
-  }
+  };
 
   renderSeparator = () => {
-    return (
-      <View
-        style={{ height: 0, backgroundColor: 'gray' }}>
-      </View>
-    )
-  }
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
+  };
 
   render() {
-    const { spinnerStyle, spinnerTextStyle } = styles
+    const {spinnerStyle, spinnerTextStyle} = styles;
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
         <ScrollView>
-
           <FlatList
             roundAvatar
             data={this.state.dataSource}
             renderItem={this.renderItem}
-            keyExtractor={(item) => item.ercsno}
+            keyExtractor={item => item.ercsno}
             ItemSeparatorComponent={this.renderSeparator}
           />
-
         </ScrollView>
-        {
-          (this.state.isLoading) &&
+        {this.state.isLoading && (
           <View style={spinnerStyle}>
-            <Spinner
-              color={'#5fb650'}
-              size={60}
-              type={'ThreeBounce'}
-            />
+            <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} />
           </View>
-        }
+        )}
       </Container>
     );
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
     fontWeight: 'bold',
     fontSize: 20,
     color: '#5fb650',
+    marginLeft: 0,
   },
   iconLabel: {
     color: '#6d6e72',
     fontSize: 20,
-    marginLeft: 15,
+    marginLeft: 5,
     marginTop: 1,
   },
   buttonCancel: {
@@ -288,9 +289,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#5fb650',
     padding: 0,
   },
-  StatusCancelled:{
+  StatusCancelled: {
     borderRadius: 5,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#e74c3c',
     padding: 0,
   },
   StatusPending: {
@@ -298,9 +299,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#F4D03F',
     padding: 0,
   },
-  StatusDisapproved:{
+  StatusDisapproved: {
     borderRadius: 5,
     backgroundColor: '#FF5733',
     padding: 0,
+  },
+  buttonView: {
+    color: '#3498db',
   },
 });
