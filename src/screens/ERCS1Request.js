@@ -75,7 +75,7 @@ export default class ERCS1Request extends React.Component {
       rcsNo: '',
       acctno: '',
       membgender: '',
-      visibleModal: false,
+      visibleModal: null,
       docspec: '',
       confirm: true,
       onchangeMemb: false
@@ -88,7 +88,6 @@ export default class ERCS1Request extends React.Component {
     this._isMounted = true;
     global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    console.log('State', this.state)
     // getting the principal and dependent of the acct
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
@@ -166,7 +165,6 @@ export default class ERCS1Request extends React.Component {
 
   async _illness() {
     // let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    console.log('membersRCS1', this.state.membgender)
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + this.state.membgender,
       {
@@ -183,7 +181,6 @@ export default class ERCS1Request extends React.Component {
             dataSourceIllness: illness.data,
             isLoading: false
           });
-          console.log('New State', this.state)
           this.arrayholderIllness = illness.data
         });
       })
@@ -312,8 +309,7 @@ export default class ERCS1Request extends React.Component {
         body: JSON.stringify({
           acctno: this.state.acctno,
           illness: specname,
-          doctor_name:
-            this.state.docspec.firstname + ' ' + this.state.docspec.lastname,
+          doctor_name: this.state.docspec.firstname + ' ' + this.state.docspec.lastname,
           doctor_code: this.state.docspec.doctor_code,
           doctor_phone: this.state.docspec.phone,
           hospital_name: this.state.search,
@@ -348,7 +344,6 @@ export default class ERCS1Request extends React.Component {
               .then(response => {
                 response.json().then(data => {
                   if (data.is_success === true) {
-
                     global.rcsNum = rcs;
                     global.acctNum = this.state.acctno;
                     global.mid = mid;
@@ -433,10 +428,14 @@ export default class ERCS1Request extends React.Component {
     );
   };
 
-  updateMembPicker = (MembPicker) => {
-    this.setState({ acctno: MembPicker.acct, MembPickerValueHolder: MembPicker.fullname, membgender: MembPicker.gender, isLoading: true })
+  updateMembPicked = (MembPicked) => {
+    console.log('Memb', MembPicked)
+    this.setState({
+      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
+      docspec: '', searchIllness: '', search: '', confirm: true
+    })
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + MembPicker.gender,
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + MembPicked.gender,
       {
         method: 'GET',
         headers: {
@@ -445,7 +444,6 @@ export default class ERCS1Request extends React.Component {
       },
     )
       .then(response => {
-
         response.json().then(illness => {
           this.setState({
             dataSourceIllness: illness.data,
@@ -458,10 +456,45 @@ export default class ERCS1Request extends React.Component {
         alert('Error!' + error);
       });
   }
+  _renderMembersModal = () => {
+    return (
+      <View style={styles.modalContainerStyle}>
+        <View
+          style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
+          <Button
+            rounded
+            transparent
+            onPress={() => {
+              this.setState({ visibleModal: false });
+            }}>
+            <Icon
+              type="Ionicons"
+              name="md-close"
+              style={{ color: '#c4c4c4' }}
+            />
+          </Button>
+        </View>
+        <ScrollView>
+          {this.state.Rcsmemb.map((item, key) => (
+            <ListItem key={key}>
+              <TouchableOpacity
+                onPress={() => this.updateMembPicked(item)}>
+                <View>
+                  <Text style={{ color: '#5fb650', fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-start' }}>
+                    {item.fullname}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </ListItem>
+          ))}
+        </ScrollView>
+      </View>
+    )
+  }
 
   render() {
     const { navigate } = this.props.navigation;
-    const { spinnerStyle, spinnerTextStyle } = styles;
+    const { spinnerStyle, memberPickedStyle, modalDocSpecTextStyle, modalDocNameTextStyle } = styles;
     const { dataSource, dataSourceIllness } = this.state;
     return (
       <Container>
@@ -479,32 +512,21 @@ export default class ERCS1Request extends React.Component {
         <View style={styles.divider} />
         <ScrollView style={styles.container}>
           <View style={{ marginTop: 20, marginBottom: 10 }}>
-            <Text style={styles.formLabel}>Choose member</Text>
-            <Picker
-              mode="dropdown"
-              iosIcon={<Icon name="arrow-down" />}
-              // defaultValue={this.state.MembPickerValueHolder}
-              selectedValue={this.state.MembPickerValueHolder}
-              // onValueChange={(modeValue, itemIndex) =>
-              //   this.setState({ MembPickerValueHolder: modeValue})
-              // }
-              onValueChange={(modeValue) => this.updateMembPicker(modeValue)}
-            >
-              {this.state.Rcsmemb.map((item, key) => (
-                <Picker.Item
-                  label={item.fullname}
-                  value={item}
-                  key={key}
-                />
-              ))}
-            </Picker>
-            <Text
-              style={{
-                fontSize: 14,
-                color: '#5fb650',
-                fontWeight: 'bold',
-                alignSelf: 'flex-start',
-              }}>{this.state.MembPickerValueHolder}</Text>
+            {/* <Text style={styles.formLabel}>Choose member</Text> */}
+            <Button
+              iconRight
+              onPress={() => { this.setState({ visibleModal: 1 }) }}
+              style={{ marginVertical: 10, backgroundColor: '#5fb650', elevation: 0, shadowOpacity: 0 }}>
+              <Text style={{ textTransform: 'capitalize', color: '#fff' }}>
+                Choose member
+              </Text>
+              <Icon
+                type="Ionicons"
+                name="md-arrow-dropdown"
+                style={{ color: '#2d2d2d', fontSize: 18 }}
+              />
+            </Button>
+            <Text style={memberPickedStyle}>{this.state.MembPickerValueHolder}</Text>
           </View>
           <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Type of consultation</Text>
@@ -564,7 +586,7 @@ export default class ERCS1Request extends React.Component {
               this.state.found === 0 ? (
                 <FlatList
                   style={{ borderBottomWidth: 0 }}
-                  data={this.state.dataSource}
+                  data={dataSource}
                   renderItem={({ item }) => (
                     <View style={{ backgroundColor: '#ffffff' }}>
                       <ListItem>
@@ -634,16 +656,14 @@ export default class ERCS1Request extends React.Component {
               this.state.searchIllness !== '' &&
               this.state.foundillness === 0 ? (
                 <FlatList
-                  data={this.state.dataSourceIllness}
+                  data={dataSourceIllness}
                   renderItem={({ item }) => (
                     <View style={{ backgroundColor: '#fff' }}>
                       <ListItem>
                         <TouchableOpacity onPress={this.illnessonpress(item)}>
-                          <Text style={{ alignSelf: 'flex-start', fontSize: 15 }}>
+                          <Text style={{ alignSelf: 'flex-start', fontSize: 14, fontWeight: 'bold' }}>
                             {item.illness}
                           </Text>
-
-                          {/* <Text style={{ alignSelf: 'flex-start', fontSize: 12 }}>Schedule: {item.clinic_hrs}</Text> */}
                         </TouchableOpacity>
                       </ListItem>
                     </View>
@@ -658,15 +678,15 @@ export default class ERCS1Request extends React.Component {
               iconRight
               disabled={this.state.confirm}
               onPress={() => {
-                this.setState({ visibleModal: true });
+                this.setState({ visibleModal: 2 });
               }}
               style={{
                 marginVertical: 10,
-                backgroundColor: '#f5f5f5',
+                backgroundColor: this.state.confirm ? '#f5f5f5' : '#5fb650',
                 elevation: 0,
                 shadowOpacity: 0,
               }}>
-              <Text style={{ textTransform: 'capitalize', color: '#cacaca' }}>
+              <Text style={{ textTransform: 'capitalize', color: this.state.confirm ? '#cacaca' : '#fff' }}>
                 Choose Doctor
               </Text>
               <Icon
@@ -680,13 +700,7 @@ export default class ERCS1Request extends React.Component {
                 marginVertical: 10,
                 paddingLeft: 10,
               }}>
-              <Text
-                style={{
-                  fontSize: 14,
-                  color: '#5fb650',
-                  fontWeight: 'bold',
-                  alignSelf: 'flex-start',
-                }}>
+              <Text style={modalDocNameTextStyle}>
                 {this.state.docspec === ''
                   ? ''
                   : 'DR. ' +
@@ -694,42 +708,26 @@ export default class ERCS1Request extends React.Component {
                   ' ' +
                   this.state.docspec.lastname}
               </Text>
-              <Text
-                style={{
-                  color: '#cacaca',
-                  fontSize: 12,
-                  alignSelf: 'flex-start',
-                }}>
+              <Text style={modalDocSpecTextStyle}>
                 {this.state.docspec === ''
                   ? ''
                   : 'Room No: ' + this.state.docspec.room}
               </Text>
-              <Text
-                style={{
-                  color: '#cacaca',
-                  fontSize: 12,
-                  alignSelf: 'flex-start',
-                }}>
+              <Text style={modalDocSpecTextStyle}>
                 {this.state.docspec === ''
                   ? ''
                   : 'Schedule: ' + this.state.docspec.schedule}
               </Text>
-              <Text
-                style={{
-                  color: '#cacaca',
-                  fontSize: 12,
-                  alignSelf: 'flex-start',
-                }}>
+              <Text style={modalDocSpecTextStyle}>
                 {this.state.docspec === ''
                   ? ''
                   : 'Phone No: ' + this.state.docspec.phone}
               </Text>
             </View>
             <Modal
-              isVisible={this.state.visibleModal}
-              animationInTiming={1000}
-              animationOutTiming={1000}
-              style={{ height: '50%' }}>
+              isVisible={this.state.visibleModal === 2}
+              animationInTiming={700}
+              animationOutTiming={700}>
               <View style={styles.modalContainerStyle}>
                 <View
                   style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
@@ -737,7 +735,7 @@ export default class ERCS1Request extends React.Component {
                     rounded
                     transparent
                     onPress={() => {
-                      this.setState({ visibleModal: false });
+                      this.setState({ visibleModal: null });
                     }}>
                     <Icon
                       type="Ionicons"
@@ -754,46 +752,20 @@ export default class ERCS1Request extends React.Component {
                           this.setState({ docspec: item, visibleModal: false });
                         }}>
                         <View>
-                          <Text
-                            style={{
-                              color: '#5fb650',
-                              fontSize: 14,
-                              fontWeight: 'bold',
-                              alignSelf: 'flex-start',
-                            }}>
+                          <Text style={modalDocNameTextStyle}>
                             DR.
                             {item.firstname + ' ' + item.lastname}
                           </Text>
-                          <Text
-                            style={{
-                              color: '#c4c4c4',
-                              fontSize: 12,
-                              alignSelf: 'flex-start',
-                            }}>
+                          <Text style={modalDocSpecTextStyle}>
                             {item.major_specialty}
                           </Text>
-                          <Text
-                            style={{
-                              color: '#c4c4c4',
-                              fontSize: 12,
-                              alignSelf: 'flex-start',
-                            }}>
+                          <Text style={modalDocSpecTextStyle}>
                             Room {item.room}
                           </Text>
-                          <Text
-                            style={{
-                              color: '#c4c4c4',
-                              fontSize: 12,
-                              alignSelf: 'flex-start',
-                            }}>
+                          <Text style={modalDocSpecTextStyle}>
                             Schedule: {item.schedule}
                           </Text>
-                          <Text
-                            style={{
-                              color: '#c4c4c4',
-                              fontSize: 12,
-                              alignSelf: 'flex-start',
-                            }}>
+                          <Text style={modalDocSpecTextStyle}>
                             Phone No: {item.phone}
                           </Text>
                         </View>
@@ -802,6 +774,9 @@ export default class ERCS1Request extends React.Component {
                   ))}
                 </ScrollView>
               </View>
+            </Modal>
+            <Modal isVisible={this.state.visibleModal === 1} animationInTiming={700} animationOutTiming={700}>
+              {this._renderMembersModal()}
             </Modal>
           </View>
           <View style={{ bottom: 10 }}>
@@ -883,7 +858,6 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   modalContainerStyle: {
-    flex: 1,
     flexDirection: 'column',
     alignContent: 'flex-start',
     marginLeft: 10,
@@ -895,4 +869,22 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: '#f5f5f5',
   },
+  memberPickedStyle: {
+    fontSize: 16,
+    color: '#5fb650',
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginLeft: 10
+  },
+  modalDocSpecTextStyle: {
+    color: '#c4c4c4',
+    fontSize: 12,
+    alignSelf: 'flex-start',
+  },
+  modalDocNameTextStyle: {
+    color: '#5fb650',
+    fontSize: 14,
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+  }
 });

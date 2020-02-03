@@ -537,11 +537,11 @@ export default class ERCS2Request extends React.Component {
                 }}
                 style={{
                   marginVertical: 10,
-                  // backgroundColor: '#f5f5f5',
+                  backgroundColor: this.state.confirmSpec ? '#f5f5f5' : '#e74c3c',
                   elevation: 0,
                   shadowOpacity: 0,
                 }}>
-                <Text style={{ textTransform: 'capitalize', color: '#cacaca' }}>
+                <Text style={{ textTransform: 'capitalize', color: this.state.confirmSpec ? '#cacaca' : '#fff' }}>
                   Choose Doctor
                 </Text>
                 <Icon
@@ -583,8 +583,8 @@ export default class ERCS2Request extends React.Component {
               </View>
               <Modal
                 isVisible={this.state.visibleModal}
-                animationInTiming={1000}
-                animationOutTiming={1000}>
+                animationInTiming={700}
+                animationOutTiming={700}>
                 <View style={styles.modalContainerStyle}>
                   <View
                     style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>

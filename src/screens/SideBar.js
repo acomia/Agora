@@ -4,9 +4,9 @@ import {
   TouchableNativeFeedback,
   ImageBackground, View
 } from 'react-native';
-import {Container, Header, Text, Icon, Left, Body, ListItem} from 'native-base';
+import { Container, Header, Text, Icon, Left, Body, ListItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -17,7 +17,7 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
 });
 
 export default class SideBar extends React.Component {
@@ -25,12 +25,14 @@ export default class SideBar extends React.Component {
     this.deleteToken();
   }
   async deleteToken() {
+    const mapData = ['hospitalData', 'clinicData']
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
       await AsyncStorage.removeItem(MEMBER_ID);
       await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
       await AsyncStorage.removeItem(MEMB_NAME);
       await AsyncStorage.removeItem(MEMB_EMAIL);
+      await AsyncStorage.multiRemove(mapData)
       this.props.navigation.dispatch(resetAction);
     } catch {
       console.log('Something went wrong');
@@ -40,7 +42,7 @@ export default class SideBar extends React.Component {
   render() {
     return (
       <Container>
-        <Header span style={{paddingLeft: 0, paddingRight: 0}}>
+        <Header span style={{ paddingLeft: 0, paddingRight: 0 }}>
           <ImageBackground
             source={require('../../assets/images/drawer-header-background.jpg')}
             style={styles.backgroundImage}>
@@ -76,7 +78,7 @@ export default class SideBar extends React.Component {
           }}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
-              <Icon active type="Ionicons" name="md-log-out"/>
+              <Icon active type="Ionicons" name="md-log-out" />
             </Left>
             <Body style={styles.listLabel}>
               <Text>Logout</Text>

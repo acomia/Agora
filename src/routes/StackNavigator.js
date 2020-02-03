@@ -16,7 +16,7 @@ import ApprovedUtilModal from '../screens/ApprovedUtilModal';
 // import PostedUtil from "../screens/PostedUtil"
 import MembInfo from '../screens/MembInfo';
 // import ApprovedUtil from "../screens/ApprovedUtil"
-import Intellimap from '../screens/Intellimap';
+import Intellimap from '../screens/Intellimap/Intellimap';
 import VerifyOTP from '../screens/VerifyOTP';
 import ChangePassword from '../screens/ChangePassword';
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
