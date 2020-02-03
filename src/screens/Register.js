@@ -33,7 +33,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker';
 import CompressImage from 'react-native-compress-image';
 import Modal from 'react-native-modal'
-import MaskedInput from 'react-native-masked-input-text'
+import { TextInputMask } from 'react-native-masked-text'
 import NetInfo from "@react-native-community/netinfo";
 
 const { width, height } = Dimensions.get('window');
@@ -581,6 +581,7 @@ export default class Login extends React.Component {
 
   handleSubmit = () => {
     let valid_email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    var regularExpression  =  /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,16}$/;
 
     NetInfo.fetch().then(state => {
       if (state.isConnected == false) {
@@ -613,6 +614,10 @@ export default class Login extends React.Component {
     if (this.state.password.length < 6) {
       return alert('Password too short');
     }
+
+    if(!regularExpression.test(this.state.password)) {
+      return alert("password should contain atleast one number, one upper case and one special character");
+      }
 
     if (this.state.password !== this.state.confirm_password) {
       return alert('Password does not match');
@@ -705,9 +710,12 @@ export default class Login extends React.Component {
 
   async _InsertRequest() {
     let formdata = new FormData();
+   
+    let nstring = this.state.intellicare_no
+   
 
-    let nstring = this.setState.intellicare_no
     this.setState.intellicare_no = nstring.replace(/[^0-9]/gi,'')
+  
     
     formdata.append('gov_id', this.state.valid_photo);
     formdata.append('int_id', this.state.intid_photo);
