@@ -37,6 +37,8 @@ import ERCS2Details from '../screens/ERCS2Details';
 import ERCS2CancelDetails from '../screens/ERCS2CancelDetails';
 import ERCS2DisapprovedDetails from '../screens/ERCS2DisapprovedDetails';
 import ERCS2DisapprovedProcedure from '../screens/ERCS2DisapprovedProcedure';
+import ERCS1Details from '../screens/ERCS1Details';
+import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -250,6 +252,36 @@ AppStack = createStackNavigator({
     screen: ERCS1History,
     navigationOptions: {
       title: 'Transaction History',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS1DetailsPage: {
+    screen: ERCS1Details,
+    navigationOptions: {
+      title: 'Details',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS1CancelDetailsPage: {
+    screen: ERCS1CancelDetails,
+    navigationOptions: {
+      title: 'Cancellation Details',
       headerStyle: {
         backgroundColor: '#5fb650',
         elevation: 0,

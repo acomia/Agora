@@ -695,6 +695,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flex: 1,
     paddingHorizontal: 10,
+    paddingVertical: 5
   },
   iconRcsDetails: {
     fontSize: 16,

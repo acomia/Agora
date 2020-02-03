@@ -43,6 +43,7 @@
     "react-native-map-clustering": "^2.0.2",
     "react-native-maps": "^0.25.0",
     "react-native-masked-input-text": "^1.0.11",
+    "react-native-masked-text": "^1.13.0",
     "react-native-modal": "^11.5.3",
     "react-native-offline": "^5.2.0",
     "react-native-otp-textinput": "0.0.6",

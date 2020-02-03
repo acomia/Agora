@@ -69,12 +69,12 @@ export default class Dashboard extends React.Component {
           </Left>
           <Right>
             <Body />
-            <Icon
+            {/* <Icon
               style={styles.headerIconStyle}
               type="MaterialCommunityIcons"
               name="account-circle"
               //onPress={() => this.props.navigation.navigate('ProfilePage')}
-            />
+            /> */}
           </Right>
         </Header>
         <ScrollView>
@@ -83,7 +83,7 @@ export default class Dashboard extends React.Component {
           </View>
           <View style={styles.contentStyle}>
             <Text style={styles.WelcomeheaderTitle}>
-              Hello, {this.state.fname}
+              Hello, {this.state.fname}!
             </Text>
             <Text style={{color: '#6d6e72', fontSize: 14}}>
               How are you doing today? We hope you're having a great one!
@@ -233,13 +233,14 @@ export default class Dashboard extends React.Component {
                       Call Doc. Anytime. Anywhere. No lines.™
                     </Text>
                     <Button
+                      transparent
                       block
                       iconLeft
                       style={styles.cardButtonMedgate}
                       onPress={() =>
                         this.props.navigation.navigate('MedgatePage')
                       }>
-                      <Icon type="Ionicons" name="ios-call" />
+                      <Icon type="Ionicons" name="ios-call" style={{color: '#258bf5'}} />
                       <Text style={styles.cardButtonText}>
                         Call a Doctor now
                       </Text>
@@ -413,10 +414,9 @@ const styles = StyleSheet.create({
   },
   cardButtonMedgate: {
     marginTop: 10,
-    backgroundColor: '#258bf5',
   },
   cardButtonText: {
-    color: '#fff',
+    color: '#258bf5',
     alignSelf: 'center',
   },
   cardText: {
