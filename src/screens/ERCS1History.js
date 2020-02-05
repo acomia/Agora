@@ -164,7 +164,7 @@ export default class ERCS1History extends React.Component {
                 <View style={styles.rowDetails}>
                   <Icon
                     type="EvilIcons"
-                    name="location"
+                    name="map-marked"
                     style={styles.iconLabel}
                   />
                   <Text note>{item.hospital}</Text>
@@ -189,7 +189,12 @@ export default class ERCS1History extends React.Component {
                     : moment(item.ercs_date).format('L')}
                 </Text>
                 <Button transparent>
-                  <Text style={styles.buttonView}>View</Text>
+                  <Text style={styles.buttonView} onPress={() =>
+                    this.props.navigation.navigate('ERCS1DetailsPage', {
+                      rcsnum1: item.ercsno,
+                      acctno: this.state.membacctnum,
+                      ercsid: item.record_id,
+                    })}>View</Text>
                 </Button>
               </Right>
             </ListItem>
