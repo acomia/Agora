@@ -1,11 +1,5 @@
 import React from 'react';
-import {
-  StyleSheet,
-  View,
-  StatusBar,
-  Dimensions,
-  FlatList,
-} from 'react-native';
+import {StyleSheet, View, StatusBar, Dimensions, FlatList} from 'react-native';
 import {
   Container,
   Button,
@@ -15,13 +9,15 @@ import {
   ListItem,
   List,
   Badge,
+  Icon,
+  Thumbnail,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/FontAwesome5'
+// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -32,7 +28,7 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'ERCS1LandingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'ERCS1LandingPage'})],
 });
 
 export default class ERCS1History extends React.Component {
@@ -72,7 +68,7 @@ export default class ERCS1History extends React.Component {
     });
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs/history?acct=' +
-      membacct,
+        membacct,
       {
         method: 'GET',
         headers: {
@@ -93,10 +89,9 @@ export default class ERCS1History extends React.Component {
               isLoading: false,
               dataSource: responseJson.data,
             });
-          }
-          else {
+          } else {
             if (responseJson.error_message == 'No RCS Transaction Found!') {
-              this.setState({ isLoading: false });
+              this.setState({isLoading: false});
             }
           }
           if (responseJson == 'Invalid Access Token') {
@@ -111,7 +106,7 @@ export default class ERCS1History extends React.Component {
       });
   }
 
-  renderItem = ({ item }) => {
+  renderItem = ({item}) => {
     const {
       StatusApproved,
       StatusCancelled,
@@ -121,7 +116,7 @@ export default class ERCS1History extends React.Component {
     var xstatus = item.status;
     var statusStyle = '';
     switch (
-    xstatus // Passing the variable to switch condition
+      xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
@@ -156,7 +151,7 @@ export default class ERCS1History extends React.Component {
           <List>
             <ListItem noIndent>
               <Body>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
@@ -205,23 +200,32 @@ export default class ERCS1History extends React.Component {
   };
 
   renderSeparator = () => {
-    return <View style={{ height: 0, backgroundColor: 'gray' }}></View>;
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
   };
 
   render() {
-    const { spinnerStyle } = styles;
+    const {spinnerStyle} = styles;
 
     return (
-      <Container>
-        <StatusBar translucent backgroundColor="transparent" />
-        {this.state.dataSource.length <= 0 &&
-          (
-            <View style={{ alignContent: 'center', alignItems: 'center', top: 20 }}>
-              <Icon name="history" color="#5fb650" size={40} style={{ marginVertical: 10 }} />
-              <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#5fb650" }}>No transaction history!</Text>
-            </View>
-          )
-        }
+      <Container style={{display: 'flex'}}>
+        <StatusBar backgroundColor="transparent" barStyle="light-content" />
+        {this.state.dataSource.length <= 0 && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              paddingHorizontal: 30,
+              alignItems: 'center',
+            }}>
+            <Thumbnail
+              large
+              source={require('../../assets/images/no-transaction.png')}
+            />
+            <Text style={{fontSize: 14, color: '#2d2d2d'}}>
+              You have no transactions yet!
+            </Text>
+          </View>
+        )}
         <ScrollView>
           <FlatList
             roundAvatar
@@ -242,7 +246,7 @@ export default class ERCS1History extends React.Component {
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {

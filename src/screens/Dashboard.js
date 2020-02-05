@@ -106,7 +106,7 @@ export default class Dashboard extends React.Component {
                           source={require('../../assets/images/menu-members.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>Profiles</Text>
+                        <Text style={styles.cardMenuText}>Member Profiles</Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -240,7 +240,11 @@ export default class Dashboard extends React.Component {
                       onPress={() =>
                         this.props.navigation.navigate('MedgatePage')
                       }>
-                      <Icon type="Ionicons" name="ios-call" style={{color: '#258bf5'}} />
+                      <Icon
+                        type="Ionicons"
+                        name="ios-call"
+                        style={{color: '#258bf5'}}
+                      />
                       <Text style={styles.cardButtonText}>
                         Call a Doctor now
                       </Text>

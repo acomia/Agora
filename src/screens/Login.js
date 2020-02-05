@@ -7,7 +7,16 @@ import {
   ImageBackground,
   StatusBar,
 } from 'react-native';
-import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
+import {
+  Container,
+  Button,
+  Text,
+  Form,
+  Item,
+  Input,
+  Label,
+  Icon,
+} from 'native-base';
 import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
@@ -143,11 +152,9 @@ export default class Login extends React.Component {
   }
   render() {
     return (
-      <ScrollView>
+      <Container>
         <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Sign In</Text>
-        </View>
+        <View style={styles.header}></View>
         <View style={styles.contentStyle}>
           {/* <View style={{flex: 1, justifyContent: 'center'}}>
             <Image
@@ -159,6 +166,19 @@ export default class Login extends React.Component {
               A Member of Fullerton Health
             </Label>
           </View> */}
+          <View>
+            <Icon
+              type="SimpleLineIcons"
+              name="lock-open"
+              style={{
+                color: '#5fb650',
+                fontSize: 60,
+                textAlign: 'center',
+                marginBottom: 20,
+              }}
+            />
+            <Text style={styles.headerTitle}>Sign in to your account</Text>
+          </View>
           <View style={styles.loginForm}>
             <Form>
               <Item floatingLabel>
@@ -177,13 +197,6 @@ export default class Login extends React.Component {
                 />
               </Item>
             </Form>
-            <Text
-              style={styles.ForgotPasswordLink}
-              onPress={() =>
-                this.props.navigation.navigate('ForgotPasswordPage')
-              }>
-              Forgot Password?
-            </Text>
             <Button
               rounded
               block
@@ -192,9 +205,19 @@ export default class Login extends React.Component {
               onPress={() => this.checkConnectivity()}>
               <Text> Login </Text>
             </Button>
+            <Text note style={{textAlign: 'center', marginVertical: 30}}>
+              OR
+            </Text>
+            <Text
+              style={styles.ForgotPasswordLink}
+              onPress={() =>
+                this.props.navigation.navigate('ForgotPasswordPage')
+              }>
+              Forgot Password?
+            </Text>
           </View>
         </View>
-      </ScrollView>
+      </Container>
     );
   }
 
@@ -262,18 +285,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    height: 100,
+    height: 50,
     backgroundColor: '#5fb650',
     paddingHorizontal: 30,
   },
   headerTitle: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#5fb650',
+    textAlign: 'center',
   },
   contentStyle: {
     flex: 1,
-    paddingVertical: 30,
     marginTop: -45,
     backgroundColor: '#fff',
     borderTopStartRadius: 50,
@@ -318,7 +341,6 @@ const styles = StyleSheet.create({
   ForgotPasswordLink: {
     color: '#3498db',
     fontSize: 12,
-    alignSelf: 'flex-end',
-    marginTop: 10,
+    alignSelf: 'center',
   },
 });
