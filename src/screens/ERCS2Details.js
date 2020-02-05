@@ -539,7 +539,7 @@ export default class ERCS2Details extends React.Component {
               style={{ flex: 1, margin: 5 }}
               onPress={() => {
                 this.setState({ visibleModal: false }),
-                  this.props.navigation.navigate('CancelRemarks', {
+                  this.props.navigation.navigate('ERCSCancelRemarks', {
                     details_acctno: this.state.acct_no,
                     details_rcsno: this.state.rcsno,
                     details_rcsid: this.state.rcsid,

@@ -1,5 +1,5 @@
 import React from 'react'
-import { View, Text, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
 import { Container, Button, Textarea, Icon } from 'native-base'
 import { StackActions, NavigationActions } from 'react-navigation';
 import Spinner from 'react-native-spinkit';
@@ -57,14 +57,20 @@ export default class ERCSCancelRemarks extends React.Component {
         return (
             <Container>
                 <View style={{ justifyContent: 'center', padding: 20 }}>
-                    <Icon type="MaterialCommunityIcons"
+                    {/* <Icon type="MaterialCommunityIcons"
                         name="file-document-box-multiple-outline"
                         color="#c4c4c4"
-                        style={{ alignSelf: 'center', fontSize: 50, marginVertical: 20 }} />
+                        style={{ alignSelf: 'center', fontSize: 50, marginVertical: 20 }} /> */}
+                    <Image
+                        source={require('../../assets/images/rcs_remark.png')}
+                        style={styles.imageStyle}
+                        resizeMode="contain"
+                    />
+                    <Text style={{ alignSelf: 'center', fontSize: 16, color: '#6d6e72', marginVertical: 20 }}>Please provide your reason for cancellation</Text>
                     <Textarea
                         rowSpan={6}
                         bordered
-                        placeholder="Reason for cancellation"
+                        placeholder="Reason"
                         style={{ marginVertical: 20 }}
                         value={this.state.remarks}
                         onChangeText={(remarks) => this.setState({ remarks })} />
@@ -87,8 +93,8 @@ export default class ERCSCancelRemarks extends React.Component {
             </Container>
         )
     }
-
 }
+export const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
     spinnerStyle: {
         flex: 1,
@@ -100,5 +106,10 @@ const styles = StyleSheet.create({
         right: 0,
         top: 0,
         bottom: 0,
+    },
+    imageStyle: {
+        height: height * 0.2,
+        width: width * 0.3,
+        alignSelf: 'center',
     },
 })
