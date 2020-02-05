@@ -11,19 +11,13 @@ import {
 import {
   Container,
   CardItem,
-  Input,
-  Title,
   Card,
-  Header,
   Button,
   Text,
-  Left,
-  Right,
   Body,
-  Label,
   ListItem,
   Icon,
-  Item,
+  Thumbnail
 } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
@@ -286,6 +280,7 @@ export default class ERCS2Request extends React.Component {
             } else {
               this.setState({
                 RCSdoctorspecialty: [],
+                isLoading: false
               });
               alert('No Doctors Found!');
             }
@@ -371,11 +366,6 @@ export default class ERCS2Request extends React.Component {
         //Printing the log realted to the file
         console.log('File Size : ' + res.size);
       }
-      // results.map((item) => {
-      //   const fileSize = 0
-      //   fileSize = fileSize + item.size
-      // })
-      //Setting the state to show multiple file attributes
       this.setState({ multipleFile: results });
     } catch (err) {
       //Handling any exception (If any)
@@ -674,11 +664,12 @@ export default class ERCS2Request extends React.Component {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                       }}>
-                      <Text style={styles.textStyle}>
+                      {/* <Text style={styles.textStyle}>
                         File Name: {item.name ? item.name : ''}
-                      </Text>
+                      </Text> */}
+                      <Thumbnail square source={{ uri: item.uri }} style={styles.thumbnailStyle} />
                       <TouchableOpacity
-                        style={{ marginTop: 5, marginRight: 10 }}
+                        style={{ marginTop: 16, marginRight: 20 }}
                         onPress={() => this.removeFile(key)}>
                         <Icon
                           type="Ionicons"
@@ -833,13 +824,10 @@ const styles = StyleSheet.create({
   buttonStyle: {
     justifyContent: 'center',
   },
-  textStyle: {
-    backgroundColor: '#fff',
-    fontSize: 15,
-    marginVertical: 10,
-    marginLeft: 10,
-    color: 'black',
-    width: '90%',
+  thumbnailStyle: {
+    marginLeft: 20,
+    marginVertical: 3,
+    borderRadius: 4,
   },
   spinnerStyle: {
     flex: 1,

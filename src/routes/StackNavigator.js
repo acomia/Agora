@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet, StatusBar} from 'react-native';
-import {Icon, Header} from 'native-base';
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import { StyleSheet, StatusBar } from 'react-native';
+import { Icon, Header } from 'native-base';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import Login from '../screens/Login';
 import OnBoarding from '../screens/OnBoarding';
 import Register from '../screens/Register';
@@ -39,6 +39,7 @@ import ERCS2DisapprovedDetails from '../screens/ERCS2DisapprovedDetails';
 import ERCS2DisapprovedProcedure from '../screens/ERCS2DisapprovedProcedure';
 import ERCS1Details from '../screens/ERCS1Details';
 import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
+import ERCSCancelRemarks from '../screens/ERCSCancelRemarks'
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -395,6 +396,21 @@ AppStack = createStackNavigator({
       headerTintColor: '#fff',
     },
   },
+  ERCSCancelRemarks: {
+    screen: ERCSCancelRemarks,
+    navigationOptions: {
+      title: 'Cancel Request',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  }
 });
 
 export default createAppContainer(AppStack);

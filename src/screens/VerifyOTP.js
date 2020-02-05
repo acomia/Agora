@@ -5,6 +5,7 @@ import { Button } from 'native-base'
 import Modal from 'react-native-modal'
 import { Icon } from 'react-native-elements'
 import OTPTextView from 'react-native-otp-textinput'
+import Spinner from 'react-native-spinkit'
 
 const SCREEN_WIDTH = Dimensions.get('window').width
 
@@ -12,10 +13,11 @@ export default class VerifyOTP extends React.Component {
 
     constructor() {
         super()
-        this.state = { verification_CODE: '', registration_MEMBID: '', visibleModal: null }
+        this.state = { verification_CODE: '', registration_MEMBID: '', visibleModal: null, isLoading: false }
     }
 
     VALIDATE_FORGOT_PW() {
+        this.setState({ isLoading: true })
         var FPW_EMAILADD = this.props.navigation.getParam('emailAddress')
         fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/validate', {
             method: 'GET',
@@ -28,6 +30,7 @@ export default class VerifyOTP extends React.Component {
                 response.json()
                     .then((data) => {
                         if (data.error_message === 'Verification Code is Valid!') {
+                            this.setState({ isLoading: false, verification_CODE: '' })
                             this.props.navigation.navigate('ChangePassword', {
                                 OTP_CODE: this.state.verification_CODE,
                                 EMAIL_ADD: FPW_EMAILADD
@@ -42,6 +45,7 @@ export default class VerifyOTP extends React.Component {
             })
     }
     VALIDATE_REGISTRATION() {
+        this.setState({ isLoading: true })
         var REG_EMAILADD = this.props.navigation.getParam('emailAddress')
         fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/validate', {
             method: 'PUT',
@@ -54,9 +58,10 @@ export default class VerifyOTP extends React.Component {
                 response.json()
                     .then((data) => {
                         if (data.error_message === 'Verification Code is Valid!') {
-                            this.setState({ visibleModal: 1 })
+                            this.setState({ visibleModal: 1, isLoading: false, verification_CODE: '' })
                         } else {
                             alert('Error validating otp!')
+                            this.setState({ isLoading: false, verification_CODE: '' })
                         }
                     })
             })
@@ -65,7 +70,7 @@ export default class VerifyOTP extends React.Component {
             })
     }
     REG_SUCCESS_VAL() {
-        this.setState({ visibleModal: null })
+        this.setState({ visibleModal: null, verification_CODE: '' })
         this.props.navigation.navigate('LoginPage')
     }
     RESEND_OTP() {
@@ -157,7 +162,9 @@ export default class VerifyOTP extends React.Component {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={() => this.PROCESS_OTP()}>
                         <View style={styles.button}>
-                            <Text style={styles.verifyText}>V E R I F Y</Text>
+                            {this.state.isLoading ? <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} /> :
+                                <Text style={styles.verifyText}>V E R I F Y</Text>
+                            }
                         </View>
                     </TouchableOpacity>
                 </View>

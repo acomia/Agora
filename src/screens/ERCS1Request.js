@@ -254,6 +254,7 @@ export default class ERCS1Request extends React.Component {
             } else {
               this.setState({
                 RCSdoctorspecialty: [],
+                isLoading: false
               });
               alert('No Doctors Found!');
             }
@@ -321,7 +322,6 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          //console.log('ercs1',data)
           let rcs = data.data.ercsno;
           // send to email
           if (data.is_success === true) {
@@ -362,10 +362,6 @@ export default class ERCS1Request extends React.Component {
                 alert('Error!' + error);
               });
           } else {
-           
-            this.setState({
-              isLoading: false,
-            });
             alert('error in saving', data.error_message);
           }
         });

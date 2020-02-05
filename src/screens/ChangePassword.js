@@ -1,20 +1,22 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native'
 import { Container, Button, Text, Left, Item, Input, Label, Icon } from 'native-base'
-// import { Icon } from 'react-native-elements'
+import Spinner from 'react-native-spinkit'
 import Modal from 'react-native-modal'
 
 export default class ChangePassword extends React.Component {
 
     constructor() {
         super();
-        this.state = { new_PW: '', confirm_PW: '' }
+        this.state = { new_PW: '', confirm_PW: '', isLoading: false }
     }
 
     CHANGE_PW() {
+
         if (this.state.new_PW !== this.state.confirm_PW) {
             return alert('Password does not match!')
         }
+        this.setState({ isLoading: true })
         const { OTP_CODE, EMAIL_ADD } = this.props.navigation.state.params
         // var ver_CODE = this.props.navigation.getParam('OTP_CODE')
         // var email_ADD = this.props.navigation.getParam('EMAIL_ADD')
@@ -33,9 +35,10 @@ export default class ChangePassword extends React.Component {
                 response.json()
                     .then((data) => {
                         if (data.error_message === 'Successfully updated.') {
+                            this.setState({ isLoading: false })
                             this.props.navigation.navigate('LoginPage')
                         } else {
-                            this.setState({ visibleModal: true })
+                            this.setState({ visibleModal: true, isLoading: false })
                         }
                     })
             })
@@ -76,7 +79,9 @@ export default class ChangePassword extends React.Component {
                         />
                     </Item>
                     <Button block rounded info onPress={() => this.CHANGE_PW()}>
-                        <Text style={{ fontSize: 18 }}>S U B M I T</Text>
+                        {this.state.isLoading ? <Spinner color={'#fff'} size={60} type={'ThreeBounce'} /> :
+                            <Text style={{ fontSize: 18 }}>S U B M I T</Text>
+                        }
                     </Button>
                 </View>
                 <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
