@@ -6,6 +6,7 @@ import {
   Image,
   ImageBackground,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
 import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
 import {StackActions, NavigationActions} from 'react-navigation';
@@ -46,6 +47,7 @@ export default class Login extends React.Component {
   state = {
     username: '',
     password: '',
+    LoginSubmit: false,
   };
 
   async storeToken(accessToken) {
@@ -79,7 +81,7 @@ export default class Login extends React.Component {
   async getId() {
     try {
       let membid = await AsyncStorage.getItem(MEMBER_ID);
-      console.log('memb id is: ' + membid);
+      //console.log('memb id is: ' + membid);
     } catch (error) {
       console.log('CANT GET  MEMB ID');
     }
@@ -99,7 +101,7 @@ export default class Login extends React.Component {
   async getacct() {
     try {
       let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-      console.log('memb acct is: ' + membacct);
+      //console.log('memb acct is: ' + membacct);
     } catch (error) {
       console.log('CANT GET ACCT NO');
     }
@@ -118,7 +120,7 @@ export default class Login extends React.Component {
   async getname() {
     try {
       let membname = await AsyncStorage.getItem(MEMB_NAME);
-      console.log('memb name is: ' + membname);
+      //console.log('memb name is: ' + membname);
     } catch (error) {
       console.log('CANT GET NAME');
     }
@@ -136,7 +138,7 @@ export default class Login extends React.Component {
   async getemail() {
     try {
       let membemail = await AsyncStorage.getItem(MEMB_EMAIL);
-      console.log('memb email is: ' + membemail);
+      //console.log('memb email is: ' + membemail);
     } catch (error) {
       console.log('CANT GET EMAIL');
     }
@@ -190,7 +192,11 @@ export default class Login extends React.Component {
               success
               style={{marginTop: 50}}
               onPress={() => this.checkConnectivity()}>
-              <Text> Login </Text>
+                {this.state.LoginSubmit ? (
+                  <ActivityIndicator size="small" color="white" />
+                ) : (
+                  <Text> Login </Text>
+                  )}  
             </Button>
           </View>
         </View>
@@ -199,6 +205,7 @@ export default class Login extends React.Component {
   }
 
   checkConnectivity() {
+    this.setState({ LoginSubmit: true });
     NetInfo.fetch().then(state => {
       // console.log("Connection type2", state.type);
       //console.log("Is connected?2", state.isConnected);
@@ -207,6 +214,7 @@ export default class Login extends React.Component {
         this._postUser();
       } else {
         alert('Check Internet Connection...');
+        this.setState({ LoginSubmit: false });
       }
     });
   }
@@ -252,6 +260,7 @@ export default class Login extends React.Component {
       .catch(error => {
         alert('Error!' + error);
       });
+      this.setState({ LoginSubmit: false });
   }
 }
 

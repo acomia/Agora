@@ -2,7 +2,7 @@ import React from 'react';
 import {
   StyleSheet,
   TouchableNativeFeedback,
-  ImageBackground, View
+  ImageBackground, View,Alert
 } from 'react-native';
 import { Container, Header, Text, Icon, Left, Body, ListItem } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -22,7 +22,15 @@ const resetAction = StackActions.reset({
 
 export default class SideBar extends React.Component {
   onLogout() {
-    this.deleteToken();
+    Alert.alert(
+      'Confirmation',
+      'Are you sure you want to Logout?',
+      [
+        {text: 'Logout' , onPress:()=> this.deleteToken() },
+        {text: 'Cancel' , style: 'cancel'},
+      ],
+      {cancelable: false},
+    )
   }
   async deleteToken() {
     const mapData = ['hospitalData', 'clinicData']
