@@ -118,6 +118,51 @@ export default class ERCS1Details extends React.Component {
       });
   }
 
+  async _sendemail() {
+    <ActivityIndicator size="small" color="white" />;
+    const {navigation} = this.props;
+    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    let email = await AsyncStorage.getItem(MEMB_EMAIL);
+    let mid = await AsyncStorage.getItem(MEMBER_ID);
+    let rcsno = navigation.getParam('rcsnum1', '');
+    let acctNum = this.state.dataSource.acctno;
+    console.log('acctnum',acctNum)
+    console.log('rcsno',rcsno)
+    console.log('email',email)
+    console.log('mid',mid)
+    console.log('token',token)
+    //let acctNum = navigation.getParam('acctno', '');
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
+        rcsno,
+      {
+        method: 'GET',
+        params: {
+          no: rcsno,
+        },
+        headers: {
+          Authorization: 'Bearer ' + token,
+          EmailAddress: email,
+          AccountNo: acctNum,
+          AccountID: mid,
+          //'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(data => {
+          console.log('finalRcs2', data);
+          if (data.is_success === true) {
+            alert('RCS sent to Email Successfully');
+          } else {
+            alert(data.error_message);
+          }
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+  }
 
   async _cancelRCS() {
     const { navigation } = this.props;
@@ -241,7 +286,7 @@ export default class ERCS1Details extends React.Component {
                   name="clipboard"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>{xstatus}</Text>
+                <Text style={styles.textRcsDetails}>{xconsulttype}</Text>
               </View>
             </View>
             <View style={{ flexDirection: 'row' }}>
@@ -251,11 +296,11 @@ export default class ERCS1Details extends React.Component {
                   name="calendar"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.ercs_date}</Text>
+                <Text style={styles.textRcsDetails}>{moment(this.state.dataSource.ercs_date).format('L')}</Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon type="Feather" name="clock" style={styles.iconRcsDetails} />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.validity_date}</Text>
+                <Text style={styles.textRcsDetails}>{moment(this.state.dataSource.validity_date).format('L')}</Text>
               </View>
             </View>
             <View style={{ flexDirection: 'row' }}>
@@ -297,8 +342,21 @@ export default class ERCS1Details extends React.Component {
             </View>
           </View>
           <View style={styles.viewButton}>
-          {console.log('button',xstatus)}
-            <Button 
+            <Button
+              disabled={xstatus === 'Approved' ? false : true}
+              block
+              rounded
+              iconLeft
+              style={
+                xstatus === 'Approved'
+                  ? [styles.buttonSend, { backgroundColor: '#5DADE2' }]
+                  : styles.buttonSend
+              }
+              onPress={() => this._sendemail()}>
+              <Icon type="FontAwesome" name="send-o" />
+              <Text>Send to e-mail</Text>
+            </Button>
+            <Button
               disabled={xstatus === 'Approved' ? false : true}
               block
               rounded
