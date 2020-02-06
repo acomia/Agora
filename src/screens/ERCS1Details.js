@@ -40,7 +40,9 @@ export default class ERCS1Details extends React.Component {
       dataSource: [],
       dataProcSource: [],
       dataDocSource: [],
-      rcsnum2: '',
+      acct_no: '',
+      rcsid: '',
+      rcsnum : '',
       visibleModal: false,
     };
   }
@@ -63,50 +65,40 @@ export default class ERCS1Details extends React.Component {
   }
 
   async componentDidMount() {
-    this.setState({
-      isLoading: true,
-    });
     const { navigation } = this.props;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    let rcsno = navigation.getParam('rcsnum1', '');
+    const { rcsnum1, acctno, ercsid } = navigation.state.params
+    this.setState({ isLoading: true, acct_no: acctno, rcsnum: rcsnum1, rcsid: ercsid });
+    // let rcsnum1 = navigation.getParam('rcsnum1', '');
 
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs/history/details?ercs=' +
-      rcsno,
+      rcsnum1,
       {
         method: 'GET',
         headers: {
           Authorization: 'Bearer ' + token,
-          // 'paramContract': '1',
-          // 'Content-Type': 'application/json;charset=UTF-8'
         },
         params: {
-          ercs: rcsno,
+          ercs: rcsnum1,
         },
       },
     )
       .then(response => {
-        console.log('rcsdetails', response);
         response.json().then(responseJson => {
-          console.log('rcs1det', responseJson);
           if (responseJson.data != null) {
-            console.log('rcs1details', responseJson);
             this.setState({
-              //isLoading: false,
               isLoading: false,
               dataSource: responseJson.data,
             });
           } else {
-            //if (responseJson.error_message == 'No RCS Transaction Found!') {
-            //this.showAlert();
+            this.setState({ isLoading: false });
             alert('No RCS Transaction found!');
             this.props.navigation.navigate('ERCS1HistoryPage');
             //}
           }
 
           if (responseJson == 'Invalid Access Token') {
-            console.log('invalidToken', responseJson);
             alert('Session Expired');
             this.onLogout();
             this.props.navigation.navigate('Dashboard');
@@ -120,25 +112,20 @@ export default class ERCS1Details extends React.Component {
 
   async _sendemail() {
     <ActivityIndicator size="small" color="white" />;
-    const {navigation} = this.props;
+    const { navigation } = this.props;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
-    let rcsno = navigation.getParam('rcsnum1', '');
+    // let rcsnum1 = navigation.getParam('rcsnum1', '');
     let acctNum = this.state.dataSource.acctno;
-    console.log('acctnum',acctNum)
-    console.log('rcsno',rcsno)
-    console.log('email',email)
-    console.log('mid',mid)
-    console.log('token',token)
     //let acctNum = navigation.getParam('acctno', '');
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
-        rcsno,
+      rcsnum1,
       {
         method: 'GET',
         params: {
-          no: rcsno,
+          no: rcsnum1,
         },
         headers: {
           Authorization: 'Bearer ' + token,
@@ -151,52 +138,9 @@ export default class ERCS1Details extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          console.log('finalRcs2', data);
           if (data.is_success === true) {
             alert('RCS sent to Email Successfully');
           } else {
-            alert(data.error_message);
-          }
-        });
-      })
-      .catch(error => {
-        alert('Error!' + error);
-      });
-  }
-
-  async _cancelRCS() {
-    const { navigation } = this.props;
-    this.setState({ visibleModal: false, isLoading: true });
-    let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    let rcsno = navigation.getParam('rcsnum1', '');
-    let acctNum = this.state.dataSource.acctno;
-    //let acctNum = navigation.getParam('acctno', '');
-    let ercsid = navigation.getParam('ercsid', '');
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs/cancel',
-      {
-        method: 'PUT',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        body: JSON.stringify({
-          acctno: acctNum,
-          ercsno: rcsno,
-          ercs_id: ercsid,
-          remarks: 'Cancel by Member',
-        }),
-      },
-    )
-      .then(response => {
-        response.json().then(data => {
-          console.log('finalRcs2Cancel', data);
-          if (data.is_success === true) {
-            this.setState({ isLoading: false });
-            alert('RCS Cancel Successfully');
-            this.props.navigation.navigate('ERCS1LandingPage');
-          } else {
-            this.setState({ isLoading: false });
             alert(data.error_message);
           }
         });
@@ -212,9 +156,6 @@ export default class ERCS1Details extends React.Component {
       StatusCancelled,
       StatusOthers,
       StatusPending,
-      StatusDisapproved,
-      ConsultInitial,
-      ConsultFollowup,
     } = styles;
     var xstatus = this.state.dataSource.status;
     var statusStyle = '';
@@ -334,8 +275,10 @@ export default class ERCS1Details extends React.Component {
                   light
                   style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
                   onPress={() =>
-                    this.props.navigation.navigate('ERCS1CancelDetailsPage')
-                  }>
+                    this.props.navigation.navigate('ERCS1CancelDetailsPage',{
+                      cancelDate: this.state.dataSource.cancelled_date,
+                      cancelRemarks: this.state.dataSource.cancelled_remarks
+                    })}>  
                   <Text style={styles.buttonChangeDetails}>Check Details</Text>
                 </Button>
               </Right>
@@ -384,10 +327,17 @@ export default class ERCS1Details extends React.Component {
             }}>
             <Button
               block
-              rounded
+              // rounded
               info
               style={{ flex: 1, margin: 5 }}
-              onPress={() => this._cancelRCS()}>
+              onPress={() => {
+                this.setState({ visibleModal: false }),
+                  this.props.navigation.navigate('ERCS1CancelRemarks', {
+                    details_acctno: this.state.acct_no,
+                    details_rcsno: this.state.rcsnum,
+                    details_rcsid: this.state.rcsid,
+                  })
+              }}>
               <Text style={{ fontWeight: 'bold', color: 'white' }}>OKAY</Text>
             </Button>
             <Button

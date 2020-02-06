@@ -190,7 +190,7 @@ export default class ERCS1History extends React.Component {
                 </Text>
                 <Button transparent>
                   <Text style={styles.buttonView} onPress={() =>
-                    this.props.navigation.navigate('ERCS1DetailsPage', {
+                    this.props.navigation.navigate('ERCS1DetailsPage', { 
                       rcsnum1: item.ercsno,
                       acctno: this.state.membacctnum,
                       ercsid: item.record_id,
