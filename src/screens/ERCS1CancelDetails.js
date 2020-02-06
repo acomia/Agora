@@ -43,7 +43,7 @@ export default class ERCS1CancelDetails extends React.Component {
                 <Text>Cancelled by</Text>
               </Left>
               <Right style={{ flex: 3 }}>
-                <Text note>User</Text>
+                <Text note>You</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>

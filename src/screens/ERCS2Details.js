@@ -589,7 +589,7 @@ export default class ERCS2Details extends React.Component {
             </Button>
             <Button
               block
-              // rounded
+              //rounded
               warning
               style={{ flex: 1, margin: 5 }}
               onPress={() => this.setState({ visibleModal: false })}>

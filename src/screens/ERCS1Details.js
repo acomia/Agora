@@ -116,7 +116,7 @@ export default class ERCS1Details extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
-    // let rcsnum1 = navigation.getParam('rcsnum1', '');
+     let rcsnum1 = navigation.getParam('rcsnum1', '');
     let acctNum = this.state.dataSource.acctno;
     //let acctNum = navigation.getParam('acctno', '');
     fetch(
@@ -268,7 +268,7 @@ export default class ERCS1Details extends React.Component {
           <View style={styles.viewOtherDetails}>
             <View style={{ flexDirection: 'row' }}>
               <Left style={{ marginLeft: 10 }}>
-                <Text note>Cancelled by you</Text>
+                {/* <Text note>Cancelled by you</Text> */}
               </Left>
               <Right style={{ alignSelf: 'flex-end' }}>
                 <Button
@@ -332,7 +332,7 @@ export default class ERCS1Details extends React.Component {
               style={{ flex: 1, margin: 5 }}
               onPress={() => {
                 this.setState({ visibleModal: false }),
-                  this.props.navigation.navigate('ERCS1CancelRemarks', {
+                  this.props.navigation.navigate('ERCSCancelRemarks', {
                     details_acctno: this.state.acct_no,
                     details_rcsno: this.state.rcsnum,
                     details_rcsid: this.state.rcsid,
@@ -342,7 +342,7 @@ export default class ERCS1Details extends React.Component {
             </Button>
             <Button
               block
-              rounded
+              //rounded
               warning
               style={{ flex: 1, margin: 5 }}
               onPress={() => this.setState({ visibleModal: false })}>
