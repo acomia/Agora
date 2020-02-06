@@ -358,16 +358,36 @@ export default class ERCS2Request extends React.Component {
         type: [DocumentPicker.types.allFiles],
       });
       //Validation for more than 3 file was selected
-      if (results.length > 3) {
-        return alert('Cannot upload more than 3 file!');
+      if (results.length > 5) {
+        return alert('Cannot upload more than 5 file!');
       }
       //Validation for total allow MB
       for (const res of results) {
         //Printing the log realted to the file
         console.log('File Size : ' + res.size);
       }
+
+     var found = results.find(function(result) {
+        return result.size > 4000000;
+     })
+
+     console.log('yey',found)
+
+     if (found === undefined)
+     {
+      console.log(results)
       this.setState({ multipleFile: results });
-    } catch (err) {
+  
+    }
+     else
+     {
+      return alert('Cannot upload file(s) larger than 4 MB');
+     }
+
+    } 
+    
+    catch (err) 
+    {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
         //If user canceled the document selection
@@ -378,7 +398,10 @@ export default class ERCS2Request extends React.Component {
         throw err;
       }
     }
+
   }
+
+ 
 
   removeFile(item) {
     const newFile = this.state.multipleFile;
@@ -650,7 +673,7 @@ export default class ERCS2Request extends React.Component {
                           fontSize: 14,
                           alignSelf: 'center',
                         }}>
-                        Upload file/s
+                        Upload file/s (not larger than 4MB each)
                       </Text>
                     </Body>
                   </CardItem>
