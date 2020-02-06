@@ -93,7 +93,6 @@ export default class ERCS2History extends React.Component {
               this.setState({ isLoading: false });
             }
           }
-
           if (responseJson == 'Invalid Access Token') {
             console.log('invalidToken', responseJson);
             alert('Session Expired');
@@ -103,6 +102,7 @@ export default class ERCS2History extends React.Component {
       })
       .catch(error => {
         alert('Unable to connect to server' + error);
+        this.props.navigation.goBack()
       });
   }
 

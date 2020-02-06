@@ -49,7 +49,7 @@ export default class ERCS2Details extends React.Component {
       rcsno: '',
       rcsid: '',
       apprvl_code: '',
-      img_uri: '',
+      membname: '',
       visibleModal: false,
     };
   }
@@ -73,9 +73,11 @@ export default class ERCS2Details extends React.Component {
 
   async componentDidMount() {
     const { navigation } = this.props;
-    const { rcsnum2, acctno, ercsid, approvalcode } = navigation.state.params
-    this.setState({ isLoading: true, acct_no: acctno, rcsno: rcsnum2, rcsid: ercsid });
+    const { rcsnum2, acctno, ercsid } = navigation.state.params
+    let memb_name = await AsyncStorage.getItem(MEMB_NAME);
+    this.setState({ isLoading: true, acct_no: acctno, rcsno: rcsnum2, rcsid: ercsid, membname: memb_name });
     global.storeToken = await AsyncStorage.getItem(ACCESS_TOKEN);
+
     //Get RCS details
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history/details?ercs=' +
@@ -107,6 +109,7 @@ export default class ERCS2Details extends React.Component {
       })
       .catch(error => {
         alert('Unable to connect to server' + error);
+        this.props.navigation.goBack()
       });
     //Get all procedures data
     fetch(
@@ -138,6 +141,7 @@ export default class ERCS2Details extends React.Component {
       })
       .catch(error => {
         alert('Unable to connect to server' + error);
+        this.props.navigation.goBack()
       });
     //Get all the uploaded documents
     fetch(
@@ -170,6 +174,7 @@ export default class ERCS2Details extends React.Component {
       })
       .catch(error => {
         alert('Unable to connect to server' + error);
+        this.props.navigation.goBack()
       });
   }
 
@@ -210,7 +215,6 @@ export default class ERCS2Details extends React.Component {
       });
   }
 
-
   _getImage = async (itemImg) => {
     let resp = await fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/filepathtoimage', {
       method: 'GET',
@@ -248,7 +252,7 @@ export default class ERCS2Details extends React.Component {
         break;
       case 'D':
         xstatus = 'Disapproved';
-        statRemarks = 'Request had been disapproved';
+        statRemarks = 'Request has been disapproved';
         statusStyle = StatusOthers;
         break;
       case 'W':
@@ -294,9 +298,12 @@ export default class ERCS2Details extends React.Component {
                   style={styles.iconRcsDetails}
                 />
                 <Text style={styles.textRcsDetails}>
-                  {xstatus === 'Cancelled'
-                    ? 'N/A'
-                    : this.state.dataSource.approval_code}
+                  {xstatus === 'Cancelled' ?
+                    'N/A' :
+                    xstatus === 'Pending' ?
+                      'Waiting for approval' :
+                      this.state.dataSource.approval_code
+                  }
                 </Text>
               </View>
               <View style={styles.rowRcsDetails}>
@@ -328,11 +335,14 @@ export default class ERCS2Details extends React.Component {
                   style={styles.iconRcsDetails}
                 />
                 <Text style={styles.textRcsDetails}>
-                  {xstatus === 'Cancelled'
-                    ? 'N/A'
-                    : this.state.dataSource.validity_date === ''
-                      ? 'N/A'
-                      : moment(this.state.dataSource.validity_date).format('L')}
+                  {xstatus === 'Cancelled' ?
+                    'N/A' :
+                    xstatus === 'Pending' ?
+                      'Waiting for approval' :
+                      xstatus === 'Disapproved' ?
+                        'N/A' :
+                        moment(this.state.dataSource.validity_date).format('L')
+                  }
                 </Text>
               </View>
             </View>
@@ -373,8 +383,11 @@ export default class ERCS2Details extends React.Component {
                       onPress={() => {
                         xstatus === 'Cancelled'
                           ? this.props.navigation.navigate(
-                            'ERCS2CancelDetailsPage',
-                          )
+                            'ERCS2CancelDetailsPage', {
+                            cancelledby: this.state.membname,
+                            cancelled_dt: new Date(),
+                            cancel_remark: this.state.dataSource.cancelled_remarks
+                          })
                           : this.props.navigation.navigate(
                             'ERCS2DisapprovedDetailsPage',
                             {
@@ -394,62 +407,83 @@ export default class ERCS2Details extends React.Component {
               </View>
             )}
           </View>
-          <View style={styles.viewOtherDetails}>
-            <Text style={styles.cardTitle}>DIAGNOSIS</Text>
-          </View>
-          <View style={styles.viewOtherDetails}>
-            <Text style={styles.cardTitle}>WAITING FOR APPROVAL</Text>
-            <View></View>
-          </View>
-          <View style={styles.viewOtherDetails}>
-            <Text style={styles.cardTitle}>APPROVED PROCEDURES</Text>
-            <View>
-              <FlatList
-                roundAvatar
-                style={{ flexDirection: 'row', flexWrap: 'wrap' }}
-                data={this.state.dataProcSource}
-                renderItem={({ item }) => (
-                  <View
-                    style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
-                    {item.status === 'A' || item.status === 'W' ? (
-                      <Text style={styles.procedureListTextStyle}>
-                        {item.procedure_name}
-                      </Text>
-                    ) : null}
-                  </View>
-                )}
-                keyExtractor={item => item.procedure_id}
-              />
+          {xstatus === 'Cancelled' || xstatus === 'Pending' || xstatus === 'Disapproved' ? null :
+            <View style={styles.viewOtherDetails}>
+              <Text style={styles.cardTitle}>DIAGNOSIS</Text>
             </View>
-          </View>
-          <View style={styles.viewOtherDetails}>
-            <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
-            <View>
-              <FlatList
-                roundAvatar
-                data={this.state.dataProcSource}
-                renderItem={({ item }) => (
-                  <View
-                    style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
-                    {item.status === 'D' ? (
-                      <Text style={styles.procedureListTextStyle}>
-                        {item.procedure_name}
-                      </Text>
-                    ) : null}
-                  </View>
-                )}
-                keyExtractor={item => item.procedure_id}
-              />
+          }
+          {xstatus === 'Cancelled' || xstatus === 'Approved' || xstatus === 'Disapproved' ? null :
+            <View style={styles.viewOtherDetails}>
+              <Text style={styles.cardTitle}>WAITING FOR APPROVAL</Text>
+              <View>
+                <FlatList
+                  roundAvatar
+                  style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+                  data={this.state.dataProcSource}
+                  renderItem={({ item }) => (
+                    <View
+                      style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
+                      {item.status === 'W' ? (
+                        <Text style={styles.procedureListTextStyle}>
+                          {item.procedure_name}
+                        </Text>
+                      ) : null}
+                    </View>
+                  )}
+                  keyExtractor={item => item.procedure_id}
+                />
+              </View>
             </View>
-            <View style={styles.divider} />
-            <View>
-              <Left />
-              <Right style={{ alignSelf: 'flex-end' }}>
-                <Button
-                  light
-                  style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}>
-                  <Text
-                    style={styles.buttonChangeDetails}
+          }
+          {xstatus === 'Cancelled' || xstatus === 'Pending' || xstatus === 'Disapproved' ? null :
+            <View style={styles.viewOtherDetails}>
+              <Text style={styles.cardTitle}>APPROVED PROCEDURES</Text>
+              <View>
+                <FlatList
+                  roundAvatar
+                  style={{ flexDirection: 'row', flexWrap: 'wrap' }}
+                  data={this.state.dataProcSource}
+                  renderItem={({ item }) => (
+                    <View
+                      style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
+                      {item.status === 'A' ? (
+                        <Text style={styles.procedureListTextStyle}>
+                          {item.procedure_name}
+                        </Text>
+                      ) : null}
+                    </View>
+                  )}
+                  keyExtractor={item => item.procedure_id}
+                />
+              </View>
+            </View>
+          }
+          {(xstatus === 'Cancelled' || xstatus === 'Pending') ? null :
+            <View style={styles.viewOtherDetails}>
+              <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
+              <View>
+                <FlatList
+                  roundAvatar
+                  data={this.state.dataProcSource}
+                  renderItem={({ item }) => (
+                    <View style={{ flexDirection: 'row', paddingLeft: 10, margin: 2 }}>
+                      {item.status === 'D' ?
+                        <Text style={styles.procedureListTextStyle}>
+                          {item.procedure_name}
+                        </Text>
+                        : null}
+                    </View>
+                  )}
+                  keyExtractor={item => item.procedure_id}
+                />
+              </View>
+              <View style={styles.divider} />
+              <View>
+                <Left />
+                <Right style={{ alignSelf: 'flex-end' }}>
+                  <Button
+                    light
+                    style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
                     onPress={() =>
                       this.props.navigation.navigate(
                         'ERCS2DisapprovedProcedurePage',
@@ -459,18 +493,23 @@ export default class ERCS2Details extends React.Component {
                           procappvddate: this.state.dataSource.approve_date,
                           procremarks: this.state.dataSource.remarks,
                           procdata: this.state.dataProcSource,
-                        },
-                      )
-                    }>
-                    Check Details
+                        })}>
+                    <Text style={styles.buttonChangeDetails}>
+                      Check Details
                   </Text>
-                </Button>
-              </Right>
+                  </Button>
+                </Right>
+              </View>
             </View>
-          </View>
-          <View style={styles.viewOtherDetails}>
-            <Text style={styles.cardTitle}>ADDITIONAL REMARKS</Text>
-          </View>
+          }
+          {xstatus === 'Cancelled' || xstatus === 'Pending' || this.state.dataSource.remarks === '' || xstatus === 'Disapproved' ? null :
+            <View style={styles.viewOtherDetails}>
+              <Text style={styles.cardTitle}>ADDITIONAL REMARKS</Text>
+              <View>
+                <Text style={{ color: '#6d6e72', fontSize: 12, marginLeft: 16 }}>{this.state.dataSource.remarks}</Text>
+              </View>
+            </View>
+          }
           <View style={styles.viewOtherDetails}>
             <Text style={styles.cardTitle}>UPLOADED REQUIREMENTS</Text>
             <View>
