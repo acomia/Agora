@@ -116,7 +116,7 @@ export default class ERCS1Details extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
-    // let rcsnum1 = navigation.getParam('rcsnum1', '');
+    let rcsnum1 = navigation.getParam('rcsnum1', '');
     let acctNum = this.state.dataSource.acctno;
     //let acctNum = navigation.getParam('acctno', '');
     this.setState({ isLoading: true });
