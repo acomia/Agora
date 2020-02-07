@@ -168,11 +168,6 @@ export default class ERCS1Details extends React.Component {
         xstatus = 'Approved';
         statusStyle = StatusApproved;
         break;
-      case 'D':
-        xstatus = 'Disapproved';
-        statRemarks = 'Request had been disapproved';
-        statusStyle = StatusOthers;
-        break;
       case 'W':
         xstatus = 'Pending';
         statusStyle = StatusPending;
@@ -265,10 +260,11 @@ export default class ERCS1Details extends React.Component {
               {this.state.dataSource.illness}
             </Text>
           </View>
+          {xstatus === 'Approved' || xstatus === 'Pending' ? null : (
           <View style={styles.viewOtherDetails}>
             <View style={{ flexDirection: 'row' }}>
               <Left style={{ marginLeft: 10 }}>
-                {/* <Text note>Cancelled by you</Text> */}
+                <Text note>Cancelled by you</Text>
               </Left>
               <Right style={{ alignSelf: 'flex-end' }}>
                 <Button
@@ -283,7 +279,7 @@ export default class ERCS1Details extends React.Component {
                 </Button>
               </Right>
             </View>
-          </View>
+          </View>)}
           <View style={styles.viewButton}>
             <Button
               disabled={xstatus === 'Approved' ? false : true}
