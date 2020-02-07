@@ -256,6 +256,7 @@ export default class ERCS1Request extends React.Component {
             } else {
               this.setState({
                 RCSdoctorspecialty: [],
+                isLoading: false,
               });
               alert('No Doctors Found!');
             }

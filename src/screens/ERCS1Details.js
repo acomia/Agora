@@ -119,6 +119,7 @@ export default class ERCS1Details extends React.Component {
     // let rcsnum1 = navigation.getParam('rcsnum1', '');
     let acctNum = this.state.dataSource.acctno;
     //let acctNum = navigation.getParam('acctno', '');
+    this.setState({ isLoading: true });
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
       rcsnum1,
@@ -139,6 +140,7 @@ export default class ERCS1Details extends React.Component {
       .then(response => {
         response.json().then(data => {
           if (data.is_success === true) {
+            this.setState({ isLoading: false });
             alert('RCS sent to Email Successfully');
           } else {
             alert(data.error_message);
