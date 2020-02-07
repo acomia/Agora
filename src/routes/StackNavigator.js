@@ -40,6 +40,7 @@ import ERCS2DisapprovedProcedure from '../screens/ERCS2DisapprovedProcedure';
 import ERCS1Details from '../screens/ERCS1Details';
 import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
 import ERCSCancelRemarks from '../screens/ERCSCancelRemarks'
+import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks'
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -402,6 +403,21 @@ AppStack = createStackNavigator({
       title: 'Cancel Request',
       headerStyle: {
         backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS1CancelRemarks: {
+    screen: ERCS1CancelRemarks,
+    navigationOptions: {
+      title: 'Cancel Request',
+      headerStyle: {
+        backgroundColor: '#5fb650',
         elevation: 0,
         shadowOpacity: 0,
         borderBottomWidth: 0,
