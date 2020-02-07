@@ -713,8 +713,9 @@ export default class Login extends React.Component {
     let nstring = this.state.intellicare_no
    
 
-    this.setState.intellicare_no = nstring.replace(/[^0-9]/gi,'')
-  
+   
+    this.setState({ intellicare_no: nstring.replace(/[^0-9]/gi,'') });
+    //console.log('new id',this.setState.intellicare_no)
     
     formdata.append('gov_id', this.state.valid_photo);
     formdata.append('int_id', this.state.intid_photo);
