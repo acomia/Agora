@@ -35,8 +35,14 @@ const MEMB_EMAIL = 'memb_email';
 const MEMBER_ID = 'member_id';
 
 export default class ERCS1Success extends React.Component {
-
+  constructor(props) {
+    super(props)
+  this.state = {
+    isLoading: false,
+   }
+  }
   async _resendemail() {
+    <ActivityIndicator size="small" color="white" />
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
@@ -108,7 +114,7 @@ export default class ERCS1Success extends React.Component {
           <Text style={styles.subHeader1}>
             We have sent your Referral Control Sheet 1 (RCS 1) form to your
             registered e-mail address. You may print and present it to your
-            chosen facility to avail your consultation.
+            chosen facility and avail your consultation.
           </Text>
         </View>
         <View style={styles.viewButton}>

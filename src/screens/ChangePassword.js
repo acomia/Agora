@@ -1,27 +1,33 @@
 import React from 'react'
 import { StyleSheet, View, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native'
 import { Container, Button, Text, Left, Item, Input, Label, Icon } from 'native-base'
-// import { Icon } from 'react-native-elements'
+import Spinner from 'react-native-spinkit'
 import Modal from 'react-native-modal'
 
 export default class ChangePassword extends React.Component {
 
     constructor() {
         super();
-        this.state = { new_PW: '', confirm_PW: '' }
+        this.state = { new_PW: '', confirm_PW: '', isLoading: false }
     }
 
     CHANGE_PW() {
+
+        var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,16}$/;
+
         if (this.state.new_PW !== this.state.confirm_PW) {
             return alert('Password does not match!')
         }
+        if (!regularExpression.test(this.state.new_PW)) {
+            return alert("password should contain atleast one number, one upper case and one special character")
+        }
+        this.setState({ isLoading: true })
         const { OTP_CODE, EMAIL_ADD } = this.props.navigation.state.params
-        // var ver_CODE = this.props.navigation.getParam('OTP_CODE')
-        // var email_ADD = this.props.navigation.getParam('EMAIL_ADD')
+        console.log('CPW', OTP_CODE, EMAIL_ADD, this.state.new_PW)
         fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/forgotpassword/changepassword', {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json;charset=UTF-8'
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 verification_code: OTP_CODE,
@@ -33,14 +39,17 @@ export default class ChangePassword extends React.Component {
                 response.json()
                     .then((data) => {
                         if (data.error_message === 'Successfully updated.') {
+                            this.setState({ isLoading: false })
                             this.props.navigation.navigate('LoginPage')
                         } else {
-                            this.setState({ visibleModal: true })
+                            console.log('Error')
+                            this.setState({ visibleModal: true, isLoading: false })
                         }
                     })
             })
             .catch((error) => {
                 alert('Error!' + error)
+                this.setState({ isLoading: false })
             })
     }
 
@@ -76,7 +85,9 @@ export default class ChangePassword extends React.Component {
                         />
                     </Item>
                     <Button block rounded info onPress={() => this.CHANGE_PW()}>
-                        <Text style={{ fontSize: 18 }}>S U B M I T</Text>
+                        {this.state.isLoading ? <Spinner color={'#fff'} size={60} type={'ThreeBounce'} /> :
+                            <Text style={{ fontWeight: 'bold' }}>S U B M I T</Text>
+                        }
                     </Button>
                 </View>
                 <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
@@ -88,12 +99,10 @@ export default class ChangePassword extends React.Component {
                             source={require('../../assets/images/database_error.png')}
                             resizeMode='center' />
                     </View>
-                    <View style={{ backgroundColor: 'white' }}>
-                        <TouchableOpacity onPress={() => this.setState({ visibleModal: false })}>
-                            <View style={styles.buttonModal}>
-                                <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 20 }}>O K A Y</Text>
-                            </View>
-                        </TouchableOpacity>
+                    <View style={{ backgroundColor: 'white', paddingHorizontal: 20, paddingVertical: 6 }}>
+                        <Button block rounded info onPress={() => this.setState({ visibleModal: false })}>
+                            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 16 }}>O K A Y</Text>
+                        </Button>
                     </View>
                 </Modal>
             </View>
@@ -126,18 +135,9 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderColor: 'rgba(0, 0, 0, 0.1)',
     },
-    buttonModal: {
-        backgroundColor: '#5fb650',
-        padding: 12,
-        margin: 16,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 30,
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-    },
     modalContent: {
         backgroundColor: 'white',
-        padding: 16,
+        padding: 20,
         justifyContent: 'center',
         alignItems: 'center',
         borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     },
     textModalStyle: {
         color: '#5fb650',
-        fontSize: 20,
+        fontSize: 14,
         fontWeight: 'bold',
     }
 })

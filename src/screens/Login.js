@@ -6,11 +6,23 @@ import {
   Image,
   ImageBackground,
   StatusBar,
+  ActivityIndicator,
 } from 'react-native';
-import {Container, Button, Text, Form, Item, Input, Label} from 'native-base';
-import {StackActions, NavigationActions} from 'react-navigation';
+import {
+  Container,
+  Button,
+  Text,
+  Form,
+  Item,
+  Input,
+  Label,
+  Icon,
+} from 'native-base';
+import { StackActions, NavigationActions } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
-import NetInfo from "@react-native-community/netinfo";
+import NetInfo from '@react-native-community/netinfo';
+import { ScrollView } from 'react-native-gesture-handler';
+import Spinner from 'react-native-spinkit'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -20,21 +32,21 @@ const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({routeName: 'Dashboard'})],
+  actions: [NavigationActions.navigate({ routeName: 'Dashboard' })],
 });
 
 // Subscribe
 const unsubscribe = NetInfo.addEventListener(state => {
-  console.log("Connection type", state.type);
-  console.log("Is connected?", state.isConnected);
+  console.log('Connection type', state.type);
+  console.log('Is connected?', state.isConnected);
 });
 
 // Unsubscribe
 unsubscribe();
 
 NetInfo.fetch().then(state => {
-  console.log("Connection type", state.type);
-  console.log("Is connected?", state.isConnected);
+  console.log('Connection type', state.type);
+  console.log('Is connected?', state.isConnected);
 });
 
 export default class Login extends React.Component {
@@ -45,9 +57,8 @@ export default class Login extends React.Component {
   state = {
     username: '',
     password: '',
+    LoginSubmit: false,
   };
-
- 
 
   async storeToken(accessToken) {
     try {
@@ -167,7 +178,7 @@ async getToken()
   async getId() {
     try {
       let membid = await AsyncStorage.getItem(MEMBER_ID);
-      console.log('memb id is: ' + membid);
+      //console.log('memb id is: ' + membid);
     } catch (error) {
       console.log('CANT GET  MEMB ID');
     }
@@ -187,7 +198,7 @@ async getToken()
   async getacct() {
     try {
       let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-      console.log('memb acct is: ' + membacct);
+      //console.log('memb acct is: ' + membacct);
     } catch (error) {
       console.log('CANT GET ACCT NO');
     }
@@ -203,17 +214,14 @@ async getToken()
     }
   }
 
-
-
   async getname() {
     try {
       let membname = await AsyncStorage.getItem(MEMB_NAME);
-      console.log('memb name is: ' + membname);
+      //console.log('memb name is: ' + membname);
     } catch (error) {
       console.log('CANT GET NAME');
     }
   }
-
 
   async storemembemail(memb_email) {
     try {
@@ -227,7 +235,7 @@ async getToken()
   async getemail() {
     try {
       let membemail = await AsyncStorage.getItem(MEMB_EMAIL);
-      console.log('memb email is: ' + membemail);
+      //console.log('memb email is: ' + membemail);
     } catch (error) {
       console.log('CANT GET EMAIL');
     }
@@ -235,26 +243,39 @@ async getToken()
   render() {
     return (
       <Container>
-          <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.header}>
-          <Text style={styles.headerTitle}>Sign In</Text>
-        </View>
+        <StatusBar translucent backgroundColor="transparent" />
+        <View style={styles.header}></View>
         <View style={styles.contentStyle}>
-          <Image
-            source={require('../../assets/images/intellicarelogo.png')}
-            style={styles.imageStyle}
-            resizeMode="contain"
-          />
-          <Label style={styles.fullertonLabel}>
-            A Member of Fullerton Health
-          </Label>
+          {/* <View style={{flex: 1, justifyContent: 'center'}}>
+            <Image
+              source={require('../../assets/images/intellicarelogo.png')}
+              style={styles.imageStyle}
+              resizeMode="contain"
+            />
+            <Label style={styles.fullertonLabel}>
+              A Member of Fullerton Health
+            </Label>
+          </View> */}
+          <View>
+            <Icon
+              type="SimpleLineIcons"
+              name="lock-open"
+              style={{
+                color: '#5fb650',
+                fontSize: 60,
+                textAlign: 'center',
+                marginBottom: 20,
+              }}
+            />
+            <Text style={styles.headerTitle}>Sign in to your account</Text>
+          </View>
           <View style={styles.loginForm}>
             <Form>
               <Item floatingLabel>
                 <Label>Email</Label>
                 <Input
                   style={styles.labelStyle}
-                  onChangeText={username => this.setState({username})}
+                  onChangeText={username => this.setState({ username })}
                 />
               </Item>
               <Item floatingLabel>
@@ -262,10 +283,25 @@ async getToken()
                 <Input
                   secureTextEntry
                   style={styles.labelStyle}
-                  onChangeText={password => this.setState({password})}
+                  onChangeText={password => this.setState({ password })}
                 />
               </Item>
             </Form>
+            <Button
+              rounded
+              block
+              success
+              style={{ marginTop: 50 }}
+              onPress={() => this.checkConnectivity()}>
+              {this.state.LoginSubmit ?
+                <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
+                :
+                <Text> Login </Text>
+              }
+            </Button>
+            <Text note style={{ textAlign: 'center', marginVertical: 30 }}>
+              OR
+            </Text>
             <Text
               style={styles.ForgotPasswordLink}
               onPress={() =>
@@ -273,54 +309,49 @@ async getToken()
               }>
               Forgot Password?
             </Text>
-            <Button
-              rounded
-              block
-              success
-              style={{marginTop: 50}}
-              onPress={() => this.checkConnectivity()}>
-              <Text> Login </Text>
-            </Button>
           </View>
         </View>
       </Container>
     );
   }
 
-
-  checkConnectivity(){
+  checkConnectivity() {
+    this.setState({ LoginSubmit: true });
     NetInfo.fetch().then(state => {
-     // console.log("Connection type2", state.type);
+      // console.log("Connection type2", state.type);
       //console.log("Is connected?2", state.isConnected);
-      if (state.isConnected == true){
+      if (state.isConnected == true) {
         //alert('Online');
         this._postUser();
-      }else{
+      } else {
         alert('Check Internet Connection...');
+        this.setState({ LoginSubmit: false });
       }
     });
   }
 
   _postUser() {
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify({
+          email: this.state.username,
+          password: this.state.password,
+        }),
       },
-      body: JSON.stringify({
-        email: this.state.username,
-        password: this.state.password,
-      }),
-    })
+    )
       .then(response => {
         response.json().then(data => {
           if (data.is_success == true) {
-           
             let accessToken = data.access_token;
             this.storeToken(accessToken);
 
             let memberId = data.data.recordid;
-            this.storememberId(memberId); 
+            this.storememberId(memberId);
 
             let memb_Accountno = data.data.accountno;
             this.storeacct(memb_Accountno);
@@ -330,10 +361,11 @@ async getToken()
 
             let memb_email = data.data.email;
             this.storemembemail(memb_email);
-
+            this.setState({ LoginSubmit: false });
             this.props.navigation.dispatch(resetAction);
           } else {
             alert(data.error_message);
+            this.setState({ LoginSubmit: false });
           }
         });
       })
@@ -343,32 +375,32 @@ async getToken()
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
   },
   header: {
-    height: 100,
+    height: 50,
     backgroundColor: '#5fb650',
     paddingHorizontal: 30,
   },
   headerTitle: {
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: 'bold',
-    color: '#fff',
+    color: '#5fb650',
+    textAlign: 'center',
   },
   contentStyle: {
     flex: 1,
-    paddingVertical: 30,
     marginTop: -45,
     backgroundColor: '#fff',
     borderTopStartRadius: 50,
     borderTopEndRadius: 50,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -385,7 +417,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   imageStyle: {
-    height: '15%',
+    height: 30,
     width: width * 0.5,
     alignSelf: 'center',
   },
@@ -406,7 +438,6 @@ const styles = StyleSheet.create({
   ForgotPasswordLink: {
     color: '#3498db',
     fontSize: 12,
-    alignSelf: 'flex-end',
-    marginTop: 10,
+    alignSelf: 'center',
   },
 });

@@ -154,7 +154,7 @@ export default class Members extends React.Component {
       <ScrollView>
         <List style={styles.listStyle}>
 
-          <ListItem thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
+          <ListItem small thumbnail style={styles.listItemMember} key={item.acct} onPress={() => this.onUser(item)}>
 
             <Left>
               {/* <Thumbnail source={require('../../assets/images/person-100.png')} /> */}
@@ -165,7 +165,7 @@ export default class Members extends React.Component {
               <View style={styles.viewNameBadge}>
                 <Text style={styles.listFullname}>{item.fullname}</Text>
               </View>
-              <Text note style={styles.listAccountNote}> {item.acct} / {item.contract}</Text>
+              <Text note style={styles.listAccountNote}> {item.acct}/{item.contract}</Text>
               <Badge style={styles.badgeStyle}><Text style={styles.badgeText}>{item.member_type}</Text></Badge>
               {/* <Text>{item.member_type}</Text> */}
             </Body>
@@ -191,11 +191,10 @@ export default class Members extends React.Component {
       return (
         <View style={spinnerStyle}>
           <Spinner
-            color={'green'}
+            color={'#5fb650'}
             size={50}
-            type={'ChasingDots'}
+            type={'ThreeBounce'}
           />
-          <Text style={spinnerTextStyle}>Fetching data...</Text>
         </View>
       )
     }
@@ -293,8 +292,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.2,
-    backgroundColor: 'black',
+    backgroundColor: '#fff',
     left: 0,
     right: 0,
     top: 0,
