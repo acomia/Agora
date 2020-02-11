@@ -30,11 +30,11 @@ export default class VerifyOTP extends React.Component {
                 response.json()
                     .then((data) => {
                         if (data.error_message === 'Verification Code is Valid!') {
-                            this.setState({ isLoading: false, verification_CODE: '' })
                             this.props.navigation.navigate('ChangePassword', {
                                 OTP_CODE: this.state.verification_CODE,
                                 EMAIL_ADD: FPW_EMAILADD
                             })
+                            this.setState({ isLoading: false, verification_CODE: '' })
                         } else {
                             alert('Error validating otp!')
                         }
@@ -76,9 +76,7 @@ export default class VerifyOTP extends React.Component {
     RESEND_OTP() {
         const { navigation } = this.props
         const { routeAddress, emailAddress, f_NAME, l_NAME } = navigation.state.params
-        var routeLocation = navigation.getParam('routeAddress')
-        // var FPW_EMAILADD = this.props.navigation.getParam('emailAddress')
-
+        this.setState({ isLoading: true })
         if (routeAddress === 'forgot_PW') {
             fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/send?postedfrom=mobile', {
                 method: 'PUT',
@@ -90,14 +88,16 @@ export default class VerifyOTP extends React.Component {
                     response.json()
                         .then((data) => {
                             if (data.error_message === 'Successfully generate verification code.') {
-                                this.setState({ visibleModal: 2 })
+                                this.setState({ visibleModal: 2, isLoading: false })
                             } else {
                                 alert('error')
+                                this.setState({ isLoading: false })
                             }
                         })
                 })
                 .catch((error) => {
                     alert('Error!' + error)
+                    this.setState({ isLoading: false })
                 })
         } else {
             fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' + f_NAME + '&lastname=' + l_NAME, {
@@ -110,14 +110,16 @@ export default class VerifyOTP extends React.Component {
                     response.json()
                         .then((data) => {
                             if (data.error_message === 'Successfully generate verification code.') {
-                                this.setState({ visibleModal: 2 })
+                                this.setState({ visibleModal: 2, isLoading: false })
                             } else {
                                 alert('error')
+                                this.setState({ isLoading: false })
                             }
                         })
                 })
                 .catch((error) => {
                     alert('Error!' + error)
+                    this.setState({ isLoading: false })
                 })
         }
 
@@ -160,13 +162,11 @@ export default class VerifyOTP extends React.Component {
                             <Text style={styles.resendOTP}>Resend OTP</Text>
                         </View>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => this.PROCESS_OTP()}>
-                        <View style={styles.button}>
-                            {this.state.isLoading ? <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} /> :
-                                <Text style={styles.verifyText}>V E R I F Y</Text>
-                            }
-                        </View>
-                    </TouchableOpacity>
+                    <Button block rounded style={styles.button} onPress={() => this.PROCESS_OTP()}>
+                        {this.state.isLoading ? <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} /> :
+                            <Text style={styles.verifyText}>V E R I F Y</Text>
+                        }
+                    </Button>
                 </View>
                 <Modal isVisible={this.state.visibleModal === 1}
                     onSwipeComplete={() => this.REG_SUCCESS_VAL()}
@@ -189,9 +189,9 @@ export default class VerifyOTP extends React.Component {
                             source={require('../../assets/images/email_sent.png')}
                             resizeMode='center' />
                     </View>
-                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 4 }}>
+                    <View style={{ backgroundColor: '#fff', paddingHorizontal: 20, paddingVertical: 6 }}>
                         <Button block rounded success onPress={() => this.setState({ visibleModal: null })}>
-                            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>O K A Y</Text>
+                            <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 16 }}>O K A Y</Text>
                         </Button>
                     </View>
                 </Modal>
@@ -219,14 +219,12 @@ const styles = StyleSheet.create({
     verifyText: {
         fontWeight: 'bold',
         color: '#5fb650',
-        fontSize: 20
     },
     topContent: {
         height: '60%',
         backgroundColor: 'white',
         justifyContent: 'space-evenly',
         alignItems: 'center',
-
         borderBottomLeftRadius: 80,
         borderBottomRightRadius: 80,
         borderColor: 'rgba(0, 0, 0, 0.1)',
@@ -247,11 +245,11 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         padding: 12,
         margin: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderRadius: 30,
-        borderColor: 'rgba(0, 0, 0, 0.1)',
-        width: SCREEN_WIDTH * 0.8
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // borderRadius: 30,
+        // borderColor: 'rgba(0, 0, 0, 0.1)',
+        // width: SCREEN_WIDTH * 0.8
     },
     modalContent: {
         backgroundColor: 'white',
@@ -267,7 +265,7 @@ const styles = StyleSheet.create({
     },
     textModalStyle: {
         color: '#5fb650',
-        fontSize: 18,
+        fontSize: 14,
         fontWeight: 'bold',
     },
     tyTextModal: {

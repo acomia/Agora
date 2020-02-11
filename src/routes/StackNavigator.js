@@ -42,6 +42,8 @@ import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
 import ERCSCancelRemarks from '../screens/ERCSCancelRemarks'
 import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks'
 
+const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight()
+
 AppStack = createStackNavigator({
   OnBoardingPage: {
     screen: OnBoarding,
@@ -82,7 +84,16 @@ AppStack = createStackNavigator({
   ForgotPasswordPage: {
     screen: ForgotPassword,
     navigationOptions: {
-      title: 'Forgot Password',
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5DADE2',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+      headerTintColor: '#fff',
     },
   },
   DashboardPage: {
@@ -161,9 +172,31 @@ AppStack = createStackNavigator({
   },
   VerifyOTP: {
     screen: VerifyOTP,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+    },
   },
   ChangePassword: {
     screen: ChangePassword,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5DADE2',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
   },
   IntellimapPage: {
     screen: Intellimap,
