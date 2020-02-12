@@ -181,12 +181,11 @@ export default class ApprovedUtil extends React.Component {
   };
 
   render() {
-    const { spinnerStyle, spinnerTextStyle } = styles;
+    const { spinnerStyle } = styles;
     if (this.state.isLoading) {
       return (
         <View style={spinnerStyle}>
-          <Spinner color={'green'} size={50} type={'ChasingDots'} />
-          <Text style={spinnerTextStyle}>Fetching data...</Text>
+          <Spinner color={'#5fb650'} size={50} type={'ThreeBounce'} />
         </View>
       );
     }
@@ -339,8 +338,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     position: 'absolute',
-    opacity: 0.2,
-    backgroundColor: 'black',
+    backgroundColor: '#fff',
     left: 0,
     right: 0,
     top: 0,

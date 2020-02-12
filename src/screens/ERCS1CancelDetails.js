@@ -22,10 +22,14 @@ import {
   Container,
   Body,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
+import moment from 'moment';
 
 export default class ERCS1CancelDetails extends React.Component {
   render() {
+    const { navigation } = this.props;
+    const { cancelDate, cancelRemarks } = navigation.state.params
+
     return (
       <Container style={styles.container}>
         <StatusBar
@@ -35,25 +39,25 @@ export default class ERCS1CancelDetails extends React.Component {
         <View style={styles.viewCancelDetails}>
           <List>
             <ListItem noIndent>
-              <Left style={{flex: 2}}>
+              <Left style={{ flex: 2 }}>
                 <Text>Cancelled by</Text>
               </Left>
-              <Right style={{flex: 3}}>
-                <Text note>User</Text>
+              <Right style={{ flex: 3 }}>
+                <Text note>You</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>
-              <Left style={{flex: 2}}>
+              <Left style={{ flex: 2 }}>
                 <Text>Cancelled at</Text>
               </Left>
-              <Right style={{flex: 3}}>
-                <Text note>01/01/2020 12:01:00</Text>
+              <Right style={{ flex: 3 }}>
+                <Text note>{moment(cancelDate).format('L')}</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>
-              <View style={{flexDirection: 'column'}}>
+              <View style={{ flexDirection: 'column' }}>
                 <Text>Reason for Cancellation</Text>
-                <Text note>Others / change of mind</Text>
+                <Text note>{cancelRemarks}</Text>
               </View>
             </ListItem>
           </List>
@@ -63,7 +67,7 @@ export default class ERCS1CancelDetails extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {

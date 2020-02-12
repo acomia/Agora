@@ -75,6 +75,8 @@ export default class ERCS1Request extends React.Component {
       rcsNo: '',
       acctno: '',
       membgender: '',
+      membbenefit: '',
+      opben: '',
       visibleModal: null,
       docspec: '',
       confirm: true,
@@ -254,6 +256,7 @@ export default class ERCS1Request extends React.Component {
             } else {
               this.setState({
                 RCSdoctorspecialty: [],
+                isLoading: false,
               });
               alert('No Doctors Found!');
             }
@@ -321,7 +324,7 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          //console.log('ercs1',data)
+          console.log('ercs1', data)
           let rcs = data.data.ercsno;
           // send to email
           if (data.is_success === true) {
@@ -362,7 +365,7 @@ export default class ERCS1Request extends React.Component {
                 alert('Error!' + error);
               });
           } else {
-           
+
             this.setState({
               isLoading: false,
             });
@@ -436,30 +439,40 @@ export default class ERCS1Request extends React.Component {
   updateMembPicked = (MembPicked) => {
     console.log('Memb', MembPicked)
     this.setState({
-      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
+      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname,  membbenefit: MembPicked.op_benefit, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
       docspec: '', searchIllness: '', search: '', confirm: true
     })
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + MembPicked.gender,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + global.token,
-        }
-      },
-    )
-      .then(response => {
-        response.json().then(illness => {
-          this.setState({
-            dataSourceIllness: illness.data,
-            isLoading: false
-          });
-          this.arrayholderIllness = illness.data
-        });
+    console.log('opben', MembPicked.op_benefit)
+    if (MembPicked.op_benefit === false) {
+      alert('The Member does not have OPD Benefits')
+      this.setState({
+        isLoading: false,
       })
-      .catch(error => {
-        alert('Error!' + error);
-      });
+      this._renderMembersModal()
+    }
+    else {
+      fetch(
+        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + MembPicked.gender,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + global.token,
+          }
+        },
+      )
+        .then(response => {
+          response.json().then(illness => {
+            this.setState({
+              dataSourceIllness: illness.data,
+              isLoading: false
+            });
+            this.arrayholderIllness = illness.data
+          });
+        })
+        .catch(error => {
+          alert('Error!' + error);
+        });
+    }
   }
   _renderMembersModal = () => {
     return (
@@ -531,7 +544,10 @@ export default class ERCS1Request extends React.Component {
                 style={{ color: '#2d2d2d', fontSize: 18 }}
               />
             </Button>
-            <Text style={memberPickedStyle}>{this.state.MembPickerValueHolder}</Text>
+            <Text style={memberPickedStyle}>{
+            this.state.membbenefit == true 
+            ? this.state.MembPickerValueHolder
+            : ''}</Text> 
           </View>
           <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Type of consultation</Text>

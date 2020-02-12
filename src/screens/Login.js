@@ -18,10 +18,11 @@ import {
   Label,
   Icon,
 } from 'native-base';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
+import Spinner from 'react-native-spinkit'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -31,7 +32,7 @@ const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({routeName: 'Dashboard'})],
+  actions: [NavigationActions.navigate({ routeName: 'Dashboard' })],
 });
 
 // Subscribe
@@ -187,7 +188,7 @@ export default class Login extends React.Component {
                 <Label>Email</Label>
                 <Input
                   style={styles.labelStyle}
-                  onChangeText={username => this.setState({username})}
+                  onChangeText={username => this.setState({ username })}
                 />
               </Item>
               <Item floatingLabel>
@@ -195,7 +196,7 @@ export default class Login extends React.Component {
                 <Input
                   secureTextEntry
                   style={styles.labelStyle}
-                  onChangeText={password => this.setState({password})}
+                  onChangeText={password => this.setState({ password })}
                 />
               </Item>
             </Form>
@@ -203,15 +204,15 @@ export default class Login extends React.Component {
               rounded
               block
               success
-              style={{marginTop: 50}}
+              style={{ marginTop: 50 }}
               onPress={() => this.checkConnectivity()}>
-                {this.state.LoginSubmit ? (
-                  <ActivityIndicator size="small" color="white" />
-                ) : (
-                  <Text> Login </Text>
-                  )}  
+              {this.state.LoginSubmit ?
+                <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
+                :
+                <Text> Login </Text>
+              }
             </Button>
-            <Text note style={{textAlign: 'center', marginVertical: 30}}>
+            <Text note style={{ textAlign: 'center', marginVertical: 30 }}>
               OR
             </Text>
             <Text
@@ -273,21 +274,21 @@ export default class Login extends React.Component {
 
             let memb_email = data.data.email;
             this.storemembemail(memb_email);
-
+            this.setState({ LoginSubmit: false });
             this.props.navigation.dispatch(resetAction);
           } else {
             alert(data.error_message);
+            this.setState({ LoginSubmit: false });
           }
         });
       })
       .catch(error => {
         alert('Error!' + error);
       });
-      this.setState({ LoginSubmit: false });
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   containerStyle: {
@@ -312,7 +313,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,

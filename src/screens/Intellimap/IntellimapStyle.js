@@ -122,6 +122,12 @@ const styles = StyleSheet.create({
         backgroundColor: '#fff',
         marginLeft: 20,
         width: SCREEN_WIDTH * 0.9
+    },
+    arrowDownDetailsStyle: {
+        alignSelf: 'center',
+        alignItems: 'center',
+        width: 100,
+        bottom: 13,
     }
 })
 

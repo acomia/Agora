@@ -1,8 +1,8 @@
 import React from 'react';
-import {StyleSheet, StatusBar} from 'react-native';
-import {Icon, Header} from 'native-base';
-import {createAppContainer} from 'react-navigation';
-import {createStackNavigator} from 'react-navigation-stack';
+import { StyleSheet, StatusBar } from 'react-native';
+import { Icon, Header } from 'native-base';
+import { createAppContainer } from 'react-navigation';
+import { createStackNavigator } from 'react-navigation-stack';
 import Login from '../screens/Login';
 import OnBoarding from '../screens/OnBoarding';
 import Register from '../screens/Register';
@@ -39,6 +39,10 @@ import ERCS2DisapprovedDetails from '../screens/ERCS2DisapprovedDetails';
 import ERCS2DisapprovedProcedure from '../screens/ERCS2DisapprovedProcedure';
 import ERCS1Details from '../screens/ERCS1Details';
 import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
+import ERCSCancelRemarks from '../screens/ERCSCancelRemarks'
+import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks'
+
+const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight()
 
 AppStack = createStackNavigator({
   OnBoardingPage: {
@@ -80,7 +84,16 @@ AppStack = createStackNavigator({
   ForgotPasswordPage: {
     screen: ForgotPassword,
     navigationOptions: {
-      title: 'Forgot Password',
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5DADE2',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+      headerTintColor: '#fff',
     },
   },
   DashboardPage: {
@@ -159,9 +172,31 @@ AppStack = createStackNavigator({
   },
   VerifyOTP: {
     screen: VerifyOTP,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+    },
   },
   ChangePassword: {
     screen: ChangePassword,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5DADE2',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
   },
   IntellimapPage: {
     screen: Intellimap,
@@ -395,6 +430,36 @@ AppStack = createStackNavigator({
       headerTintColor: '#fff',
     },
   },
+  ERCSCancelRemarks: {
+    screen: ERCSCancelRemarks,
+    navigationOptions: {
+      title: 'Cancel Request',
+      headerStyle: {
+        backgroundColor: '#e74c3c',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ERCS1CancelRemarks: {
+    screen: ERCS1CancelRemarks,
+    navigationOptions: {
+      title: 'Cancel Request',
+      headerStyle: {
+        backgroundColor: '#5fb650',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: 20,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  }
 });
 
 export default createAppContainer(AppStack);

@@ -1,16 +1,17 @@
 import React from 'react'
-import { StyleSheet, View, TouchableOpacity, Image, KeyboardAvoidingView } from 'react-native'
-import { Container, Button, Text, Left, Item, Input, Label, Icon } from 'native-base'
-// import { Icon } from 'react-native-elements'
+import { StyleSheet, View, Image } from 'react-native'
+import { Button, Text, Item, Input, Label, Icon } from 'native-base'
+import Spinner from 'react-native-spinkit'
 import Modal from 'react-native-modal'
 
 export default class ForgotPassword extends React.Component {
     constructor() {
         super();
-        this.state = { email_add: '', visibleModal: false }
+        this.state = { email_add: '', visibleModal: false, isLoading: false }
     }
 
     RESET_PW() {
+        this.setState({ isLoading: true })
         fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/send?postedfrom=mobile', {
             method: 'PUT',
             headers: {
@@ -24,12 +25,13 @@ export default class ForgotPassword extends React.Component {
                 response.json()
                     .then((data) => {
                         if (data.error_message === 'Successfully generate verification code.') {
+                            this.setState({ isLoading: false })
                             this.props.navigation.navigate('VerifyOTP', {
                                 routeAddress: 'forgot_PW',
                                 emailAddress: this.state.email_add
                             })
                         } else {
-                            this.setState({ visibleModal: true })
+                            this.setState({ visibleModal: true, isLoading: false })
                         }
                     })
             })
@@ -64,7 +66,9 @@ export default class ForgotPassword extends React.Component {
                         />
                     </Item>
                     <Button block rounded info onPress={() => this.RESET_PW()}>
-                        <Text>RESET PASSWORD</Text>
+                        {this.state.isLoading ? <Spinner color={'#fff'} size={60} type={'ThreeBounce'} /> :
+                            <Text>RESET PASSWORD</Text>
+                        }
                     </Button>
                 </View>
                 <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>

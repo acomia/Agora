@@ -9,7 +9,6 @@ import {
   ListItem,
   List,
   Badge,
-  Icon,
   Thumbnail,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -17,6 +16,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
 import {StackActions, NavigationActions} from 'react-navigation';
 import moment from 'moment';
+import Icon from 'react-native-vector-icons/FontAwesome5'
 // import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ACCESS_TOKEN = 'access_token';
@@ -163,15 +163,15 @@ export default class ERCS1History extends React.Component {
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
-                    type="EvilIcons"
-                    name="map-marked"
+                    //type="EvilIcons"
+                    name="map"
                     style={styles.iconLabel}
                   />
                   <Text note>{item.hospital}</Text>
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
-                    type="EvilIcons"
+                    //type="EvilIcons"
                     name="clock"
                     style={styles.iconLabel}
                   />
@@ -190,7 +190,7 @@ export default class ERCS1History extends React.Component {
                 </Text>
                 <Button transparent>
                   <Text style={styles.buttonView} onPress={() =>
-                    this.props.navigation.navigate('ERCS1DetailsPage', {
+                    this.props.navigation.navigate('ERCS1DetailsPage', { 
                       rcsnum1: item.ercsno,
                       acctno: this.state.membacctnum,
                       ercsid: item.record_id,

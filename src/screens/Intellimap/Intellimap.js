@@ -382,7 +382,7 @@ export default class Intellimap extends PureComponent {
                         </ListItem>
                     </Animated.ScrollView>
                 </Animated.View>
-                <Animated.View style={{ alignSelf: 'center', alignItems: 'center', width: 100, bottom: 13, rotation: this.state.rotateArrow }}>
+                <Animated.View style={[styles.arrowDownDetailsStyle, { rotation: this.state.rotateArrow }]}>
                     <TouchableOpacity onPress={() => this._animateDetails()}>
                         <Icon name="chevron-circle-down" size={22} color="#5FB650" />
                     </TouchableOpacity>
@@ -415,7 +415,7 @@ export default class Intellimap extends PureComponent {
                         </ListItem>
                     </Animated.ScrollView>
                 </Animated.View>
-                <Animated.View style={{  rotation: this.state.rotateArrow }}>
+                <Animated.View style={[styles.arrowDownDetailsStyle, { rotation: this.state.rotateArrow }]}>
                     <TouchableOpacity onPress={() => this._animateDetails()}>
                         <Icon name="chevron-circle-down" size={22} color="#5FB650" />
                     </TouchableOpacity>

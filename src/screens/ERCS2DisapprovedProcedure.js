@@ -2,30 +2,22 @@ import React from 'react';
 import {
   StyleSheet,
   View,
-  ActivityIndicator,
   StatusBar,
-  TouchableNativeFeedback,
-  Modal,
-  TouchableHighlight,
-  Alert,
   FlatList,
   Dimensions,
 } from 'react-native';
 import {
-  Button,
   Text,
   Left,
   Right,
   ListItem,
   List,
-  Icon,
-  Content,
   Container,
-  Body,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import { StackActions, NavigationActions } from 'react-navigation';
+import { DataTable } from 'react-native-paper';
 
 export default class ERCS2DisapprovedProcedure extends React.Component {
   render() {
@@ -35,9 +27,9 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
     let appvddate = navigation.getParam('procappvddate', '');
     let remarks = navigation.getParam('procremarks', '');
     let procdata = navigation.getParam('procdata', []);
-   console.log('summproc',procdata);
+    console.log('summproc', procdata);
     return (
-      <Container style={{flex: 1, backgroundColor: '#f5f5f5'}}>
+      <Container style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
         <StatusBar
           translucent
           backgroundColor="transparent"
@@ -46,18 +38,18 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
         <View style={styles.viewSection}>
           <List>
             <ListItem noIndent>
-              <Left style={{flex: 2}}>
+              <Left style={{ flex: 2 }}>
                 <Text>Disapproved by </Text>
               </Left>
-              <Right style={{flex: 3}}>
+              <Right style={{ flex: 3 }}>
                 <Text note>{appvdby}</Text>
               </Right>
             </ListItem>
             <ListItem noIndent>
-              <Left style={{flex: 2}}>
+              <Left style={{ flex: 2 }}>
                 <Text>Disapproved at</Text>
               </Left>
-              <Right style={{flex: 3}}>
+              <Right style={{ flex: 3 }}>
                 <Text note>{appvddate}</Text>
               </Right>
             </ListItem>
@@ -65,30 +57,26 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
         </View>
         <View style={styles.viewSection}>
           <Text style={styles.cardTitle}>Summary of Procedures</Text>
-            <FlatList
-              roundAvatar
-              data={procdata}
-              renderItem={({item}) => 
-              <View>
-                <View>
-                  <Text
-                    style={{
-                      color: '#c4c4c4',
-                      textAlign: 'center',
-                      justifyContent: 'center',
-                  }}>{item.status === 'D' ? item.procedure_name : null}</Text>
-                </View>
-                <View>
-                  <Text
-                    style={{
-                      color: '#c4c4c4',
-                      textAlign: 'center',
-                      justifyContent: 'center',
-                  }}>{item.status === 'D' ? item.category : null}</Text>
-                </View>
-              </View>}
-              //keyExtractor={(item, index) => item}
-              //ItemSeparatorComponent={this.renderSeparator}
+          <DataTable>
+            <DataTable.Header>
+              <DataTable.Title style={styles.headerDataTableStyle}>Procedure Name</DataTable.Title>
+              <DataTable.Title style={styles.headerDataTableStyle}>Remarks</DataTable.Title>
+            </DataTable.Header>
+          </DataTable>
+          <FlatList
+            roundAvatar
+            data={procdata}
+            renderItem={({ item }) => (
+              <ScrollView>
+                <DataTable Body>
+                  <DataTable.Row>
+                    <DataTable.Cell style={styles.contentDataTableStyle}>{item.procedure_name}</DataTable.Cell>
+                    <DataTable.Cell style={styles.contentDataTableStyle}>{item.remarks}</DataTable.Cell>
+                  </DataTable.Row>
+                </DataTable>
+              </ScrollView>
+            )}
+            keyExtractor={(item) => item.procedure_id}
           />
         </View>
       </Container>
@@ -96,7 +84,7 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   viewSection: {
@@ -110,5 +98,13 @@ const styles = StyleSheet.create({
     color: '#2d3436',
     padding: 10,
     fontSize: 12,
+  },
+  contentDataTableStyle: {
+    fontSize: 10,
+    textAlign: 'center',
+    justifyContent: 'center',
+  },
+  headerDataTableStyle: {
+    justifyContent: 'center',
   },
 });
