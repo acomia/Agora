@@ -253,7 +253,7 @@ export default class ERCS2Details extends React.Component {
       case 'D':
         xstatus = 'Disapproved';
         statRemarks = 'Request has been disapproved';
-        statusStyle = StatusOthers;
+        statusStyle = StatusCancelled; //same color as pending
         break;
       case 'W':
         xstatus = 'Pending';

@@ -194,7 +194,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Middle name *</Label>
+                  <Label>Middle name</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.middlename}
@@ -218,7 +218,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label>Municipal</Label>
+                  <Label>City/Municipal</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.municipal}

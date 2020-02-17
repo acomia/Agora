@@ -250,13 +250,16 @@ export default class ERCS1Details extends React.Component {
                 </Text>
               </View>
               <View style={styles.rowRcsDetails}>
-                <Icon
-                  type="Feather"
-                  name="clock"
-                  style={styles.iconRcsDetails}
-                />
+                <Icon type="Feather" name="clock" style={styles.iconRcsDetails} />
                 <Text style={styles.textRcsDetails}>
-                  {moment(this.state.dataSource.validity_date).format('L')}
+                  {xstatus === 'Cancelled' ?
+                    'N/A' :
+                    xstatus === 'Pending' ?
+                      'Waiting for approval' :
+                      xstatus === 'Disapproved' ?
+                        'N/A' :
+                        moment(this.state.dataSource.validity_date).format('L')
+                  }
                 </Text>
               </View>
             </View>
@@ -291,28 +294,24 @@ export default class ERCS1Details extends React.Component {
           </View>
           {xstatus === 'Approved' || xstatus === 'Pending' ? null : (
             <View style={styles.viewOtherDetails}>
-              <View style={{flexDirection: 'row'}}>
-                <Left style={{marginLeft: 10}}>
+              <View style={{ flexDirection: 'row' }}>
+                <Left style={{ marginLeft: 10 }}>
                   <Text note>Cancelled by you</Text>
                 </Left>
-                <Right style={{alignSelf: 'flex-end'}}>
+                <Right style={{ alignSelf: 'flex-end' }}>
                   <Button
                     light
-                    style={{margin: 10, elevation: 0, shadowOpacity: 0}}
+                    style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
                     onPress={() =>
                       this.props.navigation.navigate('ERCS1CancelDetailsPage', {
                         cancelDate: this.state.dataSource.cancelled_date,
-                        cancelRemarks: this.state.dataSource.cancelled_remarks,
-                      })
-                    }>
-                    <Text style={styles.buttonChangeDetails}>
-                      Check Details
-                    </Text>
+                        cancelRemarks: this.state.dataSource.cancelled_remarks
+                      })}>
+                    <Text style={styles.buttonChangeDetails}>Check Details</Text>
                   </Button>
                 </Right>
               </View>
-            </View>
-          )}
+            </View>)}
           <View style={styles.viewButton}>
             <Button
               disabled={xstatus === 'Approved' ? false : true}
