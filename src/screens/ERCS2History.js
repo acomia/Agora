@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, FlatList } from 'react-native';
+import {StyleSheet, View, StatusBar, Dimensions, FlatList} from 'react-native';
 import {
   Container,
   Button,
@@ -9,13 +9,14 @@ import {
   ListItem,
   List,
   Badge,
+  Icon,
+  Thumbnail,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/FontAwesome5'
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -26,7 +27,7 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'ERCS2LandingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'ERCS2LandingPage'})],
 });
 
 export default class ERCS2History extends React.Component {
@@ -67,7 +68,7 @@ export default class ERCS2History extends React.Component {
 
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' +
-      membacct,
+        membacct,
       {
         method: 'GET',
         headers: {
@@ -90,7 +91,7 @@ export default class ERCS2History extends React.Component {
             });
           } else {
             if (responseJson.error_message == 'No RCS Transaction Found!') {
-              this.setState({ isLoading: false });
+              this.setState({isLoading: false});
             }
           }
           if (responseJson == 'Invalid Access Token') {
@@ -102,11 +103,11 @@ export default class ERCS2History extends React.Component {
       })
       .catch(error => {
         alert('Unable to connect to server' + error);
-        this.props.navigation.goBack()
+        this.props.navigation.goBack();
       });
   }
 
-  renderItem = ({ item }) => {
+  renderItem = ({item}) => {
     var xstatus = item.status;
     const {
       StatusApproved,
@@ -115,7 +116,7 @@ export default class ERCS2History extends React.Component {
       StatusDisapproved,
     } = styles;
     switch (
-    xstatus // Passing the variable to switch condition
+      xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
@@ -140,36 +141,34 @@ export default class ERCS2History extends React.Component {
     }
     return (
       <ScrollView>
-        <StatusBar
-          translucent
-          backgroundColor="transparent"
-          barStyle="light-content"
-        />
+        <StatusBar backgroundColor="transparent" barStyle="light-content" />
         <View>
           <List>
             <ListItem noIndent>
               <Body>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
                   </Badge>
                 </View>
                 <View style={styles.rowDetails}>
-                  <Icon name="user" style={styles.iconLabel} />
+                  <Icon type="EvilIcons" name="user" style={styles.iconLabel} />
                   <Text note style={styles.textPatient}>
                     {item.patient}
                   </Text>
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
-                    name="map"
+                    type="EvilIcons"
+                    name="location"
                     style={styles.iconLabel}
                   />
                   <Text note>{item.hospital}</Text>
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
+                    type="EvilIcons"
                     name="clock"
                     style={styles.iconLabel}
                   />
@@ -193,7 +192,7 @@ export default class ERCS2History extends React.Component {
                       this.props.navigation.navigate('ERCS2DetailsPage', {
                         rcsnum2: item.ercsno,
                         acctno: this.state.membacctnum,
-                        ercsid: item.record_id
+                        ercsid: item.record_id,
                       })
                     }>
                     View
@@ -208,25 +207,34 @@ export default class ERCS2History extends React.Component {
   };
 
   renderSeparator = () => {
-    return <View style={{ height: 0, backgroundColor: 'gray' }}></View>;
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
   };
   renderSeparator = () => {
-    return <View style={{ height: 0, backgroundColor: 'gray' }}></View>;
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
   };
 
   render() {
-    const { spinnerStyle, spinnerTextStyle } = styles;
+    const {spinnerStyle, spinnerTextStyle} = styles;
     return (
       <Container>
-        <StatusBar translucent backgroundColor="transparent" />
-        {this.state.dataSource.length <= 0 &&
-          (
-            <View style={{ alignContent: 'center', alignItems: 'center', top: 20 }}>
-              <Icon name="history" color="#e74c3c" size={40} style={{ marginVertical: 10 }} />
-              <Text style={{ fontSize: 18, fontWeight: 'bold', color: "#e74c3c" }}>No transaction history!</Text>
-            </View>
-          )
-        }
+        <StatusBar backgroundColor="transparent" barStyle="light-content" />
+        {this.state.dataSource.length <= 0 && (
+          <View
+            style={{
+              flex: 1,
+              justifyContent: 'center',
+              paddingHorizontal: 30,
+              alignItems: 'center',
+            }}>
+            <Thumbnail
+              large
+              source={require('../../assets/images/no-transaction.png')}
+            />
+            <Text style={{fontSize: 14, color: '#2d2d2d'}}>
+              You have no transactions yet!
+            </Text>
+          </View>
+        )}
         <ScrollView>
           <FlatList
             roundAvatar
@@ -246,7 +254,7 @@ export default class ERCS2History extends React.Component {
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {

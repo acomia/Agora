@@ -10,14 +10,13 @@ import {
   List,
   Badge,
   Thumbnail,
+  Icon
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
 import {StackActions, NavigationActions} from 'react-navigation';
 import moment from 'moment';
-import Icon from 'react-native-vector-icons/FontAwesome5'
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -163,15 +162,15 @@ export default class ERCS1History extends React.Component {
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
-                    //type="EvilIcons"
-                    name="map"
+                    type="EvilIcons"
+                    name="location"
                     style={styles.iconLabel}
                   />
                   <Text note>{item.hospital}</Text>
                 </View>
                 <View style={styles.rowDetails}>
                   <Icon
-                    //type="EvilIcons"
+                    type="EvilIcons"
                     name="clock"
                     style={styles.iconLabel}
                   />

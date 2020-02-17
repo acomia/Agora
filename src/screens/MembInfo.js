@@ -216,9 +216,9 @@ export default class MembInfo extends React.Component {
             </Item>
             <Item style={styles.itemStyle}>
               <Left>
-                <Text style={styles.itemLabel}>Coverage Period</Text>
+                <Text style={styles.itemLabelCoverage}>Coverage Period</Text>
               </Left>
-              <Body style={styles.itemBody}>
+              <Body style={styles.itemBodyCoverage}>
                 <Label style={styles.itemInfo}>{coverage_period}</Label>
               </Body>
             </Item>
@@ -336,7 +336,6 @@ const styles = StyleSheet.create({
   itemLabel: {
     color: '#6d6e72',
     fontWeight: 'bold',
-    flex: 1,
     alignItems: 'flex-start'
   },
   itemInfo: {
@@ -345,7 +344,16 @@ const styles = StyleSheet.create({
   },
   itemBody: {
     alignItems: 'flex-end',
-    flex: 2,
+  },
+  itemLabelCoverage: {
+    color: '#6d6e72',
+    fontWeight: 'bold',
+    alignItems: 'flex-start',
+    flex: 1
+  },
+  itemBodyCoverage: {
+    alignItems: 'flex-end',
+    flex: 2
   },
   labelStatus: {
     color: 'green',
