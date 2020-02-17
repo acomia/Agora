@@ -28,7 +28,7 @@ export default class ChangePassword extends React.Component {
   }
 
   CHANGE_PW() {
-    var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,16}$/;
+    var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,50}$/;
 
     if (this.state.new_PW !== this.state.confirm_PW) {
       return Alert.alert('', 'Password does not match!');
@@ -36,7 +36,7 @@ export default class ChangePassword extends React.Component {
     if (!regularExpression.test(this.state.new_PW)) {
       return Alert.alert(
         'Oops!',
-        'Password must contain at least one digit number, one uppercase letter, and one special character.',
+        'Password must contain at least one digit number, one uppercase letter, and one special character ( !@#$%^&*. ).',
       );
     }
     this.setState({isLoading: true});

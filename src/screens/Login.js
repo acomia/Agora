@@ -260,23 +260,37 @@ export default class Login extends React.Component {
       .then(response => {
         response.json().then(data => {
           if (data.is_success == true) {
-            let accessToken = data.access_token;
-            this.storeToken(accessToken);
 
-            let memberId = data.data.recordid;
-            this.storememberId(memberId);
+            if (data.error_message !== 'Verification Required!') {
+              let accessToken = data.access_token;
+              this.storeToken(accessToken);
 
-            let memb_Accountno = data.data.accountno;
-            this.storeacct(memb_Accountno);
+              let memberId = data.data.recordid;
+              this.storememberId(memberId);
 
-            let memb_name = data.data.firstname;
-            this.storemembname(memb_name);
+              let memb_Accountno = data.data.accountno;
+              this.storeacct(memb_Accountno);
 
-            let memb_email = data.data.email;
-            this.storemembemail(memb_email);
-            this.setState({ LoginSubmit: false });
-            this.props.navigation.dispatch(resetAction);
-          } else {
+              let memb_name = data.data.firstname;
+              this.storemembname(memb_name);
+
+              let memb_email = data.data.email;
+              this.storemembemail(memb_email);
+              this.setState({ LoginSubmit: false });
+              this.props.navigation.dispatch(resetAction);
+            }
+
+            else {
+              let membfname = data.data.firstname
+              let memblname = data.data.lastname
+              let membemail = data.data.email
+              this.SEND_EMAILVERIFICATION(membfname, memblname, membemail)
+            }
+
+
+          }
+
+          else {
             alert(data.error_message);
             this.setState({ LoginSubmit: false });
           }
@@ -286,6 +300,37 @@ export default class Login extends React.Component {
         alert('Error!' + error);
       });
   }
+
+  SEND_EMAILVERIFICATION(membfname, memblname, membemail) {
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' + membfname + '&lastname=' + memblname, {
+      method: 'PUT',
+      headers: {
+        EmailAddress: membemail
+      }
+    })
+      .then(response => {
+        response.json()
+          .then((data) => {
+            if (data.error_message === 'Successfully generate verification code.') {
+              this.props.navigation.navigate('VerifyOTP', {
+                routeAddress: 'registration',
+                emailAddress: membemail,
+                f_NAME: membfname,
+                l_NAME: memblname
+              })
+              this.setState({ LoginSubmit: false });
+            } else {
+              alert('error')
+              this.setState({ LoginSubmit: false });
+            }
+          })
+      })
+      .catch((error) => {
+        alert('Error!' + error)
+      })
+  }
+
+
 }
 
 export const { width, height } = Dimensions.get('window');

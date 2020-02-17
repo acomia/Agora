@@ -580,7 +580,7 @@ export default class Login extends React.Component {
 
   handleSubmit = () => {
     let valid_email = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-    var regularExpression  =  /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,16}$/;
+    var regularExpression  =   /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,50}$/;
 
     NetInfo.fetch().then(state => {
       if (state.isConnected == false) {
@@ -615,7 +615,7 @@ export default class Login extends React.Component {
     }
 
     if(!regularExpression.test(this.state.password)) {
-      return alert("password should contain atleast one number, one upper case and one special character");
+      return alert("password should contain atleast one number, one upper case and one special character ( !@#$%^&*. ) ");
       }
 
     if (this.state.password !== this.state.confirm_password) {
