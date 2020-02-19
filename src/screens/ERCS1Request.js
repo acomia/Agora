@@ -326,8 +326,8 @@ export default class ERCS1Request extends React.Component {
       .then(response => {
         response.json().then(data => {
           console.log('ercs1', data)
-    
-          // send to email
+          
+            // send to email
           if (data.is_success === true) {
             let rcs = data.data.ercsno;
             fetch(
