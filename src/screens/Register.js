@@ -79,7 +79,7 @@ export default class Login extends React.Component {
     check_opt: false,
     opt_val: 0,
     creatingAcct: false,
-    confirm: false,
+    confirm: true,
     visibleModal: false,
     accepted: false,
   };
