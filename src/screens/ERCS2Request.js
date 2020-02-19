@@ -338,7 +338,7 @@ export default class ERCS2Request extends React.Component {
  updateMembPicked = (MembPicked) => {
     console.log('Memb', MembPicked)
     this.setState({
-     membbenefit: MembPicked.op_benefit, visibleModal: null,  MembPickerValueHolder: MembPicked.fullname,
+     membbenefit: MembPicked.op_benefit, visibleModal: null,  MembPickerValueHolder: MembPicked.fullname, MembPickerValueHolderAcct: MembPicked.acct,
       docspec: '', searchIllness: '', search: '', confirm: true
     })
     console.log('opben', MembPicked.op_benefit)
@@ -813,7 +813,7 @@ export default class ERCS2Request extends React.Component {
     formdata.append(
       'ercs_details',
       JSON.stringify({
-        acctno: this.state.MembPickerValueHolder,
+        acctno: this.state.MembPickerValueHolderAcct,
         ercs1no: 'WITHOUT eRCS1',
         doctor_code: this.state.DoctorSpeciallty.doctor_code,
         hospital_code: this.state.providercode,
@@ -847,6 +847,8 @@ export default class ERCS2Request extends React.Component {
         },
       );
       let respJson = await resp.json();
+       // console.log('boy',this.state.MembPickerValueHolderAcct)
+
 
       if (respJson.is_success === true) {
         let tmprcs2Num = respJson.data.ercsno;
