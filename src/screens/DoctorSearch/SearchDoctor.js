@@ -18,31 +18,36 @@ export default function SearchDoctor({search}) {
       searchBar
       rounded
       translucent
-      style={{backgroundColor: '#5fb650', height: 60, alignItems: 'center', paddingTop: 25}}>
+      style={{
+        backgroundColor: '#5fb650',
+        height: 80,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingTop: 30,
+      }}>
       <TouchableOpacity
         style={{paddingRight: 10}}
         onPress={() => navigate('SearchLandingPage')}>
         <Icon
-          type="FontAwesome"
-          name="chevron-left"
-          style={{color: 'white', fontSize: 15}}
+          type="Ionicons"
+          name="ios-arrow-back"
+          style={{color: 'white', fontSize: 20}}
         />
       </TouchableOpacity>
       <Item style={{height: 25, margin: 10}}>
         <Input
           placeholderTextColor={'#c2c2c2'}
           placeholder="Filter By Name or Specialty"
-          style={{fontSize: 12, textAlign: 'center', paddingBottom: 0.3}}
+          style={{fontSize: 12, textAlign: 'center'}}
           onChangeText={handleOnChangeText}
           value={textSearch}
         />
       </Item>
-      <TouchableOpacity>
-        <Thumbnail
-          source={require('../../../assets/images/filter.png')}
-          style={{height: 25, width: 25}}
-        />
-      </TouchableOpacity>
+      <Icon
+        type="Ionicons"
+        name="md-options"
+        style={{color: 'white', fontSize: 20}}
+      />
     </Header>
   );
 }
