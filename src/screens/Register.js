@@ -90,7 +90,7 @@ export default class Login extends React.Component {
     } else {
       this.setState({check_agreement1: true});
     }
-    this.confirm_enabled();
+    // this.confirm_enabled();
   }
 
   checkedagree2() {
@@ -99,7 +99,7 @@ export default class Login extends React.Component {
     } else {
       this.setState({check_agreement2: true});
     }
-    this.confirm_enabled();
+    // this.confirm_enabled();
   }
 
   checkedagree3() {
@@ -108,7 +108,7 @@ export default class Login extends React.Component {
     } else {
       this.setState({check_agreement3: true});
     }
-    this.confirm_enabled();
+    // this.confirm_enabled();
   }
 
   checkedopt() {
@@ -121,17 +121,23 @@ export default class Login extends React.Component {
     }
   }
 
-  confirm_enabled() {
-    if (
-      this.state.check_agreement1 == true &&
-      this.state.check_agreement2 == true &&
-      this.state.check_agreement3 == true
-    ) {
-      this.setState({confirm: true});
-    } else {
-      this.setState({confirm: false});
-    }
-  }
+  // confirm_enabled() {
+  //   console.log( 'val1',this.state.check_agreement1)
+  //   console.log( 'val2',this.state.check_agreement2)
+  //   console.log('val3', this.state.check_agreement3)
+
+  //   if (
+  //     this.state.check_agreement1 === true &&
+  //     this.state.check_agreement2 === true &&
+  //     this.state.check_agreement3 === true
+  //   ) {
+  //     this.setState({confirm: false});
+  //   } else {
+  //     this.setState({confirm: true});
+  //   }
+  // }
+
+
   render() {
     const {valid_photo, intid_photo} = this.state;
 
@@ -573,7 +579,9 @@ export default class Login extends React.Component {
             </View>
             <View style={styles.viewButtonSignUp}>
               <Button
-                disabled={this.state.confirm}
+                disabled={ this.state.check_agreement1 === true &&
+                  this.state.check_agreement2 === true &&
+                  this.state.check_agreement3 === true ? false :true}
                 block
                 rounded
                 success
@@ -935,6 +943,7 @@ export default class Login extends React.Component {
         employeeid: '',
         posted_from: 'mobile',
         read_terms: 1,
+        agree_terms: 1,
         warrant_as_principal: 1,
         consent_receiving: this.state.opt_val,
       }),
