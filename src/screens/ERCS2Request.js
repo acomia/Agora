@@ -68,6 +68,8 @@ export default class ERCS2Request extends React.Component {
       proceduresData: [],
       newListofItems: [],
       confirmSpec: true,
+      membbenefit: '',
+      visibleModal: null,
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -176,6 +178,7 @@ export default class ERCS2Request extends React.Component {
         .then(data => {
           if (data.error_message === null) {
             this.setState({
+              isLoading: false,
               proceduresData: [
                 {
                   procedure_name: 'Procedures',
@@ -194,30 +197,30 @@ export default class ERCS2Request extends React.Component {
     });
     //GET PROCEDURES
 
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-        params: {
-          gender: '',
-        },
-      },
-    )
-      .then(response => {
-        response.json().then(illness => {
-          this.setState({
-            dataSourceIllness: illness.data,
-            isLoading: false,
-          });
-          this.arrayholderIllness = illness.data;
-        });
-      })
-      .catch(error => {
-        alert('Error!' + error);
-      });
+    // fetch(
+    //   'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=',
+    //   {
+    //     method: 'GET',
+    //     headers: {
+    //       Authorization: 'Bearer ' + token,
+    //     },
+    //     params: {
+    //       gender: '',
+    //     },
+    //   },
+    // )
+    //   .then(response => {
+    //     response.json().then(illness => {
+    //       this.setState({
+    //         dataSourceIllness: illness.data,
+    //         isLoading: false,
+    //       });
+    //       this.arrayholderIllness = illness.data;
+    //     });
+    //   })
+    //   .catch(error => {
+    //     alert('Error!' + error);
+    //   });
   }
 
   async _IllnessSpeciallty() {
@@ -332,6 +335,55 @@ export default class ERCS2Request extends React.Component {
     });
   }
 
+ updateMembPicked = (MembPicked) => {
+    console.log('Memb', MembPicked)
+    this.setState({
+     membbenefit: MembPicked.op_benefit, visibleModal: null,  MembPickerValueHolder: MembPicked.fullname,
+      docspec: '', searchIllness: '', search: '', confirm: true
+    })
+    console.log('opben', MembPicked.op_benefit)
+    if (MembPicked.op_benefit === false) {
+      alert('The Member does not have OPD Benefits')
+    }
+    this._renderMembersModal()
+  }
+
+  _renderMembersModal = () => {
+    return (
+      <View style={styles.modalContainerStyleMember}>
+        <View
+          style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
+          <Button
+            rounded
+            transparent
+            onPress={() => {
+              this.setState({ visibleModal: false });
+            }}>
+            <Icon
+              type="Ionicons"
+              name="md-close"
+              style={{ color: '#c4c4c4' }}
+            />
+          </Button>
+        </View>
+        <ScrollView>
+          {this.state.Rcsmemb.map((item, key) => (
+            <ListItem key={key}>
+              <TouchableOpacity
+                onPress={() => this.updateMembPicked(item)}>
+                <View>
+                  <Text style={{ color: '#5fb650', fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-start' }}>
+                    {item.fullname}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </ListItem>
+          ))}
+        </ScrollView>
+      </View>
+    )
+  }
+
   provideronpress = provider => () => {
     //Item sparator view
     this.setState({
@@ -430,6 +482,7 @@ export default class ERCS2Request extends React.Component {
 
   render() {
     const { dataSource, dataSourceIllness, proceduresData } = this.state;
+    const {memberPickedStyle} = styles;
     return (
       <Container>
         <ScrollView>
@@ -448,24 +501,26 @@ export default class ERCS2Request extends React.Component {
           </View>
           <View style={styles.divider} />
           <View style={styles.container}>
-            <View style={styles.formStyle}>
-              <Text style={styles.formLabel}>Choose Member</Text>
-              <Picker
-                mode="dropdown"
-                iosIcon={<Icon name="arrow-down" />}
-                selectedValue={this.state.MembPickerValueHolder}
-                onValueChange={(modeValue, itemIndex) =>
-                  this.setState({ MembPickerValueHolder: modeValue })
-                }>
-                {this.state.Rcsmemb.map((item, key) => (
-                  <Picker.Item
-                    label={item.fullname}
-                    value={item.acct}
-                    key={key}
-                  />
-                ))}
-              </Picker>
-            </View>
+          <View style={{ marginTop: 20, marginBottom: 10 }}>
+            {/* <Text style={styles.formLabel}>Choose member</Text> */}
+            <Button
+              iconRight
+              onPress={() => { this.setState({ visibleModal: 1 }) }}
+              style={{ marginVertical: 10, backgroundColor: '#e74c3c', elevation: 0, shadowOpacity: 0 }}>
+              <Text style={{ textTransform: 'capitalize', color: '#fff' }}>
+                Choose member
+              </Text>
+              <Icon
+                type="Ionicons"
+                name="md-arrow-dropdown"
+                style={{ color: '#2d2d2d', fontSize: 18 }}
+              />
+            </Button>
+            <Text style={memberPickedStyle}>{
+            this.state.membbenefit == true 
+            ? this.state.MembPickerValueHolder
+            : ''}</Text> 
+          </View>
             <View style={styles.formStyle}>
               <Text style={styles.formLabel}>Choose hospital/facility</Text>
               <SearchBar
@@ -546,7 +601,7 @@ export default class ERCS2Request extends React.Component {
                 disabled={this.state.confirmSpec}
                 iconRight
                 onPress={() => {
-                  this.setState({ visibleModal: true });
+                  this.setState({ visibleModal: 2 });
                 }}
                 style={{
                   marginVertical: 10,
@@ -595,7 +650,7 @@ export default class ERCS2Request extends React.Component {
                 </Text>
               </View>
               <Modal
-                isVisible={this.state.visibleModal}
+                isVisible={this.state.visibleModal === 2}
                 animationInTiming={700}
                 animationOutTiming={700}>
                 <View style={styles.modalContainerStyle}>
@@ -605,7 +660,7 @@ export default class ERCS2Request extends React.Component {
                       rounded
                       transparent
                       onPress={() => {
-                        this.setState({ visibleModal: false });
+                        this.setState({ visibleModal: null });
                       }}>
                       <Icon
                         type="Ionicons"
@@ -704,6 +759,9 @@ export default class ERCS2Request extends React.Component {
                   ))}
                 </ScrollView>
               </Card>
+              <Modal isVisible={this.state.visibleModal === 1} animationInTiming={700} animationOutTiming={700}>
+              {this._renderMembersModal()}
+            </Modal>
             </View>
             <View style={{ paddingVertical: 20 }}>
               <Button
@@ -871,6 +929,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     padding: 10,
   },
+  modalContainerStyleMember: {
+    flexDirection: 'column',
+    alignContent: 'flex-start',
+    marginLeft: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    padding: 10,
+  },
   doctorSpecialtyModalTextStyle: {
     color: '#cacaca',
     fontSize: 12,
@@ -884,5 +950,12 @@ const styles = StyleSheet.create({
   divider: {
     borderBottomWidth: 0.5,
     borderBottomColor: '#f5f5f5',
+  },
+  memberPickedStyle: {
+    fontSize: 16,
+    color: '#5fb650',
+    fontWeight: 'bold',
+    alignSelf: 'flex-start',
+    marginLeft: 10
   },
 });

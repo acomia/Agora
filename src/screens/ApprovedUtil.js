@@ -77,8 +77,7 @@ export default class ApprovedUtil extends React.Component {
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    console.log('globaltokenko',global.storeToken)
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,

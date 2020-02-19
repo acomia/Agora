@@ -45,7 +45,7 @@ export default class PostedUtil extends React.Component {
     let membacctpreapproved = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     console.log('acctno', membacctpreapproved)
     console.log('globaltokenkopre',global.storeToken)
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
