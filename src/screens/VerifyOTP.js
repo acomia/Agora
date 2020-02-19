@@ -55,6 +55,7 @@ export default class VerifyOTP extends React.Component {
               'Invalid OTP!',
               "Kindy recheck the OTP we've sent on your email.",
             );
+            this.setState({isLoading: false, verification_CODE: ''});
           }
         });
       })

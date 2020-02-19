@@ -87,6 +87,7 @@ export default class ERCS1Request extends React.Component {
   }
 
   async componentDidMount() {
+    console.log('test')
     this._isMounted = true;
     global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
@@ -325,9 +326,10 @@ export default class ERCS1Request extends React.Component {
       .then(response => {
         response.json().then(data => {
           console.log('ercs1', data)
-          let rcs = data.data.ercsno;
+    
           // send to email
           if (data.is_success === true) {
+            let rcs = data.data.ercsno;
             fetch(
               'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
               rcs,
@@ -357,11 +359,17 @@ export default class ERCS1Request extends React.Component {
                     this.props.navigation.dispatch(resetAction);
 
                   } else {
+                    this.setState({
+                      isLoading: false,
+                    });
                     alert(data.error_message);
                   }
                 });
               })
               .catch(error => {
+                this.setState({
+                  isLoading: false,
+                });
                 alert('Error!' + error);
               });
           } else {
@@ -369,11 +377,14 @@ export default class ERCS1Request extends React.Component {
             this.setState({
               isLoading: false,
             });
-            alert('error in saving', data.error_message);
+            alert(data.error_message);
           }
         });
       })
       .catch(error => {
+        this.setState({
+          isLoading: false,
+        });
         alert('Error!' + error);
       });
   }

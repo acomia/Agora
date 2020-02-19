@@ -44,6 +44,7 @@ export default class ERCSCancelRemarks extends React.Component {
                 response.json().then(data => {
                     if (data.is_success === true) {
                         this.setState({ isLoading: false });
+                        alert('Successfully cancelled.')
                         this.props.navigation.dispatch(resetAction);
                     } else {
                         this.setState({ isLoading: false });
