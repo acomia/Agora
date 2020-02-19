@@ -12,6 +12,9 @@ export default class ForgotPassword extends React.Component {
   }
 
   RESET_PW() {
+    if (this.state.email_add.trim() === '') {
+      return alert('Please provide your registered email address');
+    }
     this.setState({isLoading: true});
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/send?postedfrom=mobile',
