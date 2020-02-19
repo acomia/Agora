@@ -77,7 +77,7 @@ export default class Login extends React.Component {
     check_agreement2: false,
     check_agreement3: false,
     check_opt: false,
-    opt_val: 1,
+    opt_val: 0,
     creatingAcct: false,
     confirm: false,
     visibleModal: false,
