@@ -288,7 +288,7 @@ export default function DoctorProfile() {
               <Body style={{borderBottomWidth: 0}}>
                 <Text style={styles.contentHeader}>Hospital Accreditation</Text>
               </Body>
-              <Right />
+              <Right style={{borderBottomWidth: 0}} />
             </ListItem>
           ) : null}
           {renderHospitalAccreditation}
@@ -312,6 +312,7 @@ const styles = StyleSheet.create({
     resizeMode: 'stretch',
     justifyContent: 'center',
     height: 200,
+    paddingTop: 10,
   },
   headerStyle: {
     height: 180,
@@ -326,13 +327,13 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     color: '#fff',
     textAlign: 'center',
-    fontSize: 18,
+    fontSize: 14,
   },
   labelNickname: {
     alignSelf: 'center',
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 20,
+    fontSize: 18,
     textAlign: 'center',
   },
   labelHeaderDetails: {
