@@ -36,6 +36,7 @@ import Modal from 'react-native-modal';
 import {TextInputMask} from 'react-native-masked-text';
 import NetInfo from '@react-native-community/netinfo';
 import Spinner from 'react-native-spinkit';
+import moment from 'moment';
 
 const {width, height} = Dimensions.get('window');
 
@@ -920,8 +921,9 @@ export default class Login extends React.Component {
     formdata.append('gov_id', this.state.valid_photo);
     formdata.append('int_id', this.state.intid_photo);
 
-    console.log(formdata);
-
+    //console.log('membmac',formdata);
+    let newbdate = moment(this.state.bdate).add(1,'day'); // to address concern un react native of minus 1 day
+    
     formdata.append(
       'member_details',
       JSON.stringify({
@@ -930,7 +932,7 @@ export default class Login extends React.Component {
         lastname: this.state.lastname,
         firstname: this.state.firstname,
         middlename: this.state.middlename,
-        birthdate: this.state.bdate,
+        birthdate: newbdate,
         street: this.state.street,
         mobileno: this.state.mobile_no,
         city_minicipal: this.state.municipal,
@@ -948,7 +950,7 @@ export default class Login extends React.Component {
         consent_receiving: this.state.opt_val,
       }),
     );
-
+    //console.log('membmac2',formdata);
     this.setState({creatingAcct: true});
 
     try {
