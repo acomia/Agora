@@ -496,7 +496,7 @@ export default class Login extends React.Component {
             </View>
             <View style={styles.viewButtonSignUp}>
               <Button
-                disabled={this.state.confirm}
+                //disabled={this.state.confirm}
                 block
                 success
                 onPress={() => {
