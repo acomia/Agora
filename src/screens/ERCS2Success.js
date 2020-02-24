@@ -32,10 +32,7 @@ export default class ERCS2Success extends React.Component {
   render() {
     return (
       <Container>
-        <StatusBar
-          backgroundColor="transparent"
-          barStyle="dark-content"
-        />
+        <StatusBar backgroundColor="transparent" barStyle="dark-content" />
         <View
           style={{
             flex: 3,
@@ -71,7 +68,7 @@ export default class ERCS2Success extends React.Component {
             iconLeft
             info
             style={styles.buttonTransaction}
-            onPress={() => this.props.navigation.navigate('ERCS2HistoryPage')}>
+            onPress={() => this.props.navigation.push('ERCS2HistoryPage')}>
             <Icon type="MaterialCommunityIcons" name="history" />
             <Text>Transaction history</Text>
           </Button>
@@ -80,7 +77,7 @@ export default class ERCS2Success extends React.Component {
             rounded
             iconLeft
             style={styles.buttonHome}
-            onPress={() => this.props.navigation.navigate('DashboardPage')}>
+            onPress={() => this.props.navigation.push('DashboardPage')}>
             <Icon type="Ionicons" name="md-home" />
             <Text>Go back home</Text>
           </Button>
