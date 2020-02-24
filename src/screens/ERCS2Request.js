@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   Container,
@@ -107,6 +108,17 @@ export default class ERCS2Request extends React.Component {
       });
     }
     this.setState({ newListofItems: newList })
+  }
+
+  ShowAlert = () => {
+    Alert.alert(
+      'Oops!',
+      'The Member does not have OPD Benefits.',
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      {cancelable: false},
+    );
   }
 
   async componentDidMount() {
@@ -341,9 +353,8 @@ export default class ERCS2Request extends React.Component {
      membbenefit: MembPicked.op_benefit, visibleModal: null,  MembPickerValueHolder: MembPicked.fullname, MembPickerValueHolderAcct: MembPicked.acct,
       docspec: '', searchIllness: '', search: '', confirm: true
     })
-    console.log('opben', MembPicked.op_benefit)
     if (MembPicked.op_benefit === false) {
-      alert('The Member does not have OPD Benefits')
+      this.ShowAlert();
     }
     this._renderMembersModal()
   }
@@ -475,6 +486,8 @@ export default class ERCS2Request extends React.Component {
     }
     this.setState({ newListofItems: newList });
   }
+
+
 
   componentWillUnmount() {
     this._isMounted = false;

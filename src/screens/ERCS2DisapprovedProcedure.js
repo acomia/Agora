@@ -20,6 +20,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import { DataTable } from 'react-native-paper';
 
 export default class ERCS2DisapprovedProcedure extends React.Component {
+
   render() {
     const { navigation } = this.props;
     let status = navigation.getParam('procstatus', '');
@@ -27,7 +28,9 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
     let appvddate = navigation.getParam('procappvddate', '');
     let remarks = navigation.getParam('procremarks', '');
     let procdata = navigation.getParam('procdata', []);
-    console.log('summproc', procdata);
+    const NewData = procdata.filter((item) => {
+      return item.status === 'D'
+    })
     return (
       <Container style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
         <StatusBar
@@ -65,7 +68,7 @@ export default class ERCS2DisapprovedProcedure extends React.Component {
           </DataTable>
           <FlatList
             roundAvatar
-            data={procdata}
+            data={NewData}
             renderItem={({ item }) => (
               <ScrollView>
                 <DataTable Body>

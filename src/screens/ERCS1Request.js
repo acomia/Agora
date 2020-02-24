@@ -86,6 +86,17 @@ export default class ERCS1Request extends React.Component {
     this.arrayholderIllness = [];
   }
 
+  showAlert = () => {
+    Alert.alert(
+      'Oops!',
+      'The Member does not have OPD Benefits.',
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
+  }
+
   async componentDidMount() {
     console.log('test')
     this._isMounted = true;
@@ -325,9 +336,9 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          console.log('ercs1', data)
-          
-            // send to email
+          //console.log('ercs1', data)
+
+          // send to email
           if (data.is_success === true) {
             let rcs = data.data.ercsno;
             fetch(
@@ -450,12 +461,11 @@ export default class ERCS1Request extends React.Component {
   updateMembPicked = (MembPicked) => {
     console.log('Memb', MembPicked)
     this.setState({
-      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname,  membbenefit: MembPicked.op_benefit, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
+      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname, membbenefit: MembPicked.op_benefit, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
       docspec: '', searchIllness: '', search: '', confirm: true
     })
-    console.log('opben', MembPicked.op_benefit)
     if (MembPicked.op_benefit === false) {
-      alert('The Member does not have OPD Benefits')
+      this.showAlert();
       this.setState({
         isLoading: false,
       })
@@ -556,9 +566,9 @@ export default class ERCS1Request extends React.Component {
               />
             </Button>
             <Text style={memberPickedStyle}>{
-            this.state.membbenefit == true 
-            ? this.state.MembPickerValueHolder
-            : ''}</Text> 
+              this.state.membbenefit == true
+                ? this.state.MembPickerValueHolder
+                : ''}</Text>
           </View>
           <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Type of consultation</Text>

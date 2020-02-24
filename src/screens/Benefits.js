@@ -28,6 +28,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
+import Spinner from 'react-native-spinkit';
 
 const ACCESS_TOKEN = 'access_token';
 
@@ -37,6 +38,7 @@ export default class Benefits extends React.Component {
     this.state = {
       benefitsDataSource: [],
       tableHead: ['GENERAL BENEFITS', 'HMO', 'TPA'],
+      isLoading: true,
       // h_ip : '',
       // tableIP: ['In - Patient', this.state.h_ip, 'No'],
     };
@@ -58,9 +60,9 @@ export default class Benefits extends React.Component {
       .then(response => {
         response.json().then(responseJson => {
           if (responseJson.data != null) {
-            console.log('teteteteest', responseJson.data)
             this.setState({
               benefitsDataSource: responseJson.data,
+              isLoading: false,
             });
           }
         });
@@ -72,9 +74,8 @@ export default class Benefits extends React.Component {
 
 
   render() {
+    const { spinnerStyle } = styles;
     const state = this.state;
-    console.log('logs', this.state.benefitsDataSource)
-    console.log('logs2', this.state.benefitsDataSource.h_ip)
     return (
       <Container>
         <ScrollView>
@@ -273,6 +274,13 @@ export default class Benefits extends React.Component {
             </View>
           </View>
         </ScrollView>
+        {
+          this.state.isLoading && (
+            <View style={spinnerStyle}>
+              <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} />
+            </View>
+          )
+        }
       </Container>
     );
   }
@@ -338,6 +346,17 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   headerStyle: {
     color: '#6d6e72',

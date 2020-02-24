@@ -79,7 +79,7 @@ export default class ForgotPassword extends React.Component {
               placeholder="Email Address"
               value={this.state.email_add}
               onChangeText={email_add => this.setState({email_add})}
-              autoCapitalize={false}
+              autoCapitalize={'none'}
             />
           </Item>
           <Button block rounded info onPress={() => this.RESET_PW()}>

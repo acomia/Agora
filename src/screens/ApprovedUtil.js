@@ -74,6 +74,17 @@ export default class ApprovedUtil extends React.Component {
   //     }
   // }
 
+  showAlert = () =>{
+    Alert.alert(
+      'Oops!',
+      'Approved Utilization Empty',
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      {cancelable: false},
+    );
+  }
+
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
@@ -105,9 +116,9 @@ export default class ApprovedUtil extends React.Component {
             this.setState({ totalUtilAmount })
 
           } else {
-            alert('Approved Utilization Empty')
             this.setState({ isLoading: false })
             this.setState({ refreshing: false })
+            this.showAlert()
             this.props.navigation.navigate('Membinfo')
           }
         });

@@ -10,13 +10,10 @@ import {
   StatusBar,
 } from 'react-native';
 import {Button} from 'native-base';
-// import OTPInputView from '@twotalltotems/react-native-otp-input'
+import {StackActions} from 'react-navigation';
 import Modal from 'react-native-modal';
-import {Icon} from 'react-native-elements';
 import OTPTextView from 'react-native-otp-textinput';
 import Spinner from 'react-native-spinkit';
-
-const SCREEN_WIDTH = Dimensions.get('window').width;
 
 export default class VerifyOTP extends React.Component {
   constructor() {
@@ -61,6 +58,7 @@ export default class VerifyOTP extends React.Component {
       })
       .catch(error => {
         alert('Error!' + error);
+        this.setState({isLoading: false, verification_CODE: ''});
       });
   }
   VALIDATE_REGISTRATION() {
@@ -92,11 +90,13 @@ export default class VerifyOTP extends React.Component {
       })
       .catch(error => {
         alert('Error!' + error);
+        this.setState({isLoading: false, verification_CODE: ''});
       });
   }
   REG_SUCCESS_VAL() {
     this.setState({visibleModal: null, verification_CODE: ''});
-    this.props.navigation.navigate('LoginPage');
+    // this.props.navigation.push('LoginPage');
+    this.props.navigation.dispatch(StackActions.popToTop());
   }
   RESEND_OTP() {
     const {navigation} = this.props;
@@ -124,7 +124,7 @@ export default class VerifyOTP extends React.Component {
             ) {
               this.setState({visibleModal: 2, isLoading: false});
             } else {
-              alert('error');
+              Alert.alert('Oops!', 'Error resending OTP!');
               this.setState({isLoading: false});
             }
           });
@@ -153,7 +153,7 @@ export default class VerifyOTP extends React.Component {
             ) {
               this.setState({visibleModal: 2, isLoading: false});
             } else {
-              alert('error');
+              Alert.alert('Oops!', 'Error resending OTP!');
               this.setState({isLoading: false});
             }
           });
@@ -201,6 +201,7 @@ export default class VerifyOTP extends React.Component {
         </View>
         <View style={styles.bottomContent}>
           <OTPTextView
+            // defaultValue={this.state.verification_CODE}
             containerStyle={styles.textInputContainer}
             handleTextChange={text => this.setState({verification_CODE: text})}
             textInputStyle={styles.roundedTextInput}
