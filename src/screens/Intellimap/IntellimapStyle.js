@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   hospitalSubitemSeachTextStyle: {
     alignSelf: 'flex-start',
     fontSize: 10,
-    color: '#cacaca',
+    color: 'gray',
   },
   searchViewStyle: {
     backgroundColor: '#fff',

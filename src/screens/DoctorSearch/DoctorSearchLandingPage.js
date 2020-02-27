@@ -128,8 +128,8 @@ export default function DoctorSearchLandingPage() {
 
   return (
     <View style={{backgroundColor: '#5fb650', flex: 1}}>
-      <StatusBar translucent backgroundColor="transparent" />
       <ScrollView>
+      <StatusBar translucent backgroundColor="transparent" />
         <View style={{flex: 1, paddingTop: winHeight * 0.1}}>
           <Text style={styles.physicianDirectory}>PHYSICIAN DIRECTORY</Text>
           <View style={{justifyContent: 'center', margin: 20}}>

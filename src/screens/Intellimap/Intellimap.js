@@ -503,7 +503,7 @@ export default class Intellimap extends PureComponent {
               <Text
                 style={{
                   fontSize: 10,
-                  color: 'silver',
+                  color: 'gray',
                   alignSelf: 'flex-start',
                 }}>
                 {destination.phone}
@@ -523,7 +523,7 @@ export default class Intellimap extends PureComponent {
                 color="#5FB650"
                 size={22}
               />
-              <Text style={{fontSize: 10, color: 'silver', marginLeft: 6}}>
+              <Text style={{fontSize: 10, color: 'gray', marginLeft: 6}}>
                 {destination.ofc_hrs.trim() === '' &&
                 destination.ofc_schedule.trim() === ''
                   ? 'N/A'
@@ -544,7 +544,7 @@ export default class Intellimap extends PureComponent {
               />
               <Text
                 onPress={() => this.handleGetDirections(destination)}
-                style={{fontSize: 10, color: 'silver', marginLeft: 6}}>
+                style={{fontSize: 10, color: 'gray', marginLeft: 6}}>
                 {destination.address}
               </Text>
             </ListItem>
@@ -733,7 +733,7 @@ export default class Intellimap extends PureComponent {
               bottom: 10,
               borderRadius: 3,
             }}
-            inputStyle={{fontSize: 12}}
+            inputStyle={{fontSize: 12, color: 'black'}}
             onChangeText={text => this.SearchFilterFunction(text)}
             onClear={() =>
               this.setState({
