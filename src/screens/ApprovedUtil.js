@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl, Modal, style, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl, Alert, Modal, style, TouchableHighlight } from 'react-native';
 import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';

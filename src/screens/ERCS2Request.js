@@ -7,6 +7,7 @@ import {
   Dimensions,
   FlatList,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   Container,
