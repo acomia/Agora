@@ -28,19 +28,19 @@ import {
   Card,
   CardItem,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {ScrollView} from 'react-native-gesture-handler';
+import {StackActions, NavigationActions} from 'react-navigation';
 import ImagePicker from 'react-native-image-picker';
 import CompressImage from 'react-native-compress-image';
 import Modal from 'react-native-modal';
-import { TextInputMask } from 'react-native-masked-text';
+import {TextInputMask} from 'react-native-masked-text';
 import NetInfo from '@react-native-community/netinfo';
 import Spinner from 'react-native-spinkit';
 import moment from 'moment';
 
-const { width, height } = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
-const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
+const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
   const paddingToBottom = 20;
   return (
     layoutMeasurement.height + contentOffset.y >=
@@ -51,7 +51,7 @@ const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
 });
 
 export default class Login extends React.Component {
@@ -84,13 +84,15 @@ export default class Login extends React.Component {
     visibleModal: false,
     visibleList: false,
     accepted: false,
+    securePW: true,
+    secureConfirmPW: true,
   };
 
   checkedagree1() {
     if (this.state.check_agreement1 == true) {
       this.setState({check_agreement1: false});
     } else {
-      this.setState({ check_agreement1: true, visibleModal: true });
+      this.setState({check_agreement1: true, visibleModal: true});
     }
     // this.confirm_enabled();
   }
@@ -138,7 +140,6 @@ export default class Login extends React.Component {
   //     this.setState({confirm: true});
   //   }
   // }
-
 
   render() {
     const {valid_photo, intid_photo} = this.state;
@@ -258,26 +259,26 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>City/Province</Label>
+                  <Label style={{fontSize: 14}}>City/Province</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.province}
-                    onChangeText={province => this.setState({ province })}
+                    onChangeText={province => this.setState({province})}
                   />
                 </Item>
                 <Item stackedLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Sex</Label>
+                  <Label style={{fontSize: 14}}>Sex</Label>
                   <Item picker>
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name="arrow-down" />}
-                      style={{ width: undefined }}
+                      style={{width: undefined}}
                       placeholder="Select Gender"
-                      placeholderStyle={{ color: '#bdc3c7' }}
+                      placeholderStyle={{color: '#bdc3c7'}}
                       placeholderIconColor="#007aff"
                       selectedValue={this.state.gender}
                       onValueChange={(itemValue, itemIndex) =>
-                        this.setState({ gender: itemValue })
+                        this.setState({gender: itemValue})
                       }>
                       <Picker.Item label="Male" value="male" />
                       <Picker.Item label="Female" value="female" />
@@ -287,8 +288,8 @@ export default class Login extends React.Component {
                 <Item
                   stackedLabel
                   style={styles.formStyle}
-                  style={{ alignItems: 'flex-start' }}>
-                  <Label style={{ fontSize: 14 }}>Date of birth *</Label>
+                  style={{alignItems: 'flex-start'}}>
+                  <Label style={{fontSize: 14}}>Date of birth *</Label>
                   <DatePicker
                     // defaultDate={new Date(2018, 4, 4)} style={{ alignSelf: Left }}
                     // minimumDate={new Date(2018, 1, 1)}
@@ -299,9 +300,9 @@ export default class Login extends React.Component {
                     animationType={'fade'}
                     androidMode={'default'}
                     placeHolderText="Select date"
-                    textStyle={{ color: '#2d2d2d' }}
-                    placeHolderTextStyle={{ color: '#bdc3c7' }}
-                    onDateChange={bdate => this.setState({ bdate })}
+                    textStyle={{color: '#2d2d2d'}}
+                    placeHolderTextStyle={{color: '#bdc3c7'}}
+                    onDateChange={bdate => this.setState({bdate})}
                     disabled={false}
                     defaultDate={this.state.bdate}
                   />
@@ -309,19 +310,19 @@ export default class Login extends React.Component {
                 <Item
                   stackedLabel
                   style={styles.formStyle}
-                  style={{ marginTop: 10 }}>
-                  <Label style={{ fontSize: 14 }}>Civil Status</Label>
+                  style={{marginTop: 10}}>
+                  <Label style={{fontSize: 14}}>Civil Status</Label>
                   <Item picker>
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name="arrow-down" />}
-                      style={{ width: undefined }}
+                      style={{width: undefined}}
                       placeholder="Select Gender"
-                      placeholderStyle={{ color: '#bdc3c7' }}
+                      placeholderStyle={{color: '#bdc3c7'}}
                       placeholderIconColor="#007aff"
                       selectedValue={this.state.civil_stat}
                       onValueChange={(itemValue, itemIndex) =>
-                        this.setState({ civil_stat: itemValue })
+                        this.setState({civil_stat: itemValue})
                       }>
                       <Picker.Item label="Single" value="single" />
                       <Picker.Item label="Married" value="married" />
@@ -344,7 +345,7 @@ export default class Login extends React.Component {
               </View>
               <View style={styles.formInfo}>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>
+                  <Label style={{fontSize: 14}}>
                     Intellicare/Avega Account No. *{' '}
                     <Text style={styles.sampleText}>
                       (eg. 00-00-00000-00000-00)
@@ -354,13 +355,13 @@ export default class Login extends React.Component {
                     style={styles.labelStyle}
                     value={this.state.intellicare_acct}
                     onChangeText={intellicare_acct =>
-                      this.setState({ intellicare_acct })
+                      this.setState({intellicare_acct})
                     }
                   />
                 </Item>
 
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>
+                  <Label style={{fontSize: 14}}>
                     Intellicare/Avega Card No. *{' '}
                     <Text style={styles.sampleText}>
                       (eg. 1195000000000000)
@@ -370,69 +371,102 @@ export default class Login extends React.Component {
                     style={styles.labelStyle}
                     value={this.state.intellicare_no}
                     onChangeText={intellicare_no =>
-                      this.setState({ intellicare_no })
+                      this.setState({intellicare_no})
                     }
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>
+                  <Label style={{fontSize: 14}}>
                     Email Address *{' '}
                     <Text style={styles.sampleText}>
                       (eg. sample@email.com)
                     </Text>
                   </Label>
                   <Input
+                    autoCapitalize="none"
                     style={styles.labelStyle}
                     value={this.state.email}
-                    onChangeText={email => this.setState({ email })}
+                    onChangeText={email => this.setState({email})}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Password *</Label>
+                  <Label style={{fontSize: 14}}>Password *</Label>
                   <Input
                     style={styles.labelStyle}
-                    secureTextEntry
+                    secureTextEntry={this.state.securePW}
                     value={this.state.password}
-                    onChangeText={password => this.setState({ password })}
+                    onChangeText={password => this.setState({password})}
+                  />
+                  <Icon
+                    onPress={() => {
+                      this.state.securePW
+                        ? this.setState({securePW: false})
+                        : this.setState({securePW: true});
+                    }}
+                    type="Octicons"
+                    name={this.state.securePW ? 'eye' : 'eye-closed'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Confirm Password</Label>
+                  <Label style={{fontSize: 14}}>Confirm Password</Label>
                   <Input
                     style={styles.labelStyle}
-                    secureTextEntry
+                    secureTextEntry={this.state.secureConfirmPW}
                     value={this.state.confirm_password}
                     onChangeText={confirm_password =>
-                      this.setState({ confirm_password })
+                      this.setState({confirm_password})
                     }
+                  />
+                  <Icon
+                    onPress={() => {
+                      this.state.secureConfirmPW
+                        ? this.setState({secureConfirmPW: false})
+                        : this.setState({secureConfirmPW: true});
+                    }}
+                    type="Octicons"
+                    name={this.state.secureConfirmPW ? 'eye' : 'eye-closed'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Mobile No. *</Label>
+                  <Label style={{fontSize: 14}}>Mobile No. *</Label>
                   <Input
-                  keyboardType={'numeric'} 
+                    keyboardType={'numeric'}
                     style={styles.labelStyle}
                     value={this.state.mobile_no}
-                    onChangeText={mobile_no => this.setState({ mobile_no })}
+                    onChangeText={mobile_no => this.setState({mobile_no})}
                   />
                 </Item>
 
-                <View style={styles.viewButtonID}> 
-               <TouchableOpacity
-                  onPress={() => {
-                    this.setState({ visibleList: true })
-                  }}>
-                <Text style={{ textAlign: 'center', fontWeight: 'bold',  textDecorationLine: 'underline',color: '#5fb650'}}>
-                CLICK HERE TO SEE ACCEPTED VALID ID'S
-                </Text>
-                </TouchableOpacity>
-            </View>
+                <View style={styles.viewButtonID}>
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.setState({visibleList: true});
+                    }}>
+                    <Text
+                      style={{
+                        textAlign: 'center',
+                        fontWeight: 'bold',
+                        textDecorationLine: 'underline',
+                        color: '#5fb650',
+                      }}>
+                      CLICK HERE TO SEE ACCEPTED VALID ID'S
+                    </Text>
+                  </TouchableOpacity>
+                </View>
 
                 <TouchableOpacity
                   onPress={() => {
-                    this.handleValidIDPhoto()
+                    this.handleValidIDPhoto();
                   }}>
-                  <Card style={{ borderRadius: 10 }}>
+                  <Card style={{borderRadius: 10}}>
                     <CardItem
                       style={{
                         borderRadius: 10,
@@ -440,7 +474,7 @@ export default class Login extends React.Component {
                         alignItems: 'center',
                       }}>
                       <Body
-                        style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Button
                           style={{
                             width: 57,
@@ -455,14 +489,14 @@ export default class Login extends React.Component {
                         <Icon
                           type="MaterialIcons"
                           name="photo-camera"
-                          style={{ color: '#5fb650', marginHorizontal: 5 }}
+                          style={{color: '#5fb650', marginHorizontal: 5}}
                           onPress={() => {
-                            this.handleValidIDPhoto()
+                            this.handleValidIDPhoto();
                           }}
                         />
-                        <Text style={{ color: '#5fb650', fontSize: 12 }}>
+                        <Text style={{color: '#5fb650', fontSize: 12}}>
                           Take a Selfie
-                         </Text>
+                        </Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -471,7 +505,7 @@ export default class Login extends React.Component {
                   onPress={() => {
                     this.handleIntIDPhoto();
                   }}>
-                  <Card style={{ borderRadius: 10 }}>
+                  <Card style={{borderRadius: 10}}>
                     <CardItem
                       style={{
                         borderRadius: 10,
@@ -479,7 +513,7 @@ export default class Login extends React.Component {
                         alignItems: 'center',
                       }}>
                       <Body
-                        style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Button
                           style={{
                             width: 57,
@@ -494,12 +528,12 @@ export default class Login extends React.Component {
                         <Icon
                           type="MaterialIcons"
                           name="photo-camera"
-                          style={{ color: '#5fb650', marginHorizontal: 5 }}
+                          style={{color: '#5fb650', marginHorizontal: 5}}
                           onPress={() => {
                             this.handleIntIDPhoto();
                           }}
                         />
-                        <Text style={{ color: '#5fb650', fontSize: 12 }}>
+                        <Text style={{color: '#5fb650', fontSize: 12}}>
                           Intellicare/Avega ID & valid ID
                         </Text>
                       </Body>
@@ -513,18 +547,18 @@ export default class Login extends React.Component {
                 block
                 success
                 onPress={() => {
-                  this.setState({ visibleModal: true });
+                  this.setState({visibleModal: true});
                 }}>
-                <Text style={{ textAlign: 'center' }}>
+                <Text style={{textAlign: 'center'}}>
                   Click Here to Read Terms of Service, Privacy Notice and
                   Privacy Policy
                 </Text>
               </Button>
             </View>
-            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
-              <ListItem style={{ borderBottomWidth: 0 }}>
+            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
+              <ListItem style={{borderBottomWidth: 0}}>
                 <CheckBox
-                  style={{ color: '#5fb650', borderRadius: 5 }}
+                  style={{color: '#5fb650', borderRadius: 5}}
                   checked={this.state.check_agreement1}
                   onPress={() => this.checkedagree1()}
                 />
@@ -536,10 +570,10 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
-              <ListItem style={{ borderBottomWidth: 0 }}>
+            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
+              <ListItem style={{borderBottomWidth: 0}}>
                 <CheckBox
-                  style={{ color: '#5fb650', borderRadius: 5 }}
+                  style={{color: '#5fb650', borderRadius: 5}}
                   checked={this.state.check_agreement2}
                   onPress={() => this.checkedagree2()}
                 />
@@ -551,10 +585,10 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
-              <ListItem style={{ borderBottomWidth: 0 }}>
+            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
+              <ListItem style={{borderBottomWidth: 0}}>
                 <CheckBox
-                  style={{ color: '#5fb650', borderRadius: 5 }}
+                  style={{color: '#5fb650', borderRadius: 5}}
                   checked={this.state.check_agreement3}
                   onPress={() => this.checkedagree3()}
                 />
@@ -568,10 +602,10 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
-              <ListItem style={{ borderBottomWidth: 0 }}>
+            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
+              <ListItem style={{borderBottomWidth: 0}}>
                 <CheckBox
-                  style={{ color: '#5fb650', borderRadius: 5 }}
+                  style={{color: '#5fb650', borderRadius: 5}}
                   checked={this.state.check_opt}
                   onPress={() => this.checkedopt()}
                 />
@@ -593,9 +627,13 @@ export default class Login extends React.Component {
             </View>
             <View style={styles.viewButtonSignUp}>
               <Button
-                disabled={this.state.check_agreement1 === true &&
+                disabled={
+                  this.state.check_agreement1 === true &&
                   this.state.check_agreement2 === true &&
-                  this.state.check_agreement3 === true ? false : true}
+                  this.state.check_agreement3 === true
+                    ? false
+                    : true
+                }
                 block
                 rounded
                 success
@@ -605,8 +643,8 @@ export default class Login extends React.Component {
                 {this.state.creatingAcct ? (
                   <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
                 ) : (
-                    <Text>Register an Account</Text>
-                  )}
+                  <Text>Register an Account</Text>
+                )}
               </Button>
             </View>
           </View>
@@ -636,12 +674,12 @@ export default class Login extends React.Component {
         <Text style={styles.pnTitle}>Intellicare App Privacy Notice</Text>
         <ScrollView
           style={styles.tcContainer}
-          onScroll={({ nativeEvent }) => {
+          onScroll={({nativeEvent}) => {
             if (isCloseToBottom(nativeEvent)) {
-              this.setState({ accepted: true });
+              this.setState({accepted: true});
             }
           }}>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>
             Hi Intellicare App User,
           </Text>
           <Text style={styles.pnP}>
@@ -653,7 +691,7 @@ export default class Login extends React.Component {
             data. So please take time to read this before you continue signing
             up.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>What we collect and why.</Text>
+          <Text style={{fontWeight: 'bold'}}>What we collect and why.</Text>
           <Text style={styles.pnP}>
             We built this App to provide you with the most efficient services we
             can offer in the market, improve our services and personalize them
@@ -686,7 +724,7 @@ export default class Login extends React.Component {
             All those we collect from you are treated as private and
             confidential.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>
+          <Text style={{fontWeight: 'bold'}}>
             Reviewing, Updating, Removing and deleting your information
           </Text>
           <Text style={styles.pnP}>
@@ -709,7 +747,7 @@ export default class Login extends React.Component {
             that we may no longer be able to serve you nor provide you with the
             products and services that you require.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>
+          <Text style={{fontWeight: 'bold'}}>
             When Intellicare shares your information
           </Text>
           <Text style={styles.pnP}>
@@ -743,7 +781,7 @@ export default class Login extends React.Component {
             data subject which require protection under the Philippine
             Constitution.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>To whom we may Disclose</Text>
+          <Text style={{fontWeight: 'bold'}}>To whom we may Disclose</Text>
           <Text style={styles.pnP}>
             Your information may be disclosed subject to the above-stated
             conditions only and the requirements of the Data Privacy Act to:
@@ -762,7 +800,7 @@ export default class Login extends React.Component {
             rights of Intellicare and your Employer; provided that the
             information is absolutely necessary.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>
+          <Text style={{fontWeight: 'bold'}}>
             We build security into our services to protect your information
           </Text>
           <Text style={styles.pnP}>
@@ -772,7 +810,7 @@ export default class Login extends React.Component {
             standards are in place so you will feel comfortable trusting us with
             your data.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>Retention</Text>
+          <Text style={{fontWeight: 'bold'}}>Retention</Text>
           <Text style={styles.pnP}>
             Your information is retained for the period of time for as long as
             the purpose for which the personal data was collected continues.
@@ -783,7 +821,7 @@ export default class Login extends React.Component {
             compliance of legal, regulatory or accounting requirements, or to
             protect our interest.
           </Text>
-          <Text style={{ fontWeight: 'bold' }}>Complaints</Text>
+          <Text style={{fontWeight: 'bold'}}>Complaints</Text>
           <Text style={styles.pnP}>
             If you have complaints, our lines are open. Kindly contact our Data
             Protection Officer via email via dpo@intellicare.net.ph.
@@ -791,7 +829,7 @@ export default class Login extends React.Component {
         </ScrollView>
         <TouchableOpacity
           disabled={!this.state.accepted}
-          onPress={() => this.setState({ visibleModal: false, accepted: false })}
+          onPress={() => this.setState({visibleModal: false, accepted: false})}
           style={
             this.state.accepted ? styles.pnButton : styles.pnButtonDisabled
           }>
@@ -805,48 +843,32 @@ export default class Login extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.pnTitle}>Valid IDs</Text>
-        <ScrollView
-          style={styles.tcContainer}
-        >
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-            • Company ID
-          </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+        <ScrollView style={styles.tcContainer}>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>• Company ID</Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>
             • Driver’s License
           </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-            • OFW ID
-          </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>• OFW ID</Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>
             • Philippine Passport
           </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>
             • PhilHealth ID
           </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-            • PRC ID
-          </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-            • Postal ID
-          </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>• PRC ID</Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>• Postal ID</Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>
             • Senior Citizen ID
           </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>
             • SSS UMID Card
           </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-            • TIN Card
-          </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-            • Voter’s ID
-          </Text>
-          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
-
-          </Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>• TIN Card</Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}>• Voter’s ID</Text>
+          <Text style={{fontWeight: 'bold', marginTop: 10}}></Text>
         </ScrollView>
         <TouchableOpacity
-          onPress={() => this.setState({ visibleList: false })}
+          onPress={() => this.setState({visibleList: false})}
           style={styles.pnButton}>
           <Text style={styles.pnButtonLabel}>Proceed</Text>
         </TouchableOpacity>
@@ -908,7 +930,6 @@ export default class Login extends React.Component {
   };
 
   handleValidIDPhoto = () => {
-
     const options = {
       noData: true,
     };
@@ -928,7 +949,7 @@ export default class Login extends React.Component {
             };
 
             console.log(vidphoto);
-            this.setState({ valid_photo: vidphoto });
+            this.setState({valid_photo: vidphoto});
             // response.uri is the URI of the new image that can now be displayed, uploaded...
             // response.path is the path of the new image
             // response.name is the name of the new image with the extension
@@ -962,7 +983,7 @@ export default class Login extends React.Component {
             };
 
             console.log(intphoto);
-            this.setState({ intid_photo: intphoto });
+            this.setState({intid_photo: intphoto});
             // response.uri is the URI of the new image that can now be displayed, uploaded...
             // response.path is the path of the new image
             // response.name is the name of the new image with the extension
@@ -993,7 +1014,7 @@ export default class Login extends React.Component {
 
     let nstring = this.state.intellicare_no;
 
-    this.setState({ intellicare_no: nstring.replace(/[^0-9]/gi, '') });
+    this.setState({intellicare_no: nstring.replace(/[^0-9]/gi, '')});
     //console.log('new id',this.setState.intellicare_no)
 
     formdata.append('gov_id', this.state.valid_photo);
@@ -1029,7 +1050,7 @@ export default class Login extends React.Component {
       }),
     );
     //console.log('membmac2',formdata);
-    this.setState({ creatingAcct: true });
+    this.setState({creatingAcct: true});
 
     try {
       let resp = await fetch(
@@ -1060,7 +1081,7 @@ export default class Login extends React.Component {
       console.log(error);
     }
 
-    this.setState({ creatingAcct: false });
+    this.setState({creatingAcct: false});
   }
 
   SEND_EMAILVERIFICATION() {
@@ -1114,7 +1135,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: { width: 1, height: 5 },
+    shadowOffset: {width: 1, height: 5},
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -1147,7 +1168,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   viewButtonID: {
- 
     marginBottom: 10,
     marginHorizontal: 20,
   },

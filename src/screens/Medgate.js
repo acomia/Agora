@@ -272,6 +272,7 @@ export default class SideBar extends React.Component {
                 will call you.
               </Dialog.Description>
               <Dialog.Input
+                keyboardType="phone-pad"
                 label="Mobile Number"
                 onChangeText={mobileNumber =>
                   this.setState({mobileNumber})
