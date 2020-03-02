@@ -64,7 +64,6 @@ export default class SideBar extends React.Component {
     return (
       <Container>
         <Header
-          span
           style={{
             paddingLeft: 0,
             paddingRight: 0,
@@ -73,6 +72,8 @@ export default class SideBar extends React.Component {
             borderBottomWidth: 0.3,
             borderBottomColor: '#c4c4c4',
             backgroundColor: '#fff',
+            height: 100,
+            paddingTop: 20
           }}>
           {/* <ImageBackground
             source={require('../../assets/images/drawer-header-background.jpg')}
@@ -92,7 +93,7 @@ export default class SideBar extends React.Component {
                 </Text>
                 <TouchableNativeFeedback
                   onPress={() =>
-                    this.props.navigation.navigate('ChangePassword')
+                    this.props.navigation.navigate('ChangeOldPassword')
                   }>
                   <View style={styles.changePasswordContainer}>
                     <Icon
@@ -231,7 +232,7 @@ const styles = StyleSheet.create({
   },
   listStyle: {
     color: '#2d2d2d',
-    fontSize: 12,
+    fontSize: 14,
   },
   listLabel: {
     borderBottomColor: '#fff',
@@ -250,22 +251,22 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   navStyle: {
-    height: 22,
-    width: 22,
+    height: 18,
+    width: 18,
   },
   labelUsernameText: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 'bold',
     color: '#5fb650',
   },
   iconSettings: {
     color: '#2d2d2d',
-    fontSize: 12,
+    fontSize: 16,
     justifyContent: 'center',
     paddingRight: 2,
   },
   labelChangePassword: {
-    fontSize: 10,
+    fontSize: 12,
     color: '#2d2d2d',
   },
   changePasswordContainer: {
