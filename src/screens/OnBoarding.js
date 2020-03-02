@@ -29,7 +29,6 @@ import {
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {ScrollView} from 'react-native-gesture-handler';
 
-const ACCESS_TOKEN = 'access_token';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
 
@@ -39,7 +38,7 @@ export default class OnBoarding extends React.Component {
   }
   async getToken() {
     try {
-      let accessToken = await AsyncStorage.getItem(ACCESS_TOKEN);
+      let accessToken = await AsyncStorage.getItem('ACCESS_TOKEN');
       if (!accessToken) {
         console.log('No token');
       } else {
@@ -63,11 +62,13 @@ export default class OnBoarding extends React.Component {
               <View style={{flexDirection: 'row'}}>
                 <Image
                   source={require('../../assets/images/intellicare-logo-white.png')}
-                  style={styles.logoStyle} resizeMode='contain'
+                  style={styles.logoStyle}
+                  resizeMode="contain"
                 />
                 <Image
                   source={require('../../assets/images/avega-logo-white.png')}
-                  style={styles.logoStyle} resizeMode='contain'
+                  style={styles.logoStyle}
+                  resizeMode="contain"
                 />
               </View>
 
@@ -221,7 +222,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 120,
     flex: 1,
-    marginBottom: 20
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -236,12 +237,12 @@ const styles = StyleSheet.create({
   textButtonSignIn: {
     color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttonCreateAccount: {
     flex: 1,
     margin: 5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   textButtonCreateAccount: {
     color: '#5fb650',

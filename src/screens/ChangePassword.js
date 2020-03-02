@@ -1,13 +1,5 @@
 import React from 'react';
-import {
-  Alert,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  KeyboardAvoidingView,
-} from 'react-native';
+import {Alert, StyleSheet, View, Image, StatusBar} from 'react-native';
 import {
   Container,
   Button,
@@ -24,7 +16,13 @@ import Modal from 'react-native-modal';
 export default class ChangePassword extends React.Component {
   constructor() {
     super();
-    this.state = {new_PW: '', confirm_PW: '', isLoading: false};
+    this.state = {
+      new_PW: '',
+      confirm_PW: '',
+      isLoading: false,
+      securePW: true,
+      secureConfirmPW: true,
+    };
   }
 
   CHANGE_PW() {
@@ -77,7 +75,7 @@ export default class ChangePassword extends React.Component {
     return (
       // <KeyboardAvoidingView style={styles.topContent} behavior="padding">
       <View style={styles.container}>
-        <StatusBar backgroundColor='transparent' barStyle='light-content' />
+        <StatusBar backgroundColor="transparent" barStyle="light-content" />
         <View style={styles.topContent}>
           <Image
             style={{width: 100, height: 100, margin: 30}}
@@ -96,7 +94,20 @@ export default class ChangePassword extends React.Component {
             <Input
               value={this.state.new_PW}
               onChangeText={new_PW => this.setState({new_PW})}
-              secureTextEntry
+              secureTextEntry={this.state.securePW}
+            />
+            <Icon
+              onPress={() => {
+                this.state.securePW
+                  ? this.setState({securePW: false})
+                  : this.setState({securePW: true});
+              }}
+              type="Octicons"
+              name={this.state.securePW ? 'eye' : 'eye-closed'}
+              style={{
+                color: 'silver',
+                fontSize: 22,
+              }}
             />
           </Item>
           <Item floatingLabel style={styles.formStyle}>
@@ -105,7 +116,20 @@ export default class ChangePassword extends React.Component {
             <Input
               value={this.state.confirm_PW}
               onChangeText={confirm_PW => this.setState({confirm_PW})}
-              secureTextEntry
+              secureTextEntry={this.state.secureConfirmPW}
+            />
+            <Icon
+              onPress={() => {
+                this.state.securePW
+                  ? this.setState({secureConfirmPW: false})
+                  : this.setState({secureConfirmPW: true});
+              }}
+              type="Octicons"
+              name={this.state.secureConfirmPW ? 'eye' : 'eye-closed'}
+              style={{
+                color: 'silver',
+                fontSize: 22,
+              }}
             />
           </Item>
           <Button block rounded info onPress={() => this.CHANGE_PW()}>

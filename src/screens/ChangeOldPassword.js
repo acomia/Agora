@@ -1,34 +1,34 @@
 import React from 'react';
-import {
-  Alert,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-  Image,
-  StatusBar,
-  KeyboardAvoidingView,
-} from 'react-native';
-import {
-  Container,
-  Button,
-  Text,
-  Left,
-  Item,
-  Input,
-  Label,
-  Icon,
-  Spinner,
-} from 'native-base';
+import {Alert, StyleSheet, View, Image, StatusBar} from 'react-native';
+import {Button, Text, Item, Input, Label, Icon, Spinner} from 'native-base';
+import AsyncStorage from '@react-native-community/async-storage';
 import Modal from 'react-native-modal';
 
 export default class ChangeOldPassword extends React.Component {
   constructor() {
     super();
-    this.state = {new_PW: '', confirm_PW: '', isLoading: false};
+    this.state = {
+      old_PW: '',
+      new_PW: '',
+      confirm_PW: '',
+      isLoading: false,
+      secureOldPW: true,
+      secureNewPW: true,
+      secureConfirmPW: true,
+    };
+    this.stored_OldPw = '';
+  }
+  async componentDidMount() {
+    let old_pw = await AsyncStorage.getItem('OLD_PW');
+    this.stored_OldPw = old_pw;
+    alert(this.stored_OldPw);
   }
 
   CHANGE_PW() {
     var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,50}$/;
+    if (this.state.old_PW !== this.stored_OldPw) {
+      return Alert.alert('', 'Incorrect old password!');
+    }
 
     if (this.state.new_PW !== this.state.confirm_PW) {
       return Alert.alert('', 'Password does not match!');
@@ -95,9 +95,22 @@ export default class ChangeOldPassword extends React.Component {
             />
             <Label>Old password</Label>
             <Input
-              value={this.state.new_PW}
-              onChangeText={new_PW => this.setState({new_PW})}
-              secureTextEntry
+              value={this.state.old_PW}
+              onChangeText={old_PW => this.setState({old_PW})}
+              secureTextEntry={this.state.secureOldPW}
+            />
+            <Icon
+              onPress={() => {
+                this.state.secureOldPW
+                  ? this.setState({secureOldPW: false})
+                  : this.setState({secureOldPW: true});
+              }}
+              type="Octicons"
+              name={this.state.secureOldPW ? 'eye' : 'eye-closed'}
+              style={{
+                color: 'silver',
+                fontSize: 22,
+              }}
             />
           </Item>
           <Item floatingLabel style={styles.formStyle}>
@@ -110,7 +123,20 @@ export default class ChangeOldPassword extends React.Component {
             <Input
               value={this.state.new_PW}
               onChangeText={new_PW => this.setState({new_PW})}
-              secureTextEntry
+              secureTextEntry={this.state.secureNewPW}
+            />
+            <Icon
+              onPress={() => {
+                this.state.secureNewPW
+                  ? this.setState({secureNewPW: false})
+                  : this.setState({secureNewPW: true});
+              }}
+              type="Octicons"
+              name={this.state.secureNewPW ? 'eye' : 'eye-closed'}
+              style={{
+                color: 'silver',
+                fontSize: 22,
+              }}
             />
           </Item>
           <Item floatingLabel style={styles.formStyle}>
@@ -123,7 +149,20 @@ export default class ChangeOldPassword extends React.Component {
             <Input
               value={this.state.confirm_PW}
               onChangeText={confirm_PW => this.setState({confirm_PW})}
-              secureTextEntry
+              secureTextEntry={this.state.secureConfirmPW}
+            />
+            <Icon
+              onPress={() => {
+                this.state.secureConfirmPW
+                  ? this.setState({secureConfirmPW: false})
+                  : this.setState({secureConfirmPW: true});
+              }}
+              type="Octicons"
+              name={this.state.secureConfirmPW ? 'eye' : 'eye-closed'}
+              style={{
+                color: 'silver',
+                fontSize: 22,
+              }}
             />
           </Item>
         </View>
@@ -186,7 +225,7 @@ const styles = StyleSheet.create({
   topContent: {
     flex: 2,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
   },
   bottomContent: {
     flex: 4,
