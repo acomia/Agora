@@ -21,11 +21,11 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {StackActions, NavigationActions} from 'react-navigation';
 
-const ACCESS_TOKEN = 'access_token';
-const MEMBER_ID = 'member_id';
-const MEMB_ACCOUNTNO = 'memb_accountno';
-const MEMB_NAME = 'memb_name';
-const MEMB_EMAIL = 'memb_email';
+// const ACCESS_TOKEN = 'access_token';
+// const MEMBER_ID = 'member_id';
+// const MEMB_ACCOUNTNO = 'memb_accountno';
+// const MEMB_NAME = 'memb_name';
+// const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -34,32 +34,44 @@ const resetAction = StackActions.reset({
 });
 
 export default class SideBar extends React.Component {
+  constructor() {
+    super();
+    this.state = {username: '', oldpw: ''};
+  }
   onLogout() {
     Alert.alert(
       'Confirmation',
       'Are you sure you want to Logout?',
       [
-        {text: 'Logout', onPress: () => this.deleteToken()},
+        {text: 'Logout', onPress: () => this.deleteDataStored()},
         {text: 'Cancel', style: 'cancel'},
       ],
       {cancelable: false},
     );
   }
-  async deleteToken() {
-    const mapData = ['hospitalData', 'clinicData'];
+  async deleteDataStored() {
+    const dataStored = [
+      'hospitalData',
+      'clinicData',
+      'ACCESS_TOKEN',
+      'MEMBER_ID',
+      'MEMB_ACCOUNTNO',
+      'MEMB_NAME',
+      'MEMB_EMAIL',
+      'OLD_PW',
+    ];
     try {
-      await AsyncStorage.removeItem(ACCESS_TOKEN);
-      await AsyncStorage.removeItem(MEMBER_ID);
-      await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
-      await AsyncStorage.removeItem(MEMB_NAME);
-      await AsyncStorage.removeItem(MEMB_EMAIL);
-      await AsyncStorage.multiRemove(mapData);
+      await AsyncStorage.multiRemove(dataStored);
       this.props.navigation.dispatch(resetAction);
     } catch {
       console.log('Something went wrong');
     }
   }
-
+  async componentDidMount() {
+    let user_name = await AsyncStorage.getItem('MEMB_EMAIL');
+    let old_pw = await AsyncStorage.getItem('OLD_PW');
+    this.setState({username: user_name, oldpw: old_pw});
+  }
   render() {
     return (
       <Container>
@@ -73,7 +85,7 @@ export default class SideBar extends React.Component {
             borderBottomColor: '#c4c4c4',
             backgroundColor: '#fff',
             height: 100,
-            paddingTop: 20
+            paddingTop: 20,
           }}>
           {/* <ImageBackground
             source={require('../../assets/images/drawer-header-background.jpg')}
@@ -89,7 +101,7 @@ export default class SideBar extends React.Component {
               />
               <View style={styles.headerDetailsContainer}>
                 <Text style={styles.labelUsernameText}>
-                  sample_username@email.com
+                  {this.state.username}
                 </Text>
                 <TouchableNativeFeedback
                   onPress={() =>
