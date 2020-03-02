@@ -14,6 +14,7 @@ import {
 } from 'react-native';
 import {Text, ListItem, Container} from 'native-base';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import {ClusterMap} from 'react-native-cluster-map';
 import Geolocation from 'react-native-geolocation-service';
 import getDirections from 'react-native-google-maps-directions';
 import _ from 'lodash';
@@ -21,6 +22,8 @@ import Spinner from 'react-native-spinkit';
 import {SearchBar} from 'react-native-elements';
 import AsyncStorage from '@react-native-community/async-storage';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
+import {Cluster} from './Cluster';
 
 import styles from './IntellimapStyle';
 
@@ -50,8 +53,8 @@ export default class Intellimap extends PureComponent {
     super(props);
     global.token = '';
     this.state = {
-      latitude: 0,
-      longitude: 0,
+      latitude: 14.5564224,
+      longitude: 121.0178166,
       curLatitude: 0,
       curLongitude: 0,
       hospitals: [],
@@ -59,7 +62,7 @@ export default class Intellimap extends PureComponent {
       offices: offices,
       markers: [],
       searchData: [],
-      imgSrc: 'hospital-building',
+      imgSrc: require('../../../assets/images/intellicare-icon.png'),
       search: '',
       officeSelected: false,
       clinicPressed: false,
@@ -91,42 +94,87 @@ export default class Intellimap extends PureComponent {
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
     );
 
-    this._retrieveData();
-    // Fetching token for map authentication //
-    fetch('https://intellicare.com.ph/uat/webservice/thousandminds/api/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=UTF-8',
+    //Get nearest Hospitals
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=3&hstype=H',
+      {
+        method: 'GET',
+        headers: {
+          Geography:
+            'POINT (' + this.state.longitude + ' ' + this.state.latitude + ')',
+        },
       },
-      body: JSON.stringify({
-        username: 'digitalxform',
-        password: 'th2p@ssw0rd',
-      }),
-    })
+    )
       .then(response => {
-        response.json().then(data => {
-          if (data.code === 200) {
-            global.token = data.response.token;
-            if (
-              this.state.hospitals.length > 0 &&
-              this.state.clinics.length > 0
-            ) {
-              this.setState({loading: false});
-              this.arrayholder = this.state.hospitals;
-              console.log('Got it!');
-            } else {
-              {
-                this._getMarkersData();
-              }
-            }
-          } else {
-            alert('Username not found!');
-          }
+        response.json().then(nearestHospital => {
+          this.setState({
+            hospitals: nearestHospital.data,
+            markers: nearestHospital.data,
+          });
         });
       })
       .catch(error => {
         alert('Error!' + error);
       });
+    //Get nearest Clinics
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=3&hstype=C',
+      {
+        method: 'GET',
+        headers: {
+          Geography:
+            'POINT (' + this.state.longitude + ' ' + this.state.latitude + ')',
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(nearestClinic => {
+          this.setState({
+            clinics: nearestClinic.data,
+            loading: false,
+          });
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+
+    // this._retrieveData();
+    // Fetching token for map authentication
+    // fetch('https://intellicare.com.ph/uat/webservice/thousandminds/api/login', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json;charset=UTF-8',
+    //   },
+    //   body: JSON.stringify({
+    //     username: 'digitalxform',
+    //     password: 'th2p@ssw0rd',
+    //   }),
+    // })
+    //   .then(response => {
+    //     response.json().then(data => {
+    //       if (data.code === 200) {
+    //         global.token = data.response.token;
+    //         if (
+    //           this.state.hospitals.length > 0 &&
+    //           this.state.clinics.length > 0
+    //         ) {
+    //           this.setState({loading: false});
+    //           this.arrayholder = this.state.hospitals;
+    //           console.log('Got it!');
+    //         } else {
+    //           {
+    //             this._getMarkersData();
+    //           }
+    //         }
+    //       } else {
+    //         alert('Username not found!');
+    //       }
+    //     });
+    //   })
+    //   .catch(error => {
+    //     alert('Error!' + error);
+    //   });
   }
   _storeData = async (hospital, clinic) => {
     const hospitalSet = ['hospitalData', JSON.stringify(hospital)];
@@ -167,6 +215,7 @@ export default class Intellimap extends PureComponent {
         response.json().then(hospitalData => {
           this.setState({
             hospitals: hospitalData.data,
+            markers: hospitalData.data,
           });
           this.arrayholder = hospitalData.data;
         });
@@ -221,7 +270,8 @@ export default class Intellimap extends PureComponent {
   onHospitalButtonPress = hospitals => {
     this.setState({
       searchData: hospitals,
-      imgSrc: 'hospital-building',
+      markers: hospitals,
+      // imgSrc: require('../../../assets/images/location-red.png'),
       destination: '',
       hospitalPressed: true,
       clinicPressed: false,
@@ -233,7 +283,8 @@ export default class Intellimap extends PureComponent {
   onClinicButtonPress = clinics => {
     this.setState({
       searchData: clinics,
-      imgSrc: 'hospital-building',
+      markers: clinics,
+      // imgSrc: require('../../../assets/images/location-blue.png'),
       destination: '',
       hospitalPressed: false,
       clinicPressed: true,
@@ -427,28 +478,37 @@ export default class Intellimap extends PureComponent {
                   <Image source={imgSrc} style={{height: 46, width: 20}} />
                 </Marker>
               );
+            } else {
+              const {latitudes, longitudes, hospital_name} = location;
+              var newLatitude = Number(latitudes);
+              var newLongitude = Number(longitudes);
+              if (
+                newLatitude == NaN ||
+                newLatitude == 0 ||
+                newLatitude == null
+              ) {
+                newLatitude == 14.5594041;
+              }
+              if (
+                newLongitude == NaN ||
+                newLongitude == 0 ||
+                newLongitude == null
+              ) {
+                newLongitude == 121.014414;
+              }
+              this.state = {
+                coordinate: {latitude: newLatitude, longitude: newLongitude},
+              };
+              return (
+                <Marker
+                  key={idx}
+                  coordinate={this.state.coordinate}
+                  title={hospital_name}
+                  onPress={this.onMarkerPress(location)}>
+                  <Image source={imgSrc} style={{height: 46, width: 20}} />
+                </Marker>
+              );
             }
-            // else {
-            //     const { latitudes, longitudes, hospital_name } = location
-            //     var newLatitude = Number(latitudes)
-            //     var newLongitude = Number(longitudes)
-            //     if (newLatitude == NaN || newLatitude == 0 || newLatitude == null) {
-            //         newLatitude == 14.5594041
-            //     } if (newLongitude == NaN || newLongitude == 0 || newLongitude == null) {
-            //         newLongitude == 121.014414
-            //     }
-            //     this.state = { coordinate: { latitude: newLatitude, longitude: newLongitude, } }
-            //     return (
-            //         <Marker
-            //             coordinate={this.state.coordinate}
-            //             title={hospital_name}
-            //             onPress={this.onMarkerPress(location)}>
-            //             <Image
-            //                 source={imgSrc}
-            //                 style={{ height: 30, width: 30 }} />
-            //         </Marker>
-            //     )
-            // }
           })}
       </View>
     );
@@ -568,7 +628,6 @@ export default class Intellimap extends PureComponent {
     );
   };
   hospclinicMarkerDetails = destination => {
-    const {imgSrc} = this.state;
     return (
       <View style={styles.markerDetailsStyle}>
         <Animated.View
@@ -578,7 +637,7 @@ export default class Intellimap extends PureComponent {
             height: this.state.detailsHeight,
           }}>
           <ListItem style={{alignItems: 'center'}}>
-            <Icon name={imgSrc} color="#5FB650" size={22} />
+            <Icon name="hospital-building" color="#5FB650" size={22} />
             <View style={{flexDirection: 'column', marginLeft: 6}}>
               <Text
                 style={{
@@ -697,8 +756,16 @@ export default class Intellimap extends PureComponent {
 
     Linking.openURL(phoneNumber);
   };
+  renderClusterMarker = count => <Cluster count={count} />;
   render() {
-    const {latitude, longitude, destination, markers, searchData} = this.state;
+    const {
+      latitude,
+      longitude,
+      destination,
+      markers,
+      searchData,
+      imgSrc,
+    } = this.state;
     const {map, spinnerStyle} = styles;
     var imgBox = null;
     if (!_.isEmpty(destination)) {
@@ -708,11 +775,13 @@ export default class Intellimap extends PureComponent {
         imgBox = this.hospclinicMarkerDetails(destination);
       }
     }
+    const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
+    const LONGITUDE_DELTA = ASPECT_RATIO * 0.015;
     return (
       <Container>
         <View style={styles.container}>
           <StatusBar translucent backgroundColor="transparent" />
-          <MapView
+          {/* <MapView
             showsUserLocation
             provider={PROVIDER_GOOGLE}
             style={map}
@@ -720,10 +789,40 @@ export default class Intellimap extends PureComponent {
               latitude: latitude,
               longitude: longitude,
               latitudeDelta: 0.015,
-              longitudeDelta: 0.0121,
+              longitudeDelta:LONGITUDE_DELTA,
             }}>
             {markers.length > 0 ? this.renderMarker() : null}
-          </MapView>
+          </MapView> */}
+          <ClusterMap
+            showsUserLocation
+            provider={PROVIDER_GOOGLE}
+            renderClusterMarker={this.renderClusterMarker}
+            style={map}
+            region={{
+              latitude: latitude,
+              longitude: longitude,
+              latitudeDelta: 0.015,
+              longitudeDelta: LONGITUDE_DELTA,
+            }}>
+            {markers.map((marker, key) => (
+              <Marker
+                key={key}
+                title={
+                  this.state.officeSelected ? marker.name : marker.hospital_name
+                }
+                onPress={this.onMarkerPress(marker)}
+                coordinate={{
+                  latitude: this.state.officeSelected
+                    ? marker.coords.latitude
+                    : Number(marker.latitudes),
+                  longitude: this.state.officeSelected
+                    ? marker.coords.longitude
+                    : Number(marker.longitudes),
+                }}>
+                <Image source={imgSrc} style={{height: 46, width: 20}} />
+              </Marker>
+            ))}
+          </ClusterMap>
           <SearchBar
             lightTheme
             containerStyle={styles.searchBarContainerStyle}

@@ -133,6 +133,19 @@ const styles = StyleSheet.create({
     width: 100,
     bottom: 13,
   },
+  clusterStyle: {
+    width: 48,
+    height: 48,
+    borderRadius: 25,
+    backgroundColor: '#5FB650',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  clusterTextStyle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+  },
 });
 
 export default styles;
