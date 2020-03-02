@@ -2,11 +2,24 @@ import React from 'react';
 import {
   StyleSheet,
   TouchableNativeFeedback,
-  ImageBackground, View,Alert
+  ImageBackground,
+  View,
+  Alert,
 } from 'react-native';
-import { Container, Header, Text, Icon, Left, Body, ListItem } from 'native-base';
+import {
+  Container,
+  Header,
+  Text,
+  Icon,
+  Left,
+  Body,
+  ListItem,
+  Thumbnail,
+  Label,
+  Button,
+} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -17,7 +30,7 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
 });
 
 export default class SideBar extends React.Component {
@@ -26,21 +39,21 @@ export default class SideBar extends React.Component {
       'Confirmation',
       'Are you sure you want to Logout?',
       [
-        {text: 'Logout' , onPress:()=> this.deleteToken() },
-        {text: 'Cancel' , style: 'cancel'},
+        {text: 'Logout', onPress: () => this.deleteToken()},
+        {text: 'Cancel', style: 'cancel'},
       ],
       {cancelable: false},
-    )
+    );
   }
   async deleteToken() {
-    const mapData = ['hospitalData', 'clinicData']
+    const mapData = ['hospitalData', 'clinicData'];
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
       await AsyncStorage.removeItem(MEMBER_ID);
       await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
       await AsyncStorage.removeItem(MEMB_NAME);
       await AsyncStorage.removeItem(MEMB_EMAIL);
-      await AsyncStorage.multiRemove(mapData)
+      await AsyncStorage.multiRemove(mapData);
       this.props.navigation.dispatch(resetAction);
     } catch {
       console.log('Something went wrong');
@@ -50,18 +63,61 @@ export default class SideBar extends React.Component {
   render() {
     return (
       <Container>
-        <Header span style={{ paddingLeft: 0, paddingRight: 0 }}>
-          <ImageBackground
+        <Header
+          span
+          style={{
+            paddingLeft: 0,
+            paddingRight: 0,
+            elevation: 0,
+            shadowOpacity: 0,
+            borderBottomWidth: 0.3,
+            borderBottomColor: '#c4c4c4',
+            backgroundColor: '#fff',
+          }}>
+          {/* <ImageBackground
             source={require('../../assets/images/drawer-header-background.jpg')}
             style={styles.backgroundImage}>
             <Text></Text>
-          </ImageBackground>
+          </ImageBackground> */}
+          <View style={styles.headerContainer}>
+            <View style={{flexDirection: 'row'}}>
+              <Thumbnail
+                small
+                source={require('../../assets/images/sidebar-nav/user-profile-icon.png')}
+                resizeMode="contain"
+              />
+              <View style={styles.headerDetailsContainer}>
+                <Text style={styles.labelUsernameText}>
+                  sample_username@email.com
+                </Text>
+                <TouchableNativeFeedback
+                  onPress={() =>
+                    this.props.navigation.navigate('ChangePassword')
+                  }>
+                  <View style={styles.changePasswordContainer}>
+                    <Icon
+                      type="MaterialCommunityIcons"
+                      name="settings"
+                      style={styles.iconSettings}
+                    />
+                    <Label style={styles.labelChangePassword}>
+                      Change password
+                    </Label>
+                  </View>
+                </TouchableNativeFeedback>
+              </View>
+            </View>
+          </View>
         </Header>
         <TouchableNativeFeedback
           onPress={() => this.props.navigation.navigate('MembersPage')}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
-              <Icon type="MaterialCommunityIcons" name="account-outline" />
+              {/* <Icon type="MaterialCommunityIcons" name="account-outline" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/profile.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
             </Left>
             <Body style={styles.listLabel}>
               <Text style={styles.listStyle}>Member Profiles</Text>
@@ -69,13 +125,79 @@ export default class SideBar extends React.Component {
           </ListItem>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback
+          onPress={() =>
+            this.props.navigation.navigate('DoctorSearchNavigation')
+          }>
+          <ListItem icon style={styles.listItemStyle}>
+            <Left>
+              {/* <Icon type="MaterialCommunityIcons" name="medical-bag" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/doctor.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text style={styles.listStyle}>Doctors & Dentists</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => this.props.navigation.navigate('ERCS1LandingPage')}>
+          <ListItem icon style={styles.listItemStyle}>
+            <Left>
+              {/* <Icon type="MaterialCommunityIcons" name="medical-bag" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/plus.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text style={styles.listStyle}>eConsultation form</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => this.props.navigation.navigate('ERCS2LandingPage')}>
+          <ListItem icon style={styles.listItemStyle}>
+            <Left>
+              {/* <Icon type="MaterialCommunityIcons" name="headset" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/droplet.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text style={styles.listStyle}>eDiagnostic Procedures form</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
           onPress={() => this.props.navigation.navigate('IntellimapPage')}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
-              <Icon active name="md-map" />
+              {/* <Icon type="MaterialCommunityIcons" name="headset" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/map.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
             </Left>
             <Body style={styles.listLabel}>
-              <Text>IntelliMap</Text>
+              <Text style={styles.listStyle}>Intellimap</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => this.props.navigation.navigate('MedgatePage')}>
+          <ListItem icon style={styles.listItemStyle}>
+            <Left>
+              {/* <Icon type="MaterialCommunityIcons" name="headset" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/teleconsult.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text style={styles.listStyle}>Medgate</Text>
             </Body>
           </ListItem>
         </TouchableNativeFeedback>
@@ -86,10 +208,14 @@ export default class SideBar extends React.Component {
           }}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
-              <Icon active type="Ionicons" name="md-log-out" />
+              {/* <Icon active type="Ionicons" name="md-log-out" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/logout.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
             </Left>
             <Body style={styles.listLabel}>
-              <Text>Logout</Text>
+              <Text style={styles.logoutText}>Logout</Text>
             </Body>
           </ListItem>
         </TouchableNativeFeedback>
@@ -100,11 +226,12 @@ export default class SideBar extends React.Component {
 
 const styles = StyleSheet.create({
   listItemStyle: {
-    marginTop: 20,
+    marginTop: 15,
     borderBottomColor: '#2d2d2d',
   },
   listStyle: {
     color: '#2d2d2d',
+    fontSize: 12,
   },
   listLabel: {
     borderBottomColor: '#fff',
@@ -119,10 +246,40 @@ const styles = StyleSheet.create({
     borderBottomColor: '#c4c4c4',
   },
   logoutText: {
-    color: '#c4c4c4',
+    color: '#6d6e72',
+    fontSize: 14,
   },
   navStyle: {
-    height: 20,
-    width: 20,
+    height: 22,
+    width: 22,
+  },
+  labelUsernameText: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#5fb650',
+  },
+  iconSettings: {
+    color: '#2d2d2d',
+    fontSize: 12,
+    justifyContent: 'center',
+    paddingRight: 2,
+  },
+  labelChangePassword: {
+    fontSize: 10,
+    color: '#2d2d2d',
+  },
+  changePasswordContainer: {
+    flexDirection: 'row',
+    paddingTop: 3,
+  },
+  headerDetailsContainer: {
+    flexDirection: 'column',
+    alignSelf: 'center',
+    paddingLeft: 5,
+  },
+  headerContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    paddingHorizontal: 10,
   },
 });
