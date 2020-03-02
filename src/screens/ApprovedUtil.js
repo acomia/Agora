@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl, Modal, style, TouchableHighlight } from 'react-native';
+import { StyleSheet, View, Dimensions, Image, TouchableOpacity, FlatList, RefreshControl, Alert, Modal, style, TouchableHighlight } from 'react-native';
 import { Container, Text, Header, Left, Right, Body, Title, Footer, Content, Item, Label, Icon, Button, List } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import { DataTable } from 'react-native-paper';
@@ -74,11 +74,21 @@ export default class ApprovedUtil extends React.Component {
   //     }
   // }
 
+  showAlert = () =>{
+    Alert.alert(
+      'Oops!',
+      'Approved Utilization Empty',
+      [
+        {text: 'OK', onPress: () => console.log('OK Pressed')},
+      ],
+      {cancelable: false},
+    );
+  }
+
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    console.log('globaltokenko',global.storeToken)
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
+    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -106,9 +116,9 @@ export default class ApprovedUtil extends React.Component {
             this.setState({ totalUtilAmount })
 
           } else {
-            alert('Approved Utilization Empty')
             this.setState({ isLoading: false })
             this.setState({ refreshing: false })
+            this.showAlert()
             this.props.navigation.navigate('Membinfo')
           }
         });

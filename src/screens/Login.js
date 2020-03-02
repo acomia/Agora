@@ -18,11 +18,11 @@ import {
   Label,
   Icon,
 } from 'native-base';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-import { ScrollView } from 'react-native-gesture-handler';
-import Spinner from 'react-native-spinkit'
+import {ScrollView} from 'react-native-gesture-handler';
+import Spinner from 'react-native-spinkit';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -32,7 +32,7 @@ const MEMB_EMAIL = 'memb_email';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({ routeName: 'Dashboard' })],
+  actions: [NavigationActions.navigate({routeName: 'Dashboard'})],
 });
 
 // Subscribe
@@ -58,6 +58,7 @@ export default class Login extends React.Component {
     username: '',
     password: '',
     LoginSubmit: false,
+    securePW: true,
   };
 
   async storeToken(accessToken) {
@@ -274,16 +275,32 @@ async getToken()
               <Item floatingLabel>
                 <Label>Email</Label>
                 <Input
+                  autoCompleteType="email"
+                  autoCapitalize="none"
+                  keyboardType="email-address"
                   style={styles.labelStyle}
-                  onChangeText={username => this.setState({ username })}
+                  onChangeText={username => this.setState({username})}
                 />
               </Item>
               <Item floatingLabel>
                 <Label>Password</Label>
                 <Input
-                  secureTextEntry
+                  secureTextEntry={this.state.securePW}
                   style={styles.labelStyle}
-                  onChangeText={password => this.setState({ password })}
+                  onChangeText={password => this.setState({password})}
+                />
+                <Icon
+                  onPress={() => {
+                    this.state.securePW
+                      ? this.setState({securePW: false})
+                      : this.setState({securePW: true});
+                  }}
+                  type="Octicons"
+                  name={this.state.securePW ? 'eye' : 'eye-closed'}
+                  style={{
+                    color: 'silver',
+                    fontSize: 22,
+                  }}
                 />
               </Item>
             </Form>
@@ -291,15 +308,15 @@ async getToken()
               rounded
               block
               success
-              style={{ marginTop: 50 }}
+              style={{marginTop: 50}}
               onPress={() => this.checkConnectivity()}>
-              {this.state.LoginSubmit ?
+              {this.state.LoginSubmit ? (
                 <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
-                :
+              ) : (
                 <Text> Login </Text>
-              }
+              )}
             </Button>
-            <Text note style={{ textAlign: 'center', marginVertical: 30 }}>
+            <Text note style={{textAlign: 'center', marginVertical: 30}}>
               OR
             </Text>
             <Text
@@ -316,7 +333,7 @@ async getToken()
   }
 
   checkConnectivity() {
-    this.setState({ LoginSubmit: true });
+    this.setState({LoginSubmit: true});
     NetInfo.fetch().then(state => {
       // console.log("Connection type2", state.type);
       //console.log("Is connected?2", state.isConnected);
@@ -325,7 +342,7 @@ async getToken()
         this._postUser();
       } else {
         alert('Check Internet Connection...');
-        this.setState({ LoginSubmit: false });
+        this.setState({LoginSubmit: false});
       }
     });
   }
@@ -347,25 +364,68 @@ async getToken()
       .then(response => {
         response.json().then(data => {
           if (data.is_success == true) {
-            let accessToken = data.access_token;
-            this.storeToken(accessToken);
+            if (data.error_message !== 'Verification Required!') {
+              let accessToken = data.access_token;
+              this.storeToken(accessToken);
 
-            let memberId = data.data.recordid;
-            this.storememberId(memberId);
+              let memberId = data.data.recordid;
+              this.storememberId(memberId);
 
-            let memb_Accountno = data.data.accountno;
-            this.storeacct(memb_Accountno);
+              let memb_Accountno = data.data.accountno;
+              this.storeacct(memb_Accountno);
 
-            let memb_name = data.data.firstname;
-            this.storemembname(memb_name);
+              let memb_name = data.data.firstname;
+              this.storemembname(memb_name);
 
-            let memb_email = data.data.email;
-            this.storemembemail(memb_email);
-            this.setState({ LoginSubmit: false });
-            this.props.navigation.dispatch(resetAction);
+              let memb_email = data.data.email;
+              this.storemembemail(memb_email);
+              this.setState({LoginSubmit: false});
+              this.props.navigation.dispatch(resetAction);
+            } else {
+              let membfname = data.data.firstname;
+              let memblname = data.data.lastname;
+              let membemail = data.data.email;
+              this.SEND_EMAILVERIFICATION(membfname, memblname, membemail);
+            }
           } else {
             alert(data.error_message);
-            this.setState({ LoginSubmit: false });
+            this.setState({LoginSubmit: false});
+          }
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+  }
+
+  SEND_EMAILVERIFICATION(membfname, memblname, membemail) {
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' +
+        membfname +
+        '&lastname=' +
+        memblname,
+      {
+        method: 'PUT',
+        headers: {
+          EmailAddress: membemail,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(data => {
+          if (
+            data.error_message === 'Successfully generate verification code.'
+          ) {
+            this.props.navigation.navigate('VerifyOTP', {
+              routeAddress: 'registration',
+              emailAddress: membemail,
+              f_NAME: membfname,
+              l_NAME: memblname,
+            });
+            this.setState({LoginSubmit: false});
+          } else {
+            alert('error');
+            this.setState({LoginSubmit: false});
           }
         });
       })
@@ -375,7 +435,7 @@ async getToken()
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   containerStyle: {
@@ -400,7 +460,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: { width: 1, height: 5 },
+    shadowOffset: {width: 1, height: 5},
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,

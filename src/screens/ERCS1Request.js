@@ -86,7 +86,19 @@ export default class ERCS1Request extends React.Component {
     this.arrayholderIllness = [];
   }
 
+  showAlert = () => {
+    Alert.alert(
+      'Oops!',
+      'The Member does not have OPD Benefits.',
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
+    );
+  }
+
   async componentDidMount() {
+    console.log('test')
     this._isMounted = true;
     global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
@@ -324,10 +336,11 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          console.log('ercs1', data)
-          let rcs = data.data.ercsno;
+          //console.log('ercs1', data)
+
           // send to email
           if (data.is_success === true) {
+            let rcs = data.data.ercsno;
             fetch(
               'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
               rcs,
@@ -357,11 +370,17 @@ export default class ERCS1Request extends React.Component {
                     this.props.navigation.dispatch(resetAction);
 
                   } else {
+                    this.setState({
+                      isLoading: false,
+                    });
                     alert(data.error_message);
                   }
                 });
               })
               .catch(error => {
+                this.setState({
+                  isLoading: false,
+                });
                 alert('Error!' + error);
               });
           } else {
@@ -369,11 +388,14 @@ export default class ERCS1Request extends React.Component {
             this.setState({
               isLoading: false,
             });
-            alert('error in saving', data.error_message);
+            alert(data.error_message);
           }
         });
       })
       .catch(error => {
+        this.setState({
+          isLoading: false,
+        });
         alert('Error!' + error);
       });
   }
@@ -439,12 +461,11 @@ export default class ERCS1Request extends React.Component {
   updateMembPicked = (MembPicked) => {
     console.log('Memb', MembPicked)
     this.setState({
-      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname,  membbenefit: MembPicked.op_benefit, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
+      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname, membbenefit: MembPicked.op_benefit, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
       docspec: '', searchIllness: '', search: '', confirm: true
     })
-    console.log('opben', MembPicked.op_benefit)
     if (MembPicked.op_benefit === false) {
-      alert('The Member does not have OPD Benefits')
+      this.showAlert();
       this.setState({
         isLoading: false,
       })
@@ -545,9 +566,9 @@ export default class ERCS1Request extends React.Component {
               />
             </Button>
             <Text style={memberPickedStyle}>{
-            this.state.membbenefit == true 
-            ? this.state.MembPickerValueHolder
-            : ''}</Text> 
+              this.state.membbenefit == true
+                ? this.state.MembPickerValueHolder
+                : ''}</Text>
           </View>
           <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Type of consultation</Text>

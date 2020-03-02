@@ -128,8 +128,8 @@ export default function DoctorSearchLandingPage() {
 
   return (
     <View style={{backgroundColor: '#5fb650', flex: 1}}>
-      <StatusBar translucent backgroundColor="transparent" />
       <ScrollView>
+      <StatusBar translucent backgroundColor="transparent" />
         <View style={{flex: 1, paddingTop: winHeight * 0.1}}>
           <Text style={styles.physicianDirectory}>PHYSICIAN DIRECTORY</Text>
           <View style={{justifyContent: 'center', margin: 20}}>
@@ -143,7 +143,7 @@ export default function DoctorSearchLandingPage() {
             <Form>
               <Input
                 placeholderTextColor={'#c2c2c2'}
-                placeholder="Doctor (Last Name First Name)"
+                placeholder="Doctor's Name (last name or first name)"
                 style={styles.doctorInput}
                 textAlignVertical="center"
                 value={searchQuery.doctorName}
@@ -151,7 +151,7 @@ export default function DoctorSearchLandingPage() {
               />
               <Input
                 placeholderTextColor={'#c2c2c2'}
-                placeholder="Hospital/Clinic"
+                placeholder="Hospital/Clinic Name"
                 style={styles.clinicInput}
                 textAlignVertical="center"
                 value={searchQuery.clinic}
@@ -159,7 +159,7 @@ export default function DoctorSearchLandingPage() {
               />
               <Input
                 placeholderTextColor={'#c2c2c2'}
-                placeholder="Specialty"
+                placeholder="Specialtization"
                 style={styles.specialtyInput}
                 textAlignVertical="center"
                 value={searchQuery.specialty}
@@ -167,7 +167,7 @@ export default function DoctorSearchLandingPage() {
               />
               <Input
                 placeholderTextColor={'#c2c2c2'}
-                placeholder="City"
+                placeholder="City/Province"
                 style={styles.locationInput}
                 textAlignVertical="center"
                 value={searchQuery.location}

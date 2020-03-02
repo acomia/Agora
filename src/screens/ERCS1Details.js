@@ -18,9 +18,9 @@ import {
   Icon,
   Container,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
 import moment from 'moment';
@@ -42,7 +42,7 @@ export default class ERCS1Details extends React.Component {
       dataDocSource: [],
       acct_no: '',
       rcsid: '',
-      rcsnum : '',
+      rcsnum: '',
       visibleModal: false,
     };
   }
@@ -65,15 +65,20 @@ export default class ERCS1Details extends React.Component {
   }
 
   async componentDidMount() {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    const { rcsnum1, acctno, ercsid } = navigation.state.params
-    this.setState({ isLoading: true, acct_no: acctno, rcsnum: rcsnum1, rcsid: ercsid });
+    const {rcsnum1, acctno, ercsid} = navigation.state.params;
+    this.setState({
+      isLoading: true,
+      acct_no: acctno,
+      rcsnum: rcsnum1,
+      rcsid: ercsid,
+    });
     // let rcsnum1 = navigation.getParam('rcsnum1', '');
 
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs/history/details?ercs=' +
-      rcsnum1,
+        rcsnum1,
       {
         method: 'GET',
         headers: {
@@ -92,7 +97,7 @@ export default class ERCS1Details extends React.Component {
               dataSource: responseJson.data,
             });
           } else {
-            this.setState({ isLoading: false });
+            this.setState({isLoading: false});
             alert('No RCS Transaction found!');
             this.props.navigation.navigate('ERCS1HistoryPage');
             //}
@@ -112,17 +117,17 @@ export default class ERCS1Details extends React.Component {
 
   async _sendemail() {
     <ActivityIndicator size="small" color="white" />;
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
     let rcsnum1 = navigation.getParam('rcsnum1', '');
     let acctNum = this.state.dataSource.acctno;
     //let acctNum = navigation.getParam('acctno', '');
-    this.setState({ isLoading: true });
+    this.setState({isLoading: true});
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
-      rcsnum1,
+        rcsnum1,
       {
         method: 'GET',
         params: {
@@ -140,7 +145,7 @@ export default class ERCS1Details extends React.Component {
       .then(response => {
         response.json().then(data => {
           if (data.is_success === true) {
-            this.setState({ isLoading: false });
+            this.setState({isLoading: false});
             alert('RCS sent to Email Successfully');
           } else {
             alert(data.error_message);
@@ -164,7 +169,7 @@ export default class ERCS1Details extends React.Component {
     var statRemarks = '';
     var xconsulttype = this.state.dataSource.type_of_consult_code;
     switch (
-    xstatus // Passing the variable to switch condition
+      xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
@@ -185,9 +190,7 @@ export default class ERCS1Details extends React.Component {
         break;
     }
 
-    switch (
-    xconsulttype
-    ) {
+    switch (xconsulttype) {
       case 'I':
         xconsulttype = 'Initial';
         break;
@@ -204,19 +207,27 @@ export default class ERCS1Details extends React.Component {
           <StatusBar backgroundColor="transparent" barStyle="light-content" />
           <View style={styles.viewRcsDetails}>
             <List>
-              <ListItem noIndent style={{ borderBottomWidth: 0 }}>
-                <Left style={{ flex: 2 }}>
-                  <Text style={styles.ERCSNumber}>{this.state.dataSource.ercsno}</Text>
+              <ListItem noIndent style={{borderBottomWidth: 0}}>
+                <Left style={{flex: 2}}>
+                  <Text style={styles.ERCSNumber}>
+                    {this.state.dataSource.ercsno}
+                  </Text>
                 </Left>
-                <Right style={{ flex: 1 }}>
+                <Right style={{flex: 1}}>
                   <Text style={[statusStyle]}>{xstatus}</Text>
                 </Right>
               </ListItem>
             </List>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{flexDirection: 'row'}}>
               <View style={styles.rowRcsDetails}>
-                <Icon type="Feather" name="smile" style={styles.iconRcsDetails} />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.patient}</Text>
+                <Icon
+                  type="Feather"
+                  name="smile"
+                  style={styles.iconRcsDetails}
+                />
+                <Text style={styles.textRcsDetails}>
+                  {this.state.dataSource.patient}
+                </Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon
@@ -227,32 +238,51 @@ export default class ERCS1Details extends React.Component {
                 <Text style={styles.textRcsDetails}>{xconsulttype}</Text>
               </View>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{flexDirection: 'row'}}>
               <View style={styles.rowRcsDetails}>
                 <Icon
                   type="Feather"
                   name="calendar"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>{moment(this.state.dataSource.ercs_date).format('L')}</Text>
+                <Text style={styles.textRcsDetails}>
+                  {moment(this.state.dataSource.ercs_date).format('L')}
+                </Text>
               </View>
               <View style={styles.rowRcsDetails}>
                 <Icon type="Feather" name="clock" style={styles.iconRcsDetails} />
-                <Text style={styles.textRcsDetails}>{moment(this.state.dataSource.validity_date).format('L')}</Text>
+                <Text style={styles.textRcsDetails}>
+                  {xstatus === 'Cancelled' ?
+                    'N/A' :
+                    xstatus === 'Pending' ?
+                      'Waiting for approval' :
+                      xstatus === 'Disapproved' ?
+                        'N/A' :
+                        moment(this.state.dataSource.validity_date).format('L')
+                  }
+                </Text>
               </View>
             </View>
-            <View style={{ flexDirection: 'row' }}>
+            <View style={{flexDirection: 'row'}}>
               <View style={styles.rowRcsDetails}>
                 <Icon
                   type="Feather"
                   name="map-pin"
                   style={styles.iconRcsDetails}
                 />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.hospital}</Text>
+                <Text style={styles.textRcsDetails}>
+                  {this.state.dataSource.hospital}
+                </Text>
               </View>
               <View style={styles.rowRcsDetails}>
-                <Icon type="Feather" name="user" style={styles.iconRcsDetails} />
-                <Text style={styles.textRcsDetails}>{this.state.dataSource.doctor}</Text>
+                <Icon
+                  type="Feather"
+                  name="user"
+                  style={styles.iconRcsDetails}
+                />
+                <Text style={styles.textRcsDetails}>
+                  DR. {this.state.dataSource.doctor}
+                </Text>
               </View>
             </View>
           </View>
@@ -263,25 +293,25 @@ export default class ERCS1Details extends React.Component {
             </Text>
           </View>
           {xstatus === 'Approved' || xstatus === 'Pending' ? null : (
-          <View style={styles.viewOtherDetails}>
-            <View style={{ flexDirection: 'row' }}>
-              <Left style={{ marginLeft: 10 }}>
-                <Text note>Cancelled by you</Text>
-              </Left>
-              <Right style={{ alignSelf: 'flex-end' }}>
-                <Button
-                  light
-                  style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
-                  onPress={() =>
-                    this.props.navigation.navigate('ERCS1CancelDetailsPage',{
-                      cancelDate: this.state.dataSource.cancelled_date,
-                      cancelRemarks: this.state.dataSource.cancelled_remarks
-                    })}>  
-                  <Text style={styles.buttonChangeDetails}>Check Details</Text>
-                </Button>
-              </Right>
-            </View>
-          </View>)}
+            <View style={styles.viewOtherDetails}>
+              <View style={{ flexDirection: 'row' }}>
+                <Left style={{ marginLeft: 10 }}>
+                  <Text note>Cancelled by you</Text>
+                </Left>
+                <Right style={{ alignSelf: 'flex-end' }}>
+                  <Button
+                    light
+                    style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
+                    onPress={() =>
+                      this.props.navigation.navigate('ERCS1CancelDetailsPage', {
+                        cancelDate: this.state.dataSource.cancelled_date,
+                        cancelRemarks: this.state.dataSource.cancelled_remarks
+                      })}>
+                    <Text style={styles.buttonChangeDetails}>Check Details</Text>
+                  </Button>
+                </Right>
+              </View>
+            </View>)}
           <View style={styles.viewButton}>
             <Button
               disabled={xstatus === 'Approved' ? false : true}
@@ -290,7 +320,7 @@ export default class ERCS1Details extends React.Component {
               iconLeft
               style={
                 xstatus === 'Approved'
-                  ? [styles.buttonSend, { backgroundColor: '#5DADE2' }]
+                  ? [styles.buttonSend, {backgroundColor: '#5DADE2'}]
                   : styles.buttonSend
               }
               onPress={() => this._sendemail()}>
@@ -304,7 +334,7 @@ export default class ERCS1Details extends React.Component {
               iconLeft
               style={xstatus === 'Approved' ? styles.buttonCancel : null}
               onPress={() => {
-                this.setState({ visibleModal: true });
+                this.setState({visibleModal: true});
               }}>
               <Icon type="MaterialCommunityIcons" name="cancel" />
               <Text>Cancel this Request</Text>
@@ -313,9 +343,9 @@ export default class ERCS1Details extends React.Component {
         </ScrollView>
         <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
           <View style={styles.modalContent}>
-            <Text style={[styles.textModalStyle, { color: 'green' }]}>
+            <Text style={[styles.textModalStyle, {color: 'green'}]}>
               Are you sure you want to cancel your request?
-        </Text>
+            </Text>
           </View>
           <View
             style={{
@@ -327,24 +357,24 @@ export default class ERCS1Details extends React.Component {
               block
               // rounded
               info
-              style={{ flex: 1, margin: 5 }}
+              style={{flex: 1, margin: 5}}
               onPress={() => {
-                this.setState({ visibleModal: false }),
+                this.setState({visibleModal: false}),
                   this.props.navigation.navigate('ERCS1CancelRemarks', {
                     details_acctno: this.state.acct_no,
                     details_rcsno: this.state.rcsnum,
                     details_rcsid: this.state.rcsid,
-                  })
+                  });
               }}>
-              <Text style={{ fontWeight: 'bold', color: 'white' }}>OKAY</Text>
+              <Text style={{fontWeight: 'bold', color: 'white'}}>OKAY</Text>
             </Button>
             <Button
               block
               //rounded
               warning
-              style={{ flex: 1, margin: 5 }}
-              onPress={() => this.setState({ visibleModal: false })}>
-              <Text style={{ fontWeight: 'bold', color: 'white' }}>Cancel</Text>
+              style={{flex: 1, margin: 5}}
+              onPress={() => this.setState({visibleModal: false})}>
+              <Text style={{fontWeight: 'bold', color: 'white'}}>Cancel</Text>
             </Button>
           </View>
         </Modal>
@@ -358,7 +388,7 @@ export default class ERCS1Details extends React.Component {
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
@@ -398,7 +428,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   buttonCancel: {
-    backgroundColor: 'green',
+    backgroundColor: '#e74c3c',
   },
   viewButton: {
     margin: 20,
@@ -420,6 +450,7 @@ const styles = StyleSheet.create({
     marginTop: 4,
     marginRight: 20,
     textAlign: 'left',
+    textTransform: 'uppercase',
   },
   viewRcsDetails: {
     backgroundColor: '#fff',
