@@ -159,7 +159,7 @@ export default function DoctorSearchLandingPage() {
               />
               <Input
                 placeholderTextColor={'#c2c2c2'}
-                placeholder="Specialtization"
+                placeholder="Specialization"
                 style={styles.specialtyInput}
                 textAlignVertical="center"
                 value={searchQuery.specialty}

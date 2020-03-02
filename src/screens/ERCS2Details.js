@@ -271,12 +271,12 @@ export default class ERCS2Details extends React.Component {
     const NewData = this.state.dataProcSource.filter((item) => {
       return item.status === 'D'
     })
-    //console.log('test112',NewData)
+    console.log('test112', this.state.dataSource.status)
     var xstatus = this.state.dataSource.status;
     var statusStyle = '';
     var statRemarks = '';
     switch (
-      xstatus // Passing the variable to switch condition
+    xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
@@ -303,6 +303,7 @@ export default class ERCS2Details extends React.Component {
     }
     return (
       <Container>
+        {console.log('sasasa', xstatus)}
         <ScrollView backgroundColor="#f5f5f5">
           <StatusBar
             translucent
@@ -514,61 +515,63 @@ export default class ERCS2Details extends React.Component {
                 </View>
               </View>
             )}
-          {xstatus === 'Cancelled' || xstatus === 'Pending' ? null : (
+            {console.log('testnewdata', NewData)}
+           {NewData.length <= 0 ? null : (
+            
             <View style={styles.viewOtherDetails}>
-              <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
-              <View>
-                <FlatList
-                  roundAvatar
-                  data={this.state.dataDisApprvdProcSource}
-                  renderItem={({ item }) => (
-                    <View
-                      style={{
-                        flexDirection: 'row',
-                        paddingLeft: 10,
-                        margin: 2,
-                      }}>
-                      <Text style={styles.procedureListTextStyle}>
-                        {item.procedure_name}
-                      </Text>
-                      {/* {item.status === 'D' ? (
+            
+                <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
+                <View>
+                  <FlatList
+                    roundAvatar
+                    data={this.state.dataDisApprvdProcSource}
+                    renderItem={({ item }) => (
+                      <View
+                        style={{
+                          flexDirection: 'row',
+                          paddingLeft: 10,
+                          margin: 2,
+                        }}>
+                        <Text style={styles.procedureListTextStyle}>
+                          {item.procedure_name}
+                        </Text>
+                        {/* {item.status === 'D' ? (
                         <Text style={styles.procedureListTextStyle}>
                           {item.procedure_name}
                         </Text>
                       ) : null} */}
-                    </View>
-                  )}
-                  keyExtractor={item => item.procedure_id}
-                />
-              </View>
-              <View style={styles.divider} />
-              <View>
-                <Left />
-                <Right style={{ alignSelf: 'flex-end' }}>
-                {console.log('Something went wrong1', NewData.length)}
-                  <Button
-                    light
-                    disabled={xstatus = 'Approved' && NewData.length > 0 ? false : true}
-                    style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
-                    onPress={() =>
-                      this.props.navigation.navigate(
-                        'ERCS2DisapprovedProcedurePage',
-                        {
-                          procstatus: this.state.dataSource.status,
-                          procappvdby: this.state.dataSource.approve_by,
-                          procappvddate: this.state.dataSource.approve_date,
-                          procremarks: this.state.dataSource.remarks,
-                          procdata: this.state.dataDisApprvdProcSource,
-                        },
-                      )
-                    }>
-                    <Text style={styles.buttonChangeDetails}>
-                      Check Details
+                      </View>
+                    )}
+                    keyExtractor={item => item.procedure_id}
+                  />
+                </View>
+                <View style={styles.divider} />
+                <View>
+                  <Left />
+                  <Right style={{ alignSelf: 'flex-end' }}>
+                    <Button
+                      light
+                      // disabled={xstatus = 'Approved' && NewData.length > 0 ? false : true}
+                      style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
+                      onPress={() =>
+                        this.props.navigation.navigate(
+                          'ERCS2DisapprovedProcedurePage',
+                          {
+                            procstatus: this.state.dataSource.status,
+                            procappvdby: this.state.dataSource.approve_by,
+                            procappvddate: this.state.dataSource.approve_date,
+                            procremarks: this.state.dataSource.remarks,
+                            procdata: this.state.dataDisApprvdProcSource,
+                          },
+                        )
+                      }>
+                      <Text style={styles.buttonChangeDetails}>
+                        Check Details
                     </Text>
-                  </Button>
-                </Right>
-              </View>
-            </View>
+                    </Button>
+                  </Right>
+                </View>
+           </View>
           )}
           {xstatus === 'Cancelled' ||
             xstatus === 'Pending' ||
@@ -600,7 +603,7 @@ export default class ERCS2Details extends React.Component {
                     {item.file_name}
                     <Thumbnail
                       large
-                      scaleX={3} scaleY={3} style={{margin: 30}} 
+                      scaleX={3} scaleY={3} style={{ margin: 30 }}
                       source={{ uri: this.state.img_uri }}
                       resizeMode='contain'
                     />
@@ -612,12 +615,12 @@ export default class ERCS2Details extends React.Component {
           </View>
           <View style={styles.viewButton}>
             <Button
-              disabled={xstatus === 'Approved' ? false : true}
+              disabled={this.state.dataSource.status === 'A' ? false : true}
               block
               rounded
               iconLeft
               style={
-                xstatus === 'Approved'
+                this.state.dataSource.status === 'A'
                   ? [styles.buttonSend, { backgroundColor: '#5DADE2' }]
                   : styles.buttonSend
               }
@@ -626,11 +629,11 @@ export default class ERCS2Details extends React.Component {
               <Text>Send to e-mail</Text>
             </Button>
             <Button
-              disabled={xstatus === 'Approved' ? false : true}
+              disabled={this.state.dataSource.status === 'A' ? false : true}
               block
               rounded
               iconLeft
-              style={xstatus === 'Approved' ? styles.buttonCancel : null}
+              style={this.state.dataSource.status === 'A' ? styles.buttonCancel : null}
               onPress={() => {
                 this.setState({ visibleModal: true });
               }}>

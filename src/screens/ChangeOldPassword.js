@@ -21,7 +21,7 @@ export default class ChangeOldPassword extends React.Component {
   async componentDidMount() {
     let old_pw = await AsyncStorage.getItem('OLD_PW');
     this.stored_OldPw = old_pw;
-    alert(this.stored_OldPw);
+    //alert(this.stored_OldPw);
   }
 
   CHANGE_PW() {
