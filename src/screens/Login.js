@@ -25,6 +25,12 @@ import NetInfo from '@react-native-community/netinfo';
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-spinkit';
 
+const ACCESS_TOKEN = 'access_token';
+const MEMBER_ID = 'member_id';
+const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_NAME = 'memb_name';
+const MEMB_EMAIL = 'memb_email';
+
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   actions: [NavigationActions.navigate({routeName: 'Dashboard'})],
@@ -56,27 +62,99 @@ export default class Login extends React.Component {
     securePW: true,
   };
 
-  multiSetData = async (
-    accessToken,
-    membId,
-    memb_Accountno,
-    memb_name,
-    membemail,
-  ) => {
-    const token = ['ACCESS_TOKEN', accessToken];
-    const id = ['MEMBER_ID', membId];
-    const acctno = ['MEMB_ACCOUNTNO', memb_Accountno];
-    const membname = ['MEMB_NAME', memb_name];
-    const email = ['MEMB_EMAIL', membemail];
-    const oldpw = ['OLD_PW', this.state.password];
+  async storeToken(accessToken) {
     try {
-      await AsyncStorage.multiSet([token, id, acctno, membname, email, oldpw]);
-    } catch (e) {
-      console.log('Unable to store data');
+      await AsyncStorage.setItem(ACCESS_TOKEN, accessToken);
+      this.getToken();
+    } catch (error) {
+      console.log('CANT STORE TOKEN');
     }
-    console.log('Done.');
-  };
+  }
 
+  async getToken() {
+    try {
+      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      console.log('token is: ' + token);
+    } catch (error) {
+      console.log('CANT GET TOKEN');
+    }
+  }
+
+  //store memb_id
+  async storememberId(membId) {
+    try {
+      await AsyncStorage.setItem(MEMBER_ID, membId);
+      this.getId();
+    } catch (error) {
+      console.log('CANT STORE ID');
+    }
+  }
+
+  async getId() {
+    try {
+      let membid = await AsyncStorage.getItem(MEMBER_ID);
+      //console.log('memb id is: ' + membid);
+    } catch (error) {
+      console.log('CANT GET  MEMB ID');
+    }
+  }
+  //store memb_id
+
+  //store member account no.
+  async storeacct(memb_Accountno) {
+    try {
+      await AsyncStorage.setItem(MEMB_ACCOUNTNO, memb_Accountno);
+      this.getacct();
+    } catch (error) {
+      console.log('CANT STORE MEMB ACCT OR ID');
+    }
+  }
+
+  async getacct() {
+    try {
+      let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
+      //console.log('memb acct is: ' + membacct);
+    } catch (error) {
+      console.log('CANT GET ACCT NO');
+    }
+  }
+
+  //store member name
+  async storemembname(memb_name) {
+    try {
+      await AsyncStorage.setItem(MEMB_NAME, memb_name);
+      this.getname();
+    } catch (error) {
+      console.log('CANT STORE MEMB NAME');
+    }
+  }
+
+  async getname() {
+    try {
+      let membname = await AsyncStorage.getItem(MEMB_NAME);
+      //console.log('memb name is: ' + membname);
+    } catch (error) {
+      console.log('CANT GET NAME');
+    }
+  }
+
+  async storemembemail(memb_email) {
+    try {
+      await AsyncStorage.setItem(MEMB_EMAIL, memb_email);
+      this.getemail();
+    } catch (error) {
+      console.log('CANT STORE MEMB EMAIL');
+    }
+  }
+
+  async getemail() {
+    try {
+      let membemail = await AsyncStorage.getItem(MEMB_EMAIL);
+      //console.log('memb email is: ' + membemail);
+    } catch (error) {
+      console.log('CANT GET EMAIL');
+    }
+  }
   render() {
     return (
       <Container>
@@ -171,7 +249,10 @@ export default class Login extends React.Component {
   checkConnectivity() {
     this.setState({LoginSubmit: true});
     NetInfo.fetch().then(state => {
+      // console.log("Connection type2", state.type);
+      //console.log("Is connected?2", state.isConnected);
       if (state.isConnected == true) {
+        //alert('Online');
         this._postUser();
       } else {
         // alert('Please check your internet connection and try again.');
@@ -206,13 +287,20 @@ export default class Login extends React.Component {
         response.json().then(data => {
           if (data.is_success == true) {
             if (data.error_message !== 'Verification Required!') {
-              this.multiSetData(
-                data.access_token,
-                data.data.recordid,
-                data.data.accountno,
-                data.data.firstname,
-                data.data.email,
-              );
+              let accessToken = data.access_token;
+              this.storeToken(accessToken);
+
+              let memberId = data.data.recordid;
+              this.storememberId(memberId);
+
+              let memb_Accountno = data.data.accountno;
+              this.storeacct(memb_Accountno);
+
+              let memb_name = data.data.firstname;
+              this.storemembname(memb_name);
+
+              let memb_email = data.data.email;
+              this.storemembemail(memb_email);
               this.setState({LoginSubmit: false});
               this.props.navigation.dispatch(resetAction);
             } else {
