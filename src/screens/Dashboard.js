@@ -103,6 +103,7 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/menu-members.png')}
                           resizeMode="contain"
                         />
@@ -125,10 +126,13 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/menu-provider.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>Providers</Text>
+                        <Text style={styles.cardMenuText}>
+                          Doctors & Dentists
+                        </Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -149,6 +153,7 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/menu-consultation.png')}
                           resizeMode="contain"
                         />
@@ -173,6 +178,7 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
+                          small
                           source={require('../../assets/images/menu-diagnostics.png')}
                           resizeMode="contain"
                         />
@@ -185,7 +191,55 @@ export default class Dashboard extends React.Component {
                 </TouchableNativeFeedback>
               </View>
             </View>
-            <Card transparent>
+
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
+                <TouchableNativeFeedback
+                  onPress={() =>
+                    this.props.navigation.navigate('IntellimapPage')
+                  }>
+                  <Card transparent>
+                    <CardItem style={[styles.cardMenuStyle]}>
+                      <Body
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Thumbnail
+                          small
+                          source={require('../../assets/images/menu-intellimap.png')}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.cardMenuText}>Intellimap</Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </TouchableNativeFeedback>
+              </View>
+              <View style={{flex: 1}}>
+                <TouchableNativeFeedback
+                  onPress={() => this.props.navigation.navigate('MedgatePage')}>
+                  <Card transparent>
+                    <CardItem style={[styles.cardMenuStyle]}>
+                      <Body
+                        style={{
+                          justifyContent: 'center',
+                          alignItems: 'center',
+                        }}>
+                        <Thumbnail
+                          small
+                          source={require('../../assets/images/menu-diagnostics.png')}
+                          resizeMode="contain"
+                        />
+                        <Text style={styles.cardMenuText}>Medgate</Text>
+                      </Body>
+                    </CardItem>
+                  </Card>
+                </TouchableNativeFeedback>
+              </View>
+            </View>
+
+            {/* <Card transparent>
               <CardItem style={[styles.cardMenuStyle1]}>
                 <Left>
                   <Thumbnail
@@ -252,7 +306,7 @@ export default class Dashboard extends React.Component {
                   </Body>
                 </Left>
               </CardItem>
-            </Card>
+            </Card> */}
           </View>
         </ScrollView>
       </Container>
@@ -294,7 +348,7 @@ const styles = StyleSheet.create({
     color: '#5fb650',
   },
   contentStyle: {
-    marginHorizontal: 20,
+    marginHorizontal: 40,
     padding: 20,
     marginTop: -40,
     backgroundColor: '#fff',
@@ -309,12 +363,12 @@ const styles = StyleSheet.create({
   },
   MenucontentStyle: {
     flex: 1,
-    marginVertical: 20,
-    marginHorizontal: 20,
+    marginVertical: 10,
+    marginHorizontal: 40,
   },
   scrollViewBackground: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#fff',
   },
   headerStyle: {
     paddingTop: 50,
@@ -372,14 +426,15 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   cardMenuStyle: {
-    height: 150,
-    margin: 5,
+    height: 180,
+    marginTop: 5,
+    marginHorizontal: 5,
     borderRadius: 10,
-    shadowColor: '#f5f5f5',
-    shadowOffset: {width: 5, height: 10},
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
-    elevation: 2,
+    shadowColor: '#fff',
+    shadowOffset: {width: 0, height: 20},
+    shadowOpacity: 0.1,
+    shadowRadius: 50,
+    elevation: 10,
     borderWidth: 0,
     justifyContent: 'center',
   },
@@ -406,7 +461,7 @@ const styles = StyleSheet.create({
   },
   cardMenuTextIntellimap: {
     color: '#5fb650',
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   textSearchNow: {

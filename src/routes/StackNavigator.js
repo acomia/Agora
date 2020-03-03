@@ -19,6 +19,7 @@ import MembInfo from '../screens/MembInfo';
 import Intellimap from '../screens/Intellimap/Intellimap';
 import VerifyOTP from '../screens/VerifyOTP';
 import ChangePassword from '../screens/ChangePassword';
+import ChangeOldPassword from '../screens/ChangeOldPassword';
 import DoctorSearchNavigation from '../routes/DoctorSearchNavigation';
 import Medgate from '../screens/Medgate';
 import ApprovedUtil from '../screens/ApprovedUtil';
@@ -185,6 +186,21 @@ AppStack = createStackNavigator({
   },
   ChangePassword: {
     screen: ChangePassword,
+    navigationOptions: {
+      title: '',
+      headerStyle: {
+        backgroundColor: '#5DADE2',
+        elevation: 0,
+        shadowOpacity: 0,
+        borderBottomWidth: 0,
+        paddingTop: STATUSBAR_HEIGHT,
+        height: 80,
+      },
+      headerTintColor: '#fff',
+    },
+  },
+  ChangeOldPassword: {
+    screen: ChangeOldPassword,
     navigationOptions: {
       title: '',
       headerStyle: {

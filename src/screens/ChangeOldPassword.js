@@ -1,32 +1,34 @@
 import React from 'react';
 import {Alert, StyleSheet, View, Image, StatusBar} from 'react-native';
-import {
-  Container,
-  Button,
-  Text,
-  Left,
-  Item,
-  Input,
-  Label,
-  Icon,
-} from 'native-base';
-import Spinner from 'react-native-spinkit';
+import {Button, Text, Item, Input, Label, Icon, Spinner} from 'native-base';
+import AsyncStorage from '@react-native-community/async-storage';
 import Modal from 'react-native-modal';
 
-export default class ChangePassword extends React.Component {
+export default class ChangeOldPassword extends React.Component {
   constructor() {
     super();
     this.state = {
+      old_PW: '',
       new_PW: '',
       confirm_PW: '',
       isLoading: false,
-      securePW: true,
+      secureOldPW: true,
+      secureNewPW: true,
       secureConfirmPW: true,
     };
+    this.stored_OldPw = '';
+  }
+  async componentDidMount() {
+    let old_pw = await AsyncStorage.getItem('OLD_PW');
+    this.stored_OldPw = old_pw;
+    //alert(this.stored_OldPw);
   }
 
   CHANGE_PW() {
     var regularExpression = /^(?=.*[0-9])(?=.*[!@#$%^&*.])[a-zA-Z0-9!@#$%^&*.]{6,50}$/;
+    if (this.state.old_PW !== this.stored_OldPw) {
+      return Alert.alert('', 'Incorrect old password!');
+    }
 
     if (this.state.new_PW !== this.state.confirm_PW) {
       return Alert.alert('', 'Password does not match!');
@@ -83,27 +85,28 @@ export default class ChangePassword extends React.Component {
             resizeMode="center"
           />
           <Label style={styles.chagePasswordText}>Change Password</Label>
-          <Label style={{textAlign: 'center', margin: 30}}>
-            Please enter your new password
-          </Label>
         </View>
         <View style={styles.bottomContent}>
           <Item floatingLabel style={styles.formStyle}>
-            <Icon name="md-lock" />
-            <Label>New password</Label>
+            <Icon
+              type="MaterialCommunityIcons"
+              name="lock-reset"
+              style={{color: '#2d2d2d'}}
+            />
+            <Label>Old password</Label>
             <Input
-              value={this.state.new_PW}
-              onChangeText={new_PW => this.setState({new_PW})}
-              secureTextEntry={this.state.securePW}
+              value={this.state.old_PW}
+              onChangeText={old_PW => this.setState({old_PW})}
+              secureTextEntry={this.state.secureOldPW}
             />
             <Icon
               onPress={() => {
-                this.state.securePW
-                  ? this.setState({securePW: false})
-                  : this.setState({securePW: true});
+                this.state.secureOldPW
+                  ? this.setState({secureOldPW: false})
+                  : this.setState({secureOldPW: true});
               }}
               type="Octicons"
-              name={this.state.securePW ? 'eye' : 'eye-closed'}
+              name={this.state.secureOldPW ? 'eye' : 'eye-closed'}
               style={{
                 color: 'silver',
                 fontSize: 22,
@@ -111,7 +114,37 @@ export default class ChangePassword extends React.Component {
             />
           </Item>
           <Item floatingLabel style={styles.formStyle}>
-            <Icon name="md-lock" />
+            <Icon
+              type="MaterialCommunityIcons"
+              name="lock-outline"
+              style={{color: '#2d2d2d'}}
+            />
+            <Label>New password</Label>
+            <Input
+              value={this.state.new_PW}
+              onChangeText={new_PW => this.setState({new_PW})}
+              secureTextEntry={this.state.secureNewPW}
+            />
+            <Icon
+              onPress={() => {
+                this.state.secureNewPW
+                  ? this.setState({secureNewPW: false})
+                  : this.setState({secureNewPW: true});
+              }}
+              type="Octicons"
+              name={this.state.secureNewPW ? 'eye' : 'eye-closed'}
+              style={{
+                color: 'silver',
+                fontSize: 22,
+              }}
+            />
+          </Item>
+          <Item floatingLabel style={styles.formStyle}>
+            <Icon
+              type="MaterialCommunityIcons"
+              name="lock-outline"
+              style={{color: '#2d2d2d'}}
+            />
             <Label>Confirm new password</Label>
             <Input
               value={this.state.confirm_PW}
@@ -120,7 +153,7 @@ export default class ChangePassword extends React.Component {
             />
             <Icon
               onPress={() => {
-                this.state.securePW
+                this.state.secureConfirmPW
                   ? this.setState({secureConfirmPW: false})
                   : this.setState({secureConfirmPW: true});
               }}
@@ -132,9 +165,11 @@ export default class ChangePassword extends React.Component {
               }}
             />
           </Item>
+        </View>
+        <View style={{flex: 1, paddingHorizontal: 20}}>
           <Button block rounded info onPress={() => this.CHANGE_PW()}>
             {this.state.isLoading ? (
-              <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
+              <Spinner color={'#fff'} />
             ) : (
               <Text style={{fontWeight: 'bold'}}>Submit</Text>
             )}
@@ -181,23 +216,21 @@ const styles = StyleSheet.create({
   },
   chagePasswordText: {
     color: '#5fb650',
-    fontSize: 30,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   formStyle: {
     marginVertical: 20,
   },
   topContent: {
-    height: '50%',
-    // padding: 20,
-    justifyContent: 'space-evenly',
+    flex: 2,
+    justifyContent: 'center',
     alignItems: 'center',
-    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   bottomContent: {
-    height: '50%',
+    flex: 4,
+    justifyContent: 'center',
     paddingHorizontal: 20,
-    borderColor: 'rgba(0, 0, 0, 0.1)',
   },
   modalContent: {
     backgroundColor: 'white',

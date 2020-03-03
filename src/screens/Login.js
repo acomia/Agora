@@ -6,6 +6,7 @@ import {
   Image,
   ImageBackground,
   StatusBar,
+  Alert,
   ActivityIndicator,
 } from 'react-native';
 import {
@@ -341,7 +342,15 @@ async getToken()
         //alert('Online');
         this._postUser();
       } else {
-        alert('Check Internet Connection...');
+        // alert('Please check your internet connection and try again.');
+        Alert.alert(
+          'Oops!',
+          'Please check your internet connection and try again.',
+          [
+            {text: 'OK', onPress: () => console.log('OK Pressed')},
+          ],
+          {cancelable: false},
+        );
         this.setState({LoginSubmit: false});
       }
     });

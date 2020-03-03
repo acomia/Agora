@@ -353,6 +353,7 @@ export default class Login extends React.Component {
                   </Label>
                   <Input
                     style={styles.labelStyle}
+                    keyboardType="phone-pad"
                     value={this.state.intellicare_acct}
                     onChangeText={intellicare_acct =>
                       this.setState({intellicare_acct})
@@ -369,6 +370,7 @@ export default class Login extends React.Component {
                   </Label>
                   <Input
                     style={styles.labelStyle}
+                    keyboardType="phone-pad"
                     value={this.state.intellicare_no}
                     onChangeText={intellicare_no =>
                       this.setState({intellicare_no})
@@ -384,6 +386,7 @@ export default class Login extends React.Component {
                   </Label>
                   <Input
                     autoCapitalize="none"
+                    keyboardType="email-address"
                     style={styles.labelStyle}
                     value={this.state.email}
                     onChangeText={email => this.setState({email})}
@@ -438,7 +441,7 @@ export default class Login extends React.Component {
                 <Item floatingLabel style={styles.formStyle}>
                   <Label style={{fontSize: 14}}>Mobile No. *</Label>
                   <Input
-                    keyboardType={'numeric'}
+                    keyboardType="phone-pad"
                     style={styles.labelStyle}
                     value={this.state.mobile_no}
                     onChangeText={mobile_no => this.setState({mobile_no})}
