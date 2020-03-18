@@ -78,6 +78,11 @@ export default class SideBar extends React.Component {
   postMedgateToken() {
     var details = {
       grantType: 'clientCredentials',
+      // test
+      // clientId: '1886D070-DC43-435E-94BD-56581D7097B7',
+      // clientSecret: '111E76AE-7F6D-4924-8095-083300DFC7D0',
+
+      // live
       clientId: '1886D070-DC43-435E-94BD-56581D7097B7',
       clientSecret: '111E76AE-7F6D-4924-8095-083300DFC7D0',
     };
@@ -92,7 +97,11 @@ export default class SideBar extends React.Component {
     formBody = formBody.join('&');
 
     fetch(
-      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
+      // test
+      // 'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
+
+      // live
+      'https://scheduling.medgatephilippines.com/CallbackRequestService/Token',
       {
         method: 'POST',
         headers: {
@@ -122,7 +131,11 @@ export default class SideBar extends React.Component {
   //Medgate Callback Request
   getMedgateCallbackRequest() {
     fetch(
-      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+      // test
+      // 'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+
+      // live
+      'https://scheduling.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
         this.state.mobileNumber +
         '&provider=Intellicare',
       {
