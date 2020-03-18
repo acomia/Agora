@@ -33,7 +33,7 @@ const FilterComponent = () => {
           <Text>Apply</Text>
         </Button>
         <Button>
-          <Text>Cancel</Text>
+          <Text>Clear</Text>
         </Button>
       </View>
     </View>
