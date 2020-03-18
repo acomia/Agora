@@ -1,6 +1,8 @@
 import React from 'react';
 import {View, Text} from 'react-native';
 import {Button, ListItem, CheckBox, Body} from 'native-base';
+
+// Denmarc rodriguez
 const FilterComponent = () => {
   return (
     <View
