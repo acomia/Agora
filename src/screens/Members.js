@@ -12,6 +12,8 @@ const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
 //test merge 2
+
+//test merge vin
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
