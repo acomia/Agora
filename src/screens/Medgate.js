@@ -121,7 +121,7 @@ export default class SideBar extends React.Component {
 
   //Medgate Callback Request
   getMedgateCallbackRequest() {
-    fetch(
+    fetch (
       'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
         this.state.mobileNumber +
         '&provider=Intellicare',
