@@ -12,8 +12,17 @@ import {
   Animated,
   TouchableNativeFeedback,
 } from 'react-native';
-import {Text, ListItem, Container} from 'native-base';
+import {
+  Text,
+  ListItem,
+  Container,
+  Header,
+  Item,
+  Input,
+  InputGroup,
+} from 'native-base';
 import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 import {ClusterMap} from 'react-native-cluster-map';
 import Geolocation from 'react-native-geolocation-service';
 import getDirections from 'react-native-google-maps-directions';
@@ -25,12 +34,14 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import {Cluster} from './Cluster';
 
+import FooterComponent from './FooterComponent';
 import styles from './IntellimapStyle';
 
 const offices = require('../../../offices.json');
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
-const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight();
+const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
+const LONGITUDE_DELTA = ASPECT_RATIO * 0.015;
 
 export async function request_location_runtime_permission() {
   try {
@@ -53,12 +64,17 @@ export default class Intellimap extends PureComponent {
     super(props);
     global.token = '';
     this.state = {
-      latitude: 14.5564224,
-      longitude: 121.0178166,
+      coordinates: [],
+      originRoute: {latitude: 14.5609413, longitude: 121.0141044},
+      destinationRoute: {latitude: 14.5564224, longitude: 121.0178166},
+      latitude: 0,
+      longitude: 0,
       curLatitude: 0,
       curLongitude: 0,
       hospitals: [],
       clinics: [],
+      nearestHospitals: [],
+      nearestClinics: [],
       offices: offices,
       markers: [],
       searchData: [],
@@ -66,72 +82,106 @@ export default class Intellimap extends PureComponent {
       search: '',
       officeSelected: false,
       clinicPressed: false,
-      hospitalPressed: true,
+      hospitalPressed: false,
       loading: false,
       searchTextChanged: false,
-      detailsHeight: new Animated.Value(70),
+      detailsHeight: new Animated.Value(90),
       rotateArrow: new Animated.Value(0),
       detailsOpacity: new Animated.Value(0),
       expandDetails: false,
+      geographyPoint: '',
+      iconExpandName: 'window-minimize',
+      currentLocationStatus: false,
     };
     this.arrayholder = [];
+    this.mapView = null;
   }
   async componentDidMount() {
     this.setState({
       loading: true,
     });
     await request_location_runtime_permission();
+
     Geolocation.getCurrentPosition(
       position => {
+        const origin = [];
+        origin.push({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        });
         this.setState({
+          coordinates: origin,
           curLatitude: position.coords.latitude,
           curLongitude: position.coords.longitude,
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
+          geographyPoint:
+            'POINT (' +
+            position.coords.longitude.toString() +
+            ' ' +
+            position.coords.latitude.toString() +
+            ')',
         });
+        {
+          this.getNearestFacilities();
+        }
       },
       error => this.setState({error: error.message}),
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
     );
 
+    this._retrieveData();
+    // Fetching token for map authentication
+    fetch('https://intellicare.com.ph/uat/webservice/thousandminds/api/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+      body: JSON.stringify({
+        username: 'digitalxform',
+        password: 'th2p@ssw0rd',
+      }),
+    })
+      .then(response => {
+        response.json().then(data => {
+          if (data.code === 200) {
+            global.token = data.response.token;
+            if (
+              this.state.hospitals.length > 0 &&
+              this.state.clinics.length > 0
+            ) {
+              this.setState({loading: false});
+              this.arrayholder = this.state.hospitals;
+              console.log('Got it!');
+            } else {
+              {
+                this._getMarkersData();
+              }
+            }
+          } else {
+            alert('Username not found!');
+          }
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+  }
+  getNearestFacilities() {
     //Get nearest Hospitals
     fetch(
       'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=3&hstype=H',
       {
         method: 'GET',
         headers: {
-          Geography:
-            'POINT (' + this.state.longitude + ' ' + this.state.latitude + ')',
+          Geography: this.state.geographyPoint,
         },
       },
     )
       .then(response => {
         response.json().then(nearestHospital => {
           this.setState({
-            hospitals: nearestHospital.data,
-            markers: nearestHospital.data,
-          });
-        });
-      })
-      .catch(error => {
-        alert('Error!' + error);
-      });
-    //Get nearest Clinics
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=3&hstype=C',
-      {
-        method: 'GET',
-        headers: {
-          Geography:
-            'POINT (' + this.state.longitude + ' ' + this.state.latitude + ')',
-        },
-      },
-    )
-      .then(response => {
-        response.json().then(nearestClinic => {
-          this.setState({
-            clinics: nearestClinic.data,
-            loading: false,
+            nearestHospitals: nearestHospital.data,
           });
         });
       })
@@ -139,42 +189,26 @@ export default class Intellimap extends PureComponent {
         alert('Error!' + error);
       });
 
-    // this._retrieveData();
-    // Fetching token for map authentication
-    // fetch('https://intellicare.com.ph/uat/webservice/thousandminds/api/login', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json;charset=UTF-8',
-    //   },
-    //   body: JSON.stringify({
-    //     username: 'digitalxform',
-    //     password: 'th2p@ssw0rd',
-    //   }),
-    // })
-    //   .then(response => {
-    //     response.json().then(data => {
-    //       if (data.code === 200) {
-    //         global.token = data.response.token;
-    //         if (
-    //           this.state.hospitals.length > 0 &&
-    //           this.state.clinics.length > 0
-    //         ) {
-    //           this.setState({loading: false});
-    //           this.arrayholder = this.state.hospitals;
-    //           console.log('Got it!');
-    //         } else {
-    //           {
-    //             this._getMarkersData();
-    //           }
-    //         }
-    //       } else {
-    //         alert('Username not found!');
-    //       }
-    //     });
-    //   })
-    //   .catch(error => {
-    //     alert('Error!' + error);
-    //   });
+    //Get nearest Clinics
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=1&hstype=C',
+      {
+        method: 'GET',
+        headers: {
+          Geography: this.state.geographyPoint,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(nearestClinic => {
+          this.setState({
+            nearestClinics: nearestClinic.data,
+          });
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
   }
   _storeData = async (hospital, clinic) => {
     const hospitalSet = ['hospitalData', JSON.stringify(hospital)];
@@ -190,7 +224,6 @@ export default class Intellimap extends PureComponent {
       const hData = await AsyncStorage.getItem('hospitalData');
       const cData = await AsyncStorage.getItem('clinicData');
       if (hData !== null && cData !== null) {
-        // We have data!!
         this.setState({
           hospitals: JSON.parse(hData),
           clinics: JSON.parse(cData),
@@ -215,7 +248,6 @@ export default class Intellimap extends PureComponent {
         response.json().then(hospitalData => {
           this.setState({
             hospitals: hospitalData.data,
-            markers: hospitalData.data,
           });
           this.arrayholder = hospitalData.data;
         });
@@ -270,7 +302,7 @@ export default class Intellimap extends PureComponent {
   onHospitalButtonPress = hospitals => {
     this.setState({
       searchData: hospitals,
-      markers: hospitals,
+      markers: this.state.nearestHospitals,
       // imgSrc: require('../../../assets/images/location-red.png'),
       destination: '',
       hospitalPressed: true,
@@ -283,7 +315,7 @@ export default class Intellimap extends PureComponent {
   onClinicButtonPress = clinics => {
     this.setState({
       searchData: clinics,
-      markers: clinics,
+      markers: this.state.nearestClinics,
       // imgSrc: require('../../../assets/images/location-blue.png'),
       destination: '',
       hospitalPressed: false,
@@ -303,9 +335,9 @@ export default class Intellimap extends PureComponent {
       clinicPressed: false,
       officeSelected: true,
     });
-    {
-      this.renderMarker();
-    }
+    // {
+    //   this.renderMarker();
+    // }
   }
   handleGetDirections = destination => {
     const {curLatitude, curLongitude, officeSelected} = this.state;
@@ -351,7 +383,6 @@ export default class Intellimap extends PureComponent {
           paddingTop: 5,
           justifyContent: 'center',
           backgroundColor: 'transparent',
-          top: STATUSBAR_HEIGHT,
         }}>
         <ScrollView
           horizontal
@@ -514,60 +545,72 @@ export default class Intellimap extends PureComponent {
     );
   }
   onMarkerPress = location => () => {
-    if (this.state.officeSelected) {
-      const {
-        coords: {latitude, longitude},
-      } = location;
-      this.setState({
-        destination: location,
-        latitude: latitude,
-        longitude: longitude,
-      });
-    } else {
-      const {latitudes, longitudes, hospital_name} = location;
-      var newLatitude = Number(latitudes);
-      var newLongitude = Number(longitudes);
-      this.setState({
-        destination: location,
-        latitude: newLatitude,
-        longitude: newLongitude,
-        searchData: [],
-      });
-    }
+    const destination = [];
+    destination.push({
+      latitude: this.state.officeSelected
+        ? location.coords.latitude
+        : Number(location.latitudes),
+      longitude: this.state.officeSelected
+        ? location.coords.longitude
+        : Number(location.longitudes),
+    });
+    console.log(destination);
+    this.setState({
+      coordinates: [...this.state.coordinates, destination[0]],
+      destination: location,
+      latitude: this.state.officeSelected
+        ? location.coords.latitude
+        : Number(location.latitudes),
+      longitude: this.state.officeSelected
+        ? location.coords.longitude
+        : Number(location.longitudes),
+    });
   };
   officeMarkerDetails = destination => {
     return (
-      <View style={styles.markerDetailsStyle}>
+      <View style={styles.markerDetailsContainer}>
         <Animated.View
           style={{
             backgroundColor: '#fff',
             borderRadius: 6,
             height: this.state.detailsHeight,
+            width: '100%',
           }}>
-          <ListItem style={{alignItems: 'center'}}>
-            {/* <Image
-              source={{uri: destination.image_url}}
-              resizeMode="cover"
-              style={styles.markerDetImgStyle}
-            /> */}
-            <View style={{flexDirection: 'column', marginLeft: 6}}>
-              <Text
-                style={{
-                  color: '#5FB650',
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                  marginVertical: 6,
-                }}>
-                {destination.name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  color: 'gray',
-                  alignSelf: 'flex-start',
-                }}>
-                {destination.phone}
-              </Text>
+          <View
+            style={{
+              padding: 0,
+              marginTop: 0,
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <Icon
+              name={this.state.iconExpandName}
+              color="silver"
+              size={26}
+              onPress={() => this._animateDetails()}
+            />
+          </View>
+          <ListItem>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flexDirection: 'column', marginLeft: 6}}>
+                <Text
+                  style={{
+                    color: '#5FB650',
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                    marginVertical: 6,
+                  }}>
+                  {destination.name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: 'gray',
+                    alignSelf: 'flex-start',
+                  }}>
+                  {destination.phone}
+                </Text>
+              </View>
             </View>
           </ListItem>
           <Animated.ScrollView style={{opacity: this.state.detailsOpacity}}>
@@ -610,51 +653,56 @@ export default class Intellimap extends PureComponent {
             </ListItem>
           </Animated.ScrollView>
         </Animated.View>
-        <Animated.View
-          style={[
-            styles.arrowDownDetailsStyle,
-            {rotation: this.state.rotateArrow},
-          ]}>
-          <TouchableOpacity onPress={() => this._animateDetails()}>
-            <Icon
-              type="MaterialCommunityIcons"
-              name="chevron-down-circle"
-              size={22}
-              color="#5FB650"
-            />
-          </TouchableOpacity>
-        </Animated.View>
       </View>
     );
   };
   hospclinicMarkerDetails = destination => {
     return (
-      <View style={styles.markerDetailsStyle}>
+      <View style={styles.markerDetailsContainer}>
         <Animated.View
           style={{
             backgroundColor: '#fff',
             borderRadius: 6,
             height: this.state.detailsHeight,
+            width: '100%',
           }}>
-          <ListItem style={{alignItems: 'center'}}>
-            <Icon name="hospital-building" color="#5FB650" size={22} />
-            <View style={{flexDirection: 'column', marginLeft: 6}}>
-              <Text
-                style={{
-                  color: this.state.hospitalPressed ? '#e74c3c' : '#5DADE2',
-                  fontSize: 13,
-                  fontWeight: 'bold',
-                }}>
-                {destination.hospital_name}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10,
-                  color: '#6d6e72',
-                  alignSelf: 'flex-start',
-                }}>
-                {destination.phone}
-              </Text>
+          <View
+            style={{
+              padding: 0,
+              marginTop: 0,
+              width: '100%',
+              alignItems: 'center',
+            }}>
+            <Icon
+              name={this.state.iconExpandName}
+              color="silver"
+              size={26}
+              onPress={() => this._animateDetails()}
+            />
+          </View>
+          <ListItem>
+            <View
+              style={{flexDirection: 'row'}}
+              onPress={() => this._animateDetails()}>
+              <Icon name="hospital-building" color="#5FB650" size={22} />
+              <View style={{flexDirection: 'column', marginLeft: 6}}>
+                <Text
+                  style={{
+                    color: this.state.hospitalPressed ? '#e74c3c' : '#5DADE2',
+                    fontSize: 13,
+                    fontWeight: 'bold',
+                  }}>
+                  {destination.hospital_name}
+                </Text>
+                <Text
+                  style={{
+                    fontSize: 10,
+                    color: '#6d6e72',
+                    alignSelf: 'flex-start',
+                  }}>
+                  {destination.phone}
+                </Text>
+              </View>
             </View>
           </ListItem>
           <Animated.ScrollView style={{opacity: this.state.detailsOpacity}}>
@@ -698,27 +746,13 @@ export default class Intellimap extends PureComponent {
             </ListItem>
           </Animated.ScrollView>
         </Animated.View>
-        <Animated.View
-          style={[
-            styles.arrowDownDetailsStyle,
-            {rotation: this.state.rotateArrow},
-          ]}>
-          <TouchableOpacity onPress={() => this._animateDetails()}>
-            <Icon
-              type="MaterialCommunityIcons"
-              name="chevron-down-circle"
-              size={22}
-              color="#5FB650"
-            />
-          </TouchableOpacity>
-        </Animated.View>
       </View>
     );
   };
   _animateDetails = () => {
     if (this.state.expandDetails === true) {
       Animated.timing(this.state.detailsHeight, {
-        toValue: 71,
+        toValue: 90,
         duration: 500,
       }).start();
       Animated.timing(this.state.rotateArrow, {
@@ -729,7 +763,7 @@ export default class Intellimap extends PureComponent {
         toValue: 0,
         duration: 500,
       }).start();
-      this.setState({expandDetails: false});
+      this.setState({expandDetails: false, iconExpandName: 'window-minimize'});
     } else {
       Animated.timing(this.state.detailsHeight, {
         toValue: 220,
@@ -743,7 +777,7 @@ export default class Intellimap extends PureComponent {
         toValue: 1,
         duration: 500,
       }).start();
-      this.setState({expandDetails: true});
+      this.setState({expandDetails: true, iconExpandName: 'chevron-down'});
     }
   };
   makeCall = telNumber => {
@@ -757,14 +791,41 @@ export default class Intellimap extends PureComponent {
     Linking.openURL(phoneNumber);
   };
   renderClusterMarker = count => <Cluster count={count} />;
+  onMapPress = e => {
+    this.setState({
+      coordinates: [...this.state.coordinates, e.nativeEvent.coordinate],
+      destination: '',
+      latitude: this.state.curLatitude,
+      longitude: this.state.curLongitude,
+    });
+  };
+
+  onReady = result => {
+    this.mapView.fitToCoordinates(result.coordinates, {
+      edgePadding: {
+        right: SCREEN_WIDTH / 10,
+        bottom: SCREEN_HEIGHT / 10,
+        left: SCREEN_WIDTH / 10,
+        top: SCREEN_HEIGHT / 10,
+      },
+    });
+  };
+
+  onError = errorMessage => {
+    console.log(errorMessage);
+  };
+
   render() {
     const {
       latitude,
       longitude,
+      curLatitude,
+      curLongitude,
       destination,
       markers,
       searchData,
       imgSrc,
+      coordinates,
     } = this.state;
     const {map, spinnerStyle} = styles;
     var imgBox = null;
@@ -775,123 +836,105 @@ export default class Intellimap extends PureComponent {
         imgBox = this.hospclinicMarkerDetails(destination);
       }
     }
-    const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
-    const LONGITUDE_DELTA = ASPECT_RATIO * 0.015;
+    const GOOGLE_MAPS_APIKEY = 'AIzaSyAEr63gs_sYIqF9HFTvqQX4rvdPEcrNQTo';
+
     return (
       <Container>
-        <View style={styles.container}>
+        <View style={{flex: 1}}>
           <StatusBar translucent backgroundColor="transparent" />
-          {/* <MapView
-            showsUserLocation
-            provider={PROVIDER_GOOGLE}
-            style={map}
-            region={{
-              latitude: latitude,
-              longitude: longitude,
-              latitudeDelta: 0.015,
-              longitudeDelta:LONGITUDE_DELTA,
-            }}>
-            {markers.length > 0 ? this.renderMarker() : null}
-          </MapView> */}
-          <ClusterMap
-            showsUserLocation
-            provider={PROVIDER_GOOGLE}
-            renderClusterMarker={this.renderClusterMarker}
-            style={map}
-            region={{
-              latitude: latitude,
-              longitude: longitude,
-              latitudeDelta: 0.015,
-              longitudeDelta: LONGITUDE_DELTA,
-            }}>
-            {markers.map((marker, key) => (
+          <View style={styles.container}>
+            <MapView
+              showsMyLocationButton
+              showsCompass
+              ref={c => (this.mapView = c)}
+              onPress={this.onMapPress}
+              provider={PROVIDER_GOOGLE}
+              // renderClusterMarker={this.renderClusterMarker}
+              style={map}
+              region={{
+                latitude: latitude,
+                longitude: longitude,
+                latitudeDelta: 0.015,
+                longitudeDelta: LONGITUDE_DELTA,
+              }}
+              // camera={{
+              //   center: {
+              //     latitude: latitude,
+              //     longitude: longitude,
+              //   },
+              //   pitch: 60,
+              //   heading: 2,
+              //   altitude: 6,
+              //   zoom: 14,
+              // }}
+            >
+              {markers &&
+                markers.map((marker, key) => (
+                  <Marker
+                    key={key}
+                    tracksViewChanges={false}
+                    title={
+                      this.state.officeSelected
+                        ? marker.name
+                        : marker.hospital_name
+                    }
+                    onPress={this.onMarkerPress(marker)}
+                    coordinate={{
+                      latitude: this.state.officeSelected
+                        ? marker.coords.latitude
+                        : Number(marker.latitudes),
+                      longitude: this.state.officeSelected
+                        ? marker.coords.longitude
+                        : Number(marker.longitudes),
+                    }}>
+                    <Image source={imgSrc} style={{height: 46, width: 20}} />
+                  </Marker>
+                ))}
               <Marker
-                key={key}
-                title={
-                  this.state.officeSelected ? marker.name : marker.hospital_name
-                }
-                onPress={this.onMarkerPress(marker)}
+                title="YOU ARE HERE!"
                 coordinate={{
-                  latitude: this.state.officeSelected
-                    ? marker.coords.latitude
-                    : Number(marker.latitudes),
-                  longitude: this.state.officeSelected
-                    ? marker.coords.longitude
-                    : Number(marker.longitudes),
+                  latitude: curLatitude,
+                  longitude: curLongitude,
                 }}>
-                <Image source={imgSrc} style={{height: 46, width: 20}} />
+                <Icon name="human" size={32} color="#FF5E3A" />
               </Marker>
-            ))}
-          </ClusterMap>
-          <SearchBar
-            lightTheme
-            containerStyle={styles.searchBarContainerStyle}
-            inputContainerStyle={{
-              backgroundColor: 'white',
-              height: 40,
-              bottom: 10,
-              borderRadius: 3,
-            }}
-            inputStyle={{fontSize: 12, color: 'black'}}
-            onChangeText={text => this.SearchFilterFunction(text)}
-            onClear={() =>
-              this.setState({
-                searchData: [],
-                destination: '',
-                latitude: this.state.curLatitude,
-                longitude: this.state.curLongitude,
-              })
-            }
-            placeholder="Search by Name or by Location (City/Province)"
-            value={this.state.value}
-            autoCorrect={false}
-          />
-          {this.renderHeaderMapButton()}
-          {searchData.length > 0 &&
-          this.state.searchTextChanged &&
-          this.state.search !== '' ? (
-            <FlatList
-              data={this.state.searchData}
-              ItemSeparatorComponent={this.ListViewItemSeparator}
-              renderItem={({item}) => (
-                <View style={styles.searchViewStyle}>
-                  <ListItem>
-                    <TouchableOpacity onPress={this.onMarkerPress(item)}>
-                      <Text
-                        style={
-                          this.state.hospitalPressed
-                            ? [
-                                styles.hospitalNameSeachTextStyle,
-                                {color: '#e74c3c'},
-                              ]
-                            : [
-                                styles.hospitalNameSeachTextStyle,
-                                {color: '#5DADE2'},
-                              ]
-                        }>
-                        {item.hospital_name}
-                      </Text>
-                      <Text
-                        style={
-                          styles.hospitalSubitemSeachTextStyle
-                        }>{`${item.street} ${item.subd_brgy} ${item.city_prov}`}</Text>
-                      <Text style={styles.hospitalSubitemSeachTextStyle}>
-                        {item.phone}
-                      </Text>
-                    </TouchableOpacity>
-                  </ListItem>
-                </View>
-              )}
-              keyExtractor={item => item.hospital_code}
-            />
-          ) : null}
-          {imgBox}
-        </View>
-        {this.state.loading && (
-          <View style={spinnerStyle}>
-            <Spinner color={'green'} type="ThreeBounce" />
+              <MapViewDirections
+                origin={coordinates[0]}
+                destination={coordinates[coordinates.length - 1]}
+                // waypoints={coordinates.slice(1, -1)}
+                mode="DRIVING"
+                apikey={GOOGLE_MAPS_APIKEY}
+                language="en"
+                strokeWidth={5}
+                strokeColor="blue"
+                onStart={params => {
+                  console.log(
+                    `Started routing between "${params.origin}" and "${
+                      params.destination
+                    }"${
+                      params.waypoints.length
+                        ? ' using waypoints: ' + params.waypoints.join(', ')
+                        : ''
+                    }`,
+                  );
+                }}
+                onReady={this.onReady}
+                onError={errorMessage => {
+                  console.log(errorMessage);
+                }}
+                resetOnChange={false}
+              />
+            </MapView>
+            {imgBox}
           </View>
-        )}
+          {this.renderHeaderMapButton()}
+          <FooterComponent />
+          {this.state.loading && (
+            <View style={spinnerStyle}>
+              <Spinner color={'green'} type="ThreeBounce" />
+            </View>
+          )}
+        </View>
       </Container>
     );
   }

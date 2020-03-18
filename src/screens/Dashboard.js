@@ -195,9 +195,7 @@ export default class Dashboard extends React.Component {
             <View style={{flexDirection: 'row'}}>
               <View style={{flex: 1}}>
                 <TouchableNativeFeedback
-                  onPress={() =>
-                    this.props.navigation.navigate('IntellimapPage')
-                  }>
+                  onPress={() => this.props.navigation.navigate('MapPage')}>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
                       <Body
@@ -210,7 +208,7 @@ export default class Dashboard extends React.Component {
                           source={require('../../assets/images/menu-intellimap.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>Intellimap</Text>
+                        <Text style={styles.cardMenuText}>Map</Text>
                       </Body>
                     </CardItem>
                   </Card>
