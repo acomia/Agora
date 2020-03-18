@@ -29,12 +29,16 @@ const FilterComponent = () => {
         </ListItem>
       </View>
       <View style={{flexDirection: 'row'}}>
-        <Button>
-          <Text>Apply</Text>
-        </Button>
-        <Button>
-          <Text>Clear</Text>
-        </Button>
+        <View>
+          <Button>
+            <Text>Apply</Text>
+          </Button>
+        </View>
+        <View>
+          <Button>
+            <Text>Clear</Text>
+          </Button>
+        </View>
       </View>
     </View>
   );
