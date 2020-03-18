@@ -30,12 +30,12 @@ const FilterComponent = () => {
       </View>
       <View style={{flexDirection: 'row'}}>
         <View>
-          <Button>
+          <Button block>
             <Text>Apply</Text>
           </Button>
         </View>
         <View>
-          <Button>
+          <Button block bordered>
             <Text>Clear</Text>
           </Button>
         </View>
