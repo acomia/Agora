@@ -100,7 +100,7 @@ export default class SideBar extends React.Component {
       // test
       // 'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
 
-      // live
+      // live2
       'https://scheduling.medgatephilippines.com/CallbackRequestService/Token',
       {
         method: 'POST',
