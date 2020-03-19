@@ -55,6 +55,8 @@ class Home extends React.Component {
       coordinates: [],
       search_data: [],
       searchTempData: [],
+      nearestClinics: [],
+      nearestHospitals: [],
       region: {
         latitude: 14.123456,
         longitude: 121.345677,
@@ -63,9 +65,8 @@ class Home extends React.Component {
       },
       geographyPoint: '',
       currentAddress: null,
-      nearestClinics: [],
-      nearestHospitals: [],
       searchValue: '',
+      imgSrc: '',
       loading: false,
       exploreFooterHeight: new Animated.Value(0),
     };
@@ -236,10 +237,7 @@ class Home extends React.Component {
   };
   renderCarouselItem = ({item}) => (
     <View style={[styles.cardContainer, {padding: 0}]}>
-      <Image
-        source={require('../../../assets/images/hospital_img.png')}
-        style={styles.cardImage}
-      />
+      <Image source={this.state.imgSrc} style={styles.cardImage} />
       <View style={{padding: 6}}>
         <Text style={styles.cardTitle}>{item.hospital_name}</Text>
         <Text style={styles.cardDescription}>{item.phone}</Text>
@@ -267,6 +265,7 @@ class Home extends React.Component {
           this.setState({
             carousel_coordinates: nearestHospital.data,
             loading: false,
+            imgSrc: require('../../../assets/images/hospital_img.png'),
           });
           this.hideExploreComponent();
         });
@@ -277,7 +276,7 @@ class Home extends React.Component {
       });
   };
   getNearbyClinics = () => {
-    this.setState({loading: true, clinicPressed: true});
+    this.setState({loading: true});
     //Get nearest Clinics
     fetch(NEARBY_CLINICS, {
       method: 'GET',
@@ -290,6 +289,7 @@ class Home extends React.Component {
           this.setState({
             carousel_coordinates: nearestClinic.data,
             loading: false,
+            imgSrc: require('../../../assets/images/clinic_img.png'),
           });
           this.hideExploreComponent();
         });

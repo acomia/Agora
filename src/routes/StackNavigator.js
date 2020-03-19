@@ -41,6 +41,7 @@ import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks';
 import AgoraMap from '../screens/Map/Home';
 import FilterSearch from '../screens/Map/FilterComponent';
 import OfficesComponent from '../screens/Map/OfficesComponent';
+import PrivacyPolicy from '../screens/PrivacyPolicy';
 
 const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight();
 
@@ -150,6 +151,12 @@ AppStack = createStackNavigator({
       header: <StatusBar backgroundColor="#5fb650" barStyle="light-content" />,
     },
   },
+  PrivacyPolicyPage: {
+    screen: PrivacyPolicy,
+    navigationOptions: {
+      header: <StatusBar backgroundColor="#5fb650" barStyle="light-content" />,
+    },
+  },
   MembersPage: {
     screen: Members,
     navigationOptions: {
@@ -234,7 +241,6 @@ AppStack = createStackNavigator({
       headerTintColor: '#fff',
     },
   },
-
   DoctorSearchNavigation: {
     screen: DoctorSearchNavigation,
     navigationOptions: {

@@ -43,6 +43,7 @@ const ExploreComponent = ({
                 height: SCREEN_HEIGHT / 10,
                 width: CARD_WIDTH,
                 position: 'absolute',
+                opacity: 0.4,
               }}
             />
             <Text
@@ -64,11 +65,12 @@ const ExploreComponent = ({
                 height: SCREEN_HEIGHT / 10,
                 width: CARD_WIDTH,
                 position: 'absolute',
+                opacity: 0.4,
               }}
             />
             <Text
               style={{
-                color: 'grey',
+                color: '#fff',
                 fontSize: 16,
                 fontStyle: 'italic',
                 fontWeight: 'bold',
@@ -85,11 +87,12 @@ const ExploreComponent = ({
                 height: SCREEN_HEIGHT / 10,
                 width: CARD_WIDTH,
                 position: 'absolute',
+                opacity: 0.4,
               }}
             />
             <Text
               style={{
-                color: 'grey',
+                color: '#fff',
                 fontSize: 16,
                 fontStyle: 'italic',
                 fontWeight: 'bold',

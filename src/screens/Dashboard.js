@@ -201,9 +201,7 @@ export default class Dashboard extends React.Component {
                     resizeMode="contain"
                   />
                   <Body style={{marginLeft: 15}}>
-                    <Text style={styles.cardMenuTextIntellimap}>
-                      Intellimap
-                    </Text>
+                    <Text style={styles.cardMenuTextIntellimap}>Agora Map</Text>
                     <Text style={styles.cardMenuText1}>
                       Search for our Accredited Hospitals, Diagnostic and
                       Specialty Clinics, and Dental Clinics without leaving the
