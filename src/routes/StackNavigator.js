@@ -41,8 +41,6 @@ import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks';
 import AgoraMap from '../screens/Map/Home';
 import FilterSearch from '../screens/Map/FilterComponent';
 import OfficesComponent from '../screens/Map/OfficesComponent';
-import AccreditedHospitals from '../screens/Map/AccreditedHospitals';
-import AccreditedClinics from '../screens/Map/AccreditedClinics';
 
 const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight();
 
@@ -134,13 +132,13 @@ AppStack = createStackNavigator({
   FilterPage: {
     screen: FilterSearch,
     navigationOptions: {
-      title: 'Filter search',
+      title: 'Filters',
       headerStyle: {
         backgroundColor: '#5fb650',
         elevation: 0,
         shadowOpacity: 0,
         borderBottomWidth: 0,
-        paddingTop: 20,
+        paddingTop: STATUSBAR_HEIGHT,
         height: 80,
       },
       headerTintColor: '#fff',
@@ -148,18 +146,6 @@ AppStack = createStackNavigator({
   },
   OfficesPage: {
     screen: OfficesComponent,
-    navigationOptions: {
-      header: <StatusBar backgroundColor="#5fb650" barStyle="light-content" />,
-    },
-  },
-  AccreditedHospitals: {
-    screen: AccreditedHospitals,
-    navigationOptions: {
-      header: <StatusBar backgroundColor="#5fb650" barStyle="light-content" />,
-    },
-  },
-  AccreditedClinics: {
-    screen: AccreditedClinics,
     navigationOptions: {
       header: <StatusBar backgroundColor="#5fb650" barStyle="light-content" />,
     },

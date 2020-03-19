@@ -3,35 +3,34 @@ import {Text} from 'react-native';
 import {View, List, ListItem, Left, Body} from 'native-base';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
-import styles from './SearchResultStyles.js';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 
-export const SearchResult = () => {
+export const SearchResult = ({data}) => {
   return (
     <View style={styles.searchResultsWrapper}>
       <List
-        dataArray={predictions}
+        dataArray={data}
         renderRow={item => (
           <View>
-            <ListItem onPress={} button avatar>
+            <ListItem button avatar>
               <Left style={styles.leftContainer}>
                 <Icon style={styles.leftIcon} name="location-on" />
               </Left>
               <Body>
-                <Text style={styles.primaryText}>Try</Text>
-                <Text style={styles.secondaryText}>Try Again</Text>
+                <Text style={styles.primaryText}>{item.hospital_name}</Text>
+                <Text style={styles.secondaryText}>{item.phone}</Text>
               </Body>
             </ListItem>
           </View>
         )}
+        keyExtractor={item => item.hospital_code}
       />
     </View>
   );
 };
 const styles = {
   searchResultsWrapper: {
-    top: 160,
+    top: 90,
     position: 'absolute',
     width: SCREEN_WIDTH,
     height: 1000,
@@ -40,7 +39,7 @@ const styles = {
   },
   primaryText: {
     fontWeight: 'bold',
-    color: '#373737',
+    color: 'tomato',
   },
   secondaryText: {
     fontStyle: 'italic',
@@ -53,7 +52,7 @@ const styles = {
   },
   leftIcon: {
     fontSize: 20,
-    color: '#7D7D7D',
+    color: 'tomato',
   },
   distance: {
     fontSize: 12,

@@ -10,9 +10,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from 'react-navigation-hooks';
 
 import styles from './MapStyle';
+const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
 const CARD_HEIGHT = SCREEN_HEIGHT / 4;
-const CARD_WIDTH = CARD_HEIGHT - 50;
+const CARD_WIDTH = SCREEN_WIDTH / 2;
 
 const ExploreComponent = ({
   hideExploreFooter,
@@ -36,64 +37,65 @@ const ExploreComponent = ({
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         <TouchableWithoutFeedback onPress={() => getNearbyHospitals()}>
           <View style={styles.exploreCard}>
-            <Text style={{color: '#000'}}>Nearby Hospitals</Text>
             <Image
               source={require('../../../assets/images/hospital_img.png')}
               style={{
                 height: SCREEN_HEIGHT / 10,
                 width: CARD_WIDTH,
+                position: 'absolute',
               }}
             />
+            <Text
+              style={{
+                color: '#fff',
+                fontSize: 16,
+                fontStyle: 'italic',
+                fontWeight: 'bold',
+              }}>
+              Nearby Hospitals
+            </Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => getNearbyClinics()}>
           <View style={styles.exploreCard}>
-            <Text style={{color: '#000'}}>Nearby Clinics</Text>
             <Image
               source={require('../../../assets/images/clinic_img.png')}
               style={{
                 height: SCREEN_HEIGHT / 10,
                 width: CARD_WIDTH,
+                position: 'absolute',
               }}
             />
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={() => navigate('AccreditedHospitalsPage')}>
-          <View style={styles.exploreCard}>
-            <Text style={{color: '#000'}}>Accredited Hospitals</Text>
-            <Image
-              source={require('../../../assets/images/hospital_img.png')}
+            <Text
               style={{
-                height: SCREEN_HEIGHT / 10,
-                width: CARD_WIDTH,
-              }}
-            />
-          </View>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={() => navigate('AccreditedClinicsPage')}>
-          <View style={styles.exploreCard}>
-            <Text style={{color: '#000'}}>Accredited Clinics</Text>
-            <Image
-              source={require('../../../assets/images/clinic_img.png')}
-              style={{
-                height: SCREEN_HEIGHT / 10,
-                width: CARD_WIDTH,
-              }}
-            />
+                color: 'grey',
+                fontSize: 16,
+                fontStyle: 'italic',
+                fontWeight: 'bold',
+              }}>
+              Nearby Clinics
+            </Text>
           </View>
         </TouchableWithoutFeedback>
         <TouchableWithoutFeedback onPress={() => navigate('OfficesPage')}>
           <View style={styles.exploreCard}>
-            <Text style={{color: '#000'}}>Intellicare/Avega Offices</Text>
             <Image
               source={require('../../../assets/images/axa.png')}
               style={{
                 height: SCREEN_HEIGHT / 10,
                 width: CARD_WIDTH,
+                position: 'absolute',
               }}
             />
+            <Text
+              style={{
+                color: 'grey',
+                fontSize: 16,
+                fontStyle: 'italic',
+                fontWeight: 'bold',
+              }}>
+              Intellicare/Avega Offices
+            </Text>
           </View>
         </TouchableWithoutFeedback>
       </ScrollView>

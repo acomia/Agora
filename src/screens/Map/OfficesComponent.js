@@ -120,11 +120,6 @@ class OfficesComponent extends React.Component {
     });
     return (
       <View style={styles.container}>
-        <StatusBar
-          translucent
-          barStyle="light-content"
-          backgroundColor="rgba(0, 0, 0, 0.251)"
-        />
         <Animated.ScrollView
           style={styles.fill}
           scrollEventThrottle={1}
@@ -207,7 +202,7 @@ const styles = {
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#03A9F4',
+    backgroundColor: '#5fb650',
     overflow: 'hidden',
     height: HEADER_MAX_HEIGHT,
   },

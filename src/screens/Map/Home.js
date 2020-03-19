@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, PermissionsAndroid, Image, Animated} from 'react-native';
-import {Button, Container} from 'native-base';
+import {Button, Container, InputGroup, Input} from 'native-base';
 import MapView, {Marker, Callout, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
@@ -9,11 +9,21 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import Carousel from 'react-native-snap-carousel';
 //Local components
 import SearchBox from './SearchBox';
+import SearchResults from './SearchResults';
 import ExploreComponent from './ExploreComponent';
 import FooterComponent from './FooterComponent';
 import SpinnerComponent from './SpinnerComponent';
+//Util components
+import {GOOGLE_MAPS_APIKEY} from '../../util/googlemapapikey';
+import {
+  MAPLOGIN_TOKEN,
+  ACCREDITED_HOSPITALS,
+  ACCREDITED_CLINICS,
+  NEARBY_HOSPITALS,
+  NEARBY_CLINICS,
+} from '../../util/api';
+//styles property
 import styles from './MapStyle';
-
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
 const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
@@ -43,6 +53,8 @@ class Home extends React.Component {
       markers: [],
       carousel_coordinates: [],
       coordinates: [],
+      search_data: [],
+      searchTempData: [],
       region: {
         latitude: 14.123456,
         longitude: 121.345677,
@@ -57,13 +69,16 @@ class Home extends React.Component {
       loading: false,
       exploreFooterHeight: new Animated.Value(0),
     };
+    global.mapToken = '';
+    this.search_holder = [];
   }
   async componentDidMount() {
     await request_location_runtime_permission();
     this.getCurrectLocation();
+    this.getSearchData();
   }
-  getCurrectLocation() {
-    Geocoder.init('AIzaSyAEr63gs_sYIqF9HFTvqQX4rvdPEcrNQTo');
+  async getCurrectLocation() {
+    Geocoder.init(GOOGLE_MAPS_APIKEY);
     Geolocation.getCurrentPosition(
       position => {
         const origin = [];
@@ -97,6 +112,79 @@ class Home extends React.Component {
       {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
     );
   }
+  async getSearchData() {
+    this.setState({loading: true});
+    // Fetching token for map authentication
+    try {
+      let maptoken = await fetch(MAPLOGIN_TOKEN, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify({
+          username: 'digitalxform',
+          password: 'th2p@ssw0rd',
+        }),
+      });
+      let respJson = await maptoken.json();
+      console.log(respJson);
+      if (respJson.code === 200) {
+        global.mapToken = respJson.response.token;
+      }
+    } catch (error) {
+      console.log(error);
+    }
+    // Fetching all accredited hospitals //
+    try {
+      let hospitals = await fetch(ACCREDITED_HOSPITALS, {
+        method: 'GET',
+        headers: {
+          authToken: global.mapToken,
+        },
+      });
+      let hospJson = await hospitals.json();
+      this.setState({
+        searchTempData: hospJson.data,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    // Fetching all accredited clinics //
+    try {
+      let clinics = await fetch(ACCREDITED_CLINICS, {
+        method: 'GET',
+        headers: {
+          authToken: global.mapToken,
+        },
+      });
+      let clinicJson = await clinics.json();
+      const new_array = [...this.state.searchTempData, ...clinicJson.data];
+      this.setState({
+        searchTempData: new_array,
+        loading: false,
+      });
+      this.search_holder = new_array;
+      console.log(this.search_holder);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+  SearchFilterFunction = text => {
+    if (text === '') {
+      this.setState({search_data: []});
+    } else {
+      let newData = this.search_holder.filter(item => {
+        const itemData = `${item.hospital_name.toUpperCase()} ${item.city_prov.toUpperCase()} ${item.hospital_code.toUpperCase()}`;
+        const textData = text.toUpperCase();
+        return itemData.indexOf(textData) > -1;
+      });
+      this.setState({
+        search_data: newData,
+      });
+    }
+
+    console.log(this.state.search_data);
+  };
   showExploreComponent = () => {
     Animated.spring(this.state.exploreFooterHeight, {
       toValue: SCREEN_HEIGHT / 7,
@@ -168,15 +256,12 @@ class Home extends React.Component {
   getNearbyHospitals = () => {
     this.setState({loading: true});
     //Get nearest Hospitals
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=3&hstype=H',
-      {
-        method: 'GET',
-        headers: {
-          Geography: this.state.geographyPoint,
-        },
+    fetch(NEARBY_HOSPITALS, {
+      method: 'GET',
+      headers: {
+        Geography: this.state.geographyPoint,
       },
-    )
+    })
       .then(response => {
         response.json().then(nearestHospital => {
           this.setState({
@@ -194,15 +279,12 @@ class Home extends React.Component {
   getNearbyClinics = () => {
     this.setState({loading: true, clinicPressed: true});
     //Get nearest Clinics
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=1&hstype=C',
-      {
-        method: 'GET',
-        headers: {
-          Geography: this.state.geographyPoint,
-        },
+    fetch(NEARBY_CLINICS, {
+      method: 'GET',
+      headers: {
+        Geography: this.state.geographyPoint,
       },
-    )
+    })
       .then(response => {
         response.json().then(nearestClinic => {
           this.setState({
@@ -233,8 +315,9 @@ class Home extends React.Component {
       exploreFooterHeight,
       carousel_coordinates,
       coordinates,
+      search_data,
     } = this.state;
-    const GOOGLE_MAPS_APIKEY = 'AIzaSyAEr63gs_sYIqF9HFTvqQX4rvdPEcrNQTo';
+
     return (
       <Container>
         <View style={{flex: 1}}>
@@ -312,7 +395,10 @@ class Home extends React.Component {
                 resetOnChange={false}
               />
             </MapView>
-            <SearchBox />
+            <SearchBox searchTerm={this.SearchFilterFunction} />
+            {search_data.length > 0 ? (
+              <SearchResults data={search_data} />
+            ) : null}
             <Carousel
               ref={c => {
                 this._carousel = c;

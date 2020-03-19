@@ -1,6 +1,7 @@
 import {StyleSheet} from 'react-native';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
+const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight();
 const CARD_HEIGHT = SCREEN_HEIGHT / 4;
 const CARD_WIDTH = SCREEN_WIDTH / 2;
 const styles = {
@@ -9,30 +10,6 @@ const styles = {
   },
   map: {
     ...StyleSheet.absoluteFillObject,
-  },
-  scrollView: {
-    position: 'absolute',
-    bottom: 30,
-    left: 0,
-    right: 0,
-    paddingVertical: 10,
-  },
-  endPadding: {
-    paddingRight: SCREEN_WIDTH,
-  },
-  card: {
-    padding: 10,
-    elevation: 2,
-    backgroundColor: '#FFF',
-    marginHorizontal: 4,
-    shadowColor: '#000',
-    shadowRadius: 5,
-    shadowOpacity: 0.3,
-    shadowOffset: {x: 2, y: -2},
-    height: CARD_HEIGHT,
-    width: CARD_WIDTH,
-    overflow: 'hidden',
-    borderRadius: 6,
   },
   carousel: {
     position: 'absolute',
@@ -90,22 +67,35 @@ const styles = {
   },
   exploreCard: {
     alignItems: 'center',
-    padding: 10,
+    padding: 20,
     elevation: 2,
     backgroundColor: '#fff',
     marginHorizontal: 10,
     shadowColor: '#000',
     shadowRadius: 5,
     shadowOpacity: 0.3,
-    shadowOffset: {x: 2, y: 4},
+    shadowOffset: {x: 2, y: 2},
     height: SCREEN_HEIGHT / 10,
     width: CARD_WIDTH,
     overflow: 'hidden',
     borderRadius: 8,
-    border: 0.5,
+    border: 0.6,
   },
   footerContainer: {
     backgroundColor: '#fff',
+  },
+  inputContainer: {
+    top: STATUSBAR_HEIGHT,
+    position: 'absolute',
+    width: SCREEN_WIDTH,
+  },
+  inputWrapper: {
+    marginLeft: 2,
+    marginRight: 2,
+    marginTop: 2,
+    backgroundColor: '#fff',
+    opacity: 0.9,
+    borderRadius: 8,
   },
 };
 
