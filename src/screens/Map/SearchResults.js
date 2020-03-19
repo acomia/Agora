@@ -5,14 +5,14 @@ import {View, List, ListItem, Left, Body} from 'native-base';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 
-export const SearchResult = ({data}) => {
+export const SearchResult = ({data, selectedSearch}) => {
   return (
     <View style={styles.searchResultsWrapper}>
       <List
         dataArray={data}
         renderRow={item => (
           <View>
-            <ListItem button avatar>
+            <ListItem onPress={() => selectedSearch(item)} button avatar>
               <Left style={styles.leftContainer}>
                 <Icon style={styles.leftIcon} name="location-on" />
               </Left>

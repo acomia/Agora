@@ -69,7 +69,7 @@ const styles = {
     alignItems: 'center',
     padding: 20,
     elevation: 2,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(0,0,0,.61)',
     marginHorizontal: 10,
     shadowColor: '#000',
     shadowRadius: 5,
