@@ -27,6 +27,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
 import Dialog from 'react-native-dialog';
+import Spinner from 'react-native-spinkit';
 
 export default class SideBar extends React.Component {
   state = {
@@ -42,7 +43,7 @@ export default class SideBar extends React.Component {
   };
 
   handleCancel = () => {
-    console.log('click cancel');
+    console.log("Oops",'click cancel');
     this.setState({dialogVisible: false});
   };
 
@@ -50,12 +51,12 @@ export default class SideBar extends React.Component {
     console.log('mobileNumber: ' + this.state.mobileNumber);
 
     if (this.state.mobileNumber === '') {
-      alert('Please provide mobile number!');
+      Alert.alert("Oops",'Please provide mobile number!');
       return;
     }
 
     if (this.state.mobileNumber.length < 10) {
-      alert('Please input a valid number!');
+      Alert.alert("Oops",'Please input a valid number!');
       return;
     }
 
@@ -76,15 +77,20 @@ export default class SideBar extends React.Component {
 
   //Get Token from Medgate
   postMedgateToken() {
+
+    this.setState({
+      isLoading: true,
+    });
+
     var details = {
       grantType: 'clientCredentials',
       // test
-      // clientId: '1886D070-DC43-435E-94BD-56581D7097B7',
-      // clientSecret: '111E76AE-7F6D-4924-8095-083300DFC7D0',
-
-      // live
       clientId: '1886D070-DC43-435E-94BD-56581D7097B7',
       clientSecret: '111E76AE-7F6D-4924-8095-083300DFC7D0',
+
+      // live
+      // clientId: '1886D070-DC43-435E-94BD-56581D7097B7',
+      // clientSecret: '111E76AE-7F6D-4924-8095-083300DFC7D0',
     };
 
     var formBody = [];
@@ -98,10 +104,10 @@ export default class SideBar extends React.Component {
 
     fetch(
       // test
-      // 'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
+      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
 
-      // live
-      'https://scheduling.medgatephilippines.com/CallbackRequestService/Token',
+      // live2
+      // 'https://scheduling.medgatephilippines.com/CallbackRequestService/Token',
       {
         method: 'POST',
         headers: {
@@ -117,25 +123,35 @@ export default class SideBar extends React.Component {
           accessToken: responseData.accessToken,
           tokenType: responseData.tokenType,
           expiresIn: responseData.expiresIn,
+          isLoading: false
         });
         console.log('authentication');
         console.log('accessToken:' + this.state.accessToken);
         console.log('tokenType:' + this.state.tokenType);
-        console.log('expiresIn:' + this.state.expiresIn);
+        console.log('expiresIn:' + this.state.expiresIn);  
       })
       .catch(error => {
-        alert('Error!' + error);
+        this.setState({
+          isLoading: false,
+        });
+        Alert.alert('Error!' + error);
       });
   }
 
   //Medgate Callback Request
   getMedgateCallbackRequest() {
+    
+    this.setState({
+      isLoading: true,
+    });
+
     fetch(
+
       // test
-      // 'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
 
       // live
-      'https://scheduling.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+      // 'https://scheduling.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
         this.state.mobileNumber +
         '&provider=Intellicare',
       {
@@ -150,22 +166,32 @@ export default class SideBar extends React.Component {
         console.log('callback request');
         console.log('token: ' + this.state.accessToken);
         console.log(responseData);
-
+        this.setState({
+          isLoading: false,
+        });
         if (responseData.isSuccess) alert(responseData.data);
         else {
           if (responseData.error['code']) {
             if (responseData.error['code'] == '500')
-              alert('You already scheduled a callback earlier.');
+            Alert.alert("Oops",'You already scheduled a callback earlier.');
             else if ((responseData.error['code'] = '400'))
-              alert(responseData.error['message']);
-            else alert('Invalid request. Try again.');
-          } else alert('Communication error.');
+            Alert.alert(responseData.error['message']);
+            else  Alert.alert("Oops",'Invalid request. Try again.');
+          } else  Alert.alert("Oops",'Communication error.');
+
+          this.setState({
+            isLoading: false,
+          });
+
         }
-        4;
+        ;
       })
       .catch(error => {
         //alert('Error!' + error);
-        alert('Unable to contact Medgate server.');
+        this.setState({
+          isLoading: false,
+        });
+        Alert.alert("Oops",'Unable to contact Medgate server.');
       });
   }
 
@@ -174,6 +200,8 @@ export default class SideBar extends React.Component {
   }
 
   render() {
+    const {spinnerStyle} = styles;
+
     return (
       <Container style={styles.container}>
         <StatusBar translucent backgroundColor="transparent" />
@@ -310,6 +338,13 @@ export default class SideBar extends React.Component {
             </Text>
           </View> */}
         </ScrollView>
+        {
+          this.state.isLoading && (
+            <View style={spinnerStyle}>
+              <Spinner color={'#4287f5'} size={60} type={'ThreeBounce'} />
+            </View>
+          )
+        }
       </Container>
     );
   }
@@ -396,5 +431,16 @@ const styles = StyleSheet.create({
     color: '#2d2d2d',
     textAlign: 'center',
     fontSize: 12,
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 });
