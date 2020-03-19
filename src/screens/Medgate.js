@@ -59,7 +59,7 @@ export default class SideBar extends React.Component {
       Alert.alert("Oops",'Please input a valid number!');
       return;
     }
-
+ 
     this.postMedgateToken();
     this.getMedgateCallbackRequest();
 

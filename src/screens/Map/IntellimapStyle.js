@@ -7,9 +7,9 @@ const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getSta
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    position: 'relative',
+    justifyContent: 'center',
+    alignItems: 'center',
+    // position: 'relative',
   },
   map: {
     ...StyleSheet.absoluteFillObject,
@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   searchBarContainerStyle: {
-    top: STATUSBAR_HEIGHT,
+    // top: STATUSBAR_HEIGHT,
     width: SCREEN_WIDTH,
     height: 40,
     backgroundColor: 'transparent',
@@ -145,6 +145,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
     color: '#fff',
+  },
+  markerDetailsContainer: {
+    flex: 1,
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'absolute',
+    bottom: 50,
+    right: 10,
+    left: 10,
+    backgroundColor: 'transparent',
   },
 });
 

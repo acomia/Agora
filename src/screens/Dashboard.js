@@ -23,14 +23,12 @@ import {
   Thumbnail,
   Label,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import { DrawerActions } from 'react-navigation-drawer';
+import {DrawerActions} from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
-
-
 
 const MEMB_NAME = 'memb_name';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
@@ -53,14 +51,14 @@ export default class Dashboard extends React.Component {
 
   async componentWillMount() {
     let membname = await AsyncStorage.getItem(MEMB_NAME);
-    this.setState({ fname: membname });
+    this.setState({fname: membname});
   }
 
   render() {
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
 
     return (
-      <Container style={{ display: 'flex', flex: 1, backgroundColor: '#f5f5f5' }}>
+      <Container style={{display: 'flex', flex: 1, backgroundColor: '#f5f5f5'}}>
         <StatusBar
           translucent
           backgroundColor="transparent"
@@ -94,13 +92,13 @@ export default class Dashboard extends React.Component {
             <Text style={styles.WelcomeheaderTitle}>
               Hello, {this.state.fname}!
             </Text>
-            <Text style={{ color: '#6d6e72', fontSize: 14 }}>
+            <Text style={{color: '#6d6e72', fontSize: 14}}>
               How are you doing today? We hope you're having a great one!
             </Text>
           </View>
           <View style={styles.MenucontentStyle}>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 1 }}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
                 <TouchableNativeFeedback
                   //onPress={() => this.props.navigation.navigate('MembersPage')}>
                   onPress={() => this.checkConnectivity('MembersPage')}>
@@ -121,7 +119,7 @@ export default class Dashboard extends React.Component {
                   </Card>
                 </TouchableNativeFeedback>
               </View>
-              <View style={{ flex: 1 }}>
+              <View style={{flex: 1}}>
                 <TouchableNativeFeedback
                   onPress={() =>
                     this.props.navigation.navigate('DoctorSearchNavigation')
@@ -144,11 +142,11 @@ export default class Dashboard extends React.Component {
                 </TouchableNativeFeedback>
               </View>
             </View>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flex: 1 }}>
+            <View style={{flexDirection: 'row'}}>
+              <View style={{flex: 1}}>
                 <TouchableNativeFeedback
-                  onPress={() =>
-                    this.setState({ visibleModal: true })
+                  onPress={
+                    () => this.setState({visibleModal: true})
                     // this.props.navigation.navigate('ERCS1LandingPage')
                   }>
                   <Card transparent>
@@ -170,7 +168,7 @@ export default class Dashboard extends React.Component {
                   </Card>
                 </TouchableNativeFeedback>
               </View>
-              <View style={{ flex: 1 }}>
+              <View style={{flex: 1}}>
                 <TouchableNativeFeedback
                   onPress={() =>
                     this.props.navigation.navigate('ERCS2LandingPage')
@@ -202,10 +200,8 @@ export default class Dashboard extends React.Component {
                     source={require('../../assets/images/map.png')}
                     resizeMode="contain"
                   />
-                  <Body style={{ marginLeft: 15 }}>
-                    <Text style={styles.cardMenuTextIntellimap}>
-                      Intellimap
-                    </Text>
+                  <Body style={{marginLeft: 15}}>
+                    <Text style={styles.cardMenuTextIntellimap}>Agora Map</Text>
                     <Text style={styles.cardMenuText1}>
                       Search for our Accredited Hospitals, Diagnostic and
                       Specialty Clinics, and Dental Clinics without leaving the
@@ -213,9 +209,7 @@ export default class Dashboard extends React.Component {
                     </Text>
                     <Text
                       style={styles.textSearchNow}
-                      onPress={() =>
-                        this.props.navigation.navigate('IntellimapPage')
-                      }>
+                      onPress={() => this.props.navigation.navigate('MapPage')}>
                       Search now
                     </Text>
                   </Body>
@@ -230,7 +224,7 @@ export default class Dashboard extends React.Component {
                     source={require('../../assets/images/medgate.png')}
                     resizeMode="contain"
                   />
-                  <Body style={{ marginLeft: 15 }}>
+                  <Body style={{marginLeft: 15}}>
                     <Text
                       style={{
                         color: '#258bf5',
@@ -253,7 +247,7 @@ export default class Dashboard extends React.Component {
                       <Icon
                         type="Ionicons"
                         name="ios-call"
-                        style={{ color: '#258bf5' }}
+                        style={{color: '#258bf5'}}
                       />
                       <Text style={styles.cardButtonText}>
                         Call a Doctor now
@@ -281,28 +275,30 @@ export default class Dashboard extends React.Component {
     return (
       <View style={styles.Pncontainer}>
         {/* <Text style={styles.pnTitle}>MEDGATE</Text> */}
-        <Thumbnail 
-        style={{width: 100,height: 110, alignSelf: 'center', paddingHorizontal: 140}}
+        <Thumbnail
+          style={{
+            width: 100,
+            height: 110,
+            alignSelf: 'center',
+            paddingHorizontal: 140,
+          }}
           source={require('../../assets/images/medgatelogo.png')}
           resizeMode="contain"
         />
-        <ScrollView
-          style={styles.tcContainer}
-        >
-          <Text style={{ fontWeight: 'bold', marginTop: 5 }}>
+        <ScrollView style={styles.tcContainer}>
+          <Text style={{fontWeight: 'bold', marginTop: 5}}>
             What is Medgate?
           </Text>
 
           <Text style={styles.pnP}>
-            Medgate is the leading international provider of telemedicine which offers high-quality, convenient, and confidential
-          medical consultations over the phone for non-emergency cases. {' '}
+            Medgate is the leading international provider of telemedicine which
+            offers high-quality, convenient, and confidential medical
+            consultations over the phone for non-emergency cases.{' '}
           </Text>
-
         </ScrollView>
         <TouchableOpacity
           onPress={() => this.gotoMedgate()}
-          style={styles.pnButton}
-        >
+          style={styles.pnButton}>
           <Icon
             type="SimpleLineIcons"
             name="earphones-alt"
@@ -312,27 +308,24 @@ export default class Dashboard extends React.Component {
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => this.goToERC1()}
-          style={styles.pnButtonDisabled}
-        >
-          <Text style={styles.pnButtonLabel}>Continue request for eConsultation...</Text>
+          style={styles.pnButtonDisabled}>
+          <Text style={styles.pnButtonLabel}>
+            Continue request for eConsultation...
+          </Text>
         </TouchableOpacity>
       </View>
     );
   }
 
   gotoMedgate() {
-    this.setState({ visibleModal: false })
-    this.props.navigation.navigate('MedgatePage')
+    this.setState({visibleModal: false});
+    this.props.navigation.navigate('MedgatePage');
   }
-
 
   goToERC1() {
-    this.setState({ visibleModal: false })
-    this.props.navigation.navigate('ERCS1LandingPage')
+    this.setState({visibleModal: false});
+    this.props.navigation.navigate('ERCS1LandingPage');
   }
-
-
-
 
   checkConnectivity(screen) {
     NetInfo.fetch().then(state => {
@@ -346,10 +339,9 @@ export default class Dashboard extends React.Component {
       }
     });
   }
-
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -377,7 +369,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: { width: 1, height: 5 },
+    shadowOffset: {width: 1, height: 5},
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -441,7 +433,7 @@ const styles = StyleSheet.create({
   cardStyle: {
     borderRadius: 20,
     shadowColor: '#2d2d2d',
-    shadowOffset: { width: 1, height: 5 },
+    shadowOffset: {width: 1, height: 5},
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -452,7 +444,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     shadowColor: '#f5f5f5',
-    shadowOffset: { width: 5, height: 10 },
+    shadowOffset: {width: 5, height: 10},
     shadowOpacity: 0.2,
     shadowRadius: 20,
     elevation: 2,
@@ -463,7 +455,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 5,
     shadowColor: '#f5f5f5',
-    shadowOffset: { width: 1, height: 5 },
+    shadowOffset: {width: 1, height: 5},
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 2,
@@ -600,10 +592,4 @@ const styles = StyleSheet.create({
     marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
     alignSelf: 'center',
   },
-
-
-
-
-
-
 });

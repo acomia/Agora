@@ -74,16 +74,16 @@ export default class ApprovedUtil extends React.Component {
   //     }
   // }
 
-  showAlert = () =>{
-    Alert.alert(
-      'Oops!',
-      'Approved Utilization Empty',
-      [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
-      {cancelable: false},
-    );
-  }
+  // showAlert = () =>{
+  //   Alert.alert(
+  //     'Oops!',
+  //     'Approved Utilization Empty',
+  //     [
+  //       {text: 'OK', onPress: () => console.log('OK Pressed')},
+  //     ],
+  //     {cancelable: false},
+  //   );
+  // }
 
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
@@ -118,7 +118,7 @@ export default class ApprovedUtil extends React.Component {
           } else {
             this.setState({ isLoading: false })
             this.setState({ refreshing: false })
-            this.showAlert()
+            // this.showAlert()
             this.props.navigation.navigate('Membinfo')
           }
         });

@@ -63,11 +63,13 @@ export default class OnBoarding extends React.Component {
               <View style={{flexDirection: 'row'}}>
                 <Image
                   source={require('../../assets/images/intellicare-logo-white.png')}
-                  style={styles.logoStyle} resizeMode='contain'
+                  style={styles.logoStyle}
+                  resizeMode="contain"
                 />
                 <Image
                   source={require('../../assets/images/avega-logo-white.png')}
-                  style={styles.logoStyle} resizeMode='contain'
+                  style={styles.logoStyle}
+                  resizeMode="contain"
                 />
               </View>
 
@@ -147,10 +149,8 @@ export default class OnBoarding extends React.Component {
                       iconRight
                       rounded
                       style={styles.cardButtonIntellimap}
-                      onPress={() =>
-                        this.props.navigation.navigate('IntellimapPage')
-                      }>
-                      <Text style={styles.cardButtonText}>Intellimap</Text>
+                      onPress={() => this.props.navigation.navigate('MapPage')}>
+                      <Text style={styles.cardButtonText}>Map</Text>
                       <Icon type="Ionicons" name="ios-arrow-forward" />
                     </Button>
                   </Body>
@@ -221,7 +221,7 @@ const styles = StyleSheet.create({
     height: 80,
     width: 120,
     flex: 1,
-    marginBottom: 20
+    marginBottom: 20,
   },
   buttonContainer: {
     flexDirection: 'row',
@@ -236,12 +236,12 @@ const styles = StyleSheet.create({
   textButtonSignIn: {
     color: '#fff',
     fontWeight: 'bold',
-    textAlign: 'center'
+    textAlign: 'center',
   },
   buttonCreateAccount: {
     flex: 1,
     margin: 5,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   textButtonCreateAccount: {
     color: '#5fb650',

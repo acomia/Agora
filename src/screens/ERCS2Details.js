@@ -6,6 +6,8 @@ import {
   StatusBar,
   FlatList,
   Dimensions,
+  Image,
+  TouchableNativeFeedback
 } from 'react-native';
 import {
   Button,
@@ -17,6 +19,7 @@ import {
   Icon,
   Container,
   Thumbnail,
+  Body,
 } from 'native-base';
 import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -55,7 +58,6 @@ export default class ERCS2Details extends React.Component {
       apprvl_code: '',
       membname: '',
       visibleModal: false,
-      img_uri: '../../assets/images/nav-coordinator.png',
     };
   }
 
@@ -200,7 +202,6 @@ export default class ERCS2Details extends React.Component {
         this.props.navigation.goBack();
       });
   }
-
   async _sendemail() {
     <ActivityIndicator size="small" color="white" />;
     const { navigation } = this.props;
@@ -238,27 +239,53 @@ export default class ERCS2Details extends React.Component {
       });
   }
 
-  _getImage = async item => {
-    //console.log('itemimage', item)
-    let resp = await fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/filepathtoimage',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer' + global.storeToken,
-          ImagePath: item.file_path,
-        },
-      },
-    );
-    let respBlob = await resp.blob();
-    let reader = new FileReader();
-    reader.readAsDataURL(respBlob);
+  // _getImage = async item => {
+  //   //console.log('itemimage', item)
+  //   let resp = await fetch(
+  //     'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/filepathtoimage',
+  //     {
+  //       method: 'GET',
+  //       headers: {
+  //         Authorization: 'Bearer ' + global.storeToken,
+  //         ImagePath: item.file_path,
+  //       },
+  //     },
+  //   );
+  //   let respBlob = await resp.blob();
+  //   let reader = new FileReader();
+  //   reader.readAsDataURL(respBlob);
 
-    reader.onload = () => {
-      this.setState({ img_uri: reader.result });
-      //console.log('imagedone', this.state.img_uri)
-    };
-  };
+  //   reader.onload = () => {
+  //     this.setState({ img_uri: reader.result });
+  //     console.log('imagedone', this.state.img_uri)
+  //   };
+
+  //   // <TouchableOpacity>
+
+  //   // </TouchableOpacity>
+
+  // };
+
+  // renderItem = ({ item }) => {
+  //   return (
+  //     // <TouchableOpacity>
+  //     this._getImage(item),
+  //     <List style={styles.listStyle}>
+  //       <View style={{ flex: 1, flexDirection: 'row' }}>
+  //         <Text
+  //           style={{
+  //             color: '#c4c4c4',
+  //             textAlign: 'center',
+  //             justifyContent: 'center',
+  //           }}>
+  //           {item.file_name}
+  //         </Text>
+  //         <Thumbnail large style={{ alignSelf: "center" }} source={{ uri: this.state.img_uri }} resizeMode='contain' />
+  //       </View>
+  //     </List>
+  //     // </TouchableOpacity>
+  //   );
+  // };
 
   render() {
     const {
@@ -515,63 +542,60 @@ export default class ERCS2Details extends React.Component {
                 </View>
               </View>
             )}
-            {console.log('testnewdata', NewData)}
-           {NewData.length <= 0 ? null : (
-            
+          {NewData.length <= 0 ? null : (
             <View style={styles.viewOtherDetails}>
-            
-                <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
-                <View>
-                  <FlatList
-                    roundAvatar
-                    data={this.state.dataDisApprvdProcSource}
-                    renderItem={({ item }) => (
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          paddingLeft: 10,
-                          margin: 2,
-                        }}>
-                        <Text style={styles.procedureListTextStyle}>
-                          {item.procedure_name}
-                        </Text>
-                        {/* {item.status === 'D' ? (
+              <Text style={styles.cardTitle}>DISAPPROVED PROCEDURES</Text>
+              <View>
+                <FlatList
+                  roundAvatar
+                  data={this.state.dataDisApprvdProcSource}
+                  renderItem={({ item }) => (
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        paddingLeft: 10,
+                        margin: 2,
+                      }}>
+                      <Text style={styles.procedureListTextStyle}>
+                        {item.procedure_name}
+                      </Text>
+                      {/* {item.status === 'D' ? (
                         <Text style={styles.procedureListTextStyle}>
                           {item.procedure_name}
                         </Text>
                       ) : null} */}
-                      </View>
-                    )}
-                    keyExtractor={item => item.procedure_id}
-                  />
-                </View>
-                <View style={styles.divider} />
-                <View>
-                  <Left />
-                  <Right style={{ alignSelf: 'flex-end' }}>
-                    <Button
-                      light
-                      // disabled={xstatus = 'Approved' && NewData.length > 0 ? false : true}
-                      style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
-                      onPress={() =>
-                        this.props.navigation.navigate(
-                          'ERCS2DisapprovedProcedurePage',
-                          {
-                            procstatus: this.state.dataSource.status,
-                            procappvdby: this.state.dataSource.approve_by,
-                            procappvddate: this.state.dataSource.approve_date,
-                            procremarks: this.state.dataSource.remarks,
-                            procdata: this.state.dataDisApprvdProcSource,
-                          },
-                        )
-                      }>
-                      <Text style={styles.buttonChangeDetails}>
-                        Check Details
+                    </View>
+                  )}
+                  keyExtractor={item => item.procedure_id}
+                />
+              </View>
+              <View style={styles.divider} />
+              <View>
+                <Left />
+                <Right style={{ alignSelf: 'flex-end' }}>
+                  <Button
+                    light
+                    // disabled={xstatus = 'Approved' && NewData.length > 0 ? false : true}
+                    style={{ margin: 10, elevation: 0, shadowOpacity: 0 }}
+                    onPress={() =>
+                      this.props.navigation.navigate(
+                        'ERCS2DisapprovedProcedurePage',
+                        {
+                          procstatus: this.state.dataSource.status,
+                          procappvdby: this.state.dataSource.approve_by,
+                          procappvddate: this.state.dataSource.approve_date,
+                          procremarks: this.state.dataSource.remarks,
+                          procdata: this.state.dataDisApprvdProcSource,
+                        },
+                      )
+                    }>
+                    <Text style={styles.buttonChangeDetails}>
+                      Check Details
                     </Text>
-                    </Button>
-                  </Right>
-                </View>
-           </View>
+                  </Button>
+                </Right>
+              </View>
+            </View>
           )}
           {xstatus === 'Cancelled' ||
             xstatus === 'Pending' ||
@@ -588,12 +612,11 @@ export default class ERCS2Details extends React.Component {
             )}
           <View style={styles.viewOtherDetails}>
             <Text style={styles.cardTitle}>UPLOADED REQUIREMENTS</Text>
-            <View>
-              <FlatList
-                roundAvatar
-                data={this.state.dataDocSource}
-                renderItem={({ item }) => (
-                  this._getImage(item),
+            <FlatList
+              contentContainerStyle={{ alignSelf: 'stretch' }}
+              data={this.state.dataDocSource}
+              renderItem={({ item }) => (
+                <View>
                   <Text
                     style={{
                       color: '#c4c4c4',
@@ -601,17 +624,17 @@ export default class ERCS2Details extends React.Component {
                       justifyContent: 'center',
                     }}>
                     {item.file_name}
-                    <Thumbnail
-                      large
-                      scaleX={3} scaleY={3} style={{ margin: 30 }}
-                      source={{ uri: this.state.img_uri }}
-                      resizeMode='contain'
-                    />
                   </Text>
-                )}
-                keyExtractor={item => item.record_id}
-              />
-            </View>
+                </View>
+              )}
+              keyExtractor={item => item.record_id}
+
+            />
+            {/* <View>
+              <List style={styles.listStyle}>
+                <Thumbnail large style={{ alignSelf: "center" }} source={{ uri: this.state.img_uri }} resizeMode='contain' />
+              </List>
+            </View> */}
           </View>
           <View style={styles.viewButton}>
             <Button

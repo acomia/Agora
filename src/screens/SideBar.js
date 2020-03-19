@@ -73,14 +73,14 @@ export default class SideBar extends React.Component {
     this.setState({username: user_name, oldpw: old_pw});
   }
   async deleteToken() {
-    const mapData = ['hospitalData', 'clinicData']
+    const mapData = ['hospitalData', 'clinicData'];
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
       await AsyncStorage.removeItem(MEMBER_ID);
       await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
       await AsyncStorage.removeItem(MEMB_NAME);
       await AsyncStorage.removeItem(MEMB_EMAIL);
-      await AsyncStorage.multiRemove(mapData)
+      await AsyncStorage.multiRemove(mapData);
       this.props.navigation.dispatch(resetAction);
     } catch {
       console.log('Something went wrong');
@@ -200,7 +200,7 @@ export default class SideBar extends React.Component {
           </ListItem>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback
-          onPress={() => this.props.navigation.navigate('IntellimapPage')}>
+          onPress={() => this.props.navigation.navigate('MapPage')}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
               {/* <Icon type="MaterialCommunityIcons" name="headset" /> */}
@@ -210,7 +210,7 @@ export default class SideBar extends React.Component {
                 style={styles.navStyle}></Thumbnail>
             </Left>
             <Body style={styles.listLabel}>
-              <Text style={styles.listStyle}>Intellimap</Text>
+              <Text style={styles.listStyle}>Agora Map</Text>
             </Body>
           </ListItem>
         </TouchableNativeFeedback>
@@ -226,6 +226,21 @@ export default class SideBar extends React.Component {
             </Left>
             <Body style={styles.listLabel}>
               <Text style={styles.listStyle}>Medgate</Text>
+            </Body>
+          </ListItem>
+        </TouchableNativeFeedback>
+        <TouchableNativeFeedback
+          onPress={() => this.props.navigation.navigate('PrivacyPolicyPage')}>
+          <ListItem icon style={styles.listItemStyle}>
+            <Left>
+              {/* <Icon type="MaterialCommunityIcons" name="headset" /> */}
+              <Thumbnail
+                source={require('../../assets/images/sidebar-nav/privacy.png')}
+                resizeMode="contain"
+                style={styles.navStyle}></Thumbnail>
+            </Left>
+            <Body style={styles.listLabel}>
+              <Text style={styles.listStyle}>Privacy Policy</Text>
             </Body>
           </ListItem>
         </TouchableNativeFeedback>
