@@ -630,11 +630,11 @@ export default class ERCS2Details extends React.Component {
               keyExtractor={item => item.record_id}
 
             />
-            <View>
+            {/* <View>
               <List style={styles.listStyle}>
                 <Thumbnail large style={{ alignSelf: "center" }} source={{ uri: this.state.img_uri }} resizeMode='contain' />
               </List>
-            </View>
+            </View> */}
           </View>
           <View style={styles.viewButton}>
             <Button
