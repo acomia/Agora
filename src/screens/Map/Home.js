@@ -170,9 +170,16 @@ class Home extends React.Component {
       console.log(error);
     }
   }
-  SearchFilterFunction = text => {
+  searchFilter = text => {
     if (text === '') {
-      this.setState({search_data: []});
+      const temparray = this.state.coordinates;
+      console.log(temparray);
+      temparray.splice(1, 1);
+      this.setState({
+        search_data: [],
+        carousel_coordinates: [],
+        coordinates: temparray,
+      });
     } else {
       let newData = this.search_holder.filter(item => {
         const itemData = `${item.hospital_name.toUpperCase()} ${item.city_prov.toUpperCase()} ${item.hospital_code.toUpperCase()}`;
@@ -183,8 +190,27 @@ class Home extends React.Component {
         search_data: newData,
       });
     }
-
-    console.log(this.state.search_data);
+  };
+  selectedSearch = selected => {
+    this.map.animateToRegion({
+      latitude: Number(selected.latitudes),
+      longitude: Number(selected.longitudes),
+      latitudeDelta: this.state.region.latitudeDelta,
+      longitudeDelta: this.state.region.longitudeDelta,
+    });
+    this.setState({
+      carousel_coordinates: [selected],
+      imgSrc: require('../../../assets/images/hospital_img.png'),
+      search_data: [],
+      coordinates: [
+        ...this.state.coordinates,
+        {
+          latitude: Number(selected.latitudes),
+          longitude: Number(selected.longitudes),
+        },
+      ],
+    });
+    console.log(this.state);
   };
   showExploreComponent = () => {
     Animated.spring(this.state.exploreFooterHeight, {
@@ -395,9 +421,12 @@ class Home extends React.Component {
                 resetOnChange={false}
               />
             </MapView>
-            <SearchBox searchTerm={this.SearchFilterFunction} />
+            <SearchBox searchTerm={this.searchFilter} />
             {search_data.length > 0 ? (
-              <SearchResults data={search_data} />
+              <SearchResults
+                data={search_data}
+                selectedSearch={this.selectedSearch}
+              />
             ) : null}
             <Carousel
               ref={c => {
