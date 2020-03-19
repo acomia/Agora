@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableNativeFeedback,
   StatusBar,
+  TouchableOpacity,
 } from 'react-native';
 import {
   Container,
@@ -23,12 +24,15 @@ import {
   Label,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
+import Modal from 'react-native-modal';
 import SwiperFlatList from 'react-native-swiper-flatlist';
 import {DrawerActions} from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 
 const MEMB_NAME = 'memb_name';
+const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
+const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
 
 NetInfo.fetch().then(state => {
   console.log('Connection type', state.type);
@@ -40,6 +44,8 @@ export default class Dashboard extends React.Component {
     super(props);
     this.state = {
       fname: '',
+      visibleModal: false,
+      accepted: false,
     };
   }
 
@@ -47,6 +53,7 @@ export default class Dashboard extends React.Component {
     let membname = await AsyncStorage.getItem(MEMB_NAME);
     this.setState({fname: membname});
   }
+
   render() {
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
 
@@ -103,7 +110,6 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
-                          small
                           source={require('../../assets/images/menu-members.png')}
                           resizeMode="contain"
                         />
@@ -126,13 +132,10 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
-                          small
                           source={require('../../assets/images/menu-provider.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>
-                          Doctors & Dentists
-                        </Text>
+                        <Text style={styles.cardMenuText}>Providers</Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -142,8 +145,9 @@ export default class Dashboard extends React.Component {
             <View style={{flexDirection: 'row'}}>
               <View style={{flex: 1}}>
                 <TouchableNativeFeedback
-                  onPress={() =>
-                    this.props.navigation.navigate('ERCS1LandingPage')
+                  onPress={
+                    () => this.setState({visibleModal: true})
+                    // this.props.navigation.navigate('ERCS1LandingPage')
                   }>
                   <Card transparent>
                     <CardItem style={[styles.cardMenuStyle]}>
@@ -153,7 +157,6 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
-                          small
                           source={require('../../assets/images/menu-consultation.png')}
                           resizeMode="contain"
                         />
@@ -178,7 +181,6 @@ export default class Dashboard extends React.Component {
                           alignItems: 'center',
                         }}>
                         <Thumbnail
-                          small
                           source={require('../../assets/images/menu-diagnostics.png')}
                           resizeMode="contain"
                         />
@@ -191,53 +193,7 @@ export default class Dashboard extends React.Component {
                 </TouchableNativeFeedback>
               </View>
             </View>
-
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
-                <TouchableNativeFeedback
-                  onPress={() => this.props.navigation.navigate('MapPage')}>
-                  <Card transparent>
-                    <CardItem style={[styles.cardMenuStyle]}>
-                      <Body
-                        style={{
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Thumbnail
-                          small
-                          source={require('../../assets/images/menu-intellimap.png')}
-                          resizeMode="contain"
-                        />
-                        <Text style={styles.cardMenuText}>Map</Text>
-                      </Body>
-                    </CardItem>
-                  </Card>
-                </TouchableNativeFeedback>
-              </View>
-              <View style={{flex: 1}}>
-                <TouchableNativeFeedback
-                  onPress={() => this.props.navigation.navigate('MedgatePage')}>
-                  <Card transparent>
-                    <CardItem style={[styles.cardMenuStyle]}>
-                      <Body
-                        style={{
-                          justifyContent: 'center',
-                          alignItems: 'center',
-                        }}>
-                        <Thumbnail
-                          small
-                          source={require('../../assets/images/menu-diagnostics.png')}
-                          resizeMode="contain"
-                        />
-                        <Text style={styles.cardMenuText}>Medgate</Text>
-                      </Body>
-                    </CardItem>
-                  </Card>
-                </TouchableNativeFeedback>
-              </View>
-            </View>
-
-            {/* <Card transparent>
+            <Card transparent>
               <CardItem style={[styles.cardMenuStyle1]}>
                 <Left>
                   <Thumbnail
@@ -255,9 +211,7 @@ export default class Dashboard extends React.Component {
                     </Text>
                     <Text
                       style={styles.textSearchNow}
-                      onPress={() =>
-                        this.props.navigation.navigate('IntellimapPage')
-                      }>
+                      onPress={() => this.props.navigation.navigate('MapPage')}>
                       Search now
                     </Text>
                   </Body>
@@ -304,11 +258,75 @@ export default class Dashboard extends React.Component {
                   </Body>
                 </Left>
               </CardItem>
-            </Card> */}
+            </Card>
           </View>
         </ScrollView>
+        <Modal
+          isVisible={this.state.visibleModal}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={1000}
+          backdropTransitionOutTiming={1000}>
+          {this.renderMedgateModal()}
+        </Modal>
       </Container>
     );
+  }
+
+  renderMedgateModal() {
+    return (
+      <View style={styles.Pncontainer}>
+        {/* <Text style={styles.pnTitle}>MEDGATE</Text> */}
+        <Thumbnail
+          style={{
+            width: 100,
+            height: 110,
+            alignSelf: 'center',
+            paddingHorizontal: 140,
+          }}
+          source={require('../../assets/images/medgatelogo.png')}
+          resizeMode="contain"
+        />
+        <ScrollView style={styles.tcContainer}>
+          <Text style={{fontWeight: 'bold', marginTop: 5}}>
+            What is Medgate?
+          </Text>
+
+          <Text style={styles.pnP}>
+            Medgate is the leading international provider of telemedicine which
+            offers high-quality, convenient, and confidential medical
+            consultations over the phone for non-emergency cases.{' '}
+          </Text>
+        </ScrollView>
+        <TouchableOpacity
+          onPress={() => this.gotoMedgate()}
+          style={styles.pnButton}>
+          <Icon
+            type="SimpleLineIcons"
+            name="earphones-alt"
+            style={styles.cardIconStyleMedgate}
+          />
+          <Text style={styles.pnButtonLabel}>Try Tele-consultation now</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.goToERC1()}
+          style={styles.pnButtonDisabled}>
+          <Text style={styles.pnButtonLabel}>
+            Continue request for eConsultation...
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  gotoMedgate() {
+    this.setState({visibleModal: false});
+    this.props.navigation.navigate('MedgatePage');
+  }
+
+  goToERC1() {
+    this.setState({visibleModal: false});
+    this.props.navigation.navigate('ERCS1LandingPage');
   }
 
   checkConnectivity(screen) {
@@ -346,7 +364,7 @@ const styles = StyleSheet.create({
     color: '#5fb650',
   },
   contentStyle: {
-    marginHorizontal: 40,
+    marginHorizontal: 20,
     padding: 20,
     marginTop: -40,
     backgroundColor: '#fff',
@@ -361,12 +379,12 @@ const styles = StyleSheet.create({
   },
   MenucontentStyle: {
     flex: 1,
-    marginVertical: 10,
-    marginHorizontal: 40,
+    marginVertical: 20,
+    marginHorizontal: 20,
   },
   scrollViewBackground: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#f5f5f5',
   },
   headerStyle: {
     paddingTop: 50,
@@ -424,15 +442,14 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
   cardMenuStyle: {
-    height: 180,
-    marginTop: 5,
-    marginHorizontal: 5,
+    height: 150,
+    margin: 5,
     borderRadius: 10,
-    shadowColor: '#fff',
-    shadowOffset: {width: 0, height: 20},
-    shadowOpacity: 0.1,
-    shadowRadius: 50,
-    elevation: 10,
+    shadowColor: '#f5f5f5',
+    shadowOffset: {width: 5, height: 10},
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 2,
     borderWidth: 0,
     justifyContent: 'center',
   },
@@ -459,7 +476,7 @@ const styles = StyleSheet.create({
   },
   cardMenuTextIntellimap: {
     color: '#5fb650',
-    fontSize: 14,
+    fontSize: 20,
     fontWeight: 'bold',
   },
   textSearchNow: {
@@ -516,5 +533,65 @@ const styles = StyleSheet.create({
   },
   backgroundImage: {
     resizeMode: 'contain',
+  },
+
+  Pncontainer: {
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginTop: 20,
+    // marginLeft: 10,
+    // marginRight: 10,
+    padding: 16,
+    borderRadius: 6,
+    backgroundColor: 'white',
+  },
+  pnTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    color: '#5fb650',
+  },
+  pnP: {
+    fontSize: 12,
+    padding: 5,
+  },
+  pnL: {
+    padding: 10,
+    fontSize: 12,
+  },
+  pnNL: {
+    fontSize: 12,
+    marginLeft: 10,
+    padding: 2,
+  },
+  pnContainer: {
+    marginTop: 15,
+    marginBottom: 15,
+    height: height * 0.7,
+    borderWidth: 0.5,
+  },
+  pnButton: {
+    backgroundColor: '#136AC7',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+  },
+  pnButtonDisabled: {
+    backgroundColor: '#999',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+  },
+  pnButtonLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  cardIconStyleMedgate: {
+    color: '#258bf5',
+    fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
+    marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
+    alignSelf: 'center',
   },
 });

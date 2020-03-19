@@ -75,7 +75,7 @@ export default class Login extends React.Component {
       mobile_no: '',
       password: '',
       confirm_password: '',
-      intellicare_no: '',
+      intellicare_no: ' ',
       intellicare_acct: '',
       valid_photo: null,
       intid_photo: null,
