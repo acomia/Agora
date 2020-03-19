@@ -42,6 +42,7 @@ import ERCS1Details from '../screens/ERCS1Details';
 import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
 import ERCSCancelRemarks from '../screens/ERCSCancelRemarks'
 import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks'
+import ERCS2AutoApproved from '../screens/ERCS2AutoApproved';
 
 const STATUSBAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight()
 
@@ -475,7 +476,13 @@ AppStack = createStackNavigator({
       },
       headerTintColor: '#fff',
     },
-  }
+  },
+  ERCS2AutoApproved: {
+    screen: ERCS2AutoApproved,
+    navigationOptions: {
+      header: null,
+    },
+  },
 });
 
 export default createAppContainer(AppStack);

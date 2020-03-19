@@ -80,6 +80,93 @@ export default class Login extends React.Component {
     }
   }
 
+async storeToken(accessToken)
+{
+    try
+    {
+        await AsyncStorage.setItem(ACCESS_TOKEN,accessToken);
+        this.getToken();
+    } catch(error)
+    {
+        console.log("CANT STORE TOKEN")
+    }
+}
+
+async getToken()
+{
+    try
+    {
+       let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
+       console.log("token is: "+ token);
+    } catch(error)
+    {
+        console.log("CANT GET TOKEN")
+    }
+}
+
+
+
+
+    render() {
+        return (
+            <ScrollView>
+                <Container>
+                    <ImageBackground source={require('../../assets/images/white-with-skin.jpg')} style={styles.backgroundImage}>
+                        <View style={styles.companyLogo}>
+                            <Image source={require('../../assets/images/intellicarelogo.png')} style={styles.imageStyle} resizeMode='contain' />
+                            <Label style={styles.fullertonLabel}>A Member of Fullerton Health</Label>
+                        </View>
+                        <View style={styles.loginForm}>
+                            <Form>
+                                <Item floatingLabel>
+                                    <Label >Username</Label>
+                                    <Input
+                                        style={styles.labelStyle}
+                                        onChangeText={(username) => this.setState({ username })} />
+                                </Item>
+                                <Item floatingLabel>
+                                    <Label>Password</Label>
+                                    <Input
+                                        secureTextEntry
+                                        style={styles.labelStyle}
+                                        onChangeText={(password) => this.setState({ password })} />
+                                </Item>
+                            </Form>
+                            <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
+                                Forgot Password?
+                        </Text>
+                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this._postUser()}>
+                                <Text > Login </Text>
+                            </Button>
+                        </View>
+                        <View style={styles.footer}>
+                            <Text style={styles.footerText}>By logging in to this application, I have read and understood the Terms and Conditions</Text>
+                        </View>
+                    </ImageBackground>
+                </Container>
+            </ScrollView>
+        );
+    };
+    _getRequest() {
+        fetch('http:192.168.1.104:3005/', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+
+            }
+        })
+            .then((response) => {
+                response.json()
+                    .then((data) => {
+                        alert(JSON.stringify(data.key))
+                    })
+            })
+            .catch((error) => {
+                alert('Error!' + error)
+            })
+      
+  }
+
   //store memb_id
   async storememberId(membId) {
     try {
