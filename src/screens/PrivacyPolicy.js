@@ -172,12 +172,14 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   pnTitle: {
-    fontSize: 22,
+    fontSize: 20,
     fontWeight: 'bold',
-    alignSelf: 'center',
+    // alignSelf: 'center',
+    textAlign: 'center',
     color: '#5fb650',
     height: 40,
     top: 8,
+    width: width,
   },
   pnP: {
     fontSize: 12,

@@ -150,7 +150,7 @@ export default class OnBoarding extends React.Component {
                       rounded
                       style={styles.cardButtonIntellimap}
                       onPress={() => this.props.navigation.navigate('MapPage')}>
-                      <Text style={styles.cardButtonText}>Map</Text>
+                      <Text style={styles.cardButtonText}>Agora Map</Text>
                       <Icon type="Ionicons" name="ios-arrow-forward" />
                     </Button>
                   </Body>
