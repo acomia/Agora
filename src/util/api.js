@@ -1,3 +1,43 @@
+export const MEMBER_LOGIN =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin';
+
+export const SEND_EMAIL_VERIFICATION =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=';
+
+export const GET_PROVINCE =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/provinces?name=';
+
+export const GET_MUNICIPALITIES =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/municipalities?name=';
+
+export const POST_REGISTRATION =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/registration';
+
+export const MEDGATE_TOKEN_REQUEST_TEST =
+  'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token';
+
+export const MEDGATE_TOKEN_REQUEST_LIVE =
+  'https://scheduling.medgatephilippines.com/CallbackRequestService/Token';
+
+export const MEDGATE_CALLBACK_REQUEST_TEST =
+  'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=';
+
+export const MEDGATE_CALLBACK_REQUEST_LIVE =
+  'https://scheduling.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=';
+
+export const FORGOT_PASSWORD_VERIFICATION_CODE =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/send?postedfrom=mobile';
+
+export const REGISTRATION_SEND_OTP =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/validate';
+
+export const FORGOT_PASSWORD_VALIDATE_OTP =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/validate';
+
+export const FORGOT_PASSWORD_NEW_PASSWORD =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/forgotpassword/changepassword';
+
+
 //AGORA MAP
 export const MAPLOGIN_TOKEN =
   'https://intellicare.com.ph/uat/webservice/thousandminds/api/login';
