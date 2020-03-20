@@ -27,8 +27,10 @@ import {
   Item,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
+
+import {RCS2_SENDTOMAIL} from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_EMAIL = 'memb_email';
@@ -36,54 +38,48 @@ const MEMBER_ID = 'member_id';
 
 export default class ERCS1Success extends React.Component {
   constructor(props) {
-    super(props)
-  this.state = {
-    isLoading: false,
-   }
+    super(props);
+    this.state = {
+      isLoading: false,
+    };
   }
   async _resendemail() {
-    <ActivityIndicator size="small" color="white" />
+    <ActivityIndicator size="small" color="white" />;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
-    console.log('resend',token,email, mid, global.acctNum, global.rcs2Num )
-    fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' +
-        global.rcs2Num,
-        {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + token,
-            EmailAddress: email,
-            AccountNo: global.acctNum,
-            AccountID: mid,
-            //'Content-Type': 'application/x-www-form-urlencoded',
-          },
-        },
-      )
-        .then(response => {
-          response.json().then(data => {
-            if (data.is_success === true) {
-              alert('RCS sent to Email Successfully');
-            } else {
-              alert(data.error_message);
-            }
-          });
-        })
-        .catch(error => {
-          alert('Error!' + error);
+    console.log('resend', token, email, mid, global.acctNum, global.rcs2Num);
+    fetch(RCS2_SENDTOMAIL + global.rcs2Num, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        EmailAddress: email,
+        AccountNo: global.acctNum,
+        AccountID: mid,
+        //'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    })
+      .then(response => {
+        response.json().then(data => {
+          if (data.is_success === true) {
+            alert('RCS sent to Email Successfully');
+          } else {
+            alert(data.error_message);
+          }
         });
-    }
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+  }
 
   render() {
+    // const { navigation } = this.props;
+    // const rcsNumber = navigation.getParam('rcsNo', '');
+    // const acctNUmber = navigation.getParam('acctNo', '');
 
-    
-    // const { navigation } = this.props;  
-    // const rcsNumber = navigation.getParam('rcsNo', '');  
-    // const acctNUmber = navigation.getParam('acctNo', '');  
-  
-    console.log('sa kabila rcs',global.rcsNum)
-    console.log('sa kabila accc',global.acctNum)
+    console.log('sa kabila rcs', global.rcsNum);
+    console.log('sa kabila accc', global.acctNum);
     return (
       <Container style={{display: 'flex'}}>
         <StatusBar
@@ -116,11 +112,23 @@ export default class ERCS1Success extends React.Component {
           </Text>
         </View>
         <View style={styles.viewButton}>
-          <Button iconLeft block rounded info style={styles.buttonResend} onPress={() => this._resendemail()}>
-          <Icon type="Ionicons" name="ios-mail" />
+          <Button
+            iconLeft
+            block
+            rounded
+            info
+            style={styles.buttonResend}
+            onPress={() => this._resendemail()}>
+            <Icon type="Ionicons" name="ios-mail" />
             <Text>Resend e-mail</Text>
           </Button>
-          <Button iconLeft rounded success block style={styles.buttonHome} onPress={() => this.props.navigation.navigate('DashboardPage')}>
+          <Button
+            iconLeft
+            rounded
+            success
+            block
+            style={styles.buttonHome}
+            onPress={() => this.props.navigation.navigate('DashboardPage')}>
             <Icon type="Ionicons" name="md-home" />
             <Text>Go back home</Text>
           </Button>
@@ -154,13 +162,13 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   buttonHome: {
-    backgroundColor: "#e74c3c",
+    backgroundColor: '#e74c3c',
     color: '#fff',
   },
-  buttonResend:{
+  buttonResend: {
     color: '#fff',
     justifyContent: 'center',
-    marginBottom: 20
+    marginBottom: 20,
   },
   viewButton: {
     flex: 1,
