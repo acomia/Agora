@@ -166,7 +166,7 @@ async getToken()
                     })
             })
             .catch((error) => {
-                alert('Error!' + error)
+              Alert.alert('Oops','Error!' + error)
             })
       
   }
@@ -401,13 +401,13 @@ async getToken()
               this.SEND_EMAILVERIFICATION(membfname, memblname, membemail);
             }
           } else {
-            alert(data.error_message);
+            Alert.alert('Oops',data.error_message);
             this.setState({LoginSubmit: false});
           }
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        Alert.alert('Oops','Error!' + error);
       });
   }
 
@@ -437,7 +437,7 @@ async getToken()
             });
             this.setState({LoginSubmit: false});
           } else {
-            alert('error');
+            Alert.alert('Oops','error');
             this.setState({LoginSubmit: false});
           }
         });
