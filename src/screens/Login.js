@@ -297,7 +297,7 @@ async getToken()
                       : this.setState({securePW: true});
                   }}
                   type="Octicons"
-                  name={this.state.securePW ? 'eye' : 'eye-closed'}
+                  name={this.state.securePW ? 'eye-closed' : 'eye'}
                   style={{
                     color: 'silver',
                     fontSize: 22,
