@@ -1,5 +1,12 @@
 import React from 'react';
-import { StyleSheet, View, StatusBar, Dimensions, FlatList, RefreshControl } from 'react-native';
+import {
+  StyleSheet,
+  View,
+  StatusBar,
+  Dimensions,
+  FlatList,
+  RefreshControl,
+} from 'react-native';
 import {
   Container,
   Button,
@@ -13,11 +20,13 @@ import {
   Thumbnail,
   Content,
 } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import { StackActions, NavigationActions } from 'react-navigation';
+import {StackActions, NavigationActions} from 'react-navigation';
 import moment from 'moment';
+
+import {RCS2_TRANSACTION_HISTORY} from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -28,7 +37,7 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({ routeName: 'ERCS2LandingPage' })],
+  actions: [NavigationActions.navigate({routeName: 'ERCS2LandingPage'})],
 });
 
 export default class ERCS2History extends React.Component {
@@ -44,13 +53,15 @@ export default class ERCS2History extends React.Component {
   }
 
   handleRefresh = () => {
-    this.setState({
-      refreshing: true
-
-    }, () => {
-      this.componentDidMount();
-    })
-  }
+    this.setState(
+      {
+        refreshing: true,
+      },
+      () => {
+        this.componentDidMount();
+      },
+    );
+  };
 
   onLogout() {
     this.deleteToken();
@@ -77,21 +88,17 @@ export default class ERCS2History extends React.Component {
       membacctnum: membacct,
     });
 
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/history?acct=' +
-      membacct,
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          // 'paramContract': '1',
-          // 'Content-Type': 'application/json;charset=UTF-8'
-        },
-        params: {
-          acct: membacct,
-        },
+    fetch(RCS2_TRANSACTION_HISTORY + membacct, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        // 'paramContract': '1',
+        // 'Content-Type': 'application/json;charset=UTF-8'
       },
-    )
+      params: {
+        acct: membacct,
+      },
+    })
       .then(response => {
         response.json().then(responseJson => {
           console.log('rcshist', responseJson);
@@ -103,8 +110,8 @@ export default class ERCS2History extends React.Component {
             });
           } else {
             if (responseJson.error_message == 'No RCS Transaction Found!') {
-              this.setState({ isLoading: false });
-              this.setState({ refreshing: false })
+              this.setState({isLoading: false});
+              this.setState({refreshing: false});
             }
           }
           if (responseJson == 'Invalid Access Token') {
@@ -120,7 +127,7 @@ export default class ERCS2History extends React.Component {
       });
   }
 
-  renderItem = ({ item }) => {
+  renderItem = ({item}) => {
     var xstatus = item.status;
     const {
       StatusApproved,
@@ -129,7 +136,7 @@ export default class ERCS2History extends React.Component {
       StatusDisapproved,
     } = styles;
     switch (
-    xstatus // Passing the variable to switch condition
+      xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
@@ -159,7 +166,7 @@ export default class ERCS2History extends React.Component {
           <List>
             <ListItem noIndent>
               <Body>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
@@ -220,17 +227,23 @@ export default class ERCS2History extends React.Component {
   };
 
   renderSeparator = () => {
-    return <View style={{ height: 0, backgroundColor: 'gray' }}></View>;
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
   };
   renderSeparator = () => {
-    return <View style={{ height: 0, backgroundColor: 'gray' }}></View>;
+    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
   };
 
   render() {
-    const { spinnerStyle, spinnerTextStyle } = styles;
+    const {spinnerStyle, spinnerTextStyle} = styles;
     return (
       <Container>
-        <Content refreshControl={<RefreshControl refreshing={this.state.refreshing} onRefresh={this._handleRefresh} />}>
+        <Content
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._handleRefresh}
+            />
+          }>
           <StatusBar backgroundColor="transparent" barStyle="light-content" />
           {this.state.dataSource.length <= 0 && (
             <View
@@ -244,9 +257,9 @@ export default class ERCS2History extends React.Component {
                 large
                 source={require('../../assets/images/no-transaction.png')}
               />
-              <Text style={{ fontSize: 14, color: '#2d2d2d' }}>
+              <Text style={{fontSize: 14, color: '#2d2d2d'}}>
                 You have no transactions yet!
-            </Text>
+              </Text>
             </View>
           )}
           <ScrollView>
@@ -271,7 +284,7 @@ export default class ERCS2History extends React.Component {
   }
 }
 
-export const { width, height } = Dimensions.get('window');
+export const {width, height} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {
