@@ -29,6 +29,7 @@ import { DataTable } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
 import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import Spinner from 'react-native-spinkit';
+import { BENEFITS } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 
@@ -47,7 +48,7 @@ export default class Benefits extends React.Component {
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     console.log('globaltokenko', global.storeToken)
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/benefits', {
+    fetch(BENEFITS, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,

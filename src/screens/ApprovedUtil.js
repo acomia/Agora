@@ -8,7 +8,7 @@ import Spinner from 'react-native-spinkit';
 import moment from 'moment'
 import 'intl';
 import 'intl/locale-data/jsonp/en';
-
+import { PRE_APPROVED_UTIL } from '../util/api';
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const ACCESS_TOKEN = 'access_token';
@@ -88,7 +88,7 @@ export default class ApprovedUtil extends React.Component {
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
+    fetch(PRE_APPROVED_UTIL, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,

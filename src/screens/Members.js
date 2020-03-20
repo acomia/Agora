@@ -5,6 +5,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
 import { StackActions, NavigationActions } from 'react-navigation';
+import { MEMBERS } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -68,7 +69,7 @@ export default class Members extends React.Component {
     })
 
     
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts', {
+    fetch(MEMBERS, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,

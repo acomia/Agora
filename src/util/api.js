@@ -54,3 +54,11 @@ export const RCS2_SUBMIT =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/submit';
 export const RCS2_CANCEL_REMARKS =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/cancel';
+export const PRE_APPROVED_UTIL =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved';
+export const POSTED_UTIL =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil';
+export const MEMBERS =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts'
+export const BENEFITS =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/benefits'
