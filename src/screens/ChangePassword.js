@@ -106,7 +106,7 @@ export default class ChangePassword extends React.Component {
                   : this.setState({securePW: true});
               }}
               type="Octicons"
-              name={this.state.securePW ? 'eye' : 'eye-closed'}
+              name={this.state.securePW ? 'eye-closed' : 'eye'}
               style={{
                 color: 'silver',
                 fontSize: 22,
@@ -128,7 +128,7 @@ export default class ChangePassword extends React.Component {
                   : this.setState({secureConfirmPW: true});
               }}
               type="Octicons"
-              name={this.state.secureConfirmPW ? 'eye' : 'eye-closed'}
+              name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
               style={{
                 color: 'silver',
                 fontSize: 22,
