@@ -30,7 +30,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
 
-import {RCS1_SENDTOMAIL} from '../util/api';
+import {RCS2_SENDTOMAIL} from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_EMAIL = 'memb_email';
@@ -48,24 +48,21 @@ export default class ERCS1Success extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let email = await AsyncStorage.getItem(MEMB_EMAIL);
     let mid = await AsyncStorage.getItem(MEMBER_ID);
-    fetch(RCS1_SENDTOMAIL + global.rcsNum, {
+    console.log('resend', token, email, mid, global.acctNum, global.rcs2Num);
+    fetch(RCS2_SENDTOMAIL + global.rcs2Num, {
       method: 'GET',
-      params: {
-        no: global.rcsNum,
-      },
       headers: {
         Authorization: 'Bearer ' + token,
         EmailAddress: email,
         AccountNo: global.acctNum,
         AccountID: mid,
-        'Content-Type': 'application/x-www-form-urlencoded',
+        //'Content-Type': 'application/x-www-form-urlencoded',
       },
     })
       .then(response => {
         response.json().then(data => {
-          console.log('final', data);
           if (data.is_success === true) {
-            alert('Resend Email Successfully');
+            alert('RCS sent to Email Successfully');
           } else {
             alert(data.error_message);
           }
@@ -101,17 +98,17 @@ export default class ERCS1Success extends React.Component {
           <Icon
             type="SimpleLineIcons"
             name="check"
-            style={{fontSize: 100, color: '#5fb650'}}
+            style={{fontSize: 100, color: '#e74c3c'}}
           />
-          <Text style={styles.headerTitle}>Success!</Text>
+          <Text style={styles.headerTitle}>Approved!</Text>
           <Text style={styles.subHeader}>
-            Your e-RCS 1 no. for this transaction is
+            Your e-RCS 2 no. for this transaction is
           </Text>
-          <Text style={styles.ercsText}>{global.rcsNum}</Text>
+          <Text style={styles.ercsText}>{global.rcs2Num}</Text>
           <Text style={styles.subHeader1}>
-            We have sent your Referral Control Sheet 1 (RCS 1) form to your
+            We have sent your Referral Control Sheet 2 (RCS 2) form to your
             registered e-mail address. You may print and present it to your
-            chosen facility and avail your consultation.
+            chosen facility and proceed with the availment.
           </Text>
         </View>
         <View style={styles.viewButton}>
@@ -147,7 +144,7 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontWeight: 'bold',
     fontSize: 40,
-    color: '#5fb650',
+    color: '#e74c3c',
     marginBottom: 30,
   },
   subHeader: {
@@ -160,12 +157,12 @@ const styles = StyleSheet.create({
     marginTop: 30,
   },
   ercsText: {
-    color: '#5fb650',
+    color: '#e74c3c',
     fontWeight: 'bold',
     fontSize: 20,
   },
   buttonHome: {
-    backgroundColor: '#5fb650',
+    backgroundColor: '#e74c3c',
     color: '#fff',
   },
   buttonResend: {

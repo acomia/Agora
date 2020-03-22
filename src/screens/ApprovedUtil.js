@@ -8,7 +8,7 @@ import Spinner from 'react-native-spinkit';
 import moment from 'moment'
 import 'intl';
 import 'intl/locale-data/jsonp/en';
-
+import { PRE_APPROVED_UTIL } from '../util/api';
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const ACCESS_TOKEN = 'access_token';
@@ -74,21 +74,21 @@ export default class ApprovedUtil extends React.Component {
   //     }
   // }
 
-  showAlert = () =>{
-    Alert.alert(
-      'Oops!',
-      'Approved Utilization Empty',
-      [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
-      {cancelable: false},
-    );
-  }
+  // showAlert = () =>{
+  //   Alert.alert(
+  //     'Oops!',
+  //     'Approved Utilization Empty',
+  //     [
+  //       {text: 'OK', onPress: () => console.log('OK Pressed')},
+  //     ],
+  //     {cancelable: false},
+  //   );
+  // }
 
   async componentDidMount() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacctposted = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/preapproved', {
+    fetch(PRE_APPROVED_UTIL, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -118,7 +118,7 @@ export default class ApprovedUtil extends React.Component {
           } else {
             this.setState({ isLoading: false })
             this.setState({ refreshing: false })
-            this.showAlert()
+            // this.showAlert()
             this.props.navigation.navigate('Membinfo')
           }
         });

@@ -5,13 +5,16 @@ import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 import Spinner from 'react-native-spinkit'
 import { StackActions, NavigationActions } from 'react-navigation';
+import { MEMBERS } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
-//test merge 22 test
+//test merge 2
+
+//test merge vin
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
@@ -66,7 +69,7 @@ export default class Members extends React.Component {
     })
 
     
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts', {
+    fetch(MEMBERS, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,

@@ -75,7 +75,7 @@ export default class Login extends React.Component {
       mobile_no: '',
       password: '',
       confirm_password: '',
-      intellicare_no: '',
+      intellicare_no: ' ',
       intellicare_acct: '',
       valid_photo: null,
       intid_photo: null,
@@ -98,6 +98,8 @@ export default class Login extends React.Component {
       municpalCode: '',
       municipalName: '',
       confirmMunicipal: true,
+      securePW: true,
+      secureConfirmPW: true,
     };
     this.provinceList = [];
   }
@@ -624,20 +626,47 @@ export default class Login extends React.Component {
                   <Label style={{ fontSize: 14 }}>Password *</Label>
                   <Input
                     style={styles.labelStyle}
-                    secureTextEntry
+                    secureTextEntry={this.state.securePW}
                     value={this.state.password}
-                    onChangeText={password => this.setState({ password })}
+                    onChangeText={password => this.setState({ password })
+                  }
+                  />
+                   <Icon
+                    onPress={() => {
+                      this.state.securePW
+                        ? this.setState({securePW: false})
+                        : this.setState({securePW: true});
+                    }}
+                    type="Octicons"
+                    name={this.state.securePW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
                   <Label style={{ fontSize: 14 }}>Confirm Password</Label>
                   <Input
                     style={styles.labelStyle}
-                    secureTextEntry
+                    secureTextEntry={this.state.secureConfirmPW}
                     value={this.state.confirm_password}
                     onChangeText={confirm_password =>
                       this.setState({ confirm_password })
                     }
+                  />
+                  <Icon
+                    onPress={() => {
+                      this.state.secureConfirmPW
+                        ? this.setState({secureConfirmPW: false})
+                        : this.setState({secureConfirmPW: true});
+                    }}
+                    type="Octicons"
+                    name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>

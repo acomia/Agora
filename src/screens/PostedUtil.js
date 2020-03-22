@@ -8,7 +8,7 @@ import Spinner from 'react-native-spinkit';
 import moment from 'moment';
 import 'intl';
 import 'intl/locale-data/jsonp/en';
-
+import { POSTED_UTIL } from '../util/api';
 
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const ACCESS_TOKEN = 'access_token';
@@ -45,7 +45,7 @@ export default class PostedUtil extends React.Component {
     let membacctpreapproved = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     console.log('acctno', membacctpreapproved)
     console.log('globaltokenkopre',global.storeToken)
-    fetch('https://intellicare.com.ph/uat/webservice/memberprofile/api/member/utilization/postedutil', {
+    fetch(POSTED_UTIL, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token,

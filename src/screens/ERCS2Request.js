@@ -32,13 +32,30 @@ import DocumentPicker from 'react-native-document-picker';
 import {StackActions, NavigationActions} from 'react-navigation';
 import Modal from 'react-native-modal';
 
+import {
+  RCS_MEMBERS_PROFILE,
+  RCS_PROVIDERS,
+  RCS2_PROCEDURES_LIST,
+  RCS_SPECIALTIES,
+  RCS2_DOCTOR_BY_SPECS,
+  RCS2_SENDTOMAIL,
+  RCS2_SUBMIT,
+} from '../util/api';
+
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_EMAIL = 'memb_email';
+const MEMBER_ID = 'member_id';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   actions: [NavigationActions.navigate({routeName: 'ERCS2SuccessPage'})],
+});
+
+const Rcs2AutoApproved = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  actions: [NavigationActions.navigate({routeName: 'ERCS2AutoApproved'})],
 });
 
 export default class ERCS2Request extends React.Component {
@@ -116,12 +133,10 @@ export default class ERCS2Request extends React.Component {
     Alert.alert(
       'Oops!',
       'The Member does not have OPD Benefits.',
-      [
-        {text: 'OK', onPress: () => console.log('OK Pressed')},
-      ],
+      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
       {cancelable: false},
     );
-  }
+  };
 
   async componentDidMount() {
     this._isMounted = true;
@@ -130,16 +145,13 @@ export default class ERCS2Request extends React.Component {
     this.setState({
       isLoading: true,
     });
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          AccountNo: membacct,
-        },
+    fetch(RCS_MEMBERS_PROFILE, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        AccountNo: membacct,
       },
-    )
+    })
       .then(response => {
         response.json().then(responseJson => {
           this.setState({
@@ -151,20 +163,17 @@ export default class ERCS2Request extends React.Component {
         alert('Error!' + error);
       });
 
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          AccountNo: membacct,
-        },
-        params: {
-          name: '',
-          location: '',
-        },
+    fetch(RCS_PROVIDERS, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        AccountNo: membacct,
       },
-    )
+      params: {
+        name: '',
+        location: '',
+      },
+    })
       .then(response => {
         response.json().then(provider => {
           this.setState({
@@ -178,15 +187,12 @@ export default class ERCS2Request extends React.Component {
       });
 
     //GET PROCEDURES
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
+    fetch(RCS2_PROCEDURES_LIST, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
       },
-    ).then(response => {
+    }).then(response => {
       response
         .json()
         .then(data => {
@@ -240,16 +246,13 @@ export default class ERCS2Request extends React.Component {
   async _IllnessSpeciallty() {
     this.setState({isLoading: true});
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          illness: this.state.searchIllness,
-        },
+    fetch(RCS_SPECIALTIES, {
+      method: 'GET',
+      headers: {
+        Authorization: 'Bearer ' + token,
+        illness: this.state.searchIllness,
       },
-    )
+    })
       .then(response => {
         response.json().then(illnessSpec => {
           console.log('illness', illnessSpec);
@@ -271,20 +274,17 @@ export default class ERCS2Request extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let specname = await this.state.dataSourceIllnessSpec.specialty_name;
     try {
-      fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/doctors?name=',
-        {
-          method: 'GET',
-          headers: {
-            Authorization: 'Bearer ' + token,
-            Hospital: this.state.providercode,
-            // 'Specialty': specname
-          },
-          params: {
-            name: '',
-          },
+      fetch(RCS2_DOCTOR_BY_SPECS, {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          Hospital: this.state.providercode,
+          // 'Specialty': specname
         },
-      )
+        params: {
+          name: '',
+        },
+      })
         .then(response => {
           response.json().then(doctorspec => {
             if (doctorspec.data !== null) {
@@ -893,26 +893,49 @@ export default class ERCS2Request extends React.Component {
     });
 
     try {
-      let resp = await fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/submit',
-        {
-          method: 'POST',
-          headers: {
-            Authorization: 'Bearer ' + token,
-            'Content-Type': 'multipart/form-data',
-          },
-          body: formdata,
+      let resp = await fetch(RCS2_SUBMIT, {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'multipart/form-data',
         },
-      );
+        body: formdata,
+      });
       let respJson = await resp.json();
       // console.log('boy',this.state.MembPickerValueHolderAcct)
 
       if (respJson.is_success === true) {
         let tmprcs2Num = respJson.data.ercsno;
+        let tmprcs2tag = respJson.data.approved;
 
+        global.rcs2tag = tmprcs2tag;
         global.rcs2Num = tmprcs2Num;
+        global.acctNum = this.state.MembPickerValueHolderAcct;
         this.setState({isLoading: false});
-        this.props.navigation.dispatch(resetAction);
+        let mid = await AsyncStorage.getItem(MEMBER_ID);
+        if (global.rcs2tag === true) {
+          fetch(RCS2_SENDTOMAIL + global.rcs2Num, {
+            method: 'GET',
+            headers: {
+              Authorization: 'Bearer ' + token,
+              EmailAddress: email,
+              AccountNo: global.acctNum,
+              AccountID: mid,
+              //'Content-Type': 'application/x-www-form-urlencoded',
+            },
+          }).then(response => {
+            response.json().then(data => {
+              if (data.is_success === true) {
+                this.setState({isLoading: false});
+                this.props.navigation.dispatch(Rcs2AutoApproved);
+              } else {
+                alert(data.error_message);
+              }
+            });
+          });
+        } else {
+          this.props.navigation.dispatch(resetAction);
+        }
       } else {
         alert(respJson.error_message);
         this.setState({isLoading: false});
