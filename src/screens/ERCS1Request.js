@@ -46,6 +46,14 @@ const resetAction = StackActions.reset({
   actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
 });
 
+
+const ExpiredSession = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
+}); 
+
+
 export default class ERCS1Request extends React.Component {
   _isMounted = false;
 
@@ -97,10 +105,29 @@ export default class ERCS1Request extends React.Component {
     );
   }
 
+  onLogout() {
+    this.deleteToken();
+  }
+
+
+  async deleteToken() {
+    try {
+      await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(MEMBER_ID);
+      await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
+      await AsyncStorage.removeItem(MEMB_NAME);
+      await AsyncStorage.removeItem(MEMB_EMAIL);
+      this.props.navigation.dispatch(ExpiredSession);
+    } catch {
+      console.log('Something went wrong');
+    }
+  }
+
+
   async componentDidMount() {
     console.log('test')
     this._isMounted = true;
-    global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
+    global.token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1pa2UuZW5yaXF1ZXpAaW50ZWxsaWNhcmUuY29tLnBoIiwicm9sZSI6Im1lbWJlciIsIm5iZiI6MTU4MDY5OTE4MiwiZXhwIjoxNTgwNzg1NTgyLCJpYXQiOjE1ODA2OTkxODJ9.45aEZB3u_Jx1c5J3WXgRmfzPa0wSoONWBX_mFqcdm10';
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     // getting the principal and dependent of the acct
     fetch(
@@ -115,6 +142,12 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(responseJson => {
+          
+          if (responseJson == 'Invalid Access Token') {
+            Alert.alert('Oops','Session Expired')
+            this.onLogout();
+          }
+
           this.setState({
             Rcsmemb: responseJson.data,
             acctno: responseJson.data[0].acct,
@@ -140,6 +173,12 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(consulttype => {
+
+          if (consulttype == 'Invalid Access Token') {
+            Alert.alert('Oops','Session Expired')
+             this.onLogout();
+          }
+          
           this.setState({
             RCSconsultype: consulttype.data,
           });
@@ -165,6 +204,12 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(provider => {
+
+          if (provider == 'Invalid Access Token') {
+            Alert.alert('Oops','Session Expired')
+             this.onLogout();
+          }
+
           this.setState({
             dataSource: provider.data,
           });
@@ -191,6 +236,13 @@ export default class ERCS1Request extends React.Component {
       .then(response => {
 
         response.json().then(illness => {
+
+          if (illness == 'Invalid Access Token') {
+            Alert.alert('Oops','Session Expired')
+             this.onLogout();
+          }
+
+
           this.setState({
             dataSourceIllness: illness.data,
             isLoading: false
@@ -222,6 +274,14 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(illnessSpec => {
+
+          if (illnessSpec == 'Invalid Access Token') {
+            Alert.alert('Oops','Session Expired')
+             this.onLogout();
+          }
+
+
+
           this.setState({
             dataSourceIllnessSpec: illnessSpec.data[0],
           });
@@ -259,6 +319,12 @@ export default class ERCS1Request extends React.Component {
       )
         .then(response => {
           response.json().then(doctorspec => {
+
+            if (doctorspec == 'Invalid Access Token') {
+              Alert.alert('Oops','Session Expired')
+               this.onLogout();
+            }
+
             if (doctorspec.data != null) {
               this.setState({
                 isLoading: false,
@@ -336,7 +402,11 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          //console.log('ercs1', data)
+         
+          if (data == 'Invalid Access Token') {
+            Alert.alert('Oops','Session Expired')
+             this.onLogout();
+          }
 
           // send to email
           if (data.is_success === true) {
@@ -483,6 +553,12 @@ export default class ERCS1Request extends React.Component {
       )
         .then(response => {
           response.json().then(illness => {
+
+            if (illness == 'Invalid Access Token') {
+              alert('Session Expired')
+               this.onLogout();
+            }
+
             this.setState({
               dataSourceIllness: illness.data,
               isLoading: false
