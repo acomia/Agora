@@ -5,6 +5,7 @@ import {
   ImageBackground,
   View,
   Alert,
+  TouchableOpacity
 } from 'react-native';
 import {
   Container,
@@ -20,12 +21,16 @@ import {
 } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import {StackActions, NavigationActions} from 'react-navigation';
+import Modal from 'react-native-modal';
+import {ScrollView} from 'react-native-gesture-handler';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
+const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
+
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -36,7 +41,9 @@ const resetAction = StackActions.reset({
 export default class SideBar extends React.Component {
   constructor() {
     super();
-    this.state = {username: '', oldpw: ''};
+    this.state = {username: '', 
+    oldpw: '',
+    visibleModal: false};
   }
   onLogout() {
     Alert.alert(
@@ -170,7 +177,7 @@ export default class SideBar extends React.Component {
           </ListItem>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback
-          onPress={() => this.props.navigation.navigate('ERCS1LandingPage')}>
+          onPress={() => this.setState({visibleModal: true})}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
               {/* <Icon type="MaterialCommunityIcons" name="medical-bag" /> */}
@@ -262,9 +269,75 @@ export default class SideBar extends React.Component {
             </Body>
           </ListItem>
         </TouchableNativeFeedback>
+        <Modal
+          isVisible={this.state.visibleModal}
+          animationInTiming={1000}
+          animationOutTiming={1000}
+          backdropTransitionInTiming={1000}
+          backdropTransitionOutTiming={1000}>
+          {this.renderMedgateModal()}
+        </Modal>
       </Container>
     );
   }
+
+  renderMedgateModal() {
+    return (
+      <View style={styles.Pncontainer}>
+        {/* <Text style={styles.pnTitle}>MEDGATE</Text> */}
+        <Thumbnail
+          style={{
+            width: 100,
+            height: 110,
+            alignSelf: 'center',
+            paddingHorizontal: 140,
+          }}
+          source={require('../../assets/images/medgatelogo.png')}
+          resizeMode="contain"
+        />
+        <ScrollView style={styles.tcContainer}>
+          <Text style={{fontWeight: 'bold', marginTop: 5}}>
+            What is Medgate?
+          </Text>
+
+          <Text style={styles.pnP}>
+            Medgate is the leading international provider of telemedicine which
+            offers high-quality, convenient, and confidential medical
+            consultations over the phone for non-emergency cases.{' '}
+          </Text>
+        </ScrollView>
+        <TouchableOpacity
+          onPress={() => this.gotoMedgate()}
+          style={styles.pnButton}>
+          <Icon
+            type="SimpleLineIcons"
+            name="earphones-alt"
+            style={styles.cardIconStyleMedgate}
+          />
+          <Text style={styles.pnButtonLabel}>Try Tele-consultation now</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => this.goToERC1()}
+          style={styles.pnButtonDisabled}>
+          <Text style={styles.pnButtonLabel}>
+            Continue request for eConsultation...
+          </Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+
+  gotoMedgate() {
+    this.setState({visibleModal: false});
+    this.props.navigation.navigate('MedgatePage');
+  }
+
+  goToERC1() {
+    this.setState({visibleModal: false});
+    this.props.navigation.navigate('ERCS1LandingPage');
+  }
+
+  
 }
 
 const styles = StyleSheet.create({
@@ -324,5 +397,60 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 10,
+  },
+  
+  Pncontainer: {
+    justifyContent: 'center',
+    alignItems: 'stretch',
+    marginTop: 20,
+    // marginLeft: 10,
+    // marginRight: 10,
+    padding: 16,
+    borderRadius: 6,
+    backgroundColor: 'white',
+  },
+  pnTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    alignSelf: 'center',
+    color: '#5fb650',
+  },
+  pnP: {
+    fontSize: 12,
+    padding: 5,
+  },
+  pnL: {
+    padding: 10,
+    fontSize: 12,
+  },
+  pnNL: {
+    fontSize: 12,
+    marginLeft: 10,
+    padding: 2,
+  },
+ 
+  pnButton: {
+    backgroundColor: '#136AC7',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+  },
+  pnButtonDisabled: {
+    backgroundColor: '#999',
+    borderRadius: 5,
+    padding: 10,
+    marginTop: 10,
+  },
+  pnButtonLabel: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#FFF',
+    alignSelf: 'center',
+  },
+  cardIconStyleMedgate: {
+    color: '#258bf5',
+    fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
+    marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
+    alignSelf: 'center',
   },
 });

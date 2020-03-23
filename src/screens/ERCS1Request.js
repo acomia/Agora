@@ -37,6 +37,7 @@ import Modal from 'react-native-modal';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
+const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
 const MEMBER_ID = 'member_id';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
@@ -45,6 +46,14 @@ const resetAction = StackActions.reset({
   index: 0,
   actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
 });
+
+
+const ExpiredSession = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
+});
+
 
 export default class ERCS1Request extends React.Component {
   _isMounted = false;
@@ -97,6 +106,26 @@ export default class ERCS1Request extends React.Component {
     );
   }
 
+  onLogout() {
+    this.deleteToken();
+  }
+
+
+  async deleteToken() {
+    try {
+      await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(MEMBER_ID);
+      await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
+      await AsyncStorage.removeItem(MEMB_NAME);
+      await AsyncStorage.removeItem(MEMB_EMAIL);
+      this._isMounted = false;
+      this.props.navigation.dispatch(ExpiredSession);
+    } catch {
+      console.log('Something went wrong');
+    }
+  }
+
+
   async componentDidMount() {
     console.log('test')
     this._isMounted = true;
@@ -115,11 +144,18 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(responseJson => {
-          this.setState({
-            Rcsmemb: responseJson.data,
-            acctno: responseJson.data[0].acct,
-            membgender: responseJson.data[0].gender
-          });
+
+          if (responseJson == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops', 'Session Expired')
+          }
+          else {
+            this.setState({
+              Rcsmemb: responseJson.data,
+              acctno: responseJson.data[0].acct,
+              membgender: responseJson.data[0].gender
+            });
+          }
           // Rcsmemb = responseJson.data;
           // this.state.acctno = this.state.Rcsmemb[0].acct;
           // this.state.membgender = this.state.Rcsmemb[0].gender;
@@ -140,9 +176,16 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(consulttype => {
-          this.setState({
-            RCSconsultype: consulttype.data,
-          });
+
+          if (consulttype == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops', 'Session Expired')
+          }
+          else {
+            this.setState({
+              RCSconsultype: consulttype.data,
+            });
+          }
         });
       })
       .catch(error => {
@@ -165,13 +208,23 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(provider => {
-          this.setState({
-            dataSource: provider.data,
-          });
-          this.arrayholder = provider.data;
-        });
+
+          if (provider == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops', 'Session Expired')
+          }
+
+          else {
+            this.setState({ dataSource: provider.data });
+            this.arrayholder = provider.data;
+          }
+
+        }
+        );
         this._illness()
       })
+
+
       .catch(error => {
         alert('Error!' + error);
       });
@@ -191,10 +244,20 @@ export default class ERCS1Request extends React.Component {
       .then(response => {
 
         response.json().then(illness => {
-          this.setState({
-            dataSourceIllness: illness.data,
-            isLoading: false
-          });
+
+          if (illness == 'Invalid Access Token') {
+            Alert.alert('Oops', 'Session Expired')
+            this.onLogout();
+          }
+
+          else {
+            this.setState({
+              dataSourceIllness: illness.data,
+              isLoading: false
+            });
+          }
+
+
           this.arrayholderIllness = illness.data
         });
       })
@@ -222,13 +285,24 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(illnessSpec => {
-          this.setState({
-            dataSourceIllnessSpec: illnessSpec.data[0],
-          });
+
+          if (illnessSpec == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops', 'Session Expired')
+          }
+
+
+          else {
+            this.setState({
+              dataSourceIllnessSpec: illnessSpec.data[0],
+            });
+          }
+
           dataSourceIllnessSpec = illnessSpec.data[0];
           this.DoctorScpec = this.DoctorScpec.bind(this);
           this.DoctorScpec();
         });
+
       })
       .catch(error => {
         alert('Error!' + error);
@@ -259,20 +333,31 @@ export default class ERCS1Request extends React.Component {
       )
         .then(response => {
           response.json().then(doctorspec => {
-            if (doctorspec.data != null) {
-              this.setState({
-                isLoading: false,
-                RCSdoctorspecialty: doctorspec.data,
-              });
-              RCSdoctorspecialty = doctorspec.data;
-            } else {
-              this.setState({
-                RCSdoctorspecialty: [],
-                isLoading: false,
-              });
-              alert('No Doctors Found!');
+
+            if (doctorspec == 'Invalid Access Token') {
+              this.onLogout();
+              return Alert.alert('Oops', 'Session Expired')
             }
+            else {
+              if (doctorspec.data != null) {
+                this.setState({
+                  isLoading: false,
+                  RCSdoctorspecialty: doctorspec.data,
+                });
+                RCSdoctorspecialty = doctorspec.data;
+              } else {
+                this.setState({
+                  RCSdoctorspecialty: [],
+                  isLoading: false,
+                });
+                alert('No Doctors Found!');
+              }
+            }
+
           });
+
+
+
         })
         .catch(error => {
           alert('Error!' + error);
@@ -336,8 +421,12 @@ export default class ERCS1Request extends React.Component {
     )
       .then(response => {
         response.json().then(data => {
-          //console.log('ercs1', data)
 
+          if (data == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops', 'Session Expired')
+          }
+          else {
           // send to email
           if (data.is_success === true) {
             let rcs = data.data.ercsno;
@@ -390,6 +479,7 @@ export default class ERCS1Request extends React.Component {
             });
             alert(data.error_message);
           }
+        }
         });
       })
       .catch(error => {
@@ -483,10 +573,18 @@ export default class ERCS1Request extends React.Component {
       )
         .then(response => {
           response.json().then(illness => {
+
+            if (illness == 'Invalid Access Token') {
+              this.onLogout();
+              return Alert.alert('Oops', 'Session Expired')
+            }
+            else {
             this.setState({
               dataSourceIllness: illness.data,
               isLoading: false
-            });
+            }); 
+          }
+
             this.arrayholderIllness = illness.data
           });
         })
@@ -616,9 +714,9 @@ export default class ERCS1Request extends React.Component {
                   searchData: [],
                   destination: '',
                   searchIllness: '',
-                  confirm:true,
-                   found:0,
-                   docspec: ''
+                  confirm: true,
+                  found: 0,
+                  docspec: ''
                 })
               }
               placeholderTextColor="#cacaca"
@@ -691,7 +789,7 @@ export default class ERCS1Request extends React.Component {
               }}
               inputStyle={{ justifyContent: 'center', fontSize: 14 }}
               onChangeText={text => this.SearchIllnesFilterFunction(text)}
-              onClear={() => this.setState({ searchData1: [], destination1: '' , confirm:true, found:0,docspec: ''})}
+              onClear={() => this.setState({ searchData1: [], destination1: '', confirm: true, found: 0, docspec: '' })}
               placeholderTextColor="#cacaca"
               placeholder="Search Illness..."
               value={this.state.searchIllness}

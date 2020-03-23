@@ -9,6 +9,7 @@ import {
   Linking,
   FlatList,
   TouchableOpacity,
+  Alert
 } from 'react-native';
 import {
   Container,
@@ -103,6 +104,8 @@ export default class Login extends React.Component {
       municpalCode: '',
       municipalName: '',
       confirmMunicipal: true,
+      securePW: true,
+      secureConfirmPW: true,
     };
     this.provinceList = [];
   }
@@ -130,9 +133,10 @@ export default class Login extends React.Component {
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        Alert.alert('Oops','Error!' + error);
       });
 
+    
 
   }
 
@@ -192,12 +196,12 @@ export default class Login extends React.Component {
                 municipalList: [],
                 isLoading: false,
               });
-              alert('No Municipalities Found!');
+              Alert.alert('Oops','No Municipalities Found!');
             }
           });
         })
         .catch(error => {
-          alert('Error!' + error);
+          Alert.alert('Oops','Error!' + error);
         });
     } catch (error) {
       console.log(error);
@@ -627,20 +631,46 @@ export default class Login extends React.Component {
                   <Label style={{ fontSize: 14 }}>Password *</Label>
                   <Input
                     style={styles.labelStyle}
-                    secureTextEntry
+                    secureTextEntry={this.state.securePW}
                     value={this.state.password}
                     onChangeText={password => this.setState({ password })}
+                  />
+                  <Icon
+                    onPress={() => {
+                      this.state.securePW
+                        ? this.setState({ securePW: false })
+                        : this.setState({ securePW: true });
+                    }}
+                    type="Octicons"
+                    name={this.state.securePW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
                   <Label style={{ fontSize: 14 }}>Confirm Password</Label>
                   <Input
                     style={styles.labelStyle}
-                    secureTextEntry
+                    secureTextEntry={this.state.secureConfirmPW}
                     value={this.state.confirm_password}
                     onChangeText={confirm_password =>
                       this.setState({ confirm_password })
                     }
+                  />
+                  <Icon
+                    onPress={() => {
+                      this.state.secureConfirmPW
+                        ? this.setState({ secureConfirmPW: false })
+                        : this.setState({ secureConfirmPW: true });
+                    }}
+                    type="Octicons"
+                    name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
@@ -1104,52 +1134,50 @@ export default class Login extends React.Component {
 
     NetInfo.fetch().then(state => {
       if (state.isConnected == false) {
-        return alert('Check Internet Connection...');
+        return Alert.alert('Oops','Check Internet Connection...');
       }
     });
 
     if (this.state.province === '' || this.state.province === null) {
-      return alert('Province is required');
+      return Alert.alert('Oops','Province is required');
     }
 
     if (this.state.municipal === '' || this.state.municipal === null) {
-      return alert('Municipal is required');
+      return Alert.alert('Oops','Municipal is required');
     }
 
 
     if (valid_email.test(this.state.email) === false) {
-      return alert('Email address is not valid!');
+      return Alert.alert('Oops','Email address is not valid!');
     } else {
       console.log('Email is Correct');
     }
     if (this.state.email === null || this.state.email === '') {
-      return alert('Email is required');
+      return Alert.alert('Oops','Email is required');
     }
 
     if (this.state.intid_photo === null) {
-      return alert('Intellicare ID Picture required');
+      return Alert.alert('Oops','Intellicare ID Picture required');
     }
 
     if (this.state.valid_photo === null) {
-      return alert('Valid ID Picture required');
+      return Alert.alert('Oops','Valid ID Picture required');
     }
 
     if (this.state.password === null || this.state.password === '') {
-      return alert('Password required');
+      return Alert.alert('Oops','Password required');
     }
 
     if (this.state.password.length < 6) {
-      return alert('Password too short');
+      return Alert.alert('Oops','Password too short');
     }
 
     if (!regularExpression.test(this.state.password)) {
-      return alert(
-        'password should contain atleast one number, one upper case and one special character.',
-      );
+      return Alert.alert('Oops','password should contain atleast one number, one upper case and one special character.');
     }
 
     if (this.state.password !== this.state.confirm_password) {
-      return alert('Password does not match');
+      return Alert.alert('Oops','Password does not match');
     }
 
     //this._InsertRequest();
@@ -1232,7 +1260,7 @@ export default class Login extends React.Component {
       if (state.isConnected == true) {
         this._InsertRequest();
       } else {
-        alert('Check Internet Connection...');
+        Alert.alert('Oops','Check Internet Connection...');
       }
     });
   }
@@ -1297,9 +1325,9 @@ export default class Login extends React.Component {
       } else {
         console.log(respJson.error_message);
         if (respJson.error_message === 'Account is invalid.') {
-          alert('Invalid Account/Account format');
+          Alert.alert('Oops','Invalid Account/Account format');
         } else {
-          alert(respJson.error_message);
+          Alert.alert('Oops',respJson.error_message);
         }
       }
 
