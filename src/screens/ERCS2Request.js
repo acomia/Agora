@@ -922,8 +922,8 @@ export default class ERCS2Request extends React.Component {
         global.rcs2tag = tmprcs2tag;
         global.rcs2Num = tmprcs2Num;
         global.acctNum = this.state.MembPickerValueHolderAcct;
-        this.setState({ isLoading: false });
         let mid = await AsyncStorage.getItem(MEMBER_ID);
+        let email = await AsyncStorage.getItem(MEMB_EMAIL);
         if (global.rcs2tag === true) {
           fetch(
             'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' +
@@ -952,6 +952,7 @@ export default class ERCS2Request extends React.Component {
 
         }
         else {
+          this.setState({ isLoading: false });
           this.props.navigation.dispatch(resetAction);
         }
 
