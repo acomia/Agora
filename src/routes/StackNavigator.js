@@ -36,12 +36,11 @@ import ERCS2DisapprovedDetails from '../screens/ERCS2DisapprovedDetails';
 import ERCS2DisapprovedProcedure from '../screens/ERCS2DisapprovedProcedure';
 import ERCS1Details from '../screens/ERCS1Details';
 import ERCS1CancelDetails from '../screens/ERCS1CancelDetails';
-import ERCSCancelRemarks from '../screens/ERCSCancelRemarks'
-import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks'
+import ERCSCancelRemarks from '../screens/ERCSCancelRemarks';
+import ERCS1CancelRemarks from '../screens/ERCS1CancelRemarks';
 import ERCS2AutoApproved from '../screens/ERCS2AutoApproved';
 
 import AgoraMap from '../screens/Map/Home';
-import FilterSearch from '../screens/Map/FilterComponent';
 import OfficesComponent from '../screens/Map/OfficesComponent';
 import PrivacyPolicy from '../screens/PrivacyPolicy';
 
@@ -132,21 +131,7 @@ AppStack = createStackNavigator({
       header: <StatusBar backgroundColor="#5fb650" barStyle="light-content" />,
     },
   },
-  FilterPage: {
-    screen: FilterSearch,
-    navigationOptions: {
-      title: 'Filters',
-      headerStyle: {
-        backgroundColor: '#5fb650',
-        elevation: 0,
-        shadowOpacity: 0,
-        borderBottomWidth: 0,
-        paddingTop: STATUSBAR_HEIGHT,
-        height: 80,
-      },
-      headerTintColor: '#fff',
-    },
-  },
+
   OfficesPage: {
     screen: OfficesComponent,
     navigationOptions: {
