@@ -21,26 +21,16 @@ import {
   Thumbnail,
   Textarea,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
-import {DataTable} from 'react-native-paper';
+import { ScrollView } from 'react-native-gesture-handler';
+import { DataTable } from 'react-native-paper';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Table, TableWrapper, Row, Cell} from 'react-native-table-component';
+import { Table, TableWrapper, Row, Cell } from 'react-native-table-component';
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-import {SearchBar} from 'react-native-elements';
+import { SearchBar } from 'react-native-elements';
 import Spinner from 'react-native-spinkit';
 import DocumentPicker from 'react-native-document-picker';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Modal from 'react-native-modal';
-
-import {
-  RCS_MEMBERS_PROFILE,
-  RCS_PROVIDERS,
-  RCS2_PROCEDURES_LIST,
-  RCS_SPECIALTIES,
-  RCS2_DOCTOR_BY_SPECS,
-  RCS2_SENDTOMAIL,
-  RCS2_SUBMIT,
-} from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
@@ -50,13 +40,14 @@ const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWin
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({routeName: 'ERCS2SuccessPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'ERCS2SuccessPage' })],
 });
 
 const Rcs2AutoApproved = StackActions.reset({
   index: 0, // <-- currect active route from actions array
-  actions: [NavigationActions.navigate({routeName: 'ERCS2AutoApproved'})],
+  actions: [NavigationActions.navigate({ routeName: 'ERCS2AutoApproved' })],
 });
+
 
 export default class ERCS2Request extends React.Component {
   _isMounted = false;
@@ -96,11 +87,11 @@ export default class ERCS2Request extends React.Component {
   }
 
   onSelectedItemsChange = selectedItems => {
-    this.setState({selectedItems});
+    this.setState({ selectedItems });
   };
 
   onSelectedItemObjectsChange = selectedObject => {
-    this.setState({selectedObject});
+    this.setState({ selectedObject });
 
     var newList = [];
     for (var i = 0; i < selectedObject.length; i++) {
@@ -111,11 +102,11 @@ export default class ERCS2Request extends React.Component {
         category_id: selectedObject[i].category_id,
       });
     }
-    this.setState({newListofItems: newList});
+    this.setState({ newListofItems: newList });
   };
 
   onSelectedItemObjectsChange = selectedObject => {
-    this.setState({selectedObject});
+    this.setState({ selectedObject });
 
     var newList = [];
     for (var i = 0; i < selectedObject.length; i++) {
@@ -126,17 +117,19 @@ export default class ERCS2Request extends React.Component {
         category_id: selectedObject[i].category_id,
       });
     }
-    this.setState({newListofItems: newList});
+    this.setState({ newListofItems: newList });
   };
 
   ShowAlert = () => {
     Alert.alert(
       'Oops!',
       'The Member does not have OPD Benefits.',
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false},
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
     );
-  };
+  }
 
   async componentDidMount() {
     this._isMounted = true;
@@ -145,13 +138,16 @@ export default class ERCS2Request extends React.Component {
     this.setState({
       isLoading: true,
     });
-    fetch(RCS_MEMBERS_PROFILE, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        AccountNo: membacct,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          AccountNo: membacct,
+        },
       },
-    })
+    )
       .then(response => {
         response.json().then(responseJson => {
           this.setState({
@@ -163,17 +159,20 @@ export default class ERCS2Request extends React.Component {
         alert('Error!' + error);
       });
 
-    fetch(RCS_PROVIDERS, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        AccountNo: membacct,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          AccountNo: membacct,
+        },
+        params: {
+          name: '',
+          location: '',
+        },
       },
-      params: {
-        name: '',
-        location: '',
-      },
-    })
+    )
       .then(response => {
         response.json().then(provider => {
           this.setState({
@@ -187,12 +186,15 @@ export default class ERCS2Request extends React.Component {
       });
 
     //GET PROCEDURES
-    fetch(RCS2_PROCEDURES_LIST, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+        },
       },
-    }).then(response => {
+    ).then(response => {
       response
         .json()
         .then(data => {
@@ -244,15 +246,18 @@ export default class ERCS2Request extends React.Component {
   }
 
   async _IllnessSpeciallty() {
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    fetch(RCS_SPECIALTIES, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        illness: this.state.searchIllness,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          illness: this.state.searchIllness,
+        },
       },
-    })
+    )
       .then(response => {
         response.json().then(illnessSpec => {
           console.log('illness', illnessSpec);
@@ -274,17 +279,20 @@ export default class ERCS2Request extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let specname = await this.state.dataSourceIllnessSpec.specialty_name;
     try {
-      fetch(RCS2_DOCTOR_BY_SPECS, {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          Hospital: this.state.providercode,
-          // 'Specialty': specname
+      fetch(
+        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/doctors?name=',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            Hospital: this.state.providercode,
+            // 'Specialty': specname
+          },
+          params: {
+            name: '',
+          },
         },
-        params: {
-          name: '',
-        },
-      })
+      )
         .then(response => {
           response.json().then(doctorspec => {
             if (doctorspec.data !== null) {
@@ -312,7 +320,7 @@ export default class ERCS2Request extends React.Component {
   }
 
   SearchFilterFunction(text) {
-    const newData = this.arrayholder.filter(function(item) {
+    const newData = this.arrayholder.filter(function (item) {
       //applying filter for the inserted text in search bar
       const itemData = item.provider_name
         ? item.provider_name.toUpperCase()
@@ -332,7 +340,7 @@ export default class ERCS2Request extends React.Component {
   }
 
   SearchIllnesFilterFunction(text) {
-    const newDataillness = this.arrayholderIllness.filter(function(item) {
+    const newDataillness = this.arrayholderIllness.filter(function (item) {
       const itemDataillness = item.illness
         ? item.illness.toUpperCase()
         : ''.toUpperCase();
@@ -371,14 +379,14 @@ export default class ERCS2Request extends React.Component {
   _renderMembersModal = () => {
     return (
       <View style={styles.modalContainerStyleMember}>
-        <View style={{backgroundColor: 'white', alignItems: 'flex-end'}}>
+        <View style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
           <Button
             rounded
             transparent
             onPress={() => {
-              this.setState({visibleModal: false});
+              this.setState({ visibleModal: false });
             }}>
-            <Icon type="Ionicons" name="md-close" style={{color: '#c4c4c4'}} />
+            <Icon type="Ionicons" name="md-close" style={{ color: '#c4c4c4' }} />
           </Button>
         </View>
         <ScrollView>
@@ -419,7 +427,7 @@ export default class ERCS2Request extends React.Component {
     //Item sparator view
     return (
       this._IllnessSpeciallty(),
-      this.setState({searchIllness: location1.illness, foundillness: 1})
+      this.setState({ searchIllness: location1.illness, foundillness: 1 })
     );
   };
 
@@ -439,7 +447,7 @@ export default class ERCS2Request extends React.Component {
         console.log('File Size : ' + res.size);
       }
 
-      var found = results.find(function(result) {
+      var found = results.find(function (result) {
         return result.size > 4000000;
       });
 
@@ -447,7 +455,7 @@ export default class ERCS2Request extends React.Component {
 
       if (found === undefined) {
         console.log(results);
-        this.setState({multipleFile: results});
+        this.setState({ multipleFile: results });
       } else {
         return alert('Cannot upload file(s) larger than 4 MB');
       }
@@ -467,7 +475,7 @@ export default class ERCS2Request extends React.Component {
   removeFile(item) {
     const newFile = this.state.multipleFile;
     newFile.splice(item, 1);
-    this.setState({multipleFile: newFile});
+    this.setState({ multipleFile: newFile });
   }
 
   onConfirmProcedure(item) {
@@ -482,7 +490,7 @@ export default class ERCS2Request extends React.Component {
         category_id: item[i].category_id,
       });
     }
-    this.setState({newListofItems: newList});
+    this.setState({ newListofItems: newList });
   }
 
   componentWillUnmount() {
@@ -490,8 +498,8 @@ export default class ERCS2Request extends React.Component {
   }
 
   render() {
-    const {dataSource, dataSourceIllness, proceduresData} = this.state;
-    const {memberPickedStyle} = styles;
+    const { dataSource, dataSourceIllness, proceduresData } = this.state;
+    const { memberPickedStyle } = styles;
     return (
       <Container>
         <ScrollView>
@@ -510,12 +518,12 @@ export default class ERCS2Request extends React.Component {
           </View>
           <View style={styles.divider} />
           <View style={styles.container}>
-            <View style={{marginTop: 20, marginBottom: 10}}>
+            <View style={{ marginTop: 20, marginBottom: 10 }}>
               {/* <Text style={styles.formLabel}>Choose member</Text> */}
               <Button
                 iconRight
                 onPress={() => {
-                  this.setState({visibleModal: 1});
+                  this.setState({ visibleModal: 1 });
                 }}
                 style={{
                   marginVertical: 10,
@@ -523,13 +531,13 @@ export default class ERCS2Request extends React.Component {
                   elevation: 0,
                   shadowOpacity: 0,
                 }}>
-                <Text style={{textTransform: 'capitalize', color: '#fff'}}>
+                <Text style={{ textTransform: 'capitalize', color: '#fff' }}>
                   Choose member
                 </Text>
                 <Icon
                   type="Ionicons"
                   name="md-arrow-dropdown"
-                  style={{color: '#2d2d2d', fontSize: 18}}
+                  style={{ color: '#2d2d2d', fontSize: 18 }}
                 />
               </Button>
               <Text style={memberPickedStyle}>
@@ -543,7 +551,7 @@ export default class ERCS2Request extends React.Component {
               <SearchBar
                 round
                 lightTheme
-                searchIcon={{size: 18, color: '#cacaca'}}
+                searchIcon={{ size: 18, color: '#cacaca' }}
                 containerStyle={{
                   height: 45,
                   marginVertical: 10,
@@ -557,55 +565,55 @@ export default class ERCS2Request extends React.Component {
                   height: 45,
                   backgroundColor: 'transparent',
                 }}
-                inputStyle={{justifyContent: 'center', fontSize: 14}}
+                inputStyle={{ justifyContent: 'center', fontSize: 14 }}
                 onChangeText={text => this.SearchFilterFunction(text)}
-                onClear={() => this.setState({searchData: [], destination: ''})}
+                onClear={() => this.setState({ searchData: [], destination: '',confirmSpec:true,DoctorSpeciallty:'' })}
                 placeholderTextColor="#cacaca"
                 placeholder="Hospital/provider's name..."
                 value={this.state.search}
               />
               {dataSource.length > 0 &&
-              this.state.searchTextChanged &&
-              this.state.search !== '' &&
-              this.state.found === 0 ? (
-                <FlatList
-                  data={this.state.dataSource}
-                  renderItem={({item}) => (
-                    <View style={{backgroundColor: '#fff'}}>
-                      <ListItem>
-                        <TouchableOpacity onPress={this.provideronpress(item)}>
-                          <Text
-                            style={{
-                              alignSelf: 'flex-start',
-                              fontSize: 14,
-                              fontWeight: 'bold',
-                              color: '#e74c3c',
-                            }}>
-                            {item.provider_name}
-                          </Text>
-                          <Text
-                            style={{
-                              alignSelf: 'flex-start',
-                              fontSize: 10,
-                              color: '#c4c4c4',
-                            }}>
-                            {item.street},{item.subd_brgy}, {item.city}
-                          </Text>
-                          <Text
-                            style={{
-                              alignSelf: 'flex-start',
-                              fontSize: 12,
-                              color: '#c4c4c4',
-                            }}>
-                            Schedule: {item.clinic_hrs}
-                          </Text>
-                        </TouchableOpacity>
-                      </ListItem>
-                    </View>
-                  )}
-                  keyExtractor={item => item.provider_name}
-                />
-              ) : null}
+                this.state.searchTextChanged &&
+                this.state.search !== '' &&
+                this.state.found === 0 ? (
+                  <FlatList
+                    data={this.state.dataSource}
+                    renderItem={({ item }) => (
+                      <View style={{ backgroundColor: '#fff' }}>
+                        <ListItem>
+                          <TouchableOpacity onPress={this.provideronpress(item)}>
+                            <Text
+                              style={{
+                                alignSelf: 'flex-start',
+                                fontSize: 14,
+                                fontWeight: 'bold',
+                                color: '#e74c3c',
+                              }}>
+                              {item.provider_name}
+                            </Text>
+                            <Text
+                              style={{
+                                alignSelf: 'flex-start',
+                                fontSize: 10,
+                                color: '#c4c4c4',
+                              }}>
+                              {item.street},{item.subd_brgy}, {item.city}
+                            </Text>
+                            <Text
+                              style={{
+                                alignSelf: 'flex-start',
+                                fontSize: 12,
+                                color: '#c4c4c4',
+                              }}>
+                              Schedule: {item.clinic_hrs}
+                            </Text>
+                          </TouchableOpacity>
+                        </ListItem>
+                      </View>
+                    )}
+                    keyExtractor={item => item.provider_name}
+                  />
+                ) : null}
             </View>
             <View style={styles.formStyle}>
               <SectionedMultiSelect
@@ -636,7 +644,7 @@ export default class ERCS2Request extends React.Component {
                 placeholder=""
                 autoCapitalize={'characters'}
                 value={this.state.diagnosis}
-                onChangeText={diagnosis => this.setState({diagnosis})}
+                onChangeText={diagnosis => this.setState({ diagnosis })}
               />
             </View>
             <View style={styles.formStyle}>
@@ -645,7 +653,7 @@ export default class ERCS2Request extends React.Component {
                 disabled={this.state.confirmSpec}
                 iconRight
                 onPress={() => {
-                  this.setState({visibleModal: 2});
+                  this.setState({ visibleModal: 2 });
                 }}
                 style={{
                   marginVertical: 10,
@@ -665,10 +673,10 @@ export default class ERCS2Request extends React.Component {
                 <Icon
                   type="Ionicons"
                   name="md-arrow-dropdown"
-                  style={{color: '#2d2d2d', fontSize: 18}}
+                  style={{ color: '#2d2d2d', fontSize: 18 }}
                 />
               </Button>
-              <View style={{flexDirection: 'column', paddingHorizontal: 10}}>
+              <View style={{ flexDirection: 'column', paddingHorizontal: 10 }}>
                 <Text
                   style={{
                     alignSelf: 'flex-start',
@@ -679,9 +687,9 @@ export default class ERCS2Request extends React.Component {
                   {this.state.DoctorSpeciallty === ''
                     ? ''
                     : 'DR. ' +
-                      this.state.DoctorSpeciallty.firstname +
-                      ' ' +
-                      this.state.DoctorSpeciallty.lastname}
+                    this.state.DoctorSpeciallty.firstname +
+                    ' ' +
+                    this.state.DoctorSpeciallty.lastname}
                 </Text>
                 <Text style={styles.doctorSpecialtyTextStyle}>
                   {this.state.DoctorSpeciallty === ''
@@ -705,17 +713,17 @@ export default class ERCS2Request extends React.Component {
                 animationOutTiming={700}>
                 <View style={styles.modalContainerStyle}>
                   <View
-                    style={{backgroundColor: 'white', alignItems: 'flex-end'}}>
+                    style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
                     <Button
                       rounded
                       transparent
                       onPress={() => {
-                        this.setState({visibleModal: null});
+                        this.setState({ visibleModal: null });
                       }}>
                       <Icon
                         type="Ionicons"
                         name="md-close"
-                        style={{color: '#2d2d2d'}}
+                        style={{ color: '#2d2d2d' }}
                       />
                     </Button>
                   </View>
@@ -761,16 +769,16 @@ export default class ERCS2Request extends React.Component {
               </Modal>
             </View>
             <View style={styles.formStyle}>
-              <Card style={{borderRadius: 10, justifyContent: 'center'}}>
+              <Card style={{ borderRadius: 10, justifyContent: 'center' }}>
                 <TouchableOpacity
                   activeOpacity={0.5}
                   onPress={this.selectMultipleFile.bind(this)}>
-                  <CardItem style={{borderRadius: 10}}>
-                    <Body style={{alignContent: 'center'}}>
+                  <CardItem style={{ borderRadius: 10 }}>
+                    <Body style={{ alignContent: 'center' }}>
                       <Icon
                         type="Ionicons"
                         name="md-attach"
-                        style={{color: '#2d2d2d', alignSelf: 'center'}}
+                        style={{ color: '#2d2d2d', alignSelf: 'center' }}
                       />
                       <Text
                         style={{
@@ -783,7 +791,7 @@ export default class ERCS2Request extends React.Component {
                     </Body>
                   </CardItem>
                 </TouchableOpacity>
-                <ScrollView style={{flex: 1}}>
+                <ScrollView style={{ flex: 1 }}>
                   {/*Showing the data of selected Multiple files*/}
                   {this.state.multipleFile.map((item, key) => (
                     <View
@@ -797,16 +805,16 @@ export default class ERCS2Request extends React.Component {
                       </Text> */}
                       <Thumbnail
                         square
-                        source={{uri: item.uri}}
+                        source={{ uri: item.uri }}
                         style={styles.thumbnailStyle}
                       />
                       <TouchableOpacity
-                        style={{marginTop: 16, marginRight: 20}}
+                        style={{ marginTop: 16, marginRight: 20 }}
                         onPress={() => this.removeFile(key)}>
                         <Icon
                           type="Ionicons"
                           name="md-close"
-                          style={{color: 'red'}}
+                          style={{ color: 'red' }}
                         />
                       </TouchableOpacity>
                     </View>
@@ -820,7 +828,7 @@ export default class ERCS2Request extends React.Component {
                 {this._renderMembersModal()}
               </Modal>
             </View>
-            <View style={{paddingVertical: 20}}>
+            <View style={{ paddingVertical: 20 }}>
               <Button
                 danger
                 rounded
@@ -858,7 +866,7 @@ export default class ERCS2Request extends React.Component {
     // if (this.state.searchIllness === null || this.state.searchIllness === '') {
     //   return alert('Please provide complaint');
     // }
-    this.setState({isLoading: true});
+    this.setState({ isLoading: true });
     this._InsertRequest();
   };
 
@@ -893,52 +901,64 @@ export default class ERCS2Request extends React.Component {
     });
 
     try {
-      let resp = await fetch(RCS2_SUBMIT, {
-        method: 'POST',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          'Content-Type': 'multipart/form-data',
+      let resp = await fetch(
+        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/submit',
+        {
+          method: 'POST',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formdata,
         },
-        body: formdata,
-      });
+      );
       let respJson = await resp.json();
       // console.log('boy',this.state.MembPickerValueHolderAcct)
 
       if (respJson.is_success === true) {
         let tmprcs2Num = respJson.data.ercsno;
-        let tmprcs2tag = respJson.data.approved;
+        let tmprcs2tag = respJson.data.approved
 
         global.rcs2tag = tmprcs2tag;
         global.rcs2Num = tmprcs2Num;
         global.acctNum = this.state.MembPickerValueHolderAcct;
-        this.setState({isLoading: false});
         let mid = await AsyncStorage.getItem(MEMBER_ID);
+        let email = await AsyncStorage.getItem(MEMB_EMAIL);
         if (global.rcs2tag === true) {
-          fetch(RCS2_SENDTOMAIL + global.rcs2Num, {
-            method: 'GET',
-            headers: {
-              Authorization: 'Bearer ' + token,
-              EmailAddress: email,
-              AccountNo: global.acctNum,
-              AccountID: mid,
-              //'Content-Type': 'application/x-www-form-urlencoded',
+          fetch(
+            'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' +
+            global.rcs2Num,
+            {
+              method: 'GET',
+              headers: {
+                Authorization: 'Bearer ' + token,
+                EmailAddress: email,
+                AccountNo: global.acctNum,
+                AccountID: mid,
+                //'Content-Type': 'application/x-www-form-urlencoded',
+              },
             },
-          }).then(response => {
-            response.json().then(data => {
-              if (data.is_success === true) {
-                this.setState({isLoading: false});
-                this.props.navigation.dispatch(Rcs2AutoApproved);
-              } else {
-                alert(data.error_message);
-              }
-            });
-          });
-        } else {
+          )
+            .then(response => {
+              response.json().then(data => {
+                if (data.is_success === true) {
+                  this.setState({ isLoading: false });
+                  this.props.navigation.dispatch(Rcs2AutoApproved);
+                } else {
+                  alert(data.error_message);
+                }
+              });
+            })
+
+        }
+        else {
+          this.setState({ isLoading: false });
           this.props.navigation.dispatch(resetAction);
         }
+
       } else {
         alert(respJson.error_message);
-        this.setState({isLoading: false});
+        this.setState({ isLoading: false });
       }
     } catch (error) {
       console.log(error);
@@ -946,7 +966,7 @@ export default class ERCS2Request extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {

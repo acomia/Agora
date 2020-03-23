@@ -24,6 +24,10 @@ import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-spinkit';
+import {
+  MEMBER_LOGIN,
+  SEND_EMAIL_VERIFICATION
+} from '../util/api.js';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -358,7 +362,7 @@ async getToken()
 
   _postUser() {
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/memberlogin',
+      MEMBER_LOGIN,
       {
         method: 'POST',
         headers: {
@@ -409,7 +413,7 @@ async getToken()
 
   SEND_EMAILVERIFICATION(membfname, memblname, membemail) {
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' +
+      SEND_EMAIL_VERIFICATION +
         membfname +
         '&lastname=' +
         memblname,

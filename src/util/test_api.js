@@ -48,7 +48,7 @@ export const ACCREDITED_CLINICS =
 export const NEARBY_HOSPITALS =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=3&hstype=H';
 export const NEARBY_CLINICS =
-  'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=1&hstype=C';
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/map/nearest?km=2&hstype=C';
 //RCS
 export const RCS_MEMBERS_PROFILE =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts';

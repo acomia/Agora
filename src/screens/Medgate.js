@@ -28,6 +28,12 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import LinearGradient from 'react-native-linear-gradient';
 import Dialog from 'react-native-dialog';
 import Spinner from 'react-native-spinkit';
+import {
+  MEDGATE_TOKEN_REQUEST_TEST,
+  MEDGATE_TOKEN_REQUEST_LIVE,
+  MEDGATE_CALLBACK_REQUEST_TEST,
+  MEDGATE_CALLBACK_REQUEST_LIVE,
+} from '../util/api.js';
 
 export default class SideBar extends React.Component {
   state = {
@@ -104,10 +110,10 @@ export default class SideBar extends React.Component {
 
     fetch(
       // test
-      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/Token',
+      MEDGATE_TOKEN_REQUEST_TEST,
 
       // live2
-      // 'https://scheduling.medgatephilippines.com/CallbackRequestService/Token',
+      // MEDGATE_TOKEN_REQUEST_LIVE,
       {
         method: 'POST',
         headers: {
@@ -148,10 +154,10 @@ export default class SideBar extends React.Component {
     fetch(
 
       // test
-      'https://schedulingtest.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+      MEDGATE_CALLBACK_REQUEST_TEST +
 
       // live
-      // 'https://scheduling.medgatephilippines.com/CallbackRequestService/RequestCallback?phoneNumber=' +
+      // MEDGATE_CALLBACK_REQUEST_LIVE +
         this.state.mobileNumber +
         '&provider=Intellicare',
       {

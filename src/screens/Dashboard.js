@@ -135,7 +135,7 @@ export default class Dashboard extends React.Component {
                           source={require('../../assets/images/menu-provider.png')}
                           resizeMode="contain"
                         />
-                        <Text style={styles.cardMenuText}>Providers</Text>
+                        <Text style={styles.cardMenuText}>Doctors & Dentists</Text>
                       </Body>
                     </CardItem>
                   </Card>

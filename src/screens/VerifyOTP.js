@@ -15,6 +15,14 @@ import Modal from 'react-native-modal';
 import OTPTextView from 'react-native-otp-textinput';
 import Spinner from 'react-native-spinkit';
 
+import {
+  REGISTRATION_SEND_OTP,
+  FORGOT_PASSWORD_VALIDATE_OTP,
+  FORGOT_PASSWORD_VERIFICATION_CODE,
+  SEND_EMAIL_VERIFICATION
+} from '../util/api.js';
+
+
 export default class VerifyOTP extends React.Component {
   constructor() {
     super();
@@ -30,7 +38,7 @@ export default class VerifyOTP extends React.Component {
     this.setState({isLoading: true});
     var FPW_EMAILADD = this.props.navigation.getParam('emailAddress');
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/validate',
+      FORGOT_PASSWORD_VALIDATE_OTP,
       {
         method: 'GET',
         headers: {
@@ -65,7 +73,7 @@ export default class VerifyOTP extends React.Component {
     this.setState({isLoading: true});
     var REG_EMAILADD = this.props.navigation.getParam('emailAddress');
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/validate',
+      REGISTRATION_SEND_OTP,
       {
         method: 'PUT',
         headers: {
@@ -109,7 +117,7 @@ export default class VerifyOTP extends React.Component {
     this.setState({isLoading: true});
     if (routeAddress === 'forgot_PW') {
       fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/forgotpassword/send?postedfrom=mobile',
+       FORGOT_PASSWORD_VERIFICATION_CODE,
         {
           method: 'PUT',
           headers: {
@@ -135,7 +143,7 @@ export default class VerifyOTP extends React.Component {
         });
     } else {
       fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/verification/register/send?postedfrom=mobile&firstname=' +
+        SEND_EMAIL_VERIFICATION +
           f_NAME +
           '&lastname=' +
           l_NAME,

@@ -293,6 +293,7 @@ export default class ERCS2Details extends React.Component {
     var xstatus = this.state.dataSource.status;
     var statusStyle = '';
     var statRemarks = '';
+    var enddate = moment(this.state.dataSource.validity_date).format('L')
     switch (
       xstatus // Passing the variable to switch condition
     ) {
@@ -628,12 +629,12 @@ export default class ERCS2Details extends React.Component {
           </View>
           <View style={styles.viewButton}>
             <Button
-              disabled={this.state.dataSource.status === 'A' ? false : true}
+              disabled={((enddate > moment().format('L')) && this.state.dataSource.status === 'A') ? false : true}
               block
               rounded
               iconLeft
-              style={
-                this.state.dataSource.status === 'A'
+              style={ ((enddate > moment().format('L')) &&
+                this.state.dataSource.status === 'A')
                   ? [styles.buttonSend, {backgroundColor: '#5DADE2'}]
                   : styles.buttonSend
               }
@@ -642,12 +643,12 @@ export default class ERCS2Details extends React.Component {
               <Text>Send to e-mail</Text>
             </Button>
             <Button
-              disabled={this.state.dataSource.status === 'A' ? false : true}
+              disabled={ ((enddate > moment().format('L')) && this.state.dataSource.status === 'A') ? false : true}
               block
               rounded
               iconLeft
-              style={
-                this.state.dataSource.status === 'A'
+              style={ ((enddate > moment().format('L')) &&
+                this.state.dataSource.status === 'A')
                   ? styles.buttonCancel
                   : null
               }

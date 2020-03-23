@@ -1,10 +1,12 @@
 import React from 'react';
 import {View, Text, PermissionsAndroid, Image, Animated} from 'react-native';
 import {Button, Container, InputGroup, Input} from 'native-base';
+import AsyncStorage from '@react-native-community/async-storage';
 import MapView, {Marker, Callout, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import Geocoder from 'react-native-geocoding';
 import MapViewDirections from 'react-native-maps-directions';
+import getDirections from 'react-native-google-maps-directions';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Carousel from 'react-native-snap-carousel';
 //Local components
@@ -14,14 +16,14 @@ import ExploreComponent from './ExploreComponent';
 import FooterComponent from './FooterComponent';
 import SpinnerComponent from './SpinnerComponent';
 //Util components
-import {GOOGLE_MAPS_APIKEY} from '../../util/googlemapapikey';
 import {
   MAPLOGIN_TOKEN,
   ACCREDITED_HOSPITALS,
   ACCREDITED_CLINICS,
   NEARBY_HOSPITALS,
   NEARBY_CLINICS,
-} from '../../util/api';
+  GOOGLE_MAPS_APIKEY,
+} from '../../util/test_api';
 //styles property
 import styles from './MapStyle';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
@@ -170,10 +172,32 @@ class Home extends React.Component {
       console.log(error);
     }
   }
+  storeData = async (hospital, clinic) => {
+    const hospitalSet = ['hospitalData', JSON.stringify(hospital)];
+    const clinicSet = ['clinicData', JSON.stringify(clinic)];
+    try {
+      await AsyncStorage.multiSet([hospitalSet, clinicSet]);
+    } catch (error) {
+      alert('Cannot save the data!');
+    }
+  };
+  retrieveData = async () => {
+    try {
+      const hData = await AsyncStorage.getItem('hospitalData');
+      const cData = await AsyncStorage.getItem('clinicData');
+      if (hData !== null && cData !== null) {
+        this.setState({
+          hospitals: JSON.parse(hData),
+          clinics: JSON.parse(cData),
+        });
+      }
+    } catch (error) {
+      alert('Cannot retrieve the data!');
+    }
+  };
   searchFilter = text => {
     if (text === '') {
       const temparray = this.state.coordinates;
-      console.log(temparray);
       temparray.splice(1, 1);
       this.setState({
         search_data: [],
@@ -288,11 +312,18 @@ class Home extends React.Component {
     })
       .then(response => {
         response.json().then(nearestHospital => {
-          this.setState({
-            carousel_coordinates: nearestHospital.data,
-            loading: false,
-            imgSrc: require('../../../assets/images/hospital_img.png'),
-          });
+          if (nearestHospital.data === null) {
+            alert('Unable to find nearby hospitals!');
+            this.setState({
+              loading: false,
+            });
+          } else {
+            this.setState({
+              carousel_coordinates: nearestHospital.data,
+              loading: false,
+              imgSrc: require('../../../assets/images/hospital_img.png'),
+            });
+          }
           this.hideExploreComponent();
         });
       })
@@ -312,11 +343,18 @@ class Home extends React.Component {
     })
       .then(response => {
         response.json().then(nearestClinic => {
-          this.setState({
-            carousel_coordinates: nearestClinic.data,
-            loading: false,
-            imgSrc: require('../../../assets/images/clinic_img.png'),
-          });
+          if (nearestClinic.data === null) {
+            alert('Unable to find nearby clinics!');
+            this.setState({
+              loading: false,
+            });
+          } else {
+            this.setState({
+              carousel_coordinates: nearestClinic.data,
+              loading: false,
+              imgSrc: require('../../../assets/images/clinic_img.png'),
+            });
+          }
           this.hideExploreComponent();
         });
       })
@@ -335,6 +373,44 @@ class Home extends React.Component {
       },
     });
   };
+  handleGetDirections = destination => {
+    const {region} = this.state;
+    const data = {
+      source: {
+        latitude: region.latitude,
+        longitude: region.longitude,
+      },
+      destination: {
+        latitude: Number(destination.latitudes),
+        longitude: Number(destination.longitudes),
+      },
+      params: [
+        {
+          key: 'travelmode',
+          value: 'driving',
+        },
+        {
+          key: 'dir_action',
+          value: 'navigate',
+        },
+      ],
+    };
+    getDirections(data);
+  };
+  handleMapOnPress() {
+    // if (this.state.coordinates.length > 1) {
+    //   const temparray = this.state.coordinates;
+    //   temparray.splice(1, 1);
+    //   this.setState({
+    //     carousel_coordinates: [],
+    //     coordinates: temparray,
+    //   });
+    // } else {
+    //   this.setState({
+    //     carousel_coordinates: [],
+    //   });
+    // }
+  }
   render() {
     const {
       region,
@@ -352,7 +428,8 @@ class Home extends React.Component {
               ref={map => (this.map = map)}
               provider={PROVIDER_GOOGLE}
               style={styles.map}
-              region={region}>
+              region={region}
+              onPress={() => this.handleMapOnPress()}>
               <Marker
                 coordinate={{
                   latitude: region.latitude,
@@ -380,7 +457,8 @@ class Home extends React.Component {
                   coordinate={{
                     latitude: Number(marker.latitudes),
                     longitude: Number(marker.longitudes),
-                  }}>
+                  }}
+                  onCalloutPress={() => this.handleGetDirections(marker)}>
                   <Image
                     source={require('../../../assets/images/intellicare-icon.png')}
                     style={{height: 46, width: 20}}

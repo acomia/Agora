@@ -12,6 +12,9 @@ import {
 } from 'native-base';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
+import {
+  FORGOT_PASSWORD_NEW_PASSWORD
+} from '../util/api.js';
 
 export default class ChangePassword extends React.Component {
   constructor() {
@@ -41,7 +44,7 @@ export default class ChangePassword extends React.Component {
     const {OTP_CODE, EMAIL_ADD} = this.props.navigation.state.params;
     console.log('CPW', OTP_CODE, EMAIL_ADD, this.state.new_PW);
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/forgotpassword/changepassword',
+      FORGOT_PASSWORD_NEW_PASSWORD,
       {
         method: 'PUT',
         headers: {

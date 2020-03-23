@@ -40,6 +40,11 @@ import Spinner from 'react-native-spinkit';
 import moment from 'moment';
 import { SearchBar } from 'react-native-elements';
 import MaskedInput from 'react-native-masked-input-text'
+import {
+  GET_PROVINCE,
+  GET_MUNICIPALITIES,
+  POST_REGISTRATION,
+} from '../util/api.js';
 
 const { width, height } = Dimensions.get('window');
 
@@ -109,8 +114,7 @@ export default class Login extends React.Component {
       isLoading: true,
     });
 
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/provinces?name=',
+    fetch(GET_PROVINCE,
       {
         method: 'GET',
         params: {
@@ -168,8 +172,7 @@ export default class Login extends React.Component {
 
     try {
 
-      fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/municipalities?name=',
+      fetch(GET_MUNICIPALITIES,
         {
           method: 'GET',
           headers: {
@@ -371,7 +374,7 @@ export default class Login extends React.Component {
                     }}
                     inputStyle={{ justifyContent: 'center', fontSize: 14 }}
                     onChangeText={text => this.SearchFilterFunction(text)}
-                    onClear={() => this.setState({ province: [], searchProvince: '',municipal: '' ,found: 0, confirmMunicipal: true})}
+                    onClear={() => this.setState({ province: [], searchProvince: '', municipal: '', found: 0, confirmMunicipal: true })}
                     placeholderTextColor="#cacaca"
                     placeholder="Select Province"
                     value={this.state.searchProvince}
@@ -581,19 +584,19 @@ export default class Login extends React.Component {
                 </Text>
               </View>
               <View style={styles.formInfo}>
-                  <Label style={{ fontSize: 14 }}>
-                    Intellicare/Avega Account No. *{' '}
-                    <Text style={styles.sampleText}>
-                      (eg. 00-00-00000-00000-00)
+                <Label style={{ fontSize: 14 }}>
+                  Intellicare/Avega Account No. *{' '}
+                  <Text style={styles.sampleText}>
+                    (eg. 00-00-00000-00000-00)
                     </Text>
-                  </Label>
-                  <View>
-                    <MaskedInput mask={'00-00-00000-00000-00'} placeholder={' 00-00-00000-00000-00'}
-                      style={styles.labelStyle}
-                      value={this.state.intellicare_acct}
-                      onChangeText={intellicare_acct => this.setState({ intellicare_acct })}
-                    />
-                  </View>
+                </Label>
+                <View>
+                  <MaskedInput mask={'00-00-00000-00000-00'} placeholder={' 00-00-00000-00000-00'}
+                    style={styles.labelStyle}
+                    value={this.state.intellicare_acct}
+                    onChangeText={intellicare_acct => this.setState({ intellicare_acct })}
+                  />
+                </View>
                 <Item floatingLabel style={styles.formStyle}>
                   <Label style={{ fontSize: 14 }}>
                     Intellicare/Avega Card No. *{' '}
@@ -628,14 +631,13 @@ export default class Login extends React.Component {
                     style={styles.labelStyle}
                     secureTextEntry={this.state.securePW}
                     value={this.state.password}
-                    onChangeText={password => this.setState({ password })
-                  }
+                    onChangeText={password => this.setState({ password })}
                   />
-                   <Icon
+                  <Icon
                     onPress={() => {
                       this.state.securePW
-                        ? this.setState({securePW: false})
-                        : this.setState({securePW: true});
+                        ? this.setState({ securePW: false })
+                        : this.setState({ securePW: true });
                     }}
                     type="Octicons"
                     name={this.state.securePW ? 'eye-closed' : 'eye'}
@@ -658,8 +660,8 @@ export default class Login extends React.Component {
                   <Icon
                     onPress={() => {
                       this.state.secureConfirmPW
-                        ? this.setState({secureConfirmPW: false})
-                        : this.setState({secureConfirmPW: true});
+                        ? this.setState({ secureConfirmPW: false })
+                        : this.setState({ secureConfirmPW: true });
                     }}
                     type="Octicons"
                     name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
@@ -1133,8 +1135,8 @@ export default class Login extends React.Component {
         return alert('Check Internet Connection...');
       }
     });
-    
-    if (this.state.province === ''|| this.state.province === null) {
+
+    if (this.state.province === '' || this.state.province === null) {
       return alert('Province is required');
     }
 
@@ -1307,8 +1309,7 @@ export default class Login extends React.Component {
     this.setState({ creatingAcct: true });
 
     try {
-      let resp = await fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/registration',
+      let resp = await fetch(POST_REGISTRATION,
         {
           method: 'POST',
           headers: {

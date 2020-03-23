@@ -68,7 +68,7 @@ const FilterComponent = () => {
         <Button
           block
           style={{flex: 1, right: 2}}
-          onPress={() => navigate('MapPage')}>
+          onPress={() => navigate('MapPage', {})}>
           <Text style={{color: '#fff', fontSize: 16}}>Apply</Text>
         </Button>
 

@@ -28,24 +28,12 @@ import {
   Icon,
   Item,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
-import {StackActions, NavigationActions} from 'react-navigation';
-import {SearchBar} from 'react-native-elements';
+import { StackActions, NavigationActions } from 'react-navigation';
+import { SearchBar } from 'react-native-elements';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
-
-import {
-  RCS_MEMBERS_PROFILE,
-  RCS1_CONSULT_TYPE,
-  RCS_PROVIDERS,
-  RCS1_ILLNESS_LIST,
-  RCS_SPECIALTIES,
-  RCS1_DOCTOR_BY_SPECS,
-  RCS1_SUBMIT,
-  RCS1_SENDTOMAIL,
-  RCS1_ILLNESS_BY_GENDER,
-} from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
@@ -55,7 +43,7 @@ const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWin
 
 const resetAction = StackActions.reset({
   index: 0,
-  actions: [NavigationActions.navigate({routeName: 'ERCS1SuccessPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'ERCS1SuccessPage' })],
 });
 
 export default class ERCS1Request extends React.Component {
@@ -92,7 +80,7 @@ export default class ERCS1Request extends React.Component {
       visibleModal: null,
       docspec: '',
       confirm: true,
-      onchangeMemb: false,
+      onchangeMemb: false
     };
     this.arrayholder = [];
     this.arrayholderIllness = [];
@@ -102,30 +90,35 @@ export default class ERCS1Request extends React.Component {
     Alert.alert(
       'Oops!',
       'The Member does not have OPD Benefits.',
-      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
-      {cancelable: false},
+      [
+        { text: 'OK', onPress: () => console.log('OK Pressed') },
+      ],
+      { cancelable: false },
     );
-  };
+  }
 
   async componentDidMount() {
-    console.log('test');
+    console.log('test')
     this._isMounted = true;
     global.token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     // getting the principal and dependent of the acct
-    fetch(RCS_MEMBERS_PROFILE, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + global.token,
-        AccountNo: membacct,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + global.token,
+          AccountNo: membacct,
+        },
       },
-    })
+    )
       .then(response => {
         response.json().then(responseJson => {
           this.setState({
             Rcsmemb: responseJson.data,
             acctno: responseJson.data[0].acct,
-            membgender: responseJson.data[0].gender,
+            membgender: responseJson.data[0].gender
           });
           // Rcsmemb = responseJson.data;
           // this.state.acctno = this.state.Rcsmemb[0].acct;
@@ -136,12 +129,15 @@ export default class ERCS1Request extends React.Component {
         alert('Error!' + error);
       });
     // available consultype
-    fetch(RCS1_CONSULT_TYPE, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + global.token,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + global.token,
+        },
       },
-    })
+    )
       .then(response => {
         response.json().then(consulttype => {
           this.setState({
@@ -153,17 +149,20 @@ export default class ERCS1Request extends React.Component {
         alert('Error!' + error);
       });
     // gathering a hospital
-    fetch(RCS_PROVIDERS, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + global.token,
-        AccountNo: membacct,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + global.token,
+          AccountNo: membacct,
+        },
+        params: {
+          name: '',
+          location: '',
+        },
       },
-      params: {
-        name: '',
-        location: '',
-      },
-    })
+    )
       .then(response => {
         response.json().then(provider => {
           this.setState({
@@ -171,7 +170,7 @@ export default class ERCS1Request extends React.Component {
           });
           this.arrayholder = provider.data;
         });
-        this._illness();
+        this._illness()
       })
       .catch(error => {
         alert('Error!' + error);
@@ -180,19 +179,23 @@ export default class ERCS1Request extends React.Component {
 
   async _illness() {
     // let token = await AsyncStorage.getItem(ACCESS_TOKEN);
-    fetch(RCS1_ILLNESS_LIST + this.state.membgender, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + global.token,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + this.state.membgender,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + global.token,
+        }
       },
-    })
+    )
       .then(response => {
+
         response.json().then(illness => {
           this.setState({
             dataSourceIllness: illness.data,
-            isLoading: false,
+            isLoading: false
           });
-          this.arrayholderIllness = illness.data;
+          this.arrayholderIllness = illness.data
         });
       })
       .catch(error => {
@@ -207,13 +210,16 @@ export default class ERCS1Request extends React.Component {
   async _IllnessSpeciallty() {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     // gathering the illness specialty
-    fetch(RCS_SPECIALTIES, {
-      method: 'GET',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        illness: this.state.searchIllness,
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          illness: this.state.searchIllness,
+        },
       },
-    })
+    )
       .then(response => {
         response.json().then(illnessSpec => {
           this.setState({
@@ -237,17 +243,20 @@ export default class ERCS1Request extends React.Component {
     let specname = await this.state.dataSourceIllnessSpec.specialty_name;
     // gathering of the doctors base on the location and illness specialty
     try {
-      fetch(RCS1_DOCTOR_BY_SPECS, {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          HospitalCode: this.state.providercode,
-          Specialty: specname,
+      fetch(
+        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=',
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + token,
+            HospitalCode: this.state.providercode,
+            Specialty: specname,
+          },
+          params: {
+            name: '',
+          },
         },
-        params: {
-          name: '',
-        },
-      })
+      )
         .then(response => {
           response.json().then(doctorspec => {
             if (doctorspec.data != null) {
@@ -304,25 +313,27 @@ export default class ERCS1Request extends React.Component {
     let specname = await this.state.searchIllness;
     //let specname = await this.state.dataSourceIllnessSpec.specialty_name
     // submit to save record
-    fetch(RCS1_SUBMIT, {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + token,
-        'Content-Type': 'application/json;charset=UTF-8',
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/submit',
+      {
+        method: 'POST',
+        headers: {
+          Authorization: 'Bearer ' + token,
+          'Content-Type': 'application/json;charset=UTF-8',
+        },
+        body: JSON.stringify({
+          acctno: this.state.acctno,
+          illness: specname,
+          doctor_name: this.state.docspec.firstname + ' ' + this.state.docspec.lastname,
+          doctor_code: this.state.docspec.doctor_code,
+          doctor_phone: this.state.docspec.phone,
+          hospital_name: this.state.search,
+          hospital_code: this.state.providercode,
+          hospital_schedule: this.state.sched,
+          consult_type: this.state.PickerValueHolder,
+        }),
       },
-      body: JSON.stringify({
-        acctno: this.state.acctno,
-        illness: specname,
-        doctor_name:
-          this.state.docspec.firstname + ' ' + this.state.docspec.lastname,
-        doctor_code: this.state.docspec.doctor_code,
-        doctor_phone: this.state.docspec.phone,
-        hospital_name: this.state.search,
-        hospital_code: this.state.providercode,
-        hospital_schedule: this.state.sched,
-        consult_type: this.state.PickerValueHolder,
-      }),
-    })
+    )
       .then(response => {
         response.json().then(data => {
           //console.log('ercs1', data)
@@ -330,19 +341,23 @@ export default class ERCS1Request extends React.Component {
           // send to email
           if (data.is_success === true) {
             let rcs = data.data.ercsno;
-            fetch(RCS1_SENDTOMAIL + rcs, {
-              method: 'GET',
-              params: {
-                no: rcs,
+            fetch(
+              'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
+              rcs,
+              {
+                method: 'GET',
+                params: {
+                  no: rcs,
+                },
+                headers: {
+                  Authorization: 'Bearer ' + token,
+                  EmailAddress: email,
+                  AccountNo: this.state.acctno,
+                  AccountID: mid,
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                },
               },
-              headers: {
-                Authorization: 'Bearer ' + token,
-                EmailAddress: email,
-                AccountNo: this.state.acctno,
-                AccountID: mid,
-                'Content-Type': 'application/x-www-form-urlencoded',
-              },
-            })
+            )
               .then(response => {
                 response.json().then(data => {
                   if (data.is_success === true) {
@@ -353,6 +368,7 @@ export default class ERCS1Request extends React.Component {
                       isLoading: false,
                     });
                     this.props.navigation.dispatch(resetAction);
+
                   } else {
                     this.setState({
                       isLoading: false,
@@ -368,6 +384,7 @@ export default class ERCS1Request extends React.Component {
                 alert('Error!' + error);
               });
           } else {
+
             this.setState({
               isLoading: false,
             });
@@ -384,7 +401,7 @@ export default class ERCS1Request extends React.Component {
   }
 
   SearchFilterFunction(text) {
-    const newData = this.arrayholder.filter(function(item) {
+    const newData = this.arrayholder.filter(function (item) {
       //applying filter for the inserted text in search bar
       const itemData = item.provider_name
         ? item.provider_name.toUpperCase()
@@ -402,7 +419,7 @@ export default class ERCS1Request extends React.Component {
   }
 
   SearchIllnesFilterFunction(text) {
-    const newDataillness = this.arrayholderIllness.filter(function(item) {
+    const newDataillness = this.arrayholderIllness.filter(function (item) {
       const itemDataillness = item.illness
         ? item.illness.toUpperCase()
         : ''.toUpperCase();
@@ -437,76 +454,72 @@ export default class ERCS1Request extends React.Component {
     return (
       this._IllnessSpeciallty(),
       this.buttonEnable(),
-      this.setState({searchIllness: location1.illness, foundillness: 1})
+      this.setState({ searchIllness: location1.illness, foundillness: 1 })
     );
   };
 
-  updateMembPicked = MembPicked => {
-    console.log('Memb', MembPicked);
+  updateMembPicked = (MembPicked) => {
+    console.log('Memb', MembPicked)
     this.setState({
-      acctno: MembPicked.acct,
-      MembPickerValueHolder: MembPicked.fullname,
-      membbenefit: MembPicked.op_benefit,
-      membgender: MembPicked.gender,
-      isLoading: true,
-      visibleModal: null,
-      docspec: '',
-      searchIllness: '',
-      search: '',
-      confirm: true,
-    });
+      acctno: MembPicked.acct, MembPickerValueHolder: MembPicked.fullname, membbenefit: MembPicked.op_benefit, membgender: MembPicked.gender, isLoading: true, visibleModal: null,
+      docspec: '', searchIllness: '', search: '', confirm: true
+    })
     if (MembPicked.op_benefit === false) {
       this.showAlert();
       this.setState({
         isLoading: false,
-      });
-      this._renderMembersModal();
-    } else {
-      fetch(RCS1_ILLNESS_BY_GENDER + MembPicked.gender, {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + global.token,
-        },
       })
+      this._renderMembersModal()
+    }
+    else {
+      fetch(
+        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + MembPicked.gender,
+        {
+          method: 'GET',
+          headers: {
+            Authorization: 'Bearer ' + global.token,
+          }
+        },
+      )
         .then(response => {
           response.json().then(illness => {
             this.setState({
               dataSourceIllness: illness.data,
-              isLoading: false,
+              isLoading: false
             });
-            this.arrayholderIllness = illness.data;
+            this.arrayholderIllness = illness.data
           });
         })
         .catch(error => {
           alert('Error!' + error);
         });
     }
-  };
+  }
   _renderMembersModal = () => {
     return (
       <View style={styles.modalContainerStyle}>
-        <View style={{backgroundColor: 'white', alignItems: 'flex-end'}}>
+        <View
+          style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
           <Button
             rounded
             transparent
             onPress={() => {
-              this.setState({visibleModal: false});
+              this.setState({ visibleModal: false });
             }}>
-            <Icon type="Ionicons" name="md-close" style={{color: '#c4c4c4'}} />
+            <Icon
+              type="Ionicons"
+              name="md-close"
+              style={{ color: '#c4c4c4' }}
+            />
           </Button>
         </View>
         <ScrollView>
           {this.state.Rcsmemb.map((item, key) => (
             <ListItem key={key}>
-              <TouchableOpacity onPress={() => this.updateMembPicked(item)}>
+              <TouchableOpacity
+                onPress={() => this.updateMembPicked(item)}>
                 <View>
-                  <Text
-                    style={{
-                      color: '#5fb650',
-                      fontSize: 14,
-                      fontWeight: 'bold',
-                      alignSelf: 'flex-start',
-                    }}>
+                  <Text style={{ color: '#5fb650', fontSize: 14, fontWeight: 'bold', alignSelf: 'flex-start' }}>
                     {item.fullname}
                   </Text>
                 </View>
@@ -515,18 +528,13 @@ export default class ERCS1Request extends React.Component {
           ))}
         </ScrollView>
       </View>
-    );
-  };
+    )
+  }
 
   render() {
-    const {navigate} = this.props.navigation;
-    const {
-      spinnerStyle,
-      memberPickedStyle,
-      modalDocSpecTextStyle,
-      modalDocNameTextStyle,
-    } = styles;
-    const {dataSource, dataSourceIllness} = this.state;
+    const { navigate } = this.props.navigation;
+    const { spinnerStyle, memberPickedStyle, modalDocSpecTextStyle, modalDocNameTextStyle } = styles;
+    const { dataSource, dataSourceIllness } = this.state;
     return (
       <Container>
         <StatusBar
@@ -542,44 +550,36 @@ export default class ERCS1Request extends React.Component {
         </View>
         <View style={styles.divider} />
         <ScrollView style={styles.container}>
-          <View style={{marginTop: 20, marginBottom: 10}}>
+          <View style={{ marginTop: 20, marginBottom: 10 }}>
             {/* <Text style={styles.formLabel}>Choose member</Text> */}
             <Button
               iconRight
-              onPress={() => {
-                this.setState({visibleModal: 1});
-              }}
-              style={{
-                marginVertical: 10,
-                backgroundColor: '#5fb650',
-                elevation: 0,
-                shadowOpacity: 0,
-              }}>
-              <Text style={{textTransform: 'capitalize', color: '#fff'}}>
+              onPress={() => { this.setState({ visibleModal: 1 }) }}
+              style={{ marginVertical: 10, backgroundColor: '#5fb650', elevation: 0, shadowOpacity: 0 }}>
+              <Text style={{ textTransform: 'capitalize', color: '#fff' }}>
                 Choose member
               </Text>
               <Icon
                 type="Ionicons"
                 name="md-arrow-dropdown"
-                style={{color: '#2d2d2d', fontSize: 18}}
+                style={{ color: '#2d2d2d', fontSize: 18 }}
               />
             </Button>
-            <Text style={memberPickedStyle}>
-              {this.state.membbenefit == true
+            <Text style={memberPickedStyle}>{
+              this.state.membbenefit == true
                 ? this.state.MembPickerValueHolder
-                : ''}
-            </Text>
+                : ''}</Text>
           </View>
-          <View style={{marginTop: 20, marginBottom: 10}}>
+          <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Type of consultation</Text>
             <Picker
               mode="dropdown"
-              style={{width: undefined}}
+              style={{ width: undefined }}
               iosIcon={<Icon name="arrow-down" color="#2d2d2d" />}
-              itemStyle={{fontSize: 14}}
+              itemStyle={{ fontSize: 14 }}
               selectedValue={this.state.PickerValueHolder}
               onValueChange={(modeValue, itemIndex) =>
-                this.setState({PickerValueHolder: modeValue})
+                this.setState({ PickerValueHolder: modeValue })
               }>
               {this.state.RCSconsultype.map((item, key) => (
                 <Picker.Item
@@ -590,12 +590,12 @@ export default class ERCS1Request extends React.Component {
               ))}
             </Picker>
           </View>
-          <View style={{marginTop: 20, marginBottom: 10}}>
+          <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Choose hospital/facility</Text>
             <SearchBar
               lightTheme
               round
-              searchIcon={{size: 18, color: '#cacaca'}}
+              searchIcon={{ size: 18, color: '#cacaca' }}
               containerStyle={{
                 height: 45,
                 marginVertical: 10,
@@ -609,13 +609,16 @@ export default class ERCS1Request extends React.Component {
                 height: 45,
                 backgroundColor: 'transparent',
               }}
-              inputStyle={{justifyContent: 'center', fontSize: 14}}
+              inputStyle={{ justifyContent: 'center', fontSize: 14 }}
               onChangeText={text => this.SearchFilterFunction(text)}
               onClear={() =>
                 this.setState({
                   searchData: [],
                   destination: '',
                   searchIllness: '',
+                  confirm:true,
+                   found:0,
+                   docspec: ''
                 })
               }
               placeholderTextColor="#cacaca"
@@ -623,55 +626,55 @@ export default class ERCS1Request extends React.Component {
               value={this.state.search}
             />
             {dataSource.length > 0 &&
-            this.state.searchTextChanged &&
-            this.state.search !== '' &&
-            this.state.found === 0 ? (
-              <FlatList
-                style={{borderBottomWidth: 0}}
-                data={dataSource}
-                renderItem={({item}) => (
-                  <View style={{backgroundColor: '#ffffff'}}>
-                    <ListItem>
-                      <TouchableOpacity onPress={this.provideronpress(item)}>
-                        <Text
-                          style={{
-                            alignSelf: 'flex-start',
-                            fontSize: 14,
-                            color: '#5fb650',
-                            fontWeight: 'bold',
-                          }}>
-                          {item.provider_name}
-                        </Text>
-                        <Text
-                          style={{
-                            alignSelf: 'flex-start',
-                            fontSize: 12,
-                            color: '#cacaca',
-                          }}>
-                          {item.street},{item.subd_brgy}, {item.city}
-                        </Text>
-                        <Text
-                          style={{
-                            alignSelf: 'flex-start',
-                            fontSize: 12,
-                            color: '#cacaca',
-                          }}>
-                          Schedule: {item.clinic_hrs}
-                        </Text>
-                      </TouchableOpacity>
-                    </ListItem>
-                  </View>
-                )}
-                keyExtractor={item => item.provider_name}
-              />
-            ) : null}
+              this.state.searchTextChanged &&
+              this.state.search !== '' &&
+              this.state.found === 0 ? (
+                <FlatList
+                  style={{ borderBottomWidth: 0 }}
+                  data={dataSource}
+                  renderItem={({ item }) => (
+                    <View style={{ backgroundColor: '#ffffff' }}>
+                      <ListItem>
+                        <TouchableOpacity onPress={this.provideronpress(item)}>
+                          <Text
+                            style={{
+                              alignSelf: 'flex-start',
+                              fontSize: 14,
+                              color: '#5fb650',
+                              fontWeight: 'bold',
+                            }}>
+                            {item.provider_name}
+                          </Text>
+                          <Text
+                            style={{
+                              alignSelf: 'flex-start',
+                              fontSize: 12,
+                              color: '#cacaca',
+                            }}>
+                            {item.street},{item.subd_brgy}, {item.city}
+                          </Text>
+                          <Text
+                            style={{
+                              alignSelf: 'flex-start',
+                              fontSize: 12,
+                              color: '#cacaca',
+                            }}>
+                            Schedule: {item.clinic_hrs}
+                          </Text>
+                        </TouchableOpacity>
+                      </ListItem>
+                    </View>
+                  )}
+                  keyExtractor={item => item.provider_name}
+                />
+              ) : null}
           </View>
-          <View style={{marginTop: 20, marginBottom: 10}}>
+          <View style={{ marginTop: 20, marginBottom: 10 }}>
             <Text style={styles.formLabel}>Chief complaint</Text>
             <SearchBar
               round
               lightTheme
-              searchIcon={{size: 18, color: '#cacaca'}}
+              searchIcon={{ size: 18, color: '#cacaca' }}
               containerStyle={{
                 width: SCREEN_WIDTH,
                 height: 45,
@@ -686,46 +689,41 @@ export default class ERCS1Request extends React.Component {
                 height: 45,
                 backgroundColor: 'transparent',
               }}
-              inputStyle={{justifyContent: 'center', fontSize: 14}}
+              inputStyle={{ justifyContent: 'center', fontSize: 14 }}
               onChangeText={text => this.SearchIllnesFilterFunction(text)}
-              onClear={() => this.setState({searchData1: [], destination1: ''})}
+              onClear={() => this.setState({ searchData1: [], destination1: '' , confirm:true, found:0,docspec: ''})}
               placeholderTextColor="#cacaca"
               placeholder="Search Illness..."
               value={this.state.searchIllness}
             />
             {dataSourceIllness.length > 0 &&
-            this.state.searchTextChanged &&
-            this.state.searchIllness !== '' &&
-            this.state.foundillness === 0 ? (
-              <FlatList
-                data={dataSourceIllness}
-                renderItem={({item}) => (
-                  <View style={{backgroundColor: '#fff'}}>
-                    <ListItem>
-                      <TouchableOpacity onPress={this.illnessonpress(item)}>
-                        <Text
-                          style={{
-                            alignSelf: 'flex-start',
-                            fontSize: 14,
-                            fontWeight: 'bold',
-                          }}>
-                          {item.illness}
-                        </Text>
-                      </TouchableOpacity>
-                    </ListItem>
-                  </View>
-                )}
-                keyExtractor={item => item.illness}
-              />
-            ) : null}
+              this.state.searchTextChanged &&
+              this.state.searchIllness !== '' &&
+              this.state.foundillness === 0 ? (
+                <FlatList
+                  data={dataSourceIllness}
+                  renderItem={({ item }) => (
+                    <View style={{ backgroundColor: '#fff' }}>
+                      <ListItem>
+                        <TouchableOpacity onPress={this.illnessonpress(item)}>
+                          <Text style={{ alignSelf: 'flex-start', fontSize: 14, fontWeight: 'bold' }}>
+                            {item.illness}
+                          </Text>
+                        </TouchableOpacity>
+                      </ListItem>
+                    </View>
+                  )}
+                  keyExtractor={item => item.illness}
+                />
+              ) : null}
           </View>
-          <View style={{marginVertical: 20}}>
+          <View style={{ marginVertical: 20 }}>
             <Text style={styles.formLabel}>Attending Physician</Text>
             <Button
               iconRight
               disabled={this.state.confirm}
               onPress={() => {
-                this.setState({visibleModal: 2});
+                this.setState({ visibleModal: 2 });
               }}
               style={{
                 marginVertical: 10,
@@ -733,17 +731,13 @@ export default class ERCS1Request extends React.Component {
                 elevation: 0,
                 shadowOpacity: 0,
               }}>
-              <Text
-                style={{
-                  textTransform: 'capitalize',
-                  color: this.state.confirm ? '#cacaca' : '#fff',
-                }}>
+              <Text style={{ textTransform: 'capitalize', color: this.state.confirm ? '#cacaca' : '#fff' }}>
                 Choose Doctor
               </Text>
               <Icon
                 type="Ionicons"
                 name="md-arrow-dropdown"
-                style={{color: '#2d2d2d', fontSize: 18}}
+                style={{ color: '#2d2d2d', fontSize: 18 }}
               />
             </Button>
             <View
@@ -755,9 +749,9 @@ export default class ERCS1Request extends React.Component {
                 {this.state.docspec === ''
                   ? ''
                   : 'DR. ' +
-                    this.state.docspec.firstname +
-                    ' ' +
-                    this.state.docspec.lastname}
+                  this.state.docspec.firstname +
+                  ' ' +
+                  this.state.docspec.lastname}
               </Text>
               <Text style={modalDocSpecTextStyle}>
                 {this.state.docspec === ''
@@ -781,17 +775,17 @@ export default class ERCS1Request extends React.Component {
               animationOutTiming={700}>
               <View style={styles.modalContainerStyle}>
                 <View
-                  style={{backgroundColor: 'white', alignItems: 'flex-end'}}>
+                  style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
                   <Button
                     rounded
                     transparent
                     onPress={() => {
-                      this.setState({visibleModal: null});
+                      this.setState({ visibleModal: null });
                     }}>
                     <Icon
                       type="Ionicons"
                       name="md-close"
-                      style={{color: '#c4c4c4'}}
+                      style={{ color: '#c4c4c4' }}
                     />
                   </Button>
                 </View>
@@ -800,7 +794,7 @@ export default class ERCS1Request extends React.Component {
                     <ListItem key={key}>
                       <TouchableOpacity
                         onPress={() => {
-                          this.setState({docspec: item, visibleModal: false});
+                          this.setState({ docspec: item, visibleModal: false });
                         }}>
                         <View>
                           <Text style={modalDocNameTextStyle}>
@@ -826,14 +820,11 @@ export default class ERCS1Request extends React.Component {
                 </ScrollView>
               </View>
             </Modal>
-            <Modal
-              isVisible={this.state.visibleModal === 1}
-              animationInTiming={700}
-              animationOutTiming={700}>
+            <Modal isVisible={this.state.visibleModal === 1} animationInTiming={700} animationOutTiming={700}>
               {this._renderMembersModal()}
             </Modal>
           </View>
-          <View style={{bottom: 10}}>
+          <View style={{ bottom: 10 }}>
             <Button
               rounded
               success
@@ -843,17 +834,19 @@ export default class ERCS1Request extends React.Component {
             </Button>
           </View>
         </ScrollView>
-        {this.state.isLoading && (
-          <View style={spinnerStyle}>
-            <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} />
-          </View>
-        )}
-      </Container>
+        {
+          this.state.isLoading && (
+            <View style={spinnerStyle}>
+              <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} />
+            </View>
+          )
+        }
+      </Container >
     );
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {
@@ -926,7 +919,7 @@ const styles = StyleSheet.create({
     color: '#5fb650',
     fontWeight: 'bold',
     alignSelf: 'flex-start',
-    marginLeft: 10,
+    marginLeft: 10
   },
   modalDocSpecTextStyle: {
     color: '#c4c4c4',
@@ -938,5 +931,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     alignSelf: 'flex-start',
-  },
+  }
 });
