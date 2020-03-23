@@ -56,7 +56,9 @@ class Home extends React.Component {
       carousel_coordinates: [],
       coordinates: [],
       search_data: [],
-      searchTempData: [],
+      hospitals: [],
+      clinics: [],
+      all_facilities: [],
       nearestClinics: [],
       nearestHospitals: [],
       region: {
@@ -78,7 +80,10 @@ class Home extends React.Component {
   async componentDidMount() {
     await request_location_runtime_permission();
     this.getCurrectLocation();
-    this.getSearchData();
+    await this.retrieveData();
+    if (this.state.hospitals.length === 0 && this.state.clinics.length === 0) {
+      await this.getSearchData();
+    }
   }
   async getCurrectLocation() {
     Geocoder.init(GOOGLE_MAPS_APIKEY);
@@ -147,7 +152,7 @@ class Home extends React.Component {
       });
       let hospJson = await hospitals.json();
       this.setState({
-        searchTempData: hospJson.data,
+        hospitals: hospJson.data,
       });
     } catch (error) {
       console.log(error);
@@ -161,13 +166,16 @@ class Home extends React.Component {
         },
       });
       let clinicJson = await clinics.json();
-      const new_array = [...this.state.searchTempData, ...clinicJson.data];
+      const new_array = [...this.state.hospitals, ...clinicJson.data];
       this.setState({
-        searchTempData: new_array,
+        all_facilities: new_array,
+        clinics: clinicJson.data,
         loading: false,
       });
       this.search_holder = new_array;
-      console.log(this.search_holder);
+      {
+        this.storeData(this.state.hospitals, this.state.clinics);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -177,19 +185,28 @@ class Home extends React.Component {
     const clinicSet = ['clinicData', JSON.stringify(clinic)];
     try {
       await AsyncStorage.multiSet([hospitalSet, clinicSet]);
+      console.log('Saved!');
     } catch (error) {
       alert('Cannot save the data!');
     }
   };
   retrieveData = async () => {
+    this.setState({loading: true});
     try {
       const hData = await AsyncStorage.getItem('hospitalData');
       const cData = await AsyncStorage.getItem('clinicData');
       if (hData !== null && cData !== null) {
+        const new_array = [...JSON.parse(hData), ...JSON.parse(cData)];
         this.setState({
+          all_facilities: new_array,
           hospitals: JSON.parse(hData),
           clinics: JSON.parse(cData),
+          loading: false,
         });
+        this.search_holder = new_array;
+        console.log('Got it', this.state);
+      } else {
+        this.setState({loading: false});
       }
     } catch (error) {
       alert('Cannot retrieve the data!');
@@ -234,7 +251,6 @@ class Home extends React.Component {
         },
       ],
     });
-    console.log(this.state);
   };
   showExploreComponent = () => {
     Animated.spring(this.state.exploreFooterHeight, {
@@ -319,6 +335,13 @@ class Home extends React.Component {
             });
           } else {
             this.setState({
+              coordinates: [
+                ...this.state.coordinates,
+                {
+                  latitude: Number(nearestHospital.data[0].latitudes),
+                  longitude: Number(nearestHospital.data[0].longitudes),
+                },
+              ],
               carousel_coordinates: nearestHospital.data,
               loading: false,
               imgSrc: require('../../../assets/images/hospital_img.png'),
@@ -350,6 +373,13 @@ class Home extends React.Component {
             });
           } else {
             this.setState({
+              coordinates: [
+                ...this.state.coordinates,
+                {
+                  latitude: Number(nearestClinic.data[0].latitudes),
+                  longitude: Number(nearestClinic.data[0].longitudes),
+                },
+              ],
               carousel_coordinates: nearestClinic.data,
               loading: false,
               imgSrc: require('../../../assets/images/clinic_img.png'),
@@ -411,6 +441,16 @@ class Home extends React.Component {
     //   });
     // }
   }
+  filterSearchData = filter => {
+    switch (filter) {
+      case 'ALL':
+        return (this.search_holder = this.state.all_facilities);
+      case 'HOSPITALS':
+        return (this.search_holder = this.state.hospitals);
+      case 'CLINICS':
+        return (this.search_holder = this.state.clinics);
+    }
+  };
   render() {
     const {
       region,
@@ -468,6 +508,10 @@ class Home extends React.Component {
                       <Text numberOfLines={2} style={styles.calloutMarkerTitle}>
                         {marker.hospital_name}
                       </Text>
+                      <Text
+                        style={styles.calloutMarkerGetDirectionText}>
+                        Click to Get Direction>>>
+                      </Text>
                     </View>
                   </Callout>
                 </Marker>
@@ -499,7 +543,10 @@ class Home extends React.Component {
                 resetOnChange={false}
               />
             </MapView>
-            <SearchBox searchTerm={this.searchFilter} />
+            <SearchBox
+              searchTerm={this.searchFilter}
+              filterData={this.filterSearchData}
+            />
             {search_data.length > 0 ? (
               <SearchResults
                 data={search_data}

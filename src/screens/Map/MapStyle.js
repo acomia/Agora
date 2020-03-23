@@ -65,6 +65,11 @@ const styles = {
     fontWeight: 'bold',
     color: '#5FB650',
   },
+  calloutMarkerGetDirectionText: {
+    fontSize: 12,
+    color: 'blue',
+    fontStyle: 'italic',
+  },
   exploreCard: {
     alignItems: 'center',
     padding: 20,
