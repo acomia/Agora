@@ -629,11 +629,11 @@ export default class ERCS2Details extends React.Component {
           </View>
           <View style={styles.viewButton}>
             <Button
-              disabled={((enddate > moment().format('L')) && this.state.dataSource.status === 'A') ? false : true}
+              disabled={((enddate >= moment().format('L')) && this.state.dataSource.status === 'A') ? false : true}
               block
               rounded
               iconLeft
-              style={ ((enddate > moment().format('L')) &&
+              style={ ((enddate >= moment().format('L')) &&
                 this.state.dataSource.status === 'A')
                   ? [styles.buttonSend, {backgroundColor: '#5DADE2'}]
                   : styles.buttonSend
@@ -643,11 +643,11 @@ export default class ERCS2Details extends React.Component {
               <Text>Send to e-mail</Text>
             </Button>
             <Button
-              disabled={ ((enddate > moment().format('L')) && this.state.dataSource.status === 'A') ? false : true}
+              disabled={ ((enddate >= moment().format('L')) && this.state.dataSource.status === 'A') ? false : true}
               block
               rounded
               iconLeft
-              style={ ((enddate > moment().format('L')) &&
+              style={ ((enddate >= moment().format('L')) &&
                 this.state.dataSource.status === 'A')
                   ? styles.buttonCancel
                   : null

@@ -316,11 +316,11 @@ export default class ERCS1Details extends React.Component {
           )}
           <View style={styles.viewButton}>
             <Button
-              disabled={((enddate > moment().format('L')) && xstatus === 'Approved') ? false : true}
+              disabled={((enddate >= moment().format('L')) && xstatus === 'Approved') ? false : true}
               block
               rounded
               iconLeft
-              style={((enddate > moment().format('L')) &&
+              style={((enddate >= moment().format('L')) &&
                 xstatus === 'Approved')
                 ? [styles.buttonSend, { backgroundColor: '#5DADE2' }]
                 : styles.buttonSend
@@ -330,11 +330,11 @@ export default class ERCS1Details extends React.Component {
               <Text>Send to e-mail</Text>
             </Button>
             <Button
-              disabled={((enddate > moment().format('L')) && xstatus === 'Approved') ? false : true}
+              disabled={((enddate >= moment().format('L')) && xstatus === 'Approved') ? false : true}
               block
               rounded
               iconLeft
-              style={((enddate > moment().format('L')) && xstatus === 'Approved') ? styles.buttonCancel : null}
+              style={((enddate >= moment().format('L')) && xstatus === 'Approved') ? styles.buttonCancel : null}
               onPress={() => {
                 this.setState({ visibleModal: true });
               }}>
