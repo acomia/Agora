@@ -90,7 +90,6 @@ export default class Members extends React.Component {
           } else {
             if (responseJson.error_message == 'No Member Info Found!') {
               this.showAlert();
-              alert('Members not found!')
               this.setState({ isLoading: false })
 
               this.props.navigation.navigate('Dashboard')
@@ -99,13 +98,13 @@ export default class Members extends React.Component {
 
           if (responseJson == 'Invalid Access Token') {
             console.log('testsample22222', responseJson)
-            alert('Session Expired')
             this.onLogout();
+            return Alert.alert('Oops','Session Expired')
           }
         })
       })
       .catch((error) => {
-        alert('Unable to connect to server' + error)
+        return Alert.alert('Unable to connect to server' + error)
       })
 
   }

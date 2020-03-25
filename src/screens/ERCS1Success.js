@@ -63,9 +63,8 @@ export default class ERCS1Success extends React.Component {
     })
       .then(response => {
         response.json().then(data => {
-          console.log('final', data);
           if (data.is_success === true) {
-            alert('Resend Email Successfully');
+            return Alert.alert('','Resend Email Successfully');
           } else {
             alert(data.error_message);
           }

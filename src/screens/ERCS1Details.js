@@ -33,6 +33,12 @@ const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
 
+const ExpiredSession = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
+});
+
 export default class ERCS1Details extends React.Component {
   constructor(props) {
     super(props);
@@ -60,7 +66,7 @@ export default class ERCS1Details extends React.Component {
       await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
       await AsyncStorage.removeItem(MEMB_NAME);
       await AsyncStorage.removeItem(MEMB_EMAIL);
-      this.props.navigation.dispatch(resetAction);
+      this.props.navigation.dispatch(ExpiredSession);
     } catch {
       console.log('Something went wrong');
     }
@@ -89,6 +95,11 @@ export default class ERCS1Details extends React.Component {
     })
       .then(response => {
         response.json().then(responseJson => {
+          if (responseJson == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops','Session Expired');
+          }
+          else{
           if (responseJson.data != null) {
             this.setState({
               isLoading: false,
@@ -96,16 +107,11 @@ export default class ERCS1Details extends React.Component {
             });
           } else {
             this.setState({ isLoading: false });
-            alert('No RCS Transaction found!');
             this.props.navigation.navigate('ERCS1HistoryPage');
+            return Alert.alert('Oops','No RCS Transaction found!');
             //}
           }
-
-          if (responseJson == 'Invalid Access Token') {
-            alert('Session Expired');
-            this.onLogout();
-            this.props.navigation.navigate('Dashboard');
-          }
+        }
         });
       })
       .catch(error => {
@@ -138,12 +144,19 @@ export default class ERCS1Details extends React.Component {
     })
       .then(response => {
         response.json().then(data => {
+          if (data == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops','Session Expired');
+          }
+          else{
           if (data.is_success === true) {
             this.setState({ isLoading: false });
-            alert('RCS sent to Email Successfully');
+            return Alert.alert('','RCS sent to Email Successfully');
           } else {
-            alert(data.error_message);
+            this.setState({ isLoading: false });
+           alert(data.error_message);
           }
+        }
         });
       })
       .catch(error => {

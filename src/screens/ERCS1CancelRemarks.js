@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native';
+import {View, Text, StyleSheet, Dimensions, Image, Alert,} from 'react-native';
 import {Container, Button, Textarea, Icon} from 'native-base';
 import {StackActions, NavigationActions} from 'react-navigation';
 import Spinner from 'react-native-spinkit';
@@ -46,11 +46,11 @@ export default class ERCSCancelRemarks extends React.Component {
         response.json().then(data => {
           if (data.is_success === true) {
             this.setState({isLoading: false});
-            alert('Successfully cancelled.');
             this.props.navigation.dispatch(resetAction);
+            return Alert.alert('','Successfully cancelled.');
           } else {
             this.setState({isLoading: false});
-            alert(data.error_message);
+            return Alert.alert('Oops',data.error_message);
           }
         });
       })

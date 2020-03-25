@@ -6,6 +6,7 @@ import {
   Dimensions,
   FlatList,
   RefreshControl,
+  Alert,
 } from 'react-native';
 import {
   Container,
@@ -20,13 +21,13 @@ import {
   Icon,
   Content,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage';
 import Spinner from 'react-native-spinkit';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import moment from 'moment';
 
-import {RCS1_TRANSACTION_HISTORY} from '../util/api';
+import { RCS1_TRANSACTION_HISTORY } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -37,7 +38,7 @@ const MEMB_EMAIL = 'memb_email';
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({routeName: 'ERCS1LandingPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
 });
 
 export default class ERCS1History extends React.Component {
@@ -102,22 +103,22 @@ export default class ERCS1History extends React.Component {
       .then(response => {
         response.json().then(responseJson => {
           console.log('rcs1hist', responseJson);
-          if (responseJson.data !== null) {
+          if (responseJson.data != null) {
             this.setState({
               refreshing: false,
               isLoading: false,
               dataSource: responseJson.data,
             });
           } else {
+            console.log('date',responseJson)
             if (responseJson.error_message == 'No RCS Transaction Found!') {
-              this.setState({refreshing: false});
-              this.setState({isLoading: false});
+              this.setState({ refreshing: false });
+              this.setState({ isLoading: false });
             }
-          }
-          if (responseJson == 'Invalid Access Token') {
-            console.log('invalidToken', responseJson);
-            alert('Session Expired');
-            this.onLogout();
+            if (responseJson == 'Invalid Access Token') {
+              this.onLogout();
+              return Alert.alert('Oops', 'Session Expired')
+            }
           }
         });
       })
@@ -126,7 +127,7 @@ export default class ERCS1History extends React.Component {
       });
   }
 
-  renderItem = ({item}) => {
+  renderItem = ({ item }) => {
     const {
       StatusApproved,
       StatusCancelled,
@@ -136,7 +137,7 @@ export default class ERCS1History extends React.Component {
     var xstatus = item.status;
     var statusStyle = '';
     switch (
-      xstatus // Passing the variable to switch condition
+    xstatus // Passing the variable to switch condition
     ) {
       case 'A':
         xstatus = 'Approved';
@@ -171,7 +172,7 @@ export default class ERCS1History extends React.Component {
           <List>
             <ListItem noIndent>
               <Body>
-                <View style={{flexDirection: 'row'}}>
+                <View style={{ flexDirection: 'row' }}>
                   <Text style={styles.ERCSNumber}>{item.ercsno}</Text>
                   <Badge style={[statusStyle]}>
                     <Text style={styles.badgeText}>{xstatus}</Text>
@@ -230,14 +231,14 @@ export default class ERCS1History extends React.Component {
   };
 
   renderSeparator = () => {
-    return <View style={{height: 0, backgroundColor: 'gray'}}></View>;
+    return <View style={{ height: 0, backgroundColor: 'gray' }}></View>;
   };
 
   render() {
-    const {spinnerStyle} = styles;
+    const { spinnerStyle } = styles;
 
     return (
-      <Container style={{display: 'flex'}}>
+      <Container style={{ display: 'flex' }}>
         <Content
           refreshControl={
             <RefreshControl
@@ -258,7 +259,7 @@ export default class ERCS1History extends React.Component {
                 large
                 source={require('../../assets/images/no-transaction.png')}
               />
-              <Text style={{fontSize: 14, color: '#2d2d2d'}}>
+              <Text style={{ fontSize: 14, color: '#2d2d2d' }}>
                 You have no transactions yet!
               </Text>
             </View>
@@ -286,7 +287,7 @@ export default class ERCS1History extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   ERCSNumber: {

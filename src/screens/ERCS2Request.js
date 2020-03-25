@@ -236,11 +236,11 @@ export default class ERCS2Request extends React.Component {
                       ],
                     });
                   } else {
-                    alert('Unable to generate the procedures!');
+                    return Alert.alert('Oops','Unable to generate the procedures!');
                   }
                 })
                 .catch(error => {
-                  alert('Error!' + error);
+                  return Alert.alert('Oops', + error);
                 });
             });
 
@@ -248,7 +248,7 @@ export default class ERCS2Request extends React.Component {
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        return Alert.alert('Oops', + error);
       });
     //GET PROCEDURES
 
@@ -304,7 +304,7 @@ export default class ERCS2Request extends React.Component {
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        return Alert.alert('Oops', + error);
       });
   }
 
@@ -340,12 +340,12 @@ export default class ERCS2Request extends React.Component {
                 RCSdoctorspecialty: [],
                 isLoading: false,
               });
-              alert('No Doctors Found!');
+              return Alert.alert('Oops','No Doctors Found!');
             }
           });
         })
         .catch(error => {
-          alert('Error!' + error);
+          return Alert.alert('Oops', + error);
         });
     } catch (error) {
       console.log(error);
@@ -472,7 +472,7 @@ export default class ERCS2Request extends React.Component {
       });
       //Validation for more than 3 file was selected
       if (results.length > 5) {
-        return alert('Cannot upload more than 5 file!');
+        return Alert.alert('Oops','Cannot upload more than 5 file!');
       }
       //Validation for total allow MB
       for (const res of results) {
@@ -490,13 +490,13 @@ export default class ERCS2Request extends React.Component {
         console.log(results);
         this.setState({ multipleFile: results });
       } else {
-        return alert('Cannot upload file(s) larger than 4 MB');
+        return Alert.alert('Oops','Cannot upload file(s) larger than 4 MB');
       }
     } catch (err) {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
         //If user canceled the document selection
-        alert('Canceled from multiple doc picker');
+        return Alert.alert('Oops','Canceled from multiple doc picker');
       } else {
         //For Unknown Error
         alert('Unknown Error: ' + JSON.stringify(err));
@@ -884,16 +884,17 @@ export default class ERCS2Request extends React.Component {
   }
 
   handleSubmit = () => {
-    if (this.state.newListofItems === null) {
-      return alert('Please atleast one(1) procedure');
+    console.log('dadad',this.state.newListofItems)
+    if (this.state.newListofItems === null || this.state.newListofItems.length === 0 ) {
+      return Alert.alert('Oops!','Please atleast one(1) procedure');
     }
 
     if (this.state.multipleFile === null) {
-      return alert('Please provide atleast one(1) document');
+      return Alert.alert('Oops!','Please provide atleast one(1) document');
     }
 
     if (this.state.DoctorSpeciallty.doctor_code === null) {
-      return alert('Please choose a doctor');
+      return Alert.alert('Oops!','Please choose a doctor');
     }
 
     // if (this.state.searchIllness === null || this.state.searchIllness === '') {
@@ -950,7 +951,7 @@ export default class ERCS2Request extends React.Component {
 
       if (respJson == 'Invalid Access Token') {
         this.onLogout();
-        return Alert.alert('Oops', 'Session Expired')
+        return Alert.alert('Oops','Session Expired')
       }
       else {
 
@@ -979,7 +980,9 @@ export default class ERCS2Request extends React.Component {
               },
             )
               .then(response => {
+                console.log('data',response)
                 response.json().then(data => {
+                  console.log('data1',data)
                   if (data.is_success === true) {
                     this.setState({ isLoading: false });
                     this.props.navigation.dispatch(Rcs2AutoApproved);
@@ -1001,7 +1004,7 @@ export default class ERCS2Request extends React.Component {
         }
       }
     } catch (error) {
-      console.log(error);
+      return Alert.alert('Oops',error);
     }
   }
 }
