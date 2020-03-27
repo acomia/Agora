@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TouchableNativeFeedback,
   StatusBar,
+  Alert,
 } from 'react-native';
 import {
   Container,
@@ -106,7 +107,7 @@ export default class OnBoarding extends React.Component {
             </Text>
           </View>
           <View style={styles.viewFeatures}>
-            <ScrollView
+            <SwiperFlatList
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               pagingEnabled={true}>
@@ -125,8 +126,13 @@ export default class OnBoarding extends React.Component {
                       iconRight
                       rounded
                       style={styles.cardButtonMedgate}
-                      onPress={() =>
-                        this.props.navigation.navigate('MedgatePage')
+                      onPress={() => Alert.alert('NOTE','Please ready your Account and Card number for verification.',
+                      [
+                        {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
+                        {text: 'OK', onPress: () =>  this.props.navigation.navigate('MedgatePage')},
+                      ],
+                      { cancelable: false }  
+                      )
                       }>
                       <Text style={styles.cardButtonText}>Medgate</Text>
                       <Icon type="Ionicons" name="ios-arrow-forward" />
@@ -192,7 +198,7 @@ export default class OnBoarding extends React.Component {
                   </Body>
                 </CardItem>
               </Card> */}
-            </ScrollView>
+            </SwiperFlatList>
           </View>
         </ImageBackground>
       </Container>
