@@ -69,7 +69,7 @@ export default class Benefits extends React.Component {
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        return Alert.alert('Oops', error);
       });
   }
 

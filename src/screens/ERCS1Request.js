@@ -294,7 +294,7 @@ export default class ERCS1Request extends React.Component {
 
           else {
             this.setState({
-              dataSourceIllnessSpec: illnessSpec.data[0],
+              dataSourceIllnessSpec: illnessSpec.data[0], isLoading: true,
             });
           }
 
@@ -310,9 +310,7 @@ export default class ERCS1Request extends React.Component {
   }
 
   async DoctorScpec() {
-    this.setState({
-      isLoading: true,
-    });
+  
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     let specname = await this.state.dataSourceIllnessSpec.specialty_name;
     // gathering of the doctors base on the location and illness specialty

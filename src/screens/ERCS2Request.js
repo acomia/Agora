@@ -38,6 +38,12 @@ const MEMB_EMAIL = 'memb_email';
 const MEMBER_ID = 'member_id';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 
+const ExpiredSession = StackActions.reset({
+  index: 0, // <-- currect active route from actions array
+  key: null,
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
+});
+
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   actions: [NavigationActions.navigate({ routeName: 'ERCS2SuccessPage' })],
@@ -131,6 +137,26 @@ export default class ERCS2Request extends React.Component {
     );
   }
 
+  onLogout() {
+    this.setState({
+      isLoading: false,
+    });
+    this.deleteToken();
+  }
+
+  async deleteToken() {
+    try {
+      console.log('test')
+      await AsyncStorage.removeItem(ACCESS_TOKEN);
+      await AsyncStorage.removeItem(MEMBER_ID);
+      await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
+      await AsyncStorage.removeItem(MEMB_EMAIL);
+      this.props.navigation.dispatch(ExpiredSession);
+    } catch {
+      console.log('Something went wrong');
+    }
+  }
+
   async componentDidMount() {
     this._isMounted = true;
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
@@ -150,73 +176,80 @@ export default class ERCS2Request extends React.Component {
     )
       .then(response => {
         response.json().then(responseJson => {
-          this.setState({
-            Rcsmemb: responseJson.data,
-          });
-        });
-      })
-      .catch(error => {
-        alert('Error!' + error);
-      });
-
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-          AccountNo: membacct,
-        },
-        params: {
-          name: '',
-          location: '',
-        },
-      },
-    )
-      .then(response => {
-        response.json().then(provider => {
-          this.setState({
-            dataSource: provider.data,
-          });
-          this.arrayholder = provider.data;
-        });
-      })
-      .catch(error => {
-        alert('Error!' + error);
-      });
-
-    //GET PROCEDURES
-    fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures',
-      {
-        method: 'GET',
-        headers: {
-          Authorization: 'Bearer ' + token,
-        },
-      },
-    ).then(response => {
-      response
-        .json()
-        .then(data => {
-          if (data.error_message === null) {
-            this.setState({
-              isLoading: false,
-              proceduresData: [
-                {
-                  procedure_name: 'Procedures',
-                  procedure_id: 0,
-                  children: data.data,
-                },
-              ],
-            });
-          } else {
-            alert('Unable to generate the procedures!');
+          console.log('test', responseJson)
+          if (responseJson == 'Invalid Access Token') {
+            this.onLogout();
+            return Alert.alert('Oops', 'Session Expired')
           }
-        })
-        .catch(error => {
-          alert('Error!' + error);
+          else {
+            this.setState({
+              Rcsmemb: responseJson.data,
+            });
+            fetch(
+              'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
+              {
+                method: 'GET',
+                headers: {
+                  Authorization: 'Bearer ' + token,
+                  AccountNo: membacct,
+                },
+                params: {
+                  name: '',
+                  location: '',
+                },
+              },
+            )
+              .then(response => {
+                response.json().then(provider => {
+                  this.setState({
+                    dataSource: provider.data,
+                  });
+                  this.arrayholder = provider.data;
+                });
+              })
+              .catch(error => {
+                alert('Error!' + error);
+              });
+
+            //GET PROCEDURES
+            fetch(
+              'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures',
+              {
+                method: 'GET',
+                headers: {
+                  Authorization: 'Bearer ' + token,
+                },
+              },
+            ).then(response => {
+              response
+                .json()
+                .then(data => {
+                  if (data.error_message === null) {
+                    this.setState({
+                      isLoading: false,
+                      proceduresData: [
+                        {
+                          procedure_name: 'Procedures',
+                          procedure_id: 0,
+                          children: data.data,
+                        },
+                      ],
+                    });
+                  } else {
+                    return Alert.alert('Oops','Unable to generate the procedures!');
+                  }
+                })
+                .catch(error => {
+                  return Alert.alert('Oops', + error);
+                });
+            });
+
+          }
         });
-    });
+      })
+      .catch(error => {
+        return Alert.alert('Oops', + error);
+      });
     //GET PROCEDURES
 
     // fetch(
@@ -271,7 +304,7 @@ export default class ERCS2Request extends React.Component {
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        return Alert.alert('Oops', + error);
       });
   }
 
@@ -307,12 +340,12 @@ export default class ERCS2Request extends React.Component {
                 RCSdoctorspecialty: [],
                 isLoading: false,
               });
-              alert('No Doctors Found!');
+              return Alert.alert('Oops','No Doctors Found!');
             }
           });
         })
         .catch(error => {
-          alert('Error!' + error);
+          return Alert.alert('Oops', + error);
         });
     } catch (error) {
       console.log(error);
@@ -439,7 +472,7 @@ export default class ERCS2Request extends React.Component {
       });
       //Validation for more than 3 file was selected
       if (results.length > 5) {
-        return alert('Cannot upload more than 5 file!');
+        return Alert.alert('Oops','Cannot upload more than 5 file!');
       }
       //Validation for total allow MB
       for (const res of results) {
@@ -457,13 +490,13 @@ export default class ERCS2Request extends React.Component {
         console.log(results);
         this.setState({ multipleFile: results });
       } else {
-        return alert('Cannot upload file(s) larger than 4 MB');
+        return Alert.alert('Oops','Cannot upload file(s) larger than 4 MB');
       }
     } catch (err) {
       //Handling any exception (If any)
       if (DocumentPicker.isCancel(err)) {
         //If user canceled the document selection
-        alert('Canceled from multiple doc picker');
+        return Alert.alert('Oops','Canceled from multiple doc picker');
       } else {
         //For Unknown Error
         alert('Unknown Error: ' + JSON.stringify(err));
@@ -567,7 +600,7 @@ export default class ERCS2Request extends React.Component {
                 }}
                 inputStyle={{ justifyContent: 'center', fontSize: 14 }}
                 onChangeText={text => this.SearchFilterFunction(text)}
-                onClear={() => this.setState({ searchData: [], destination: '',confirmSpec:true,DoctorSpeciallty:'' })}
+                onClear={() => this.setState({ searchData: [], destination: '', confirmSpec: true, DoctorSpeciallty: '' })}
                 placeholderTextColor="#cacaca"
                 placeholder="Hospital/provider's name..."
                 value={this.state.search}
@@ -851,16 +884,17 @@ export default class ERCS2Request extends React.Component {
   }
 
   handleSubmit = () => {
-    if (this.state.newListofItems === null) {
-      return alert('Please atleast one(1) procedure');
+    console.log('dadad',this.state.newListofItems)
+    if (this.state.newListofItems === null || this.state.newListofItems.length === 0 ) {
+      return Alert.alert('Oops!','Please atleast one(1) procedure');
     }
 
     if (this.state.multipleFile === null) {
-      return alert('Please provide atleast one(1) document');
+      return Alert.alert('Oops!','Please provide atleast one(1) document');
     }
 
     if (this.state.DoctorSpeciallty.doctor_code === null) {
-      return alert('Please choose a doctor');
+      return Alert.alert('Oops!','Please choose a doctor');
     }
 
     // if (this.state.searchIllness === null || this.state.searchIllness === '') {
@@ -915,53 +949,62 @@ export default class ERCS2Request extends React.Component {
       let respJson = await resp.json();
       // console.log('boy',this.state.MembPickerValueHolderAcct)
 
-      if (respJson.is_success === true) {
-        let tmprcs2Num = respJson.data.ercsno;
-        let tmprcs2tag = respJson.data.approved
+      if (respJson == 'Invalid Access Token') {
+        this.onLogout();
+        return Alert.alert('Oops','Session Expired')
+      }
+      else {
 
-        global.rcs2tag = tmprcs2tag;
-        global.rcs2Num = tmprcs2Num;
-        global.acctNum = this.state.MembPickerValueHolderAcct;
-        let mid = await AsyncStorage.getItem(MEMBER_ID);
-        let email = await AsyncStorage.getItem(MEMB_EMAIL);
-        if (global.rcs2tag === true) {
-          fetch(
-            'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' +
-            global.rcs2Num,
-            {
-              method: 'GET',
-              headers: {
-                Authorization: 'Bearer ' + token,
-                EmailAddress: email,
-                AccountNo: global.acctNum,
-                AccountID: mid,
-                //'Content-Type': 'application/x-www-form-urlencoded',
+        if (respJson.is_success === true) {
+          let tmprcs2Num = respJson.data.ercsno;
+          let tmprcs2tag = respJson.data.approved
+
+          global.rcs2tag = tmprcs2tag;
+          global.rcs2Num = tmprcs2Num;
+          global.acctNum = this.state.MembPickerValueHolderAcct;
+          let mid = await AsyncStorage.getItem(MEMBER_ID);
+          let email = await AsyncStorage.getItem(MEMB_EMAIL);
+          if (global.rcs2tag === true) {
+            fetch(
+              'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' +
+              global.rcs2Num,
+              {
+                method: 'GET',
+                headers: {
+                  Authorization: 'Bearer ' + token,
+                  EmailAddress: email,
+                  AccountNo: global.acctNum,
+                  AccountID: mid,
+                  //'Content-Type': 'application/x-www-form-urlencoded',
+                },
               },
-            },
-          )
-            .then(response => {
-              response.json().then(data => {
-                if (data.is_success === true) {
-                  this.setState({ isLoading: false });
-                  this.props.navigation.dispatch(Rcs2AutoApproved);
-                } else {
-                  alert(data.error_message);
-                }
-              });
-            })
+            )
+              .then(response => {
+                console.log('data',response)
+                response.json().then(data => {
+                  console.log('data1',data)
+                  if (data.is_success === true) {
+                    this.setState({ isLoading: false });
+                    this.props.navigation.dispatch(Rcs2AutoApproved);
+                  } else {
+                    alert(data.error_message);
+                  }
+                });
+              })
 
-        }
-        else {
+          }
+          else {
+            this.setState({ isLoading: false });
+            this.props.navigation.dispatch(resetAction);
+          }
+
+        } else {
+          alert(respJson.error_message);
           this.setState({ isLoading: false });
-          this.props.navigation.dispatch(resetAction);
         }
-
-      } else {
-        alert(respJson.error_message);
-        this.setState({ isLoading: false });
       }
     } catch (error) {
-      console.log(error);
+      return Alert.alert('Oops',error);
     }
   }
 }

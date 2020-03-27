@@ -26,10 +26,7 @@ import {
   Icon,
   Item,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
-import {StackActions, NavigationActions} from 'react-navigation';
 import AsyncStorage from '@react-native-community/async-storage';
-
 import {RCS2_SENDTOMAIL} from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
@@ -62,24 +59,18 @@ export default class ERCS1Success extends React.Component {
       .then(response => {
         response.json().then(data => {
           if (data.is_success === true) {
-            alert('RCS sent to Email Successfully');
+            return Alert.alert('','RCS sent to Email Successfully');
           } else {
-            alert(data.error_message);
+            return Alert.alert('Oops',data.error_message);
           }
         });
       })
       .catch(error => {
-        alert('Error!' + error);
+        return Alert.alert('Oops',+ error);
       });
   }
 
   render() {
-    // const { navigation } = this.props;
-    // const rcsNumber = navigation.getParam('rcsNo', '');
-    // const acctNUmber = navigation.getParam('acctNo', '');
-
-    console.log('sa kabila rcs', global.rcsNum);
-    console.log('sa kabila accc', global.acctNum);
     return (
       <Container style={{display: 'flex'}}>
         <StatusBar
