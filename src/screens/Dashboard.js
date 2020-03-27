@@ -8,6 +8,7 @@ import {
   TouchableNativeFeedback,
   StatusBar,
   TouchableOpacity,
+  Alert,
 } from 'react-native';
 import {
   Container,
@@ -23,14 +24,15 @@ import {
   Thumbnail,
   Label,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 import Modal from 'react-native-modal';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import {DrawerActions} from 'react-navigation-drawer';
+import { DrawerActions } from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 
 const MEMB_NAME = 'memb_name';
+const MEMB_CARDNO = 'memb_cardno';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
 
@@ -42,6 +44,7 @@ NetInfo.fetch().then(state => {
 export default class Dashboard extends React.Component {
   constructor(props) {
     super(props);
+
     this.state = {
       fname: '',
       visibleModal: false,
@@ -50,15 +53,21 @@ export default class Dashboard extends React.Component {
   }
 
   async componentWillMount() {
+   
+    
     let membname = await AsyncStorage.getItem(MEMB_NAME);
-    this.setState({fname: membname});
+     global.cardno = await AsyncStorage.getItem(MEMB_CARDNO);
+    this.setState({
+      fname: membname,
+    });
+   
   }
 
   render() {
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
 
     return (
-      <Container style={{display: 'flex', flex: 1, backgroundColor: '#f5f5f5'}}>
+      <Container style={{ display: 'flex', flex: 1, backgroundColor: '#f5f5f5' }}>
         <StatusBar
           translucent
           backgroundColor="transparent"
@@ -92,13 +101,13 @@ export default class Dashboard extends React.Component {
             <Text style={styles.WelcomeheaderTitle}>
               Hello, {this.state.fname}!
             </Text>
-            <Text style={{color: '#6d6e72', fontSize: 14}}>
+            <Text style={{ color: '#6d6e72', fontSize: 14 }}>
               How are you doing today? We hope you're having a great one!
             </Text>
           </View>
           <View style={styles.MenucontentStyle}>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1 }}>
                 <TouchableNativeFeedback
                   //onPress={() => this.props.navigation.navigate('MembersPage')}>
                   onPress={() => this.checkConnectivity('MembersPage')}>
@@ -119,7 +128,7 @@ export default class Dashboard extends React.Component {
                   </Card>
                 </TouchableNativeFeedback>
               </View>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <TouchableNativeFeedback
                   onPress={() =>
                     this.props.navigation.navigate('DoctorSearchNavigation')
@@ -142,11 +151,12 @@ export default class Dashboard extends React.Component {
                 </TouchableNativeFeedback>
               </View>
             </View>
-            <View style={{flexDirection: 'row'}}>
-              <View style={{flex: 1}}>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flex: 1 }}>
                 <TouchableNativeFeedback
                   onPress={
-                    () => this.setState({visibleModal: true})
+                    () =>
+                      this.setState({ visibleModal: true })
                     // this.props.navigation.navigate('ERCS1LandingPage')
                   }>
                   <Card transparent>
@@ -168,7 +178,7 @@ export default class Dashboard extends React.Component {
                   </Card>
                 </TouchableNativeFeedback>
               </View>
-              <View style={{flex: 1}}>
+              <View style={{ flex: 1 }}>
                 <TouchableNativeFeedback
                   onPress={() =>
                     this.props.navigation.navigate('ERCS2LandingPage')
@@ -200,7 +210,7 @@ export default class Dashboard extends React.Component {
                     source={require('../../assets/images/map.png')}
                     resizeMode="contain"
                   />
-                  <Body style={{marginLeft: 15}}>
+                  <Body style={{ marginLeft: 15 }}>
                     <Text style={styles.cardMenuTextIntellimap}>Agora Map</Text>
                     <Text style={styles.cardMenuText1}>
                       Search for our Accredited Hospitals, Diagnostic and
@@ -224,7 +234,7 @@ export default class Dashboard extends React.Component {
                     source={require('../../assets/images/medgate.png')}
                     resizeMode="contain"
                   />
-                  <Body style={{marginLeft: 15}}>
+                  <Body style={{ marginLeft: 15 }}>
                     <Text
                       style={{
                         color: '#258bf5',
@@ -247,7 +257,7 @@ export default class Dashboard extends React.Component {
                       <Icon
                         type="Ionicons"
                         name="ios-call"
-                        style={{color: '#258bf5'}}
+                        style={{ color: '#258bf5' }}
                       />
                       <Text style={styles.cardButtonText}>
                         Call a Doctor now
@@ -260,11 +270,12 @@ export default class Dashboard extends React.Component {
           </View>
         </ScrollView>
         <Modal
+        onBackButtonPress={() => this.setState({ visibleModal: false })}
           isVisible={this.state.visibleModal}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-          backdropTransitionInTiming={1000}
-          backdropTransitionOutTiming={1000}>
+          animationInTiming={0}
+          animationOutTiming={0}
+          backdropTransitionInTiming={0}
+          backdropTransitionOutTiming={0}>
           {this.renderMedgateModal()}
         </Modal>
       </Container>
@@ -286,7 +297,7 @@ export default class Dashboard extends React.Component {
           resizeMode="contain"
         />
         <ScrollView style={styles.tcContainer}>
-          <Text style={{fontWeight: 'bold', marginTop: 5}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 5 }}>
             What is Medgate?
           </Text>
 
@@ -297,7 +308,12 @@ export default class Dashboard extends React.Component {
           </Text>
         </ScrollView>
         <TouchableOpacity
-          onPress={() => this.gotoMedgate()}
+          onPress={() =>
+            cardno == null || cardno == ''
+              ?
+              Alert.alert('NOTE', "Your account's Card Number is is not yet available.Please contact Customer Support")
+              :
+              this.gotoMedgate()}
           style={styles.pnButton}>
           <Icon
             type="SimpleLineIcons"
@@ -318,12 +334,12 @@ export default class Dashboard extends React.Component {
   }
 
   gotoMedgate() {
-    this.setState({visibleModal: false});
+    this.setState({ visibleModal: false });
     this.props.navigation.navigate('MedgatePage');
   }
 
   goToERC1() {
-    this.setState({visibleModal: false});
+    this.setState({ visibleModal: false });
     this.props.navigation.navigate('ERCS1LandingPage');
   }
 
@@ -341,7 +357,7 @@ export default class Dashboard extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
+export const { width, height } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   header: {
@@ -369,7 +385,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -433,7 +449,7 @@ const styles = StyleSheet.create({
   cardStyle: {
     borderRadius: 20,
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -444,7 +460,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 10,
     shadowColor: '#f5f5f5',
-    shadowOffset: {width: 5, height: 10},
+    shadowOffset: { width: 5, height: 10 },
     shadowOpacity: 0.2,
     shadowRadius: 20,
     elevation: 2,
@@ -455,7 +471,7 @@ const styles = StyleSheet.create({
     margin: 5,
     borderRadius: 5,
     shadowColor: '#f5f5f5',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 2,
