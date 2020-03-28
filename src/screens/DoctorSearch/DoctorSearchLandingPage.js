@@ -5,6 +5,8 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from 'react-navigation-hooks';
 import {ActivityIndicator} from 'react-native-paper';
 
+import {DOCTOR_SEARCH_LOGIN_TOKEN} from '../../util/test_api';
+
 export default function DoctorSearchLandingPage() {
   const [searchQuery, setSearchQuery] = useState({
     doctorName: '',
@@ -31,20 +33,17 @@ export default function DoctorSearchLandingPage() {
 
   async function fetchToken() {
     try {
-      let response = await fetch(
-        'https://intellicare.com.ph/uat/webservice/thousandminds/api/login',
-        {
-          method: 'POST',
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            username: 'digitalxform',
-            password: 'th2p@ssw0rd',
-          }),
+      let response = await fetch(DOCTOR_SEARCH_LOGIN_TOKEN, {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
-      );
+        body: JSON.stringify({
+          username: 'digitalxform',
+          password: 'th2p@ssw0rd',
+        }),
+      });
 
       let responseJson = await response.json();
       let tokenVal = responseJson.response.token;
@@ -129,7 +128,7 @@ export default function DoctorSearchLandingPage() {
   return (
     <View style={{backgroundColor: '#5fb650', flex: 1}}>
       <ScrollView>
-      <StatusBar translucent backgroundColor="transparent" />
+        <StatusBar translucent backgroundColor="transparent" />
         <View style={{flex: 1, paddingTop: winHeight * 0.1}}>
           <Text style={styles.physicianDirectory}>PHYSICIAN DIRECTORY</Text>
           <View style={{justifyContent: 'center', margin: 20}}>
