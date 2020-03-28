@@ -28,7 +28,8 @@ import {
   Item,
 } from 'native-base';
 import SwiperFlatList from 'react-native-swiper-flatlist';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
+import { MEDGATE } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
@@ -52,6 +53,45 @@ export default class OnBoarding extends React.Component {
     }
   }
 
+  _MedgateApi() {
+    fetch(MEDGATE, {
+      method: 'GET',
+      Params: {
+        Name: 'MEDGATE',
+      },
+    })
+      .then(response => {
+        response.json().then(medgatemsg => {
+          console.log('medgate', medgatemsg)
+          if (medgatemsg.data.is_active === false) {
+
+            return Alert.alert('Attention!', medgatemsg.data.callback_msg
+              + '\n\nYou may still reach them by calling them directly through the following numbers:'
+              + '\n\nManila: 02 8075 0700'
+              + '\n\nCebu: 032 265 5111'
+              + '\n\nDavao: 082 285 5111'
+              + '\n\nDumaguete: 035 522 5111'
+              + '\n\nGlobe: 0917 536 2156/ 0917 536 2715/ 0917 548 7672'
+              + '\n\nSmart: 0998 990 7540/ 0998 990 7541/ 0998 843 2880'
+              + '\n\nSun: 0925 714 7794/ 0925 714 7793');
+          } else {
+            if (medgatemsg.data.is_active === true) {
+              Alert.alert('NOTE', 'Please ready your Account and Card number for verification.',
+                [
+                  { text: 'Cancel', onPress: () => console.log('Cancel Pressed!') },
+                  { text: 'OK', onPress: () => this.props.navigation.navigate('MedgatePage') },
+                ],
+                { cancelable: false }
+              )
+            }
+          }
+        });
+      })
+      .catch(error => {
+        return Alert.alert('Oops', + error);
+      });
+  }
+
   render() {
     return (
       <Container>
@@ -61,7 +101,7 @@ export default class OnBoarding extends React.Component {
           style={styles.backgroundImage}>
           <View style={styles.sectionWelcome}>
             <View style={styles.welcomeLabelLogo}>
-              <View style={{flexDirection: 'row'}}>
+              <View style={{ flexDirection: 'row' }}>
                 <Image
                   source={require('../../assets/images/intellicare-logo-white.png')}
                   style={styles.logoStyle}
@@ -102,7 +142,7 @@ export default class OnBoarding extends React.Component {
               padding: 10,
               alignItems: 'center',
             }}>
-            <Text style={{color: '#fff', fontSize: 18, fontWeight: 'bold'}}>
+            <Text style={{ color: '#fff', fontSize: 18, fontWeight: 'bold' }}>
               You can also:
             </Text>
           </View>
@@ -113,26 +153,20 @@ export default class OnBoarding extends React.Component {
               pagingEnabled={true}>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body style={{justifyContent: 'space-evenly'}}>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon
                       type="SimpleLineIcons"
                       name="earphones-alt"
                       style={styles.cardIconStyleMedgate}
                     />
-                    <Label style={{textAlign: 'center'}}>
+                    <Label style={{ textAlign: 'center' }}>
                       Call Doc. Anywhere. Anytime. No line.
                     </Label>
                     <Button
                       iconRight
                       rounded
                       style={styles.cardButtonMedgate}
-                      onPress={() => Alert.alert('NOTE','Please ready your Account and Card number for verification.',
-                      [
-                        {text: 'Cancel', onPress: () => console.log('Cancel Pressed!')},
-                        {text: 'OK', onPress: () =>  this.props.navigation.navigate('MedgatePage')},
-                      ],
-                      { cancelable: false }  
-                      )
+                      onPress={() => this._MedgateApi()
                       }>
                       <Text style={styles.cardButtonText}>Medgate</Text>
                       <Icon type="Ionicons" name="ios-arrow-forward" />
@@ -142,13 +176,13 @@ export default class OnBoarding extends React.Component {
               </Card>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body style={{justifyContent: 'space-evenly'}}>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon
                       type="SimpleLineIcons"
                       name="map"
                       style={styles.cardIconStyleIntellimap}
                     />
-                    <Label style={{textAlign: 'center'}}>
+                    <Label style={{ textAlign: 'center' }}>
                       Locate our Accredited Facilities.
                     </Label>
                     <Button
@@ -164,13 +198,13 @@ export default class OnBoarding extends React.Component {
               </Card>
               <Card transparent style={styles.cardContainer}>
                 <CardItem style={styles.cardItemStyle}>
-                  <Body style={{justifyContent: 'space-evenly'}}>
+                  <Body style={{ justifyContent: 'space-evenly' }}>
                     <Icon
                       type="SimpleLineIcons"
                       name="magnifier"
                       style={styles.cardIconStyleProviders}
                     />
-                    <Label style={{textAlign: 'center'}}>
+                    <Label style={{ textAlign: 'center' }}>
                       Our Accredited Doctors and Dentists.
                     </Label>
                     <Button
@@ -206,8 +240,7 @@ export default class OnBoarding extends React.Component {
   }
 }
 
-export const {width, height} = Dimensions.get('window');
-
+export const { width, height } = Dimensions.get('window');
 const styles = StyleSheet.create({
   sectionWelcome: {
     flex: 2,
