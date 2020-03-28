@@ -34,6 +34,7 @@ const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
+const MEMB_CARDNO = 'memb_cardno'
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -200,6 +201,28 @@ async getToken()
       console.log('CANT STORE MEMB ACCT OR ID');
     }
   }
+
+  async storecardno(cardno) {
+    try {
+      await AsyncStorage.setItem(MEMB_CARDNO, cardno);
+      this.getcard();
+    } catch (error) {
+      console.log('CANT STORE MEMB CARD NO');
+    }
+  }
+
+  async getcard() {
+    try {
+      let card = await AsyncStorage.getItem(MEMB_CARDNO);
+      console.log('memb card is: ' + card);
+    } catch (error) {
+      console.log('CANT GET ACCT NO');
+    }
+  }
+
+
+
+
 
   async getacct() {
     try {
@@ -386,6 +409,9 @@ async getToken()
 
               let memb_Accountno = data.data.accountno;
               this.storeacct(memb_Accountno);
+
+              let memb_Cardno = data.data.cardno
+              this.storecardno(memb_Cardno)
 
               let memb_name = data.data.firstname;
               this.storemembname(memb_name);

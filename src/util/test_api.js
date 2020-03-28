@@ -102,3 +102,5 @@ export const MEMBERS =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts';
 export const BENEFITS =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/benefits';
+export const MEDGATE =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/feature/status?name=MEDGATE';

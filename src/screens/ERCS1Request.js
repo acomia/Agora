@@ -34,6 +34,7 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import { SearchBar } from 'react-native-elements';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
+import { MEMBERS, RCS1_CONSULT_TYPE, RCS_PROVIDERS, RCS1_ILLNESS_LIST, RCS_SPECIALTIES, RCS1_DOCTOR_BY_SPECS, RCS1_SUBMIT, RCS1_SENDTOMAIL } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
@@ -133,7 +134,7 @@ export default class ERCS1Request extends React.Component {
     let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
     // getting the principal and dependent of the acct
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
+      MEMBERS,
       {
         method: 'GET',
         headers: {
@@ -166,7 +167,7 @@ export default class ERCS1Request extends React.Component {
       });
     // available consultype
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/consulttype',
+      RCS1_CONSULT_TYPE,
       {
         method: 'GET',
         headers: {
@@ -193,7 +194,7 @@ export default class ERCS1Request extends React.Component {
       });
     // gathering a hospital
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
+      RCS_PROVIDERS,
       {
         method: 'GET',
         headers: {
@@ -233,7 +234,7 @@ export default class ERCS1Request extends React.Component {
   async _illness() {
     // let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + this.state.membgender,
+      RCS1_ILLNESS_LIST + this.state.membgender,
       {
         method: 'GET',
         headers: {
@@ -274,7 +275,7 @@ export default class ERCS1Request extends React.Component {
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     // gathering the illness specialty
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
+      RCS_SPECIALTIES,
       {
         method: 'GET',
         headers: {
@@ -316,7 +317,7 @@ export default class ERCS1Request extends React.Component {
     // gathering of the doctors base on the location and illness specialty
     try {
       fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/doctors?name=',
+        RCS1_DOCTOR_BY_SPECS,
         {
           method: 'GET',
           headers: {
@@ -397,7 +398,7 @@ export default class ERCS1Request extends React.Component {
     //let specname = await this.state.dataSourceIllnessSpec.specialty_name
     // submit to save record
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/submit',
+      RCS1_SUBMIT,
       {
         method: 'POST',
         headers: {
@@ -429,7 +430,7 @@ export default class ERCS1Request extends React.Component {
           if (data.is_success === true) {
             let rcs = data.data.ercsno;
             fetch(
-              'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/sendtoemail?no=' +
+              RCS1_SENDTOMAIL +
               rcs,
               {
                 method: 'GET',
@@ -561,7 +562,7 @@ export default class ERCS1Request extends React.Component {
     }
     else {
       fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/illness?gender=' + MembPicked.gender,
+        RCS1_ILLNESS_LIST + MembPicked.gender,
         {
           method: 'GET',
           headers: {

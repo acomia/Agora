@@ -75,8 +75,10 @@ export default class SideBar extends React.Component {
     }
   }
   async componentDidMount() {
+   
     let user_name = await AsyncStorage.getItem(MEMB_EMAIL);
     let old_pw = await AsyncStorage.getItem('OLD_PW');
+
     this.setState({username: user_name, oldpw: old_pw});
   }
   async deleteToken() {
@@ -87,7 +89,10 @@ export default class SideBar extends React.Component {
       await AsyncStorage.removeItem(MEMB_ACCOUNTNO);
       await AsyncStorage.removeItem(MEMB_NAME);
       await AsyncStorage.removeItem(MEMB_EMAIL);
+      await AsyncStorage.removeItem(MEMB_CARDNO);
       await AsyncStorage.multiRemove(mapData);
+
+
       this.props.navigation.dispatch(resetAction);
     } catch {
       console.log('Something went wrong');
@@ -270,6 +275,7 @@ export default class SideBar extends React.Component {
           </ListItem>
         </TouchableNativeFeedback>
         <Modal
+          onBackButtonPress={() => this.setState({ visibleModal: false })}
           isVisible={this.state.visibleModal}
           animationInTiming={1000}
           animationOutTiming={1000}
@@ -307,7 +313,11 @@ export default class SideBar extends React.Component {
           </Text>
         </ScrollView>
         <TouchableOpacity
-          onPress={() => this.gotoMedgate()}
+          onPress={() => cardno == null || cardno == ''
+          ?
+          Alert.alert('NOTE', "Your account's Card Number is is not yet available.Please contact Customer Support")
+          :
+          this.gotoMedgate()}
           style={styles.pnButton}>
           <Icon
             type="SimpleLineIcons"

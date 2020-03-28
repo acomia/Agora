@@ -31,6 +31,7 @@ import Spinner from 'react-native-spinkit';
 import DocumentPicker from 'react-native-document-picker';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Modal from 'react-native-modal';
+import { MEMBERS, RCS_PROVIDERS, RCS2_PROCEDURES_LIST, RCS_SPECIALTIES, RCS2_DOCTOR_BY_SPECS, RCS2_SUBMIT, RCS2_SENDTOMAIL } from '../util/api.js'; 
 
 const ACCESS_TOKEN = 'access_token';
 const MEMB_ACCOUNTNO = 'memb_accountno';
@@ -165,7 +166,7 @@ export default class ERCS2Request extends React.Component {
       isLoading: true,
     });
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/accounts',
+      MEMBERS,
       {
         method: 'GET',
         headers: {
@@ -186,7 +187,7 @@ export default class ERCS2Request extends React.Component {
               Rcsmemb: responseJson.data,
             });
             fetch(
-              'https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find?name=&location=',
+              RCS_PROVIDERS,
               {
                 method: 'GET',
                 headers: {
@@ -213,7 +214,7 @@ export default class ERCS2Request extends React.Component {
 
             //GET PROCEDURES
             fetch(
-              'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/procedures',
+              RCS2_PROCEDURES_LIST,
               {
                 method: 'GET',
                 headers: {
@@ -282,7 +283,7 @@ export default class ERCS2Request extends React.Component {
     this.setState({ isLoading: true });
     let token = await AsyncStorage.getItem(ACCESS_TOKEN);
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs1/specialty',
+      RCS_SPECIALTIES,
       {
         method: 'GET',
         headers: {
@@ -313,7 +314,7 @@ export default class ERCS2Request extends React.Component {
     let specname = await this.state.dataSourceIllnessSpec.specialty_name;
     try {
       fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/doctors?name=',
+        RCS2_DOCTOR_BY_SPECS,
         {
           method: 'GET',
           headers: {
@@ -936,7 +937,7 @@ export default class ERCS2Request extends React.Component {
 
     try {
       let resp = await fetch(
-        'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/submit',
+        RCS2_SUBMIT,
         {
           method: 'POST',
           headers: {
@@ -966,7 +967,7 @@ export default class ERCS2Request extends React.Component {
           let email = await AsyncStorage.getItem(MEMB_EMAIL);
           if (global.rcs2tag === true) {
             fetch(
-              'https://intellicare.com.ph/uat/webservice/memberprofile/api/ercs2/sendtoemail?no=' +
+              RCS2_SENDTOMAIL +
               global.rcs2Num,
               {
                 method: 'GET',
