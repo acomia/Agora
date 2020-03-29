@@ -278,6 +278,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   buttonCreateAccount: {
+    backgroundColor: '#ffffff',
     flex: 1,
     margin: 5,
     textAlign: 'center',

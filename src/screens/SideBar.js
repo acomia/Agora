@@ -29,6 +29,7 @@ const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
+const MEMB_CARDNO = 'memb_cardno';
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
 
 
@@ -48,6 +49,7 @@ export default class SideBar extends React.Component {
     };
   }
   onLogout() {
+    console.log('POTA1')
     Alert.alert(
       'Confirmation',
       'Are you sure you want to Logout?',
@@ -59,6 +61,7 @@ export default class SideBar extends React.Component {
     );
   }
   async deleteDataStored() {
+  
     const dataStored = [
       'hospitalData',
       'clinicData',
@@ -67,6 +70,7 @@ export default class SideBar extends React.Component {
       'MEMB_ACCOUNTNO',
       'MEMB_NAME',
       'MEMB_EMAIL',
+      'MEMB_CARDNO',
       'OLD_PW',
     ];
     try {
@@ -84,6 +88,7 @@ export default class SideBar extends React.Component {
     this.setState({ username: user_name, oldpw: old_pw });
   }
   async deleteToken() {
+    console.log('POTA2')
     const mapData = ['hospitalData', 'clinicData'];
     try {
       await AsyncStorage.removeItem(ACCESS_TOKEN);
