@@ -96,7 +96,7 @@ def enableSeparateBuildPerCPUArchitecture = false
  * Run Proguard to shrink the Java bytecode in release builds.
  */
 // def enableProguardInReleaseBuilds = false //to reduce apk size mac
-def enableProguardInReleaseBuilds = true
+def enableProguardInReleaseBuilds = false
 /**
  * The preferred build flavor of JavaScriptCore.
  *
