@@ -22,6 +22,7 @@ import {
 import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigationParam} from 'react-navigation-hooks';
 import AccordionDetails from './AccordionDetails';
+import {DOCTOR_SEARCH_DETAILS_ADVANCED} from '../util/api';
 
 export default function DoctorProfile() {
   const drdata = useNavigationParam('drdata');
@@ -47,18 +48,15 @@ export default function DoctorProfile() {
   async function fetchHospitalAccreditation(signal) {
     try {
       setFetching(true);
-      let resp = await fetch(
-        `https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch/details`,
-        {
-          signal: signal,
-          headers: {
-            DoctorCode: drdata.doctor_code,
-            Hospital:
-              searchQuery.clinic.trim() === '' ? '' : searchQuery.clinic.trim(),
-            City: '',
-          },
+      let resp = await fetch(DOCTOR_SEARCH_DETAILS_ADVANCED, {
+        signal: signal,
+        headers: {
+          DoctorCode: drdata.doctor_code,
+          Hospital:
+            searchQuery.clinic.trim() === '' ? '' : searchQuery.clinic.trim(),
+          City: '',
         },
-      );
+      });
 
       let respJson = await resp.json();
 

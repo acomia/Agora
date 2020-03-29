@@ -105,5 +105,9 @@ export const BENEFITS =
 export const MEDGATE =
   'https://intellicare.com.ph/webservice/memberprofile/api/feature/status?name=MEDGATE';
 
-export const DOCTOR_SEARCH_LOGIN_TOKEN =
-  'https://intellicare.com.ph/webservice/thousandminds/api/login';
+//DOCTOR SEARCH
+export const DOCTOR_SEARCH_ADVANCED =
+  'https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch?paging=${pageIndex}&pagesize=30';
+
+export const DOCTOR_SEARCH_DETAILS_ADVANCED =
+  'https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch/details';

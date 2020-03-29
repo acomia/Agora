@@ -4,6 +4,7 @@ import {Thumbnail, Text, Spinner} from 'native-base';
 import SearchDoctor from './SearchDoctor';
 import DoctorList from './DoctorList';
 import {useNavigationParam} from 'react-navigation-hooks';
+import {DOCTOR_SEARCH_ADVANCED} from '../../util/api';
 
 export default function DoctorSearchMainScreen() {
   const [doctorList, setDoctorList] = useState([]);
@@ -40,7 +41,7 @@ export default function DoctorSearchMainScreen() {
       const signal = abortController.signal;
 
       let resp = await fetch(
-        `https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch?paging=${pageIndex}&pagesize=30`,
+        DOCTOR_SEARCH_ADVANCED.replace('${pageIndex}', pageIndex),
         {
           signal: signal,
           headers: {
