@@ -20,9 +20,9 @@ import {
   Button,
 } from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { StackActions, NavigationActions } from 'react-navigation';
 import Modal from 'react-native-modal';
-import {ScrollView} from 'react-native-gesture-handler';
+import { ScrollView } from 'react-native-gesture-handler';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
@@ -35,25 +35,27 @@ const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWi
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
 });
 
 export default class SideBar extends React.Component {
   constructor() {
     super();
-    this.state = {username: '', 
-    oldpw: '',
-    visibleModal: false};
+    this.state = {
+      username: '',
+      oldpw: '',
+      visibleModal: false
+    };
   }
   onLogout() {
     Alert.alert(
       'Confirmation',
       'Are you sure you want to Logout?',
       [
-        {text: 'Logout', onPress: () => this.deleteToken()},
-        {text: 'Cancel', style: 'cancel'},
+        { text: 'Logout', onPress: () => this.deleteToken() },
+        { text: 'Cancel', style: 'cancel' },
       ],
-      {cancelable: false},
+      { cancelable: false },
     );
   }
   async deleteDataStored() {
@@ -75,11 +77,11 @@ export default class SideBar extends React.Component {
     }
   }
   async componentDidMount() {
-   
+
     let user_name = await AsyncStorage.getItem(MEMB_EMAIL);
     let old_pw = await AsyncStorage.getItem('OLD_PW');
 
-    this.setState({username: user_name, oldpw: old_pw});
+    this.setState({ username: user_name, oldpw: old_pw });
   }
   async deleteToken() {
     const mapData = ['hospitalData', 'clinicData'];
@@ -120,7 +122,7 @@ export default class SideBar extends React.Component {
             <Text></Text>
           </ImageBackground> */}
           <View style={styles.headerContainer}>
-            <View style={{flexDirection: 'row'}}>
+            <View style={{ flexDirection: 'row' }}>
               <Thumbnail
                 small
                 source={require('../../assets/images/sidebar-nav/user-profile-icon.png')}
@@ -182,7 +184,7 @@ export default class SideBar extends React.Component {
           </ListItem>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback
-          onPress={() => this.setState({visibleModal: true})}>
+          onPress={() => this.setState({ visibleModal: true })}>
           <ListItem icon style={styles.listItemStyle}>
             <Left>
               {/* <Icon type="MaterialCommunityIcons" name="medical-bag" /> */}
@@ -227,7 +229,23 @@ export default class SideBar extends React.Component {
           </ListItem>
         </TouchableNativeFeedback>
         <TouchableNativeFeedback
-          onPress={() => this.props.navigation.navigate('MedgatePage')}>
+          onPress={() =>
+            MedgateDisabled == true
+              ?
+              Alert.alert('Attention!', Medgate_Message
+              + '\n\nYou may still reach them by calling them directly through the following numbers:'
+              + '\n\nManila: 02 8075 0700'
+              + '\n\nCebu: 032 265 5111'
+              + '\n\nDavao: 082 285 5111'
+              + '\n\nDumaguete: 035 522 5111'
+              + '\n\nGlobe: 0917 536 2156/ 0917 536 2715/ 0917 548 7672'
+              + '\n\nSmart: 0998 990 7540/ 0998 990 7541/ 0998 843 2880'
+              + '\n\nSun: 0925 714 7794/ 0925 714 7793')
+              :
+              this.props.navigation.navigate('MedgatePage')
+          }>
+
+
           <ListItem icon style={styles.listItemStyle}>
             <Left>
               {/* <Icon type="MaterialCommunityIcons" name="headset" /> */}
@@ -302,7 +320,7 @@ export default class SideBar extends React.Component {
           resizeMode="contain"
         />
         <ScrollView style={styles.tcContainer}>
-          <Text style={{fontWeight: 'bold', marginTop: 5}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 5 }}>
             What is Medgate?
           </Text>
 
@@ -314,10 +332,10 @@ export default class SideBar extends React.Component {
         </ScrollView>
         <TouchableOpacity
           onPress={() => cardno == null || cardno == ''
-          ?
-          Alert.alert('NOTE', "Your account's Card Number is is not yet available.Please contact Customer Support")
-          :
-          this.gotoMedgate()}
+            ?
+            Alert.alert('NOTE', "Your account's Card Number is is not yet available.Please contact Customer Support")
+            :
+            this.gotoMedgate()}
           style={styles.pnButton}>
           <Icon
             type="SimpleLineIcons"
@@ -338,16 +356,32 @@ export default class SideBar extends React.Component {
   }
 
   gotoMedgate() {
-    this.setState({visibleModal: false});
-    this.props.navigation.navigate('MedgatePage');
+
+    if(MedgateDisabled == true) {
+      Alert.alert('Attention!', Medgate_Message
+      + '\n\nYou may still reach them by calling them directly through the following numbers:'
+      + '\n\nManila: 02 8075 0700'
+      + '\n\nCebu: 032 265 5111'
+      + '\n\nDavao: 082 285 5111'
+      + '\n\nDumaguete: 035 522 5111'
+      + '\n\nGlobe: 0917 536 2156/ 0917 536 2715/ 0917 548 7672'
+      + '\n\nSmart: 0998 990 7540/ 0998 990 7541/ 0998 843 2880'
+      + '\n\nSun: 0925 714 7794/ 0925 714 7793')
+    }
+    else {
+      this.setState({ visibleModal: false });
+      this.props.navigation.navigate('MedgatePage');
+    }
+
+ 
   }
 
   goToERC1() {
-    this.setState({visibleModal: false});
+    this.setState({ visibleModal: false });
     this.props.navigation.navigate('ERCS1LandingPage');
   }
 
-  
+
 }
 
 const styles = StyleSheet.create({
@@ -408,7 +442,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 10,
   },
-  
+
   Pncontainer: {
     justifyContent: 'center',
     alignItems: 'stretch',
@@ -438,7 +472,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     padding: 2,
   },
- 
+
   pnButton: {
     backgroundColor: '#136AC7',
     borderRadius: 5,

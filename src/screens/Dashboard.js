@@ -30,6 +30,8 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import { DrawerActions } from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
+import Spinner from 'react-native-spinkit';
+
 
 const MEMB_NAME = 'memb_name';
 const MEMB_CARDNO = 'memb_cardno';
@@ -49,21 +51,77 @@ export default class Dashboard extends React.Component {
       fname: '',
       visibleModal: false,
       accepted: false,
+      medgate_disabled: true,
     };
   }
 
+
+  // async componentDidMount() {
+
+
+
+
+  // }
+
+
   async componentWillMount() {
-   
-    
+
+
+    this.setState({
+      isLoading: true,
+    });
+
+
     let membname = await AsyncStorage.getItem(MEMB_NAME);
-     global.cardno = await AsyncStorage.getItem(MEMB_CARDNO);
+    global.cardno = await AsyncStorage.getItem(MEMB_CARDNO);
+    global.MedgateDisabled = true
+    global.Medgate_Message = ''
     this.setState({
       fname: membname,
     });
-   
+
+    fetch(
+      'https://intellicare.com.ph/uat/webservice/memberprofile/api/feature/status?name=MEDGATE',
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + global.token,
+        },
+      },
+    )
+      .then(response => {
+        response.json().then(MedgateStatus => {
+          console.log('pota')
+          if (MedgateStatus.is_success == true) {
+            if (MedgateStatus.data.is_active != true) {
+              this.setState({ medgate_disabled: true });
+              global.Medgate_Message = MedgateStatus.data.callback_msg
+              MedgateDisabled = true
+            }
+            else {
+              this.setState({ medgate_disabled: false });
+              MedgateDisabled = false
+            }
+
+            this.setState({
+              isLoading: false,
+            });
+
+          }
+
+
+        });
+      })
+      .catch(error => {
+        alert('Error!' + error);
+      });
+
+
+
   }
 
   render() {
+    const { spinnerStyle } = styles;
     // const uri = "https://facebook.github.io/react-native/docs/assets/favicon.png";
 
     return (
@@ -252,7 +310,19 @@ export default class Dashboard extends React.Component {
                       iconLeft
                       style={styles.cardButtonMedgate}
                       onPress={() =>
-                        this.props.navigation.navigate('MedgatePage')
+                        this.state.medgate_disabled == true
+                          ?
+                          Alert.alert('Attention!', Medgate_Message 
+                          + '\n\nYou may still reach them by calling them directly through the following numbers:'
+                          + '\n\nManila: 02 8075 0700'
+                          + '\n\nCebu: 032 265 5111'
+                          + '\n\nDavao: 082 285 5111'
+                          + '\n\nDumaguete: 035 522 5111'
+                          + '\n\nGlobe: 0917 536 2156/ 0917 536 2715/ 0917 548 7672'
+                          + '\n\nSmart: 0998 990 7540/ 0998 990 7541/ 0998 843 2880'
+                          + '\n\nSun: 0925 714 7794/ 0925 714 7793')
+                          :
+                          this.props.navigation.navigate('MedgatePage')
                       }>
                       <Icon
                         type="Ionicons"
@@ -269,8 +339,15 @@ export default class Dashboard extends React.Component {
             </Card>
           </View>
         </ScrollView>
+        {
+          this.state.isLoading && (
+            <View style={spinnerStyle}>
+              <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} />
+            </View>
+          )
+        }
         <Modal
-        onBackButtonPress={() => this.setState({ visibleModal: false })}
+          onBackButtonPress={() => this.setState({ visibleModal: false })}
           isVisible={this.state.visibleModal}
           animationInTiming={0}
           animationOutTiming={0}
@@ -278,7 +355,7 @@ export default class Dashboard extends React.Component {
           backdropTransitionOutTiming={0}>
           {this.renderMedgateModal()}
         </Modal>
-      </Container>
+      </Container >
     );
   }
 
@@ -334,8 +411,22 @@ export default class Dashboard extends React.Component {
   }
 
   gotoMedgate() {
-    this.setState({ visibleModal: false });
-    this.props.navigation.navigate('MedgatePage');
+
+    if(this.state.medgate_disabled == true) {
+      Alert.alert('Attention!', Medgate_Message 
+      + '\n\nYou may still reach them by calling them directly through the following numbers:'
+      + '\n\nManila: 02 8075 0700'
+      + '\n\nCebu: 032 265 5111'
+      + '\n\nDavao: 082 285 5111'
+      + '\n\nDumaguete: 035 522 5111'
+      + '\n\nGlobe: 0917 536 2156/ 0917 536 2715/ 0917 548 7672'
+      + '\n\nSmart: 0998 990 7540/ 0998 990 7541/ 0998 843 2880'
+      + '\n\nSun: 0925 714 7794/ 0925 714 7793')
+    }
+    else {
+      this.setState({ visibleModal: false });
+      this.props.navigation.navigate('MedgatePage');
+    }
   }
 
   goToERC1() {
@@ -607,5 +698,16 @@ const styles = StyleSheet.create({
     fontSize: SCREEN_HEIGHT > 750 ? 40 : 30,
     marginVertical: SCREEN_HEIGHT > 750 ? 10 : 2,
     alignSelf: 'center',
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: 'white',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
 });
