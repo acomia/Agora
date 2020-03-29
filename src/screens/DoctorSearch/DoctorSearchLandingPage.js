@@ -5,7 +5,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {useNavigation} from 'react-navigation-hooks';
 import {ActivityIndicator} from 'react-native-paper';
 
-import {DOCTOR_SEARCH_LOGIN_TOKEN} from '../../util/test_api';
+import {DOCTOR_SEARCH_LOGIN_TOKEN} from '../../util/api';
 
 export default function DoctorSearchLandingPage() {
   const [searchQuery, setSearchQuery] = useState({

@@ -53,7 +53,8 @@ export default function DoctorProfile() {
     try {
       setFetching(true);
       let response = await fetch(
-        `https://intellicare.com.ph/uat/webservice/thousandminds/api/searchprovider/${token}`,
+        // `https://intellicare.com.ph/uat/webservice/thousandminds/api/searchprovider/${token}`,
+        `https://intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
         {
           method: 'POST',
           signal: signal,
