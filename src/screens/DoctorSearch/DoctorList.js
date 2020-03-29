@@ -2,18 +2,19 @@ import React from 'react';
 import {Text, StyleSheet, View} from 'react-native';
 import {Thumbnail} from 'native-base';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import {useNavigation} from 'react-navigation-hooks';
+import {useNavigation, useNavigationParam} from 'react-navigation-hooks';
 
-export default function DoctorList({drdata, token}) {
+export default function DoctorList({drdata}) {
   const {navigate} = useNavigation();
+  const searchQuery = useNavigationParam('searchQuery');
 
   function handleNavigate() {
-    navigate('DoctorProfile', {drdata, token});
+    navigate('DoctorProfile', {drdata, searchQuery});
   }
 
   let renderImage;
 
-  if (drdata.specialization.toLowerCase().includes('dentist'))
+  if (drdata.specialty.toLowerCase().includes('dentist'))
     renderImage = (
       <Thumbnail
         square
@@ -42,23 +43,19 @@ export default function DoctorList({drdata, token}) {
           {renderImage}
         </View>
         <View style={{flex: 1}}>
-          <Text style={{fontWeight: 'bold', fontSize: 14, fontFamily: 'Arial', color: "#5fb650"}}>
-            {drdata.doctorfullname}
+          <Text
+            style={{
+              fontWeight: 'bold',
+              fontSize: 14,
+              fontFamily: 'Arial',
+              color: '#5fb650',
+            }}>
+            {drdata.doctor_name}
           </Text>
           <Text style={{fontSize: 11, color: '#2d2d2d'}}>
-            {drdata.specialization.length > 35
-              ? drdata.specialization.substring(0, 35) + '...'
-              : drdata.specialization}
-          </Text>
-          <Text style={{fontSize: 9, color: '#c2c2c2'}}>
-            {drdata.hospitalclinic.length > 50
-              ? drdata.hospitalclinic.substring(0, 50)
-              : drdata.hospitalclinic}
-          </Text>
-          <Text style={{fontSize: 9, color: '#c2c2c2'}}>
-            {drdata.city.length > 50
-              ? drdata.city.substring(0, 50) + '...'
-              : drdata.city}
+            {drdata.specialty.length > 35
+              ? drdata.specialty.substring(0, 35) + '...'
+              : drdata.specialty}
           </Text>
         </View>
       </View>

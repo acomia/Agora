@@ -43,11 +43,6 @@ export default function SearchDoctor({search}) {
           value={textSearch}
         />
       </Item>
-      <Icon
-        type="Ionicons"
-        name="md-options"
-        style={{color: 'white', fontSize: 20}}
-      />
     </Header>
   );
 }

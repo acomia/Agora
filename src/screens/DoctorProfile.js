@@ -8,7 +8,6 @@ import {
 } from 'react-native';
 import {
   Container,
-  Header,
   Text,
   Left,
   Right,
@@ -16,10 +15,8 @@ import {
   Label,
   ListItem,
   Thumbnail,
-  List,
   Accordion,
   Spinner,
-  Icon,
   Button,
 } from 'native-base';
 import {ScrollView} from 'react-native-gesture-handler';
@@ -28,13 +25,11 @@ import AccordionDetails from './AccordionDetails';
 
 export default function DoctorProfile() {
   const drdata = useNavigationParam('drdata');
-  const tokenVal = useNavigationParam('token');
+  const searchQuery = useNavigationParam('searchQuery');
 
   const [hospitalList, setHospitalList] = useState([]);
   const [error, setError] = useState(false);
   const [fetching, setFetching] = useState(false);
-  const [token] = useState(tokenVal);
-  const dataArray = hospitalList;
 
   useEffect(() => {
     const abortController = new AbortController();
@@ -52,91 +47,27 @@ export default function DoctorProfile() {
   async function fetchHospitalAccreditation(signal) {
     try {
       setFetching(true);
-      let response = await fetch(
-        // `https://intellicare.com.ph/uat/webservice/thousandminds/api/searchprovider/${token}`,
-        `https://intellicare.com.ph/webservice/thousandminds/api/searchprovider/${token}`,
+      let resp = await fetch(
+        `https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find/advancesearch/details`,
         {
-          method: 'POST',
           signal: signal,
           headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
+            DoctorCode: drdata.doctor_code,
+            Hospital:
+              searchQuery.clinic.trim() === '' ? '' : searchQuery.clinic.trim(),
+            City: '',
           },
-          body: JSON.stringify({
-            doctor: drdata.doctorfullname.split(',')[0],
-            hospitalclinic: 'ALL',
-            specialization: drdata.specialization,
-            city: 'ALL',
-          }),
         },
       );
 
-      let responseJson = await response.json();
+      let respJson = await resp.json();
 
-      let filteredDoctors = responseJson.response.filter(doctors => {
-        return doctors.doctorcode === drdata.doctorcode;
-      });
+      for (let obj of respJson.data) {
+        obj.title = toTitleCase(obj.hospital_name);
+      }
 
-      console.log(filteredDoctors);
+      setHospitalList(respJson.data);
 
-      let hospitals = [];
-
-      for (let key of filteredDoctors)
-        for (let {} in key) {
-          let hscode = key['hospitalcode'];
-          let drcode = key['doctorcode'];
-          let hospclinic = key['hospitalclinic'];
-          let city = key['city'];
-          let room;
-          let coordinator;
-          let phone;
-          let schedule;
-
-          let data = await fetchProviderDetail(signal, drcode, hscode);
-
-          console.log(data.response);
-
-          if (data.response !== null) {
-            room =
-              data.response.room.trim() === ''
-                ? 'N/A'
-                : data.response.room.trim();
-            coordinator =
-              data.response.coordinator.trim() === ''
-                ? 'N/A'
-                : data.response.coordinator.trim();
-            phone =
-              data.response.phone.trim() === ''
-                ? 'N/A'
-                : data.response.phone.trim();
-            schedule =
-              data.response.schedule.trim() === ''
-                ? 'N/A'
-                : data.response.schedule.trim();
-          } else {
-            room = 'N/A';
-            coordinator = 'N/A';
-            phone = 'N/A';
-            schedule = 'N/A';
-          }
-
-          hospitals.push({
-            title: toTitleCase(hospclinic),
-            hscode: hscode,
-            drcode: drcode,
-            room: room,
-            coordinator: coordinator,
-            phone: phone,
-            schedule: schedule,
-            city: city,
-          });
-
-          break;
-        }
-
-      console.log(hospitals);
-
-      if (hospitals.length > 0) setHospitalList(hospitals);
       setError(false);
       setFetching(false);
     } catch (error) {
@@ -159,7 +90,8 @@ export default function DoctorProfile() {
       renderHospitalAccreditation = (
         <View style={styles.accordion}>
           <Accordion
-            dataArray={dataArray}
+            expanded={hospitalList.length === 1 ? 0 : null}
+            dataArray={hospitalList}
             style={{borderWidth: 0}}
             headerStyle={{
               backgroundColor: '#fff',
@@ -213,32 +145,8 @@ export default function DoctorProfile() {
     );
   }
 
-  async function fetchProviderDetail(signal, drcode, hscode) {
-    try {
-      let response = await fetch(
-        `https://intellicare.com.ph/uat/webservice/thousandminds/api/searchprovider/detail/${token}`,
-        {
-          method: 'POST',
-          signal: signal,
-          headers: {
-            Accept: 'application/json',
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            doctorcode: drcode,
-            hospitalcode: hscode,
-          }),
-        },
-      );
-
-      return response.json();
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   function renderThumbnail() {
-    if (drdata.specialization.toLowerCase().includes('dentist'))
+    if (drdata.specialty.toLowerCase().includes('dentist'))
       return (
         <Thumbnail
           large
@@ -268,10 +176,10 @@ export default function DoctorProfile() {
         style={styles.backgroundImage}>
         <View style={styles.headerUser}>
           {renderThumbnail()}
-          <Label style={styles.labelNickname}>{drdata.doctorfullname}</Label>
+          <Label style={styles.labelNickname}>{drdata.doctor_name}</Label>
         </View>
         <Text style={styles.headerDetails}>
-          {toTitleCase(drdata.specialization)}
+          {toTitleCase(drdata.specialty)}
         </Text>
       </ImageBackground>
       <ScrollView>

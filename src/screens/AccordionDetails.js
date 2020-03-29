@@ -1,5 +1,5 @@
-import React, {useEffect} from 'react';
-import {List, View, Thumbnail, Text, Icon} from 'native-base';
+import React from 'react';
+import {List, View, Text, Icon} from 'native-base';
 
 export default function AccordionDetails({dataArray}) {
   return (
@@ -12,11 +12,6 @@ export default function AccordionDetails({dataArray}) {
           color: '#2d2d2d',
         }}>
         <View style={{flexDirection: 'row'}}>
-          {/* <Thumbnail
-            square
-            source={require('../../assets/images/nav-door.png')}
-            style={{height: 20, width: 20, marginHorizontal: 10}}
-          /> */}
           <Icon
             type="MaterialCommunityIcons"
             name="door"
@@ -26,7 +21,7 @@ export default function AccordionDetails({dataArray}) {
             Room No:{' '}
           </Text>
           <Text note style={{fontSize: 14}}>
-            {dataArray.room}
+            {dataArray.room.trim() === '' ? 'N/A' : dataArray.room.trim()}
           </Text>
         </View>
       </List>
@@ -47,7 +42,9 @@ export default function AccordionDetails({dataArray}) {
             Coordinator:{' '}
           </Text>
           <Text note style={{fontSize: 14}}>
-            {dataArray.coordinator}
+            {dataArray.coordinator.trim() === ''
+              ? 'N/A'
+              : dataArray.coordinator.trim()}
           </Text>
         </View>
       </List>
@@ -65,7 +62,7 @@ export default function AccordionDetails({dataArray}) {
             style={{fontSize: 20, paddingHorizontal: 10, color: '#2d2d2d'}}
           />
           <Text note style={{fontSize: 14}}>
-            {dataArray.phone}
+            {dataArray.phone.trim() === '' ? 'N/A' : dataArray.phone.trim()}
           </Text>
         </View>
       </List>
@@ -83,7 +80,9 @@ export default function AccordionDetails({dataArray}) {
             style={{fontSize: 20, paddingHorizontal: 10, color: '#2d2d2d'}}
           />
           <Text note style={{fontSize: 14}}>
-            {dataArray.schedule}
+            {dataArray.schedule.trim() === ''
+              ? 'N/A'
+              : dataArray.schedule.trim()}
           </Text>
         </View>
       </List>
@@ -101,7 +100,9 @@ export default function AccordionDetails({dataArray}) {
             style={{fontSize: 20, paddingHorizontal: 10, color: '#2d2d2d'}}
           />
           <Text note style={{fontSize: 14}}>
-            {dataArray.city}
+            {dataArray.location.trim() === ''
+              ? 'N/A'
+              : dataArray.location.trim()}
           </Text>
         </View>
       </List>
