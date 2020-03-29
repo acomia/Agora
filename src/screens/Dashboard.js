@@ -31,7 +31,9 @@ import { DrawerActions } from 'react-navigation-drawer';
 import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import Spinner from 'react-native-spinkit';
-
+import {
+  MEDGATE
+} from '../util/api.js';
 
 const MEMB_NAME = 'memb_name';
 const MEMB_CARDNO = 'memb_cardno';
@@ -81,7 +83,7 @@ export default class Dashboard extends React.Component {
     });
 
     fetch(
-      'https://intellicare.com.ph/uat/webservice/memberprofile/api/feature/status?name=MEDGATE',
+      MEDGATE,
       {
         method: 'GET',
         headers: {
@@ -113,6 +115,9 @@ export default class Dashboard extends React.Component {
         });
       })
       .catch(error => {
+        this.setState({
+          isLoading: false,
+        });
         alert('Error!' + error);
       });
 
