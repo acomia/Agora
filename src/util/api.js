@@ -104,3 +104,6 @@ export const BENEFITS =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/benefits';
 export const MEDGATE =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/feature/status?name=MEDGATE';
+
+export const DOCTOR_SEARCH_LOGIN_TOKEN =
+  'https://intellicare.com.ph/uat/webservice/thousandminds/api/login';
