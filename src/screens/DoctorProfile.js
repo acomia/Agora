@@ -48,7 +48,7 @@ export default function DoctorProfile() {
     try {
       setFetching(true);
       let resp = await fetch(
-        `https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find/advancesearch/details`,
+        `https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch/details`,
         {
           signal: signal,
           headers: {

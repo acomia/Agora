@@ -40,7 +40,7 @@ export default function DoctorSearchMainScreen() {
       const signal = abortController.signal;
 
       let resp = await fetch(
-        `https://intellicare.com.ph/uat/webservice/memberprofile/api/providers/find/advancesearch?paging=${pageIndex}&pagesize=30`,
+        `https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch?paging=${pageIndex}&pagesize=30`,
         {
           signal: signal,
           headers: {
@@ -70,8 +70,9 @@ export default function DoctorSearchMainScreen() {
       setDoctorList([...doctorList, ...respJson.data]);
       setTempDoctorList([...doctorList, ...respJson.data]);
       setFetching(false);
+      searchQuery.clinic = '';
+      searchQuery.location = '';
     } catch (error) {
-      console.log(error);
       setFetching(false);
       searchQuery.clinic = '';
       searchQuery.location = '';
