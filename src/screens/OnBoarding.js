@@ -62,7 +62,7 @@ export default class OnBoarding extends React.Component {
     })
       .then(response => {
         response.json().then(medgatemsg => {
-          console.log('medgate', medgatemsg)
+          //console.log('medgate', medgatemsg)
           if (medgatemsg.data.is_active === false) {
 
             return Alert.alert('Attention!', medgatemsg.data.callback_msg
