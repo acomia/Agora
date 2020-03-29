@@ -53,7 +53,7 @@ export const NEARBY_CLINICS =
 export const RCS_MEMBERS_PROFILE =
   'https://feliza.intellicare.ph/webservice/memberprofile/api/member/accounts';
 export const RCS_PROVIDERS =
-  'https://intellicare.com.ph/webservice/memberprofile/api/providers/find?name=&location=';
+  'https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find?name=&location=';
 export const RCS_SPECIALTIES =
   'https://feliza.intellicare.ph/webservice/memberprofile/api/ercs1/specialty';
 //RCS-1
