@@ -88,13 +88,13 @@ export const SearchBox = ({searchTerm, filterData}) => {
         <ListItem onPress={() => checked('ALL')}>
           <CheckBox checked={checkAll} color="green" />
           <Body style={{left: 10}}>
-            <Text style={{color: 'grey', fontSize: 16}}>All facilities</Text>
+            <Text style={{color: 'grey', fontSize: 14}}>All facilities</Text>
           </Body>
         </ListItem>
         <ListItem onPress={() => checked('HOSPITALS')}>
           <CheckBox checked={checkHospitals} color="tomato" />
           <Body style={{left: 10}}>
-            <Text style={{color: 'grey', fontSize: 16}}>
+            <Text style={{color: 'grey', fontSize: 14}}>
               Accredited Hospitals
             </Text>
           </Body>
@@ -102,7 +102,7 @@ export const SearchBox = ({searchTerm, filterData}) => {
         <ListItem onPress={() => checked('CLINICS')}>
           <CheckBox checked={checkClinics} color="blue" />
           <Body style={{left: 10}}>
-            <Text style={{color: 'grey', fontSize: 16}}>
+            <Text style={{color: 'grey', fontSize: 14}}>
               Accredited Clinics
             </Text>
           </Body>
@@ -117,14 +117,14 @@ export const SearchBox = ({searchTerm, filterData}) => {
           block
           style={{flex: 1, right: 2}}
           onPress={() => handleApplyPress()}>
-          <Text style={{color: '#fff', fontSize: 16}}>Apply</Text>
+          <Text style={{color: '#fff', fontSize: 14}}>Apply</Text>
         </Button>
         <Button
           block
           bordered
           style={{flex: 1, left: 2}}
           onPress={() => checked('CLEAR')}>
-          <Text style={{color: 'grey', fontSize: 16}}>Clear</Text>
+          <Text style={{color: 'blue', fontSize: 14}}>Reset</Text>
         </Button>
       </View>
     </View>
