@@ -599,7 +599,7 @@ export default class Login extends React.Component {
                     onChangeText={intellicare_acct => this.setState({ intellicare_acct })}
                   />
                 </View>
-                <Item floatingLabel style={styles.formStyle}>
+                {/* <Item floatingLabel style={styles.formStyle}>
                   <Label style={{ fontSize: 14 }}>
                     Intellicare/Avega Card No. *{' '}
                     <Text style={styles.sampleText}>
@@ -613,7 +613,7 @@ export default class Login extends React.Component {
                       this.setState({ intellicare_no })
                     }
                   />
-                </Item>
+                </Item> */}
                 <Item floatingLabel style={styles.formStyle}>
                   <Label style={{ fontSize: 14 }}>
                     Email Address *{' '}
