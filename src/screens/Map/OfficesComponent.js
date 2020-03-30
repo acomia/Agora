@@ -10,11 +10,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import MapView, {Marker} from 'react-native-maps';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
 const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
-const STATUS_BAR_HEIGHT = require('react-native-extra-dimensions-android').getStatusBarHeight();
 const ASPECT_RATIO = SCREEN_WIDTH / SCREEN_HEIGHT;
 const LONGITUDE_DELTA = ASPECT_RATIO * 0.015;
 const HEADER_MAX_HEIGHT = 150;
@@ -59,14 +57,17 @@ class OfficesComponent extends React.Component {
                 />
               </Marker>
             </MapView>
-            <Text style={{fontWeight: 'bold', color: '#5FB650'}}>
+            <Text style={{fontWeight: 'bold', color: '#000'}}>
               {office.name}
             </Text>
-            <Text style={{color: 'grey'}}>{office.phone}</Text>
-            <Text style={{color: 'grey'}}>{office.address}</Text>
+            <Text style={{color: 'grey', fontSize: 11}}>{office.address}</Text>
+            <Text style={{color: 'grey', fontWeight: 'bold', fontSize: 11}}>
+              {office.phone}
+            </Text>
             <Text
               style={{
                 color: 'grey',
+                fontSize: 11,
               }}>{`${office.ofc_schedule} ${office.ofc_hrs}`}</Text>
           </View>
         ))}

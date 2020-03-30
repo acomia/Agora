@@ -11,7 +11,9 @@ export const FooterComponent = ({showExploreFooter, hideExploreFooter}) => {
     switch (e) {
       case 'HOME':
         return (
-          hideExploreFooter(), setHomecolor('tomato'), setExplorecolor('grey')
+          hideExploreFooter('HOME'),
+          setHomecolor('tomato'),
+          setExplorecolor('grey')
         );
       case 'EXPLORE':
         return (

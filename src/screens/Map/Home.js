@@ -258,11 +258,21 @@ class Home extends React.Component {
       duration: 300,
     }).start();
   };
-  hideExploreComponent = () => {
-    Animated.timing(this.state.exploreFooterHeight, {
-      toValue: 0,
-      duration: 300,
-    }).start();
+  hideExploreComponent = route => {
+    if (route === 'HOME') {
+      const temparray = this.state.coordinates;
+      temparray.splice(1, 1);
+      this.setState({carousel_coordinates: [], coordinates: temparray});
+      Animated.timing(this.state.exploreFooterHeight, {
+        toValue: 0,
+        duration: 300,
+      }).start();
+    } else {
+      Animated.timing(this.state.exploreFooterHeight, {
+        toValue: 0,
+        duration: 300,
+      }).start();
+    }
   };
   onCarouselItemChange = index => {
     let location = this.state.carousel_coordinates[index];
@@ -508,8 +518,7 @@ class Home extends React.Component {
                       <Text numberOfLines={2} style={styles.calloutMarkerTitle}>
                         {marker.hospital_name}
                       </Text>
-                      <Text
-                        style={styles.calloutMarkerGetDirectionText}>
+                      <Text style={styles.calloutMarkerGetDirectionText}>
                         Click to Get Direction>>>
                       </Text>
                     </View>
