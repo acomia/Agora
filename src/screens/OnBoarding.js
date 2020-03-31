@@ -148,6 +148,10 @@ export default class OnBoarding extends React.Component {
           </View>
           <View style={styles.viewFeatures}>
             <SwiperFlatList
+              autoplay
+              autoplayDelay={3}
+              autoplayLoop
+              index={0}
               horizontal={true}
               showsHorizontalScrollIndicator={false}
               pagingEnabled={true}>
