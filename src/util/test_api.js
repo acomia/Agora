@@ -107,3 +107,5 @@ export const MEDGATE =
 
 export const DOCTOR_SEARCH_LOGIN_TOKEN =
   'https://intellicare.com.ph/uat/webservice/thousandminds/api/login';
+export const FILE_PATH_IMAGE =
+  'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/filepathtoimage';

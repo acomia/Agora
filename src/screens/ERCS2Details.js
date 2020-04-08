@@ -28,12 +28,14 @@ import { StackActions, NavigationActions } from 'react-navigation';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
 import moment from 'moment';
+import ImageZoom from 'react-native-image-pan-zoom';
 
 import {
   RCS2_HISTORY_DETAILS,
   RCS2_HISTORY_PROCEDURES,
   RCS2_HISTORY_DOCS,
   RCS2_SENDTOMAIL,
+  FILE_PATH_IMAGE
 } from '../util/api';
 
 const ACCESS_TOKEN = 'access_token';
@@ -222,7 +224,7 @@ export default class ERCS2Details extends React.Component {
           if (data.is_success === true) {
             return Alert.alert('', 'RCS sent to Email Successfully');
           } else {
-            return Alert.alert('Oops',data.error_message);
+            return Alert.alert('Oops', data.error_message);
           }
         });
       })
@@ -231,32 +233,33 @@ export default class ERCS2Details extends React.Component {
       });
   }
 
-  // _getImage = async item => {
-  //   //console.log('itemimage', item)
-  //   let resp = await fetch(
-  //     'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/filepathtoimage',
-  //     {
-  //       method: 'GET',
-  //       headers: {
-  //         Authorization: 'Bearer ' + global.storeToken,
-  //         ImagePath: item.file_path,
-  //       },
-  //     },
-  //   );
-  //   let respBlob = await resp.blob();
-  //   let reader = new FileReader();
-  //   reader.readAsDataURL(respBlob);
+  _getImage = async item => {
+    //console.log('itemimage', item)
+    var imagepath = item[0].file_path
+    let resp = await fetch(
+      FILE_PATH_IMAGE,
+      {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer ' + global.storeToken,
+          ImagePath: imagepath,
+        },
+      },
+    );
+    let respBlob = await resp.blob();
+    let reader = new FileReader();
+    reader.readAsDataURL(respBlob);
 
-  //   reader.onload = () => {
-  //     this.setState({ img_uri: reader.result });
-  //     console.log('imagedone', this.state.img_uri)
-  //   };
+    reader.onload = () => {
+      this.setState({ img_uri: reader.result });
+      console.log('imagedone', this.state.img_uri)
+    };
 
-  //   // <TouchableOpacity>
+    // <TouchableOpacity>
 
-  //   // </TouchableOpacity>
+    // </TouchableOpacity>
 
-  // };
+  };
 
   // renderItem = ({ item }) => {
   //   return (
@@ -610,14 +613,29 @@ export default class ERCS2Details extends React.Component {
               data={this.state.dataDocSource}
               renderItem={({ item }) => (
                 <View>
-                  <Text
+                  <Button transparent
                     style={{
-                      color: '#c4c4c4',
-                      textAlign: 'center',
                       justifyContent: 'center',
-                    }}>
-                    {item.file_name}
-                  </Text>
+                      alignItems: 'center'
+                    }}
+                  >
+                    <Text
+                      style={{
+                        color: '#3498db',
+                        textAlign: 'center',
+                        justifyContent: 'center',
+                        flexDirection: 'row',
+                        paddingLeft: 10,
+                        margin: 2,
+                      }}
+                      onPress={() => {
+                        <ActivityIndicator size="small" color="white" />;
+                        { this._getImage(this.state.dataDocSource) }
+                        this.setState({ visibleModal: 2 });
+                      }}>
+                      {item.file_name}
+                    </Text>
+                  </Button>
                 </View>
               )}
               keyExtractor={item => item.record_id}
@@ -654,14 +672,14 @@ export default class ERCS2Details extends React.Component {
                 : null
               }
               onPress={() => {
-                this.setState({ visibleModal: true });
+                this.setState({ visibleModal: 1 });
               }}>
               <Icon type="MaterialCommunityIcons" name="cancel" />
               <Text>Cancel this Request</Text>
             </Button>
           </View>
         </ScrollView>
-        <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
+        <Modal isVisible={this.state.visibleModal === 1} style={styles.bottomModal}>
           <View style={styles.modalContent}>
             <Text style={[styles.textModalStyle, { color: 'red' }]}>
               Are you sure you want to cancel your request?
@@ -699,6 +717,28 @@ export default class ERCS2Details extends React.Component {
             </Button>
           </View>
         </Modal>
+        <Modal onBackButtonPress={() => this.setState({ visibleModal: false })}
+          isVisible={this.state.visibleModal === 2}
+          animationType="fade"
+          transparent={true}
+          animationInTiming={0}
+          animationOutTiming={0}
+          backdropTransitionInTiming={0}
+          backdropTransitionOutTiming={0}>
+          <View style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}>
+            <ImageZoom cropWidth={Dimensions.get('window').width}
+              cropHeight={Dimensions.get('window').height}
+              imageWidth={300}
+              imageHeight={400}>
+              <Image style={{
+                width: 300, height: 400
+              }} source={{ uri: this.state.img_uri }} resizeMode="contain" />
+            </ImageZoom>
+          </View>
+        </Modal >
         {this.state.isLoading && (
           <View style={styles.spinnerStyle}>
             <Spinner color={'#e74c3c'} size={60} type={'ThreeBounce'} />
