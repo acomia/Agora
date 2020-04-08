@@ -485,7 +485,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
   },
   pnButtonDisabled: {
-    backgroundColor: '#999',
+    backgroundColor: '#5fb650',
     borderRadius: 5,
     padding: 10,
     marginTop: 10,

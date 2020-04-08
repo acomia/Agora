@@ -481,7 +481,8 @@ export default class Login extends React.Component {
                       </View>
                       <ScrollView>
                         {this.state.municipalList.map((item, key) => (
-                          <ListItem key={key}>
+                          <ListItem 
+                          key={key}>
                             <TouchableOpacity
                               onPress={() => {
                                 this.setState({
@@ -509,13 +510,13 @@ export default class Login extends React.Component {
                   </Modal>
                 </View>
                 <Item stackedLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Sex</Label>
+                  <Label style={{ fontSize: 14 }}>Sex *</Label>
                   <Item picker>
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name="arrow-down" />}
                       style={{ width: undefined }}
-                      placeholder="Select Gender"
+                      placeholder="Select Gender *"
                       placeholderStyle={{ color: '#bdc3c7' }}
                       placeholderIconColor="#007aff"
                       selectedValue={this.state.gender}
@@ -765,7 +766,7 @@ export default class Login extends React.Component {
                           }}
                         />
                         <Text style={{ color: '#5fb650', fontSize: 12 }}>
-                          Intellicare/Avega ID & valid ID
+                          Side by side picture of your Company ID {'\n'}and Goverment ID. 
                         </Text>
                       </Body>
                     </CardItem>
@@ -1173,7 +1174,7 @@ export default class Login extends React.Component {
     }
 
     if (!regularExpression.test(this.state.password)) {
-      return Alert.alert('Oops','password should contain atleast one number, one upper case and one special character.');
+      return Alert.alert('Oops','Password should contain atleast one number, one uppercase and one special character.');
     }
 
     if (this.state.password !== this.state.confirm_password) {
@@ -1514,5 +1515,13 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
+  modalContainerStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    // marginLeft: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    padding: 10,
   },
 });
