@@ -356,7 +356,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <View style={styles.formStyle}>
-                  <Text style={styles.formLabel}>Select Province</Text>
+                  <Text style={styles.formLabel}>Select Province *</Text>
                   <SearchBar
                     round
                     lightTheme
@@ -417,7 +417,7 @@ export default class Login extends React.Component {
                     ) : null}
                 </View>
                 <View style={styles.formStyle}>
-                  <Text style={styles.formLabel}>Select Municipal</Text>
+                  <Text style={styles.formLabel}>Select Municipal *</Text>
                   <Button
                     disabled={this.state.confirmMunicipal}
                     iconRight
@@ -651,7 +651,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Confirm Password</Label>
+                  <Label style={{ fontSize: 14 }}>Confirm Password *</Label>
                   <Input
                     style={styles.labelStyle}
                     secureTextEntry={this.state.secureConfirmPW}
@@ -766,7 +766,7 @@ export default class Login extends React.Component {
                           }}
                         />
                         <Text style={{ color: '#5fb650', fontSize: 12 }}>
-                          Side by side picture of your Company ID {'\n'}and Goverment ID. 
+                          Side by side picture of your {'\n'}Company ID and Goverment ID. 
                         </Text>
                       </Body>
                     </CardItem>
