@@ -461,8 +461,8 @@ export default class Login extends React.Component {
                   </View>
                   <Modal
                     isVisible={this.state.visibleModal === 2}
-                    animationInTiming={700}
-                    animationOutTiming={700}>
+                    animationInTiming={0}
+                    animationOutTiming={0}>
                     <View style={styles.modalContainerStyle}>
                       <View
                         style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
@@ -879,16 +879,16 @@ export default class Login extends React.Component {
         </ScrollView>
         <Modal
           isVisible={this.state.visibleModal == 1}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-          backdropTransitionInTiming={1000}
-          backdropTransitionOutTiming={1000}>
+          animationInTiming={0}
+          animationOutTiming={0}
+          backdropTransitionInTiming={0}
+          backdropTransitionOutTiming={0}>
           {this.renderPrivacyContent()}
         </Modal>
         <Modal
           isVisible={this.state.visibleList}
-          animationInTiming={0}
-          animationOutTiming={0}
+          animationInTiming={-20}
+          animationOutTiming={-20}
           backdropTransitionInTiming={0}
           backdropTransitionOutTiming={0}>
           {this.renderValidIdList()}
@@ -1139,6 +1139,12 @@ export default class Login extends React.Component {
       }
     });
 
+    var acctstr1 = this.state.intellicare_acct.length - 2
+    var acctstr2 = this.state.intellicare_acct.length
+    if (this.state.intellicare_acct.substring(acctstr1,acctstr2) !== '00'){
+      return Alert.alert('Oops','This Registration is for principal member only');
+    }
+
     if (this.state.province === '' || this.state.province === null) {
       return Alert.alert('Oops','Province is required');
     }
@@ -1182,6 +1188,7 @@ export default class Login extends React.Component {
     }
 
     //this._InsertRequest();
+    //Alert.alert('Success');
     this.checkConnectivity();
   };
 
