@@ -766,7 +766,7 @@ export default class Login extends React.Component {
                           }}
                         />
                         <Text style={{ color: '#5fb650', fontSize: 12 }}>
-                          Side by side picture of your {'\n'}Company ID and Goverment ID. 
+                          Side by side picture of your {'\n'}Company ID AND Goverment ID. 
                         </Text>
                       </Body>
                     </CardItem>
