@@ -111,3 +111,5 @@ export const DOCTOR_SEARCH_ADVANCED =
 
 export const DOCTOR_SEARCH_DETAILS_ADVANCED =
   'https://feliza.intellicare.ph/webservice/memberprofile/api/providers/find/advancesearch/details';
+export const FILE_PATH_IMAGE =
+  'https://feliza.intellicare.ph/webservice/memberprofile/api/member/filepathtoimage';

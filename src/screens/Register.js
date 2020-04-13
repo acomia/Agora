@@ -356,7 +356,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <View style={styles.formStyle}>
-                  <Text style={styles.formLabel}>Select Province</Text>
+                  <Text style={styles.formLabel}>Select Province *</Text>
                   <SearchBar
                     round
                     lightTheme
@@ -417,7 +417,7 @@ export default class Login extends React.Component {
                     ) : null}
                 </View>
                 <View style={styles.formStyle}>
-                  <Text style={styles.formLabel}>Select Municipal</Text>
+                  <Text style={styles.formLabel}>Select Municipal *</Text>
                   <Button
                     disabled={this.state.confirmMunicipal}
                     iconRight
@@ -461,8 +461,8 @@ export default class Login extends React.Component {
                   </View>
                   <Modal
                     isVisible={this.state.visibleModal === 2}
-                    animationInTiming={700}
-                    animationOutTiming={700}>
+                    animationInTiming={0}
+                    animationOutTiming={0}>
                     <View style={styles.modalContainerStyle}>
                       <View
                         style={{ backgroundColor: 'white', alignItems: 'flex-end' }}>
@@ -481,7 +481,8 @@ export default class Login extends React.Component {
                       </View>
                       <ScrollView>
                         {this.state.municipalList.map((item, key) => (
-                          <ListItem key={key}>
+                          <ListItem 
+                          key={key}>
                             <TouchableOpacity
                               onPress={() => {
                                 this.setState({
@@ -509,13 +510,13 @@ export default class Login extends React.Component {
                   </Modal>
                 </View>
                 <Item stackedLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Sex</Label>
+                  <Label style={{ fontSize: 14 }}>Sex *</Label>
                   <Item picker>
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name="arrow-down" />}
                       style={{ width: undefined }}
-                      placeholder="Select Gender"
+                      placeholder="Select Gender *"
                       placeholderStyle={{ color: '#bdc3c7' }}
                       placeholderIconColor="#007aff"
                       selectedValue={this.state.gender}
@@ -650,7 +651,7 @@ export default class Login extends React.Component {
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>Confirm Password</Label>
+                  <Label style={{ fontSize: 14 }}>Confirm Password *</Label>
                   <Input
                     style={styles.labelStyle}
                     secureTextEntry={this.state.secureConfirmPW}
@@ -765,7 +766,7 @@ export default class Login extends React.Component {
                           }}
                         />
                         <Text style={{ color: '#5fb650', fontSize: 12 }}>
-                          Intellicare/Avega ID & valid ID
+                          Side by side picture of your {'\n'}Company ID AND Goverment ID. 
                         </Text>
                       </Body>
                     </CardItem>
@@ -878,16 +879,16 @@ export default class Login extends React.Component {
         </ScrollView>
         <Modal
           isVisible={this.state.visibleModal == 1}
-          animationInTiming={1000}
-          animationOutTiming={1000}
-          backdropTransitionInTiming={1000}
-          backdropTransitionOutTiming={1000}>
+          animationInTiming={0}
+          animationOutTiming={0}
+          backdropTransitionInTiming={0}
+          backdropTransitionOutTiming={0}>
           {this.renderPrivacyContent()}
         </Modal>
         <Modal
           isVisible={this.state.visibleList}
-          animationInTiming={0}
-          animationOutTiming={0}
+          animationInTiming={-20}
+          animationOutTiming={-20}
           backdropTransitionInTiming={0}
           backdropTransitionOutTiming={0}>
           {this.renderValidIdList()}
@@ -1138,6 +1139,12 @@ export default class Login extends React.Component {
       }
     });
 
+    var acctstr1 = this.state.intellicare_acct.length - 2
+    var acctstr2 = this.state.intellicare_acct.length
+    if (this.state.intellicare_acct.substring(acctstr1,acctstr2) !== '00'){
+      return Alert.alert('Oops','This Registration is for principal member only');
+    }
+
     if (this.state.province === '' || this.state.province === null) {
       return Alert.alert('Oops','Province is required');
     }
@@ -1173,7 +1180,7 @@ export default class Login extends React.Component {
     }
 
     if (!regularExpression.test(this.state.password)) {
-      return Alert.alert('Oops','password should contain atleast one number, one upper case and one special character.');
+      return Alert.alert('Oops','Password should contain atleast one number, one uppercase and one special character.');
     }
 
     if (this.state.password !== this.state.confirm_password) {
@@ -1181,6 +1188,7 @@ export default class Login extends React.Component {
     }
 
     //this._InsertRequest();
+    //Alert.alert('Success');
     this.checkConnectivity();
   };
 
@@ -1514,5 +1522,13 @@ const styles = StyleSheet.create({
     right: 0,
     top: 0,
     bottom: 0,
+  },
+  modalContainerStyle: {
+    flex: 1,
+    flexDirection: 'column',
+    // marginLeft: 10,
+    borderRadius: 10,
+    backgroundColor: 'white',
+    padding: 10,
   },
 });

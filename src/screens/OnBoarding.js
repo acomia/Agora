@@ -117,6 +117,9 @@ export default class OnBoarding extends React.Component {
               <Text style={styles.welcomeLabel}>
                 Your healthcare mobile app, right in your hands!
               </Text>
+              <Text style={styles.welcomeLabel}>
+                v 1.1.2
+              </Text>
             </View>
           </View>
           <View style={styles.buttonContainer}>
