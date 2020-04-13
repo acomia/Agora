@@ -99,19 +99,21 @@ export default class ChangeOldPassword extends React.Component {
               onChangeText={old_PW => this.setState({old_PW})}
               secureTextEntry={this.state.secureOldPW}
             />
-            <Icon
-              onPress={() => {
-                this.state.secureOldPW
-                  ? this.setState({secureOldPW: false})
-                  : this.setState({secureOldPW: true});
-              }}
-              type="Octicons"
-              name={this.state.secureOldPW ? 'eye' : 'eye-closed'}
-              style={{
-                color: 'silver',
-                fontSize: 22,
-              }}
-            />
+            {this.state.old_PW !== '' ? (
+              <Icon
+                onPress={() => {
+                  this.state.secureOldPW
+                    ? this.setState({secureOldPW: false})
+                    : this.setState({secureOldPW: true});
+                }}
+                type="Octicons"
+                name={this.state.secureOldPW ? 'eye' : 'eye-closed'}
+                style={{
+                  color: 'silver',
+                  fontSize: 20,
+                }}
+              />
+            ) : null}
           </Item>
           <Item floatingLabel style={styles.formStyle}>
             <Icon
@@ -125,19 +127,21 @@ export default class ChangeOldPassword extends React.Component {
               onChangeText={new_PW => this.setState({new_PW})}
               secureTextEntry={this.state.secureNewPW}
             />
-            <Icon
-              onPress={() => {
-                this.state.secureNewPW
-                  ? this.setState({secureNewPW: false})
-                  : this.setState({secureNewPW: true});
-              }}
-              type="Octicons"
-              name={this.state.secureNewPW ? 'eye' : 'eye-closed'}
-              style={{
-                color: 'silver',
-                fontSize: 22,
-              }}
-            />
+            {this.state.new_PW !== '' ? (
+              <Icon
+                onPress={() => {
+                  this.state.secureNewPW
+                    ? this.setState({secureNewPW: false})
+                    : this.setState({secureNewPW: true});
+                }}
+                type="Octicons"
+                name={this.state.secureNewPW ? 'eye' : 'eye-closed'}
+                style={{
+                  color: 'silver',
+                  fontSize: 20,
+                }}
+              />
+            ) : null}
           </Item>
           <Item floatingLabel style={styles.formStyle}>
             <Icon
@@ -151,19 +155,21 @@ export default class ChangeOldPassword extends React.Component {
               onChangeText={confirm_PW => this.setState({confirm_PW})}
               secureTextEntry={this.state.secureConfirmPW}
             />
-            <Icon
-              onPress={() => {
-                this.state.secureConfirmPW
-                  ? this.setState({secureConfirmPW: false})
-                  : this.setState({secureConfirmPW: true});
-              }}
-              type="Octicons"
-              name={this.state.secureConfirmPW ? 'eye' : 'eye-closed'}
-              style={{
-                color: 'silver',
-                fontSize: 22,
-              }}
-            />
+            {this.state.confirm_PW !== '' ? (
+              <Icon
+                onPress={() => {
+                  this.state.secureConfirmPW
+                    ? this.setState({secureConfirmPW: false})
+                    : this.setState({secureConfirmPW: true});
+                }}
+                type="Octicons"
+                name={this.state.secureConfirmPW ? 'eye' : 'eye-closed'}
+                style={{
+                  color: 'silver',
+                  fontSize: 20,
+                }}
+              />
+            ) : null}
           </Item>
         </View>
         <View style={{flex: 1, paddingHorizontal: 20}}>

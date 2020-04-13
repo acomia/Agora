@@ -1,47 +1,43 @@
 import React from 'react';
-import { StyleSheet, View, Image } from 'react-native';
-import { Button, Text, Item, Input, Label, Icon, Container } from 'native-base';
-import { ScrollView } from 'react-native-gesture-handler';
+import {StyleSheet, View, Image, Alert} from 'react-native';
+import {Button, Text, Item, Input, Label, Icon, Container} from 'native-base';
+import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
-import {
-  FORGOT_PASSWORD_VERIFICATION_CODE
-} from '../util/api.js';
+import {FORGOT_PASSWORD_VERIFICATION_CODE} from '../util/api.js';
 
 export default class ForgotPassword extends React.Component {
   constructor() {
     super();
-    this.state = { email_add: '', visibleModal: false, isLoading: false };
+    this.state = {email_add: '', visibleModal: false, isLoading: false};
   }
 
   RESET_PW() {
     if (this.state.email_add.trim() === '') {
       return alert('Please provide your registered email address');
     }
-    this.setState({ isLoading: true });
-    fetch(FORGOT_PASSWORD_VERIFICATION_CODE,
-      {
-        method: 'PUT',
-        headers: {
-          EmailAddress: this.state.email_add,
-        },
-        // params: {
-        //     postedfrom: 'mobile'
-        // }
+    this.setState({isLoading: true});
+    fetch(FORGOT_PASSWORD_VERIFICATION_CODE, {
+      method: 'PUT',
+      headers: {
+        EmailAddress: this.state.email_add,
       },
-    )
+      // params: {
+      //     postedfrom: 'mobile'
+      // }
+    })
       .then(response => {
         response.json().then(data => {
           if (
             data.error_message === 'Successfully generate verification code.'
           ) {
-            this.setState({ isLoading: false });
+            this.setState({isLoading: false});
             this.props.navigation.navigate('VerifyOTP', {
               routeAddress: 'forgot_PW',
               emailAddress: this.state.email_add,
             });
           } else {
-            this.setState({ visibleModal: true, isLoading: false });
+            this.setState({visibleModal: true, isLoading: false});
           }
         });
       })
@@ -59,12 +55,12 @@ export default class ForgotPassword extends React.Component {
       <Container style={styles.container}>
         <View style={styles.topContent}>
           <Image
-            style={{ width: 100, height: 100 }}
+            style={{width: 100, height: 100}}
             source={require('../../assets/images/forgot_pw.png')}
             resizeMode="center"
           />
           <Label style={styles.forgotPWText}>Forgot Password?</Label>
-          <Label style={{ textAlign: 'center', paddingHorizontal: 30 }}>
+          <Label style={{textAlign: 'center', paddingHorizontal: 30}}>
             We just need your registered email address to send your password
             reset code
           </Label>
@@ -75,12 +71,12 @@ export default class ForgotPassword extends React.Component {
               active
               type="FontAwesome5"
               name="envelope"
-              style={{ justifyContent: 'center' }}
+              style={{justifyContent: 'center'}}
             />
             <Input
               placeholder="Email Address"
               value={this.state.email_add}
-              onChangeText={email_add => this.setState({ email_add })}
+              onChangeText={email_add => this.setState({email_add})}
               autoCapitalize={'none'}
             />
           </Item>
@@ -88,18 +84,18 @@ export default class ForgotPassword extends React.Component {
             {this.state.isLoading ? (
               <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
             ) : (
-                <Text>RESET PASSWORD</Text>
-              )}
+              <Text>RESET PASSWORD</Text>
+            )}
           </Button>
         </View>
         <Modal isVisible={this.state.visibleModal} style={styles.bottomModal}>
           <View style={styles.modalContent}>
-            <Text style={[styles.textModalStyle, { color: 'red' }]}>Oops,</Text>
-            <Text style={[styles.textModalStyle, { margin: 5 }]}>
+            <Text style={[styles.textModalStyle, {color: 'red'}]}>Oops,</Text>
+            <Text style={[styles.textModalStyle, {margin: 5}]}>
               unable to reset your password
             </Text>
             <Image
-              style={{ width: 40, height: 40 }}
+              style={{width: 40, height: 40}}
               source={require('../../assets/images/database_error.png')}
               resizeMode="center"
             />
@@ -114,8 +110,8 @@ export default class ForgotPassword extends React.Component {
               block
               rounded
               warning
-              onPress={() => this.setState({ visibleModal: false })}>
-              <Text style={{ fontWeight: 'bold', color: 'white', fontSize: 18 }}>
+              onPress={() => this.setState({visibleModal: false})}>
+              <Text style={{fontWeight: 'bold', color: 'white', fontSize: 18}}>
                 Okay
               </Text>
             </Button>

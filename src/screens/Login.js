@@ -24,17 +24,14 @@ import AsyncStorage from '@react-native-community/async-storage';
 import NetInfo from '@react-native-community/netinfo';
 import {ScrollView} from 'react-native-gesture-handler';
 import Spinner from 'react-native-spinkit';
-import {
-  MEMBER_LOGIN,
-  SEND_EMAIL_VERIFICATION
-} from '../util/api.js';
+import {MEMBER_LOGIN, SEND_EMAIL_VERIFICATION} from '../util/api.js';
 
 const ACCESS_TOKEN = 'access_token';
 const MEMBER_ID = 'member_id';
 const MEMB_ACCOUNTNO = 'memb_accountno';
 const MEMB_NAME = 'memb_name';
 const MEMB_EMAIL = 'memb_email';
-const MEMB_CARDNO = 'memb_cardno'
+const MEMB_CARDNO = 'memb_cardno';
 
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
@@ -85,91 +82,101 @@ export default class Login extends React.Component {
     }
   }
 
-async storeToken(accessToken)
-{
-    try
-    {
-        await AsyncStorage.setItem(ACCESS_TOKEN,accessToken);
-        this.getToken();
-    } catch(error)
-    {
-        console.log("CANT STORE TOKEN")
+  async storeToken(accessToken) {
+    try {
+      await AsyncStorage.setItem(ACCESS_TOKEN, accessToken);
+      this.getToken();
+    } catch (error) {
+      console.log('CANT STORE TOKEN');
     }
-}
+  }
 
-async getToken()
-{
-    try
-    {
-       let token =  await AsyncStorage.getItem(ACCESS_TOKEN);
-       console.log("token is: "+ token);
-    } catch(error)
-    {
-        console.log("CANT GET TOKEN")
+  async getToken() {
+    try {
+      let token = await AsyncStorage.getItem(ACCESS_TOKEN);
+      console.log('token is: ' + token);
+    } catch (error) {
+      console.log('CANT GET TOKEN');
     }
-}
+  }
 
-
-
-
-    render() {
-        return (
-            <ScrollView>
-                <Container>
-                    <ImageBackground source={require('../../assets/images/white-with-skin.jpg')} style={styles.backgroundImage}>
-                        <View style={styles.companyLogo}>
-                            <Image source={require('../../assets/images/intellicarelogo.png')} style={styles.imageStyle} resizeMode='contain' />
-                            <Label style={styles.fullertonLabel}>A Member of Fullerton Health</Label>
-                        </View>
-                        <View style={styles.loginForm}>
-                            <Form>
-                                <Item floatingLabel>
-                                    <Label >Username</Label>
-                                    <Input
-                                        style={styles.labelStyle}
-                                        onChangeText={(username) => this.setState({ username })} />
-                                </Item>
-                                <Item floatingLabel>
-                                    <Label>Password</Label>
-                                    <Input
-                                        secureTextEntry
-                                        style={styles.labelStyle}
-                                        onChangeText={(password) => this.setState({ password })} />
-                                </Item>
-                            </Form>
-                            <Text style={styles.ForgotPasswordLink} onPress={() => this.props.navigation.navigate('ForgotPasswordPage')}>
-                                Forgot Password?
-                        </Text>
-                            <Button rounded block success style={{ marginTop: 50 }} onPress={() => this._postUser()}>
-                                <Text > Login </Text>
-                            </Button>
-                        </View>
-                        <View style={styles.footer}>
-                            <Text style={styles.footerText}>By logging in to this application, I have read and understood the Terms and Conditions</Text>
-                        </View>
-                    </ImageBackground>
-                </Container>
-            </ScrollView>
-        );
-    };
-    _getRequest() {
-        fetch('http:192.168.1.104:3005/', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-
-            }
-        })
-            .then((response) => {
-                response.json()
-                    .then((data) => {
-                        alert(JSON.stringify(data.key))
-                    })
-            })
-            .catch((error) => {
-              Alert.alert('Oops','Error!' + error)
-            })
-      
+  render() {
+    return (
+      <ScrollView>
+        <Container>
+          <ImageBackground
+            source={require('../../assets/images/white-with-skin.jpg')}
+            style={styles.backgroundImage}>
+            <View style={styles.companyLogo}>
+              <Image
+                source={require('../../assets/images/intellicarelogo.png')}
+                style={styles.imageStyle}
+                resizeMode="contain"
+              />
+              <Label style={styles.fullertonLabel}>
+                A Member of Fullerton Health
+              </Label>
+            </View>
+            <View style={styles.loginForm}>
+              <Form>
+                <Item floatingLabel>
+                  <Label>Username</Label>
+                  <Input
+                    style={styles.labelStyle}
+                    onChangeText={username => this.setState({username})}
+                  />
+                </Item>
+                <Item floatingLabel>
+                  <Label>Password</Label>
+                  <Input
+                    secureTextEntry
+                    style={styles.labelStyle}
+                    onChangeText={password => this.setState({password})}
+                  />
+                </Item>
+              </Form>
+              <Text
+                style={styles.ForgotPasswordLink}
+                onPress={() =>
+                  this.props.navigation.navigate('ForgotPasswordPage')
+                }>
+                Forgot Password?
+              </Text>
+              <Button
+                rounded
+                block
+                success
+                style={{marginTop: 50}}
+                onPress={() => this._postUser()}>
+                <Text> Login </Text>
+              </Button>
+            </View>
+            <View style={styles.footer}>
+              <Text style={styles.footerText}>
+                By logging in to this application, I have read and understood
+                the Terms and Conditions
+              </Text>
+            </View>
+          </ImageBackground>
+        </Container>
+      </ScrollView>
+    );
+  }
+  _getRequest() {
+    fetch('http:192.168.1.104:3005/', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
+      },
+    })
+      .then(response => {
+        response.json().then(data => {
+          alert(JSON.stringify(data.key));
+        });
+      })
+      .catch(error => {
+        Alert.alert('Oops', 'Error!' + error);
+      });
   }
 
   //store memb_id
@@ -220,10 +227,6 @@ async getToken()
     }
   }
 
-
-
-
-
   async getacct() {
     try {
       let membacct = await AsyncStorage.getItem(MEMB_ACCOUNTNO);
@@ -273,7 +276,7 @@ async getToken()
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
-        <View style={styles.header}></View>
+        <View style={styles.header} />
         <View style={styles.contentStyle}>
           {/* <View style={{flex: 1, justifyContent: 'center'}}>
             <Image
@@ -317,19 +320,21 @@ async getToken()
                   style={styles.labelStyle}
                   onChangeText={password => this.setState({password})}
                 />
-                <Icon
-                  onPress={() => {
-                    this.state.securePW
-                      ? this.setState({securePW: false})
-                      : this.setState({securePW: true});
-                  }}
-                  type="Octicons"
-                  name={this.state.securePW ? 'eye-closed' : 'eye'}
-                  style={{
-                    color: 'silver',
-                    fontSize: 22,
-                  }}
-                />
+                {this.state.password !== '' ? (
+                  <Icon
+                    onPress={() => {
+                      this.state.securePW
+                        ? this.setState({securePW: false})
+                        : this.setState({securePW: true});
+                    }}
+                    type="Octicons"
+                    name={this.state.securePW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 20,
+                    }}
+                  />
+                ) : null}
               </Item>
             </Form>
             <Button
@@ -373,9 +378,7 @@ async getToken()
         Alert.alert(
           'Oops!',
           'Please check your internet connection and try again.',
-          [
-            {text: 'OK', onPress: () => console.log('OK Pressed')},
-          ],
+          [{text: 'OK', onPress: () => console.log('OK Pressed')}],
           {cancelable: false},
         );
         this.setState({LoginSubmit: false});
@@ -384,19 +387,16 @@ async getToken()
   }
 
   _postUser() {
-    fetch(
-      MEMBER_LOGIN,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
-        },
-        body: JSON.stringify({
-          email: this.state.username,
-          password: this.state.password,
-        }),
+    fetch(MEMBER_LOGIN, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=UTF-8',
       },
-    )
+      body: JSON.stringify({
+        email: this.state.username,
+        password: this.state.password,
+      }),
+    })
       .then(response => {
         response.json().then(data => {
           if (data.is_success == true) {
@@ -410,8 +410,8 @@ async getToken()
               let memb_Accountno = data.data.accountno;
               this.storeacct(memb_Accountno);
 
-              let memb_Cardno = data.data.cardno
-              this.storecardno(memb_Cardno)
+              let memb_Cardno = data.data.cardno;
+              this.storecardno(memb_Cardno);
 
               let memb_name = data.data.firstname;
               this.storemembname(memb_name);
@@ -427,29 +427,23 @@ async getToken()
               this.SEND_EMAILVERIFICATION(membfname, memblname, membemail);
             }
           } else {
-            Alert.alert('Oops',data.error_message);
+            Alert.alert('Oops', data.error_message);
             this.setState({LoginSubmit: false});
           }
         });
       })
       .catch(error => {
-        Alert.alert('Oops','Error!' + error);
+        Alert.alert('Oops', 'Error!' + error);
       });
   }
 
   SEND_EMAILVERIFICATION(membfname, memblname, membemail) {
-    fetch(
-      SEND_EMAIL_VERIFICATION +
-        membfname +
-        '&lastname=' +
-        memblname,
-      {
-        method: 'PUT',
-        headers: {
-          EmailAddress: membemail,
-        },
+    fetch(SEND_EMAIL_VERIFICATION + membfname + '&lastname=' + memblname, {
+      method: 'PUT',
+      headers: {
+        EmailAddress: membemail,
       },
-    )
+    })
       .then(response => {
         response.json().then(data => {
           if (
@@ -463,7 +457,7 @@ async getToken()
             });
             this.setState({LoginSubmit: false});
           } else {
-            Alert.alert('Oops','error');
+            Alert.alert('Oops', 'error');
             this.setState({LoginSubmit: false});
           }
         });

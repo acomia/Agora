@@ -12,9 +12,7 @@ import {
 } from 'native-base';
 import Spinner from 'react-native-spinkit';
 import Modal from 'react-native-modal';
-import {
-  FORGOT_PASSWORD_NEW_PASSWORD
-} from '../util/api.js';
+import {FORGOT_PASSWORD_NEW_PASSWORD} from '../util/api.js';
 
 export default class ChangePassword extends React.Component {
   constructor() {
@@ -43,20 +41,17 @@ export default class ChangePassword extends React.Component {
     this.setState({isLoading: true});
     const {OTP_CODE, EMAIL_ADD} = this.props.navigation.state.params;
     console.log('CPW', OTP_CODE, EMAIL_ADD, this.state.new_PW);
-    fetch(
-      FORGOT_PASSWORD_NEW_PASSWORD,
-      {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          verification_code: OTP_CODE,
-          email_address: EMAIL_ADD,
-          new_password: this.state.new_PW,
-        }),
+    fetch(FORGOT_PASSWORD_NEW_PASSWORD, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    )
+      body: JSON.stringify({
+        verification_code: OTP_CODE,
+        email_address: EMAIL_ADD,
+        new_password: this.state.new_PW,
+      }),
+    })
       .then(response => {
         response.json().then(data => {
           if (data.error_message === 'Successfully updated.') {
@@ -99,19 +94,21 @@ export default class ChangePassword extends React.Component {
               onChangeText={new_PW => this.setState({new_PW})}
               secureTextEntry={this.state.securePW}
             />
-            <Icon
-              onPress={() => {
-                this.state.securePW
-                  ? this.setState({securePW: false})
-                  : this.setState({securePW: true});
-              }}
-              type="Octicons"
-              name={this.state.securePW ? 'eye-closed' : 'eye'}
-              style={{
-                color: 'silver',
-                fontSize: 22,
-              }}
-            />
+            {this.state.new_PW !== '' ? (
+              <Icon
+                onPress={() => {
+                  this.state.securePW
+                    ? this.setState({securePW: false})
+                    : this.setState({securePW: true});
+                }}
+                type="Octicons"
+                name={this.state.securePW ? 'eye-closed' : 'eye'}
+                style={{
+                  color: 'silver',
+                  fontSize: 20,
+                }}
+              />
+            ) : null}
           </Item>
           <Item floatingLabel style={styles.formStyle}>
             <Icon name="md-lock" />
@@ -121,19 +118,21 @@ export default class ChangePassword extends React.Component {
               onChangeText={confirm_PW => this.setState({confirm_PW})}
               secureTextEntry={this.state.secureConfirmPW}
             />
-            <Icon
-              onPress={() => {
-                this.state.securePW
-                  ? this.setState({secureConfirmPW: false})
-                  : this.setState({secureConfirmPW: true});
-              }}
-              type="Octicons"
-              name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
-              style={{
-                color: 'silver',
-                fontSize: 22,
-              }}
-            />
+            {this.state.confirm_PW !== '' ? (
+              <Icon
+                onPress={() => {
+                  this.state.securePW
+                    ? this.setState({secureConfirmPW: false})
+                    : this.setState({secureConfirmPW: true});
+                }}
+                type="Octicons"
+                name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
+                style={{
+                  color: 'silver',
+                  fontSize: 20,
+                }}
+              />
+            ) : null}
           </Item>
           <Button block rounded info onPress={() => this.CHANGE_PW()}>
             {this.state.isLoading ? (
