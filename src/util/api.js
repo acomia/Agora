@@ -39,6 +39,8 @@ export const FORGOT_PASSWORD_NEW_PASSWORD =
 
 //AGORA MAP
 export const GOOGLE_MAPS_APIKEY = 'AIzaSyBYxkZ2A4Y4i_bX4SebtODZj6cR45c1Czw';
+// export const GOOGLE_MAPS_APIKEY = 'AIzaSyAEr63gs_sYIqF9HFTvqQX4rvdPEcrNQTo'; //arnan apikey
+
 export const MAPLOGIN_TOKEN =
   'https://feliza.intellicare.ph/webservice/thousandminds/api/login';
 export const ACCREDITED_HOSPITALS =

@@ -23,7 +23,7 @@ import {
   NEARBY_HOSPITALS,
   NEARBY_CLINICS,
   GOOGLE_MAPS_APIKEY,
-} from '../../util/test_api';
+} from '../../util/api';
 //styles property
 import styles from './MapStyle';
 const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
@@ -317,10 +317,11 @@ class Home extends React.Component {
       <View style={{padding: 6}}>
         <Text style={styles.cardTitle}>{item.hospital_name}</Text>
         <Text style={styles.cardDescription}>{item.phone}</Text>
-        <Text
-          style={
-            styles.cardDescription
-          }>{`${item.street} ${item.subd_brgy} ${item.city_prov}`}</Text>
+        <Text style={styles.cardDescription}>{`${
+          item.street === undefined ? '' : item.street
+        } ${item.subd_brgy === undefined ? '' : item.subd_brgy} ${
+          item.city_prov === undefined ? '' : item.city_prov
+        }`}</Text>
         <Text style={styles.cardDescription}>
           {item.clinic_hrs.trim() === '' ? 'N/A' : item.clinic_hrs}
         </Text>
@@ -437,20 +438,6 @@ class Home extends React.Component {
     };
     getDirections(data);
   };
-  handleMapOnPress() {
-    // if (this.state.coordinates.length > 1) {
-    //   const temparray = this.state.coordinates;
-    //   temparray.splice(1, 1);
-    //   this.setState({
-    //     carousel_coordinates: [],
-    //     coordinates: temparray,
-    //   });
-    // } else {
-    //   this.setState({
-    //     carousel_coordinates: [],
-    //   });
-    // }
-  }
   filterSearchData = filter => {
     switch (filter) {
       case 'ALL':
@@ -478,8 +465,7 @@ class Home extends React.Component {
               ref={map => (this.map = map)}
               provider={PROVIDER_GOOGLE}
               style={styles.map}
-              region={region}
-              onPress={() => this.handleMapOnPress()}>
+              region={region}>
               <Marker
                 coordinate={{
                   latitude: region.latitude,
