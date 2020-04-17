@@ -6,28 +6,91 @@ import {
   ImageBackground,
   StatusBar,
   Image,
+  PermissionsAndroid,
+  TouchableNativeFeedback,
 } from 'react-native';
 import {
   Container,
   Text,
   Card,
-  Header,
   Left,
-  Right,
   Body,
-  Title,
   Item,
   Label,
   Icon,
   Button,
-  Content,
 } from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import {ScrollView} from 'react-native-gesture-handler';
 import moment from 'moment';
-// import { stat } from 'fs';
+import Spinner from 'react-native-spinkit';
+import Geolocation from 'react-native-geolocation-service';
+import Geocoder from 'react-native-geocoding';
+
+import PHCard from './Cards/PHCard';
+import HKCard from './Cards/HKCard';
+import SGCard from './Cards/SGCard';
+import MYCard from './Cards/MYCard';
+import IDCard from './Cards/IDCard';
+
+import {GOOGLE_MAPS_APIKEY} from '../util/api';
+
+export async function request_location_runtime_permission() {
+  try {
+    const granted = await PermissionsAndroid.request(
+      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+      {
+        title: 'Location Permission',
+        message: 'Intellicare Agora App needs access to your location ',
+      },
+    );
+    if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+    } else {
+    }
+  } catch (err) {
+    console.warn(err);
+  }
+}
 
 export default class MembInfo extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      loading: false,
+      currentCity: null,
+    };
+  }
+
+  async componentDidMount() {
+    this.setState({loading: true});
+    await request_location_runtime_permission();
+    Geocoder.init(GOOGLE_MAPS_APIKEY);
+    Geocoder.from(-36.8618786, 174.7320348)
+      .then(json => {
+        var cur_city = json.results[0].formatted_address;
+        // var curCity = json.results[0].address_components[4].long_name;
+        console.log(json.results[0]);
+        this.setState({currentCity: cur_city, loading: false});
+      })
+      .catch(error => console.warn(error));
+    // this.getCurrectLocation();
+  }
+  async getCurrectLocation() {
+    Geocoder.init(GOOGLE_MAPS_APIKEY);
+    Geolocation.getCurrentPosition(
+      position => {
+        Geocoder.from(position.coords.latitude, position.coords.longitude)
+          .then(json => {
+            var curAddress = json.results[0].formatted_address;
+            console.log(json.results[0]);
+            this.setState({currentAddress: curAddress, loading: false});
+          })
+          .catch(error => console.warn(error));
+      },
+      error => this.setState({error: error.message}),
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 1000},
+    );
+  }
   render() {
     const {
       fullname,
@@ -76,6 +139,14 @@ export default class MembInfo extends React.Component {
         membstat = '';
         break;
     }
+    const {spinnerStyle} = styles;
+    if (this.state.loading) {
+      return (
+        <View style={spinnerStyle}>
+          <Spinner color={'#5fb650'} size={50} type={'ThreeBounce'} />
+        </View>
+      );
+    }
     return (
       <Container>
         <StatusBar translucent backgroundColor="transparent" />
@@ -85,7 +156,58 @@ export default class MembInfo extends React.Component {
           </View>
           <View style={styles.contentStyle}>
             <View style={styles.sectionCard}>
-              <Card style={styles.mainCardStyle}>
+              <PHCard
+                fullname={fullname}
+                acct={acct}
+                cardno={cardno}
+                bday={birth_date}
+                gender={gender}
+                company={company}
+                intellicare={intellicare}
+                current_city={this.state.currentCity}
+              />
+              <HKCard
+                fullname={fullname}
+                acct={acct}
+                cardno={cardno}
+                bday={birth_date}
+                gender={gender}
+                company={company}
+                intellicare={intellicare}
+                current_city={this.state.currentCity}
+              />
+
+              <SGCard
+                fullname={fullname}
+                acct={acct}
+                cardno={cardno}
+                bday={birth_date}
+                gender={gender}
+                company={company}
+                intellicare={intellicare}
+                current_city={this.state.currentCity}
+              />
+              <MYCard
+                fullname={fullname}
+                acct={acct}
+                cardno={cardno}
+                bday={birth_date}
+                gender={gender}
+                company={company}
+                intellicare={intellicare}
+                current_city={this.state.currentCity}
+              />
+              <IDCard
+                fullname={fullname}
+                acct={acct}
+                cardno={cardno}
+                bday={birth_date}
+                gender={gender}
+                company={company}
+                intellicare={intellicare}
+                current_city={this.state.currentCity}
+              />
+              {/* <Card style={styles.mainCardStyle}>
                 <LinearGradient
                   colors={['#fff', '#ececec']}
                   start={{x: 0, y: 0}}
@@ -96,25 +218,19 @@ export default class MembInfo extends React.Component {
                       flex: 1,
                       justifyContent: 'center',
                     }}>
-                    {intellicare === false ?  <Image
-                      source={require('../../assets/images/avega-logo.png')}
-                      resizeMode="contain"
-                      style={styles.avegaLogo}
-                    /> :  <ImageBackground
-                      source={require('../../assets/images/virtual-card-header.png')}
-                      resizeMode="contain"
-                      style={styles.intellicareLogoOld}
-                    /> } 
-                    {/* <Image
-                      source={require('../../assets/images/avega-logo.png')}
-                      resizeMode="contain"
-                      style={styles.avegaLogo}
-                    /> */}
-                    {/* <Image
-                      source={require('../../assets/images/intellicarelogo.png')}
-                      resizeMode="contain"
-                      style={styles.intellicareLogo}
-                    /> */}
+                    {intellicare === false ? (
+                      <Image
+                        source={require('../../assets/images/avega-logo.png')}
+                        resizeMode="contain"
+                        style={styles.avegaLogo}
+                      />
+                    ) : (
+                      <ImageBackground
+                        source={require('../../assets/images/virtual-card-header.png')}
+                        resizeMode="contain"
+                        style={styles.intellicareLogoOld}
+                      />
+                    )}
                   </View>
                   <View style={styles.cardInfo}>
                     <Label style={styles.cardName}>{fullname}</Label>
@@ -141,10 +257,17 @@ export default class MembInfo extends React.Component {
                       <Label style={styles.titlecardDetails}>Gender: </Label>
                       <Label style={styles.cardDetails}>{gender}</Label>
                     </View>
-                    {/* <Label style={styles.cardDetails}>W/ DENTAL COVERAGE</Label> */}
+                    <View style={{flexDirection: 'row'}}>
+                      <Label style={styles.titlecardDetails}>
+                        Country of origin:{' '}
+                      </Label>
+                      <Label style={styles.cardDetails}>
+                        {this.state.currentAddress}
+                      </Label>
+                    </View>
                   </View>
                 </LinearGradient>
-              </Card>
+              </Card> */}
             </View>
             <View style={styles.viewButtonBenefits}>
               <Button
@@ -321,12 +444,12 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   intellicareLogoOld: {
-    width: width * 0.90,
-    height: height * 0.10,
+    width: width * 0.9,
+    height: height * 0.1,
     borderTopStartRadius: 10,
-    overflow: "hidden",
-    marginTop: -14
-},
+    overflow: 'hidden',
+    marginTop: -14,
+  },
   sectionMembInfo: {
     marginVertical: 10,
   },
@@ -336,7 +459,7 @@ const styles = StyleSheet.create({
   itemLabel: {
     color: '#6d6e72',
     fontWeight: 'bold',
-    alignItems: 'flex-start'
+    alignItems: 'flex-start',
   },
   itemInfo: {
     color: '#b2bec3',
@@ -349,11 +472,11 @@ const styles = StyleSheet.create({
     color: '#6d6e72',
     fontWeight: 'bold',
     alignItems: 'flex-start',
-    flex: 1
+    flex: 1,
   },
   itemBodyCoverage: {
     alignItems: 'flex-end',
-    flex: 2
+    flex: 2,
   },
   labelStatus: {
     color: 'green',
@@ -362,5 +485,20 @@ const styles = StyleSheet.create({
   viewButtonBenefits: {
     padding: 20,
     alignItems: 'center',
+  },
+  spinnerStyle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    backgroundColor: '#fff',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
+  },
+  linearGradient: {
+    height: 100,
+    position: 'relative',
   },
 });

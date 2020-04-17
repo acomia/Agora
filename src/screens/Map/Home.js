@@ -1,6 +1,6 @@
 import React from 'react';
 import {View, Text, PermissionsAndroid, Image, Animated} from 'react-native';
-import {Button, Container, InputGroup, Input} from 'native-base';
+import {Container} from 'native-base';
 import AsyncStorage from '@react-native-community/async-storage';
 import MapView, {Marker, Callout, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
@@ -37,7 +37,7 @@ export async function request_location_runtime_permission() {
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
         title: 'Location Permission',
-        message: 'Intellicare Mobile App needs access to your location ',
+        message: 'Intellicare Agora App needs access to your location ',
       },
     );
     if (granted === PermissionsAndroid.RESULTS.GRANTED) {
