@@ -67,7 +67,7 @@ export default function HKCard({
             <Label
               style={{
                 color: '#000',
-                fontSize: 16,
+                fontSize: 12,
                 fontWeight: 'bold',
               }}>
               Health Maintenance Medical Practice Limited
@@ -75,7 +75,7 @@ export default function HKCard({
             <Label
               style={{
                 color: '#000',
-                fontSize: 16,
+                fontSize: 12,
                 fontWeight: 'bold',
               }}>
               維 健 醫 務 有 限 公 司
@@ -96,21 +96,19 @@ export default function HKCard({
             />
           </TouchableNativeFeedback>
           <View style={{paddingHorizontal: 20, top: 6}}>
-            <Label style={{fontSize: 11, marginBottom: 10}}>
-              Authorised Signature 授权签名
-            </Label>
-            <Label style={{fontSize: 11}}>
+            <Label style={{fontSize: 10}}>Authorised Signature 授权签名</Label>
+            <Label style={{fontSize: 10}}>
               In case of emergency, please contact 在紧急情况下，请联系
             </Label>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Label style={{fontSize: 11}}>Name 名称</Label>
-              <Label style={{fontSize: 11, right: width * 0.2}}>
+              <Label style={{fontSize: 10}}>Name 名称</Label>
+              <Label style={{fontSize: 10, right: width * 0.2}}>
                 Phone 电话
               </Label>
             </View>
-            <Label style={{fontSize: 11}}>Drug Allergy 药物过敏</Label>
-            <Label style={{fontSize: 11, marginBottom: 5}}>
+            <Label style={{fontSize: 10}}>Drug Allergy 药物过敏</Label>
+            <Label style={{fontSize: 10, marginBottom: 5}}>
               Past Significant Illness 过去重大疾病
             </Label>
             <Label style={{fontSize: 10}}>
@@ -123,7 +121,7 @@ export default function HKCard({
               responsible for any transaction which is not fully settled by the
               Insurance Company.
             </Label>
-            <Label style={{fontSize: 11}}>
+            <Label style={{fontSize: 10}}>
               该卡仅供授权签字人使用。此卡的财产是維健醫務有限公司，如果找到，请返回
               尖沙咀广东道30号新港中心1座4楼405室 九龙翠这张卡的发卡会员是
               对于未完全解决的交易负责 保险公司。
@@ -134,8 +132,8 @@ export default function HKCard({
                 justifyContent: 'space-between',
                 marginTop: 5,
               }}>
-              <Label style={{fontSize: 11}}>For enquiry, call 2158 8500</Label>
-              <Label style={{fontSize: 11, right: width * 0.3}}>
+              <Label style={{fontSize: 10}}>For enquiry, call 2158 8500</Label>
+              <Label style={{fontSize: 10, right: width * 0.3}}>
                 咨询电话：2158 8500
               </Label>
             </View>
@@ -248,16 +246,16 @@ const styles = StyleSheet.create({
   },
   cardName: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   cardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     textTransform: 'uppercase',
     color: '#fff',
   },
   titlecardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#fff',
   },
   cardBody: {
@@ -268,7 +266,7 @@ const styles = StyleSheet.create({
   },
   cardBodyTextStyle: {
     color: '#fff',
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: 'bold',
     opacity: 0.4,
   },
@@ -281,18 +279,18 @@ const styles = StyleSheet.create({
   },
   membshipTextStyle: {
     color: '#DF6161',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
   },
   countryOfOrigTextStyle: {
     color: '#DF6161',
-    fontSize: 12,
+    fontSize: 10,
     alignSelf: 'flex-end',
     right: 4,
   },
   phoneTextStyle: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 14,
     fontWeight: 'bold',
     textAlign: 'center',
     alignSelf: 'flex-end',
@@ -301,7 +299,7 @@ const styles = StyleSheet.create({
   },
   wwwTextStyle: {
     color: '#DF6161',
-    fontSize: 14,
+    fontSize: 12,
     fontWeight: 'bold',
     alignSelf: 'flex-end',
     right: 4,

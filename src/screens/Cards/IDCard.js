@@ -63,13 +63,7 @@ export default function IDCard({
             colors={['silver', '#ECF0F1', '#FDFEFE']}
             start={{x: 0, y: 1}}
             end={{x: 0, y: 0}}
-            style={[
-              linearGradient,
-              //   {
-              //     borderTopLeftRadius: 20,
-              //     borderBottomLeftRadius: 20,
-              //   },
-            ]}>
+            style={linearGradient}>
             <View
               style={{
                 height: 60,
@@ -83,17 +77,17 @@ export default function IDCard({
                 padding: 20,
                 justifyContent: 'space-evenly',
               }}>
-              <Label style={{fontSize: 12, fontWeight: 'bold'}}>
+              <Label style={{fontSize: 10, fontWeight: 'bold'}}>
                 {'\u25CF'} Kartu ini berlaku untuk pelayanan di klinik/rumah
                 sakit rekanan untuk peserta yang terdaftar dan tidak bisa
                 dipindahtangankan.
               </Label>
-              <Label style={{fontSize: 12, fontWeight: 'bold'}}>
+              <Label style={{fontSize: 10, fontWeight: 'bold'}}>
                 {'\u25CF'} Jika Anda mengalami kendala pelayanan, silakan
                 hubungi kami di Call Center 24 Jam: 021 2997 6333 atau email
                 case.managers@fullertonhealth.com
               </Label>
-              <Label style={{fontSize: 12, fontWeight: 'bold', width: 240}}>
+              <Label style={{fontSize: 10, fontWeight: 'bold', width: 240}}>
                 {'\u25CF'} Jika menemukan kartu ini mohon menghubungi: FULLERTON
                 HEALTH INDONESIA CIBIS Nine Building, Lt 5 JI. TB Simatupang No.
                 2 Jakarta Selatan 12560
@@ -243,16 +237,16 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     color: 'navy',
   },
   cardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     textTransform: 'uppercase',
     color: 'navy',
   },
   titlecardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     color: 'navy',
   },
   cardFooter: {
@@ -265,7 +259,7 @@ const styles = StyleSheet.create({
   },
   countryOfOrigTextStyle: {
     color: 'navy',
-    fontSize: 12,
+    fontSize: 10,
     alignSelf: 'flex-end',
     right: 8,
     marginBottom: 2,

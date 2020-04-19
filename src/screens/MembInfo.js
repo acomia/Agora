@@ -7,7 +7,6 @@ import {
   StatusBar,
   Image,
   PermissionsAndroid,
-  TouchableNativeFeedback,
 } from 'react-native';
 import {
   Container,
@@ -57,33 +56,44 @@ export default class MembInfo extends React.Component {
     super(props);
     this.state = {
       loading: false,
-      currentCity: null,
+      currentCountry: null,
     };
   }
 
   async componentDidMount() {
     this.setState({loading: true});
     await request_location_runtime_permission();
-    Geocoder.init(GOOGLE_MAPS_APIKEY);
-    Geocoder.from(-36.8618786, 174.7320348)
-      .then(json => {
-        var cur_city = json.results[0].formatted_address;
-        // var curCity = json.results[0].address_components[4].long_name;
-        console.log(json.results[0]);
-        this.setState({currentCity: cur_city, loading: false});
-      })
-      .catch(error => console.warn(error));
-    // this.getCurrectLocation();
+    // Geocoder.init(GOOGLE_MAPS_APIKEY);
+    // Geocoder.from(1.3034745, 103.8325404)
+    //   .then(json => {
+    //     json.results[0].address_components.forEach(city => {
+    //       if (city.types.indexOf('country') !== -1) {
+    //         this.setState({
+    //           currentCountry: city.long_name,
+    //           loading: false,
+    //         });
+    //       }
+    //     });
+    //     console.log(this.state);
+    //   })
+    //   .catch(error => console.warn(error));
+    this.getCurrectCountryLocation();
   }
-  async getCurrectLocation() {
+  async getCurrectCountryLocation() {
     Geocoder.init(GOOGLE_MAPS_APIKEY);
     Geolocation.getCurrentPosition(
       position => {
         Geocoder.from(position.coords.latitude, position.coords.longitude)
           .then(json => {
-            var curAddress = json.results[0].formatted_address;
-            console.log(json.results[0]);
-            this.setState({currentAddress: curAddress, loading: false});
+            json.results[0].address_components.forEach(city => {
+              if (city.types.indexOf('country') !== -1) {
+                this.setState({
+                  currentCountry: city.long_name,
+                  loading: false,
+                });
+              }
+            });
+            console.log(this.state);
           })
           .catch(error => console.warn(error));
       },
@@ -156,6 +166,7 @@ export default class MembInfo extends React.Component {
           </View>
           <View style={styles.contentStyle}>
             <View style={styles.sectionCard}>
+              {/* {this.state.currentCountry === 'Philippines' ? ( */}
               <PHCard
                 fullname={fullname}
                 acct={acct}
@@ -164,8 +175,10 @@ export default class MembInfo extends React.Component {
                 gender={gender}
                 company={company}
                 intellicare={intellicare}
-                current_city={this.state.currentCity}
               />
+              {/* ) : null} */}
+
+              {/* {this.state.currentCountry === 'Hong Kong' ? ( */}
               <HKCard
                 fullname={fullname}
                 acct={acct}
@@ -174,9 +187,10 @@ export default class MembInfo extends React.Component {
                 gender={gender}
                 company={company}
                 intellicare={intellicare}
-                current_city={this.state.currentCity}
               />
+              {/* ) : null} */}
 
+              {/* {this.state.currentCountry === 'Singapore' ? ( */}
               <SGCard
                 fullname={fullname}
                 acct={acct}
@@ -185,8 +199,10 @@ export default class MembInfo extends React.Component {
                 gender={gender}
                 company={company}
                 intellicare={intellicare}
-                current_city={this.state.currentCity}
               />
+              {/* ) : null} */}
+
+              {/* {this.state.currentCountry === 'Malaysia' ? ( */}
               <MYCard
                 fullname={fullname}
                 acct={acct}
@@ -195,8 +211,10 @@ export default class MembInfo extends React.Component {
                 gender={gender}
                 company={company}
                 intellicare={intellicare}
-                current_city={this.state.currentCity}
               />
+              {/* ) : null} */}
+
+              {/* {this.state.currentCountry === 'Indonesia' ? ( */}
               <IDCard
                 fullname={fullname}
                 acct={acct}
@@ -205,8 +223,8 @@ export default class MembInfo extends React.Component {
                 gender={gender}
                 company={company}
                 intellicare={intellicare}
-                current_city={this.state.currentCity}
               />
+              {/* ) : null} */}
               {/* <Card style={styles.mainCardStyle}>
                 <LinearGradient
                   colors={['#fff', '#ececec']}
@@ -218,7 +236,7 @@ export default class MembInfo extends React.Component {
                       flex: 1,
                       justifyContent: 'center',
                     }}>
-                    {intellicare === false ? (
+                    {intellicare === true ? (
                       <Image
                         source={require('../../assets/images/avega-logo.png')}
                         resizeMode="contain"

@@ -75,15 +75,13 @@ export default function SGCard({
             <Label
               style={{
                 color: '#fff',
-                fontSize: 15,
+                fontSize: 14,
                 fontWeight: 'bold',
-                // position: 'absolute',
               }}>
               Please present this card together with your NRIC/EP/WP/PP/BC at
               all Fullerton panel clinics. If you require assistance, please
               call our hotline @ 6333 3636
             </Label>
-
             <View
               style={{
                 flex: 1,
@@ -91,12 +89,11 @@ export default function SGCard({
                 borderColor: '#fff',
                 padding: 20,
                 marginTop: 10,
-                position: 'relative',
               }}>
               <Label
                 style={{
                   color: '#fff',
-                  fontSize: 15,
+                  fontSize: 14,
                   fontWeight: 'bold',
                   bottom: 29,
                   backgroundColor: '#11428C',
@@ -112,31 +109,31 @@ export default function SGCard({
                 high-end and high-field radiological scans ie. MRI/CT/PET/
                 Scans). Referral from GP /SP is required
               </Label>
+              <Label
+                style={{
+                  textAlign: 'left',
+                  alignSelf: 'flex-end',
+                  color: '#fff',
+                  fontSize: 10,
+                  width: 200,
+                  right: 0,
+                  bottom: 0,
+                  position: 'absolute',
+                }}>
+                For more details on our lifestyle benefits, please visit
+                www.fullertonhealth.com/lifestyle-benefits.html
+              </Label>
             </View>
           </LinearGradient>
+
           <View
             style={{
               width: 50,
               backgroundColor: '#CC9933',
               borderTopRightRadius: 20,
               borderBottomRightRadius: 20,
-            }}>
-            <Label
-              style={{
-                flex: 1,
-                transform: [{rotate: '-90deg'}],
-                textAlign: 'left',
-                alignSelf: 'flex-end',
-                color: '#fff',
-                fontSize: 10,
-                width: 200,
-                left: width * 0.4,
-                top: 12,
-              }}>
-              For more details on our lifestyle benefits, please visit
-              www.fullertonhealth.com/lifestyle-benefits.html
-            </Label>
-          </View>
+            }}
+          />
         </View>
         <TouchableNativeFeedback onPress={() => flipCard()}>
           <Image
@@ -268,16 +265,16 @@ const styles = StyleSheet.create({
   },
   cardName: {
     color: '#fff',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: 'bold',
   },
   cardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     textTransform: 'uppercase',
     color: '#fff',
   },
   titlecardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#fff',
   },
   cardFooter: {
@@ -288,7 +285,7 @@ const styles = StyleSheet.create({
   },
   countryOfOrigTextStyle: {
     color: '#fff',
-    fontSize: 12,
+    fontSize: 10,
     alignSelf: 'flex-end',
     padding: 8,
   },

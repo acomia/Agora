@@ -68,10 +68,11 @@ export default function MYCard({
               {
                 borderTopLeftRadius: 20,
                 borderBottomLeftRadius: 20,
-                padding: 20,
+                padding: 10,
+                justifyContent: 'space-evenly',
               },
             ]}>
-            <Label style={{fontSize: 13, fontWeight: 'bold'}}>
+            <Label style={{fontSize: 12, fontWeight: 'bold'}}>
               Terms & Conditions
             </Label>
             <Label style={{fontSize: 10}}>
@@ -269,21 +270,21 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontWeight: 'bold',
-    fontSize: 18,
+    fontSize: 16,
     color: '#7D3C98',
   },
   cardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     textTransform: 'uppercase',
     color: '#7D3C98',
   },
   titlecardDetails: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#7D3C98',
   },
   cardFooter: {
     alignItems: 'center',
-    width: 100,
+    width: 70,
     backgroundColor: '#fff',
     borderWidth: 0.4,
     borderColor: '#D0D3D4',
@@ -291,7 +292,7 @@ const styles = StyleSheet.create({
   },
   countryOfOrigTextStyle: {
     color: '#7D3C98',
-    fontSize: 12,
+    fontSize: 10,
     alignSelf: 'flex-end',
     right: 8,
   },
