@@ -306,10 +306,10 @@ export default class SideBar extends React.Component {
             <Button
               iconLeft
               rounded
-              style={{backgroundColor: '#258bf5', flexDirection: 'column'}}
+              style={{backgroundColor: '#258bf5', flexDirection: 'row',justifyContent: 'center'}}
               onPress={this.showDialog}>
               <Icon type="Ionicons" name="ios-call" />
-              <Text>Request Callback!</Text>
+              <Text >Request Callback!</Text>
             </Button>
           </View>
           <View>

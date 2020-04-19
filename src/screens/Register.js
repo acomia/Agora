@@ -9,7 +9,7 @@ import {
   Linking,
   FlatList,
   TouchableOpacity,
-  Alert,
+  Alert
 } from 'react-native';
 import {
   Container,
@@ -30,26 +30,26 @@ import {
   Card,
   CardItem,
 } from 'native-base';
-import {ScrollView} from 'react-native-gesture-handler';
-import {StackActions, NavigationActions} from 'react-navigation';
+import { ScrollView } from 'react-native-gesture-handler';
+import { StackActions, NavigationActions } from 'react-navigation';
 import ImagePicker from 'react-native-image-picker';
 import CompressImage from 'react-native-compress-image';
 import Modal from 'react-native-modal';
-import {TextInputMask} from 'react-native-masked-text';
+import { TextInputMask } from 'react-native-masked-text';
 import NetInfo from '@react-native-community/netinfo';
 import Spinner from 'react-native-spinkit';
 import moment from 'moment';
-import {SearchBar} from 'react-native-elements';
-import MaskedInput from 'react-native-masked-input-text';
+import { SearchBar } from 'react-native-elements';
+import MaskedInput from 'react-native-masked-input-text'
 import {
   GET_PROVINCE,
   GET_MUNICIPALITIES,
   POST_REGISTRATION,
 } from '../util/api.js';
 
-const {width, height} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 
-const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
+const isCloseToBottom = ({ layoutMeasurement, contentOffset, contentSize }) => {
   const paddingToBottom = 20;
   return (
     layoutMeasurement.height + contentOffset.y >=
@@ -60,7 +60,7 @@ const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
 const resetAction = StackActions.reset({
   index: 0, // <-- currect active route from actions array
   key: null,
-  actions: [NavigationActions.navigate({routeName: 'OnBoardingPage'})],
+  actions: [NavigationActions.navigate({ routeName: 'OnBoardingPage' })],
 });
 
 export default class Login extends React.Component {
@@ -72,7 +72,6 @@ export default class Login extends React.Component {
       middlename: '',
       lastname: '',
       street: '',
-      municipal: '',
       gender: 'M',
       bdate: '',
       civil_stat: 'SINGLE',
@@ -95,19 +94,20 @@ export default class Login extends React.Component {
       visibleModal: false,
       visibleList: false,
       accepted: false,
-      province: [],
+      municipal: [],
       provinceCode: '',
       provinceName: '',
       foundProvince: 0,
-      searchProvince: '',
+      searchMunicpal: '',
       municipalList: [],
       municpalCode: '',
       municipalName: '',
-      confirmMunicipal: true,
+      confirmProvince: true,
       securePW: true,
       secureConfirmPW: true,
+      
     };
-    this.provinceList = [];
+    this.municipalList = [];
   }
 
   async componentDidMount() {
@@ -115,126 +115,108 @@ export default class Login extends React.Component {
       isLoading: true,
     });
 
-    fetch(GET_PROVINCE, {
-      method: 'GET',
-      params: {
-        name: '',
+    fetch(GET_MUNICIPALITIES,
+      {
+        method: 'GET',
+        params: {
+          name: '',
+        }
       },
-    })
+    )
       .then(response => {
         response.json().then(results => {
           this.setState({
-            province: results.data,
-            isLoading: false,
+            municipal: results.data,
+            isLoading: false
           });
-          this.provinceList = results.data;
+          this.municipalList = results.data;
         });
       })
       .catch(error => {
+        this.setState({
+          isLoading: false
+        });
         Alert.alert('Oops', 'Error!' + error);
       });
+
+
+
   }
 
   SearchFilterFunction(text) {
-    const newData = this.provinceList.filter(function(item) {
+    const newData = this.municipalList.filter(function (item) {
       //applying filter for the inserted text in search bar
-      const itemData = item.province_name
-        ? item.province_name.toUpperCase()
+      const itemData = item.municipal_name
+        ? item.municipal_name.toUpperCase()
         : ''.toUpperCase();
       const textData = text.toUpperCase();
       return itemData.indexOf(textData) > -1;
     });
     console.log('ndata:', newData);
     this.setState({
-      province: newData,
-      searchProvince: text,
+      municipal: newData,
+      searchMunicpal: text,
       searchTextChanged: true,
-      provinceCode: '',
-      provinceName: '',
       found: 0,
     });
+    console.log('municipal:', this.state.municipal);
   }
 
-  async GetMunicipal(provinceObj) {
-    console.log('provObj: ', provinceObj);
+
+
+  async GetProvince(provinceObj) {
+    console.log('provObj: ', provinceObj)
+    
     this.setState({
       found: 1,
-      isLoading: true,
-      provinceCode: provinceObj.province_code,
+      searchMunicpal: provinceObj.municipal_name,
+      municipalName: provinceObj.municipal_name,
       provinceName: provinceObj.province_name,
-      searchProvince: provinceObj.province_name,
+      confirmProvince: false
     });
 
-    console.log('province code:', this.state.provinceCode);
-
-    try {
-      fetch(GET_MUNICIPALITIES, {
-        method: 'GET',
-        headers: {
-          ProvinceCode: provinceObj.province_code,
-        },
-      })
-        .then(response => {
-          response.json().then(results => {
-            if (results.data !== null) {
-              this.setState({
-                municipalList: results.data,
-                isLoading: false,
-                confirmMunicipal: false,
-              });
-            } else {
-              this.setState({
-                municipalList: [],
-                isLoading: false,
-              });
-              Alert.alert('Oops', 'No Municipalities Found!');
-            }
-          });
-        })
-        .catch(error => {
-          Alert.alert('Oops', 'Error!' + error);
-        });
-    } catch (error) {
-      console.log(error);
-    }
   }
+
+
 
   checkedagree1() {
     if (this.state.check_agreement1 == true) {
-      this.setState({check_agreement1: false});
+      this.setState({ check_agreement1: false });
     } else {
-      this.setState({check_agreement1: true, visibleModal: true});
+      this.setState({ check_agreement1: true, visibleModal: true });
     }
   }
 
   checkedagree2() {
     if (this.state.check_agreement2 == true) {
-      this.setState({check_agreement2: false});
+      this.setState({ check_agreement2: false });
     } else {
-      this.setState({check_agreement2: true});
+      this.setState({ check_agreement2: true });
     }
   }
 
   checkedagree3() {
     if (this.state.check_agreement3 == true) {
-      this.setState({check_agreement3: false});
+      this.setState({ check_agreement3: false });
     } else {
-      this.setState({check_agreement3: true});
+      this.setState({ check_agreement3: true });
     }
+
   }
 
   checkedopt() {
     if (this.state.check_opt == true) {
-      this.setState({check_opt: false});
-      this.setState({opt_val: 0});
+      this.setState({ check_opt: false });
+      this.setState({ opt_val: 0 });
     } else {
-      this.setState({check_opt: true});
-      this.setState({opt_val: 1});
+      this.setState({ check_opt: true });
+      this.setState({ opt_val: 1 });
     }
   }
 
+
   render() {
-    const {valid_photo, intid_photo, province} = this.state;
+    const { valid_photo, intid_photo, municipal } = this.state;
 
     function RenderValidID() {
       if (valid_photo == null)
@@ -254,7 +236,7 @@ export default class Login extends React.Component {
                 width: 57,
                 height: 57,
               }}
-              source={{uri: valid_photo.uri}}
+              source={{ uri: valid_photo.uri }}
             />
           )
         );
@@ -279,7 +261,7 @@ export default class Login extends React.Component {
                 width: 57,
                 height: 57,
               }}
-              source={{uri: intid_photo.uri}}
+              source={{ uri: intid_photo.uri }}
             />
           )
         );
@@ -298,39 +280,39 @@ export default class Login extends React.Component {
           </View>
           <View style={styles.contentStyle}>
             <View style={styles.viewForm}>
-              <View style={{marginVertical: 20, paddingHorizontal: 30}}>
+              <View style={{ marginVertical: 20, paddingHorizontal: 30 }}>
                 <Text style={styles.headerText}>Personal Information</Text>
                 <Text style={styles.reqField}>
                   Fields with * are required fields.
                 </Text>
               </View>
-              <View style={styles.formInfo}>
+              <View style={styles.formInfo} >
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>First name *</Label>
+                  <Label style={{ fontSize: 14 }}>First name *</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.firstname}
-                    onChangeText={firstname => this.setState({firstname})}
+                    onChangeText={firstname => this.setState({ firstname })}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>Middle name</Label>
+                  <Label style={{ fontSize: 14 }}>Middle name</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.middlename}
-                    onChangeText={middlename => this.setState({middlename})}
+                    onChangeText={middlename => this.setState({ middlename })}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>Last name *</Label>
+                  <Label style={{ fontSize: 14 }}>Last name *</Label>
                   <Input
                     style={styles.labelStyle}
                     value={this.state.lastname}
-                    onChangeText={lastname => this.setState({lastname})}
+                    onChangeText={lastname => this.setState({ lastname })}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>
+                  <Label style={{ fontSize: 14 }}>
                     Address{' '}
                     <Text style={styles.sampleText}>
                       (Bldg. name/Block or Lot no./Street name/Name of Barangay)
@@ -339,15 +321,15 @@ export default class Login extends React.Component {
                   <Input
                     style={styles.labelStyle}
                     value={this.state.street}
-                    onChangeText={street => this.setState({street})}
+                    onChangeText={street => this.setState({ street })}
                   />
                 </Item>
                 <View style={styles.formStyle}>
-                  <Text style={styles.formLabel}>Select Province *</Text>
+                  <Text style={styles.formLabel}>Select Municipal</Text>
                   <SearchBar
                     round
                     lightTheme
-                    searchIcon={{size: 18, color: '#cacaca'}}
+                    searchIcon={{ size: 18, color: '#cacaca' }}
                     containerStyle={{
                       height: 45,
                       marginVertical: 10,
@@ -361,68 +343,55 @@ export default class Login extends React.Component {
                       height: 45,
                       backgroundColor: 'transparent',
                     }}
-                    inputStyle={{justifyContent: 'center', fontSize: 14}}
+                    inputStyle={{ justifyContent: 'center', fontSize: 14 }}
                     onChangeText={text => this.SearchFilterFunction(text)}
-                    onClear={() =>
-                      this.setState({
-                        province: [],
-                        searchProvince: '',
-                        municipal: '',
-                        found: 0,
-                        confirmMunicipal: true,
-                      })
-                    }
+                    onClear={() => this.setState({ municipal: [], searchMunicpal: '',municipalName: '', provinceName: '', found: 0, confirmProvince: true })}
                     placeholderTextColor="#cacaca"
-                    placeholder="Select Province"
-                    value={this.state.searchProvince}
+                    placeholder="Select Municipal"
+                    value={this.state.searchMunicpal}
                   />
-                  {province.length > 0 &&
-                  this.state.searchTextChanged &&
-                  this.state.searchProvince !== '' &&
-                  this.state.found === 0 ? (
-                    <FlatList
-                      data={this.state.province}
-                      renderItem={({item}) => (
-                        <View style={{backgroundColor: '#fff'}}>
-                          <ListItem>
-                            <TouchableOpacity
-                              onPress={() => this.GetMunicipal(item)}>
-                              <Text
-                                style={{
-                                  alignSelf: 'flex-start',
-                                  fontSize: 14,
-                                  fontWeight: 'bold',
-                                  color: '#5fb650',
-                                }}>
-                                {item.province_name}
-                              </Text>
-                              <Text
-                                style={{
-                                  alignSelf: 'flex-start',
-                                  fontSize: 10,
-                                  color: '#c4c4c4',
-                                }}>
-                                {item.province_with_region_name}
-                              </Text>
-                            </TouchableOpacity>
-                          </ListItem>
-                        </View>
-                      )}
-                      keyExtractor={item => item.province_name}
-                    />
-                  ) : null}
+                  {municipal.length > 0 &&
+                    this.state.searchTextChanged &&
+                    this.state.searchMunicpal !== '' &&
+                    this.state.found === 0 ? (
+                      <FlatList
+                        data={this.state.municipal}
+                        renderItem={({ item }) => (
+                          <View style={{ backgroundColor: '#fff' }}>
+                            <ListItem>
+                              <TouchableOpacity onPress={() => this.GetProvince(item)}>
+                                <Text
+                                  style={{
+                                    alignSelf: 'flex-start',
+                                    fontSize: 14,
+                                    fontWeight: 'bold',
+                                    color: '#5fb650',
+                                  }}>
+                                  {item.municipal_name}
+                                </Text>
+                                <Text
+                                  style={{
+                                    alignSelf: 'flex-start',
+                                    fontSize: 10,
+                                    color: '#c4c4c4',
+                                  }}>
+                                  {item.province_name}
+                                </Text>
+                              </TouchableOpacity>
+                            </ListItem>
+                          </View>
+                        )}
+                        keyExtractor={item => item.municipal_name}
+                      />
+                    ) : null}
                 </View>
                 <View style={styles.formStyle}>
-                  <Text style={styles.formLabel}>Select Municipal *</Text>
+                  <Text style={styles.formLabel}> Province </Text>
                   <Button
-                    disabled={this.state.confirmMunicipal}
-                    iconRight
-                    onPress={() => {
-                      this.setState({visibleModal: 2});
-                    }}
+                    disabled={true}
                     style={{
                       marginVertical: 10,
-                      backgroundColor: this.state.confirmMunicipal
+                      backgroundColor: this.state.confirmProvince
                         ? '#f5f5f5'
                         : '#5fb650',
                       elevation: 0,
@@ -431,18 +400,12 @@ export default class Login extends React.Component {
                     <Text
                       style={{
                         textTransform: 'capitalize',
-                        color: this.state.confirmMunicipal ? '#cacaca' : '#fff',
+                        color: this.state.confirmProvince ? '#cacaca' : '#fff',
                       }}>
-                      Municipal
-                    </Text>
-                    <Icon
-                      type="Ionicons"
-                      name="md-arrow-dropdown"
-                      style={{color: '#2d2d2d', fontSize: 18}}
-                    />
+                      Province
+                </Text>
                   </Button>
-                  <View
-                    style={{flexDirection: 'column', paddingHorizontal: 10}}>
+                  <View style={{ flexDirection: 'column', paddingHorizontal: 10 }}>
                     <Text
                       style={{
                         alignSelf: 'flex-start',
@@ -452,74 +415,24 @@ export default class Login extends React.Component {
                       }}>
                       {this.state.municipal === ''
                         ? ''
-                        : this.state.municipal.municipal_name}
+                        :
+                        this.state.provinceName}
                     </Text>
                   </View>
-                  <Modal
-                    isVisible={this.state.visibleModal === 2}
-                    animationInTiming={0}
-                    animationOutTiming={0}>
-                    <View style={styles.modalContainerStyle}>
-                      <View
-                        style={{
-                          backgroundColor: 'white',
-                          alignItems: 'flex-end',
-                        }}>
-                        <Button
-                          rounded
-                          transparent
-                          onPress={() => {
-                            this.setState({visibleModal: null});
-                          }}>
-                          <Icon
-                            type="Ionicons"
-                            name="md-close"
-                            style={{color: '#2d2d2d'}}
-                          />
-                        </Button>
-                      </View>
-                      <ScrollView>
-                        {this.state.municipalList.map((item, key) => (
-                          <ListItem key={key}>
-                            <TouchableOpacity
-                              onPress={() => {
-                                this.setState({
-                                  municipal: item,
-                                  visibleModal: false,
-                                });
-                              }}>
-                              <View>
-                                <Text
-                                  style={{
-                                    color: '#c4c4c4',
-                                    fontSize: 14,
-                                    color: '#5fb650',
-                                    fontWeight: 'bold',
-                                    alignSelf: 'flex-start',
-                                  }}>
-                                  {item.municipal_name}
-                                </Text>
-                              </View>
-                            </TouchableOpacity>
-                          </ListItem>
-                        ))}
-                      </ScrollView>
-                    </View>
-                  </Modal>
                 </View>
                 <Item stackedLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>Sex *</Label>
+                  <Label style={{ fontSize: 14 }}>Sex *</Label>
                   <Item picker>
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name="arrow-down" />}
-                      style={{width: undefined}}
+                      style={{ width: undefined }}
                       placeholder="Select Gender *"
-                      placeholderStyle={{color: '#bdc3c7'}}
+                      placeholderStyle={{ color: '#bdc3c7' }}
                       placeholderIconColor="#007aff"
                       selectedValue={this.state.gender}
                       onValueChange={(itemValue, itemIndex) =>
-                        this.setState({gender: itemValue})
+                        this.setState({ gender: itemValue })
                       }>
                       <Picker.Item label="Male" value="male" />
                       <Picker.Item label="Female" value="female" />
@@ -529,8 +442,8 @@ export default class Login extends React.Component {
                 <Item
                   stackedLabel
                   style={styles.formStyle}
-                  style={{alignItems: 'flex-start'}}>
-                  <Label style={{fontSize: 14}}>Date of birth *</Label>
+                  style={{ alignItems: 'flex-start' }}>
+                  <Label style={{ fontSize: 14 }}>Date of birth *</Label>
                   <DatePicker
                     // defaultDate={new Date(2018, 4, 4)} style={{ alignSelf: Left }}
                     // minimumDate={new Date(2018, 1, 1)}
@@ -541,9 +454,9 @@ export default class Login extends React.Component {
                     animationType={'fade'}
                     androidMode={'default'}
                     placeHolderText="Select date"
-                    textStyle={{color: '#2d2d2d'}}
-                    placeHolderTextStyle={{color: '#bdc3c7'}}
-                    onDateChange={bdate => this.setState({bdate})}
+                    textStyle={{ color: '#2d2d2d' }}
+                    placeHolderTextStyle={{ color: '#bdc3c7' }}
+                    onDateChange={bdate => this.setState({ bdate })}
                     disabled={false}
                     defaultDate={this.state.bdate}
                   />
@@ -551,19 +464,19 @@ export default class Login extends React.Component {
                 <Item
                   stackedLabel
                   style={styles.formStyle}
-                  style={{marginTop: 10}}>
-                  <Label style={{fontSize: 14}}>Civil Status</Label>
+                  style={{ marginTop: 10 }}>
+                  <Label style={{ fontSize: 14 }}>Civil Status</Label>
                   <Item picker>
                     <Picker
                       mode="dropdown"
                       iosIcon={<Icon name="arrow-down" />}
-                      style={{width: undefined}}
+                      style={{ width: undefined }}
                       placeholder="Select Gender"
-                      placeholderStyle={{color: '#bdc3c7'}}
+                      placeholderStyle={{ color: '#bdc3c7' }}
                       placeholderIconColor="#007aff"
                       selectedValue={this.state.civil_stat}
                       onValueChange={(itemValue, itemIndex) =>
-                        this.setState({civil_stat: itemValue})
+                        this.setState({ civil_stat: itemValue })
                       }>
                       <Picker.Item label="Single" value="single" />
                       <Picker.Item label="Married" value="married" />
@@ -585,40 +498,21 @@ export default class Login extends React.Component {
                 </Text>
               </View>
               <View style={styles.formInfo}>
-                <Label style={{fontSize: 14}}>
+                <Label style={{ fontSize: 14 }}>
                   Intellicare/Avega Account No. *{' '}
                   <Text style={styles.sampleText}>
                     (eg. 00-00-00000-00000-00)
-                  </Text>
+                    </Text>
                 </Label>
                 <View>
-                  <MaskedInput
-                    mask={'00-00-00000-00000-00'}
-                    placeholder={' 00-00-00000-00000-00'}
+                  <MaskedInput mask={'00-00-00000-00000-00'} placeholder={' 00-00-00000-00000-00'}
                     style={styles.labelStyle}
                     value={this.state.intellicare_acct}
-                    onChangeText={intellicare_acct =>
-                      this.setState({intellicare_acct})
-                    }
+                    onChangeText={intellicare_acct => this.setState({ intellicare_acct })}
                   />
                 </View>
-                {/* <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{ fontSize: 14 }}>
-                    Intellicare/Avega Card No. *{' '}
-                    <Text style={styles.sampleText}>
-                      (eg. 1195000000000000)
-                    </Text>
-                  </Label>
-                  <Input
-                    style={styles.labelStyle}
-                    value={this.state.intellicare_no}
-                    onChangeText={intellicare_no =>
-                      this.setState({ intellicare_no })
-                    }
-                  />
-                </Item> */}
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>
+                  <Label style={{ fontSize: 14 }}>
                     Email Address *{' '}
                     <Text style={styles.sampleText}>
                       (eg. sample@email.com)
@@ -627,90 +521,80 @@ export default class Login extends React.Component {
                   <Input
                     style={styles.labelStyle}
                     value={this.state.email}
-                    onChangeText={email => this.setState({email})}
+                    onChangeText={email => this.setState({ email })}
                   />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>Password *</Label>
+                  <Label style={{ fontSize: 14 }}>Password *</Label>
                   <Input
                     style={styles.labelStyle}
                     secureTextEntry={this.state.securePW}
                     value={this.state.password}
-                    onChangeText={password => this.setState({password})}
+                    onChangeText={password => this.setState({ password })}
                   />
-                  {this.state.password !== '' ? (
-                    <Icon
-                      onPress={() => {
-                        this.state.securePW
-                          ? this.setState({securePW: false})
-                          : this.setState({securePW: true});
-                      }}
-                      type="Octicons"
-                      name={this.state.securePW ? 'eye-closed' : 'eye'}
-                      style={{
-                        color: 'silver',
-                        fontSize: 20,
-                      }}
-                    />
-                  ) : null}
+                  <Icon
+                    onPress={() => {
+                      this.state.securePW
+                        ? this.setState({ securePW: false })
+                        : this.setState({ securePW: true });
+                    }}
+                    type="Octicons"
+                    name={this.state.securePW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
+                  />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>Confirm Password *</Label>
+                  <Label style={{ fontSize: 14 }}>Confirm Password *</Label>
                   <Input
                     style={styles.labelStyle}
                     secureTextEntry={this.state.secureConfirmPW}
                     value={this.state.confirm_password}
                     onChangeText={confirm_password =>
-                      this.setState({confirm_password})
+                      this.setState({ confirm_password })
                     }
                   />
-                  {this.state.confirm_password !== '' ? (
-                    <Icon
-                      onPress={() => {
-                        this.state.secureConfirmPW
-                          ? this.setState({secureConfirmPW: false})
-                          : this.setState({secureConfirmPW: true});
-                      }}
-                      type="Octicons"
-                      name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
-                      style={{
-                        color: 'silver',
-                        fontSize: 20,
-                      }}
-                    />
-                  ) : null}
+                  <Icon
+                    onPress={() => {
+                      this.state.secureConfirmPW
+                        ? this.setState({ secureConfirmPW: false })
+                        : this.setState({ secureConfirmPW: true });
+                    }}
+                    type="Octicons"
+                    name={this.state.secureConfirmPW ? 'eye-closed' : 'eye'}
+                    style={{
+                      color: 'silver',
+                      fontSize: 22,
+                    }}
+                  />
                 </Item>
                 <Item floatingLabel style={styles.formStyle}>
-                  <Label style={{fontSize: 14}}>Mobile No. *</Label>
+                  <Label style={{ fontSize: 14 }}>Mobile No. *</Label>
                   <Input
                     keyboardType={'numeric'}
                     style={styles.labelStyle}
                     value={this.state.mobile_no}
-                    onChangeText={mobile_no => this.setState({mobile_no})}
+                    onChangeText={mobile_no => this.setState({ mobile_no })}
                   />
                 </Item>
 
                 <View style={styles.viewButtonID}>
                   <TouchableOpacity
                     onPress={() => {
-                      this.setState({visibleList: true});
+                      this.setState({ visibleList: true })
                     }}>
-                    <Text
-                      style={{
-                        textAlign: 'center',
-                        fontWeight: 'bold',
-                        textDecorationLine: 'underline',
-                        color: '#5fb650',
-                      }}>
+                    <Text style={{ textAlign: 'center', fontWeight: 'bold', textDecorationLine: 'underline', color: '#5fb650' }}>
                       CLICK HERE TO SEE ACCEPTED VALID ID'S
-                    </Text>
+                </Text>
                   </TouchableOpacity>
                 </View>
                 <TouchableOpacity
                   onPress={() => {
-                    this.handleValidIDPhoto();
+                    this.handleValidIDPhoto()
                   }}>
-                  <Card style={{borderRadius: 10}}>
+                  <Card style={{ borderRadius: 10 }}>
                     <CardItem
                       style={{
                         borderRadius: 10,
@@ -718,7 +602,7 @@ export default class Login extends React.Component {
                         alignItems: 'center',
                       }}>
                       <Body
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Button
                           style={{
                             width: 57,
@@ -733,14 +617,14 @@ export default class Login extends React.Component {
                         <Icon
                           type="MaterialIcons"
                           name="photo-camera"
-                          style={{color: '#5fb650', marginHorizontal: 5}}
+                          style={{ color: '#5fb650', marginHorizontal: 5 }}
                           onPress={() => {
-                            this.handleValidIDPhoto();
+                            this.handleValidIDPhoto()
                           }}
                         />
-                        <Text style={{color: '#5fb650', fontSize: 12}}>
+                        <Text style={{ color: '#5fb650', fontSize: 12 }}>
                           Selfie
-                        </Text>
+                         </Text>
                       </Body>
                     </CardItem>
                   </Card>
@@ -749,7 +633,7 @@ export default class Login extends React.Component {
                   onPress={() => {
                     this.handleIntIDPhoto();
                   }}>
-                  <Card style={{borderRadius: 10}}>
+                  <Card style={{ borderRadius: 10 }}>
                     <CardItem
                       style={{
                         borderRadius: 10,
@@ -757,7 +641,7 @@ export default class Login extends React.Component {
                         alignItems: 'center',
                       }}>
                       <Body
-                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        style={{ flexDirection: 'row', alignItems: 'center' }}>
                         <Button
                           style={{
                             width: 57,
@@ -772,14 +656,13 @@ export default class Login extends React.Component {
                         <Icon
                           type="MaterialIcons"
                           name="photo-camera"
-                          style={{color: '#5fb650', marginHorizontal: 5}}
+                          style={{ color: '#5fb650', marginHorizontal: 5 }}
                           onPress={() => {
                             this.handleIntIDPhoto();
                           }}
                         />
-                        <Text style={{color: '#5fb650', fontSize: 12}}>
-                          Side by side picture of your {'\n'}Company ID AND
-                          Goverment ID.
+                        <Text style={{ color: '#5fb650', fontSize: 12 }}>
+                          Side by side picture of your {'\n'}Company ID AND Goverment ID.
                         </Text>
                       </Body>
                     </CardItem>
@@ -792,18 +675,18 @@ export default class Login extends React.Component {
                 block
                 success
                 onPress={() => {
-                  this.setState({visibleModal: true});
+                  this.setState({ visibleModal: true });
                 }}>
-                <Text style={{textAlign: 'center'}}>
+                <Text style={{ textAlign: 'center' }}>
                   Click Here to Read Terms of Service, Privacy Notice and
                   Privacy Policy
                 </Text>
               </Button>
             </View>
-            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
-              <ListItem style={{borderBottomWidth: 0}}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
+              <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox
-                  style={{color: '#5fb650', borderRadius: 5}}
+                  style={{ color: '#5fb650', borderRadius: 5 }}
                   checked={this.state.check_agreement1}
                   onPress={() => this.checkedagree1()}
                 />
@@ -815,10 +698,10 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
-              <ListItem style={{borderBottomWidth: 0}}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
+              <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox
-                  style={{color: '#5fb650', borderRadius: 5}}
+                  style={{ color: '#5fb650', borderRadius: 5 }}
                   checked={this.state.check_agreement2}
                   onPress={() => this.checkedagree2()}
                 />
@@ -830,10 +713,10 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
-              <ListItem style={{borderBottomWidth: 0}}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
+              <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox
-                  style={{color: '#5fb650', borderRadius: 5}}
+                  style={{ color: '#5fb650', borderRadius: 5 }}
                   checked={this.state.check_agreement3}
                   onPress={() => this.checkedagree3()}
                 />
@@ -847,10 +730,10 @@ export default class Login extends React.Component {
                 </Body>
               </ListItem>
             </View>
-            <View style={{paddingHorizontal: 15, alignContent: 'center'}}>
-              <ListItem style={{borderBottomWidth: 0}}>
+            <View style={{ paddingHorizontal: 15, alignContent: 'center' }}>
+              <ListItem style={{ borderBottomWidth: 0 }}>
                 <CheckBox
-                  style={{color: '#5fb650', borderRadius: 5}}
+                  style={{ color: '#5fb650', borderRadius: 5 }}
                   checked={this.state.check_opt}
                   onPress={() => this.checkedopt()}
                 />
@@ -872,13 +755,9 @@ export default class Login extends React.Component {
             </View>
             <View style={styles.viewButtonSignUp}>
               <Button
-                disabled={
-                  this.state.check_agreement1 === true &&
+                disabled={this.state.check_agreement1 === true &&
                   this.state.check_agreement2 === true &&
-                  this.state.check_agreement3 === true
-                    ? false
-                    : true
-                }
+                  this.state.check_agreement3 === true ? false : true}
                 block
                 rounded
                 success
@@ -888,8 +767,8 @@ export default class Login extends React.Component {
                 {this.state.creatingAcct ? (
                   <Spinner color={'#fff'} size={60} type={'ThreeBounce'} />
                 ) : (
-                  <Text>Register an Account</Text>
-                )}
+                    <Text>Register an Account</Text>
+                  )}
               </Button>
             </View>
           </View>
@@ -912,7 +791,7 @@ export default class Login extends React.Component {
         </Modal>
         {this.state.isLoading && (
           <View style={styles.spinnerStyle}>
-            <Spinner color={'#5fb650'} size={60} type={'ThreeBounce'} />
+            <Spinner color={'#e74c3c'} size={60} type={'ThreeBounce'} />
           </View>
         )}
       </Container>
@@ -924,12 +803,12 @@ export default class Login extends React.Component {
         <Text style={styles.pnTitle}>Intellicare App Privacy Notice</Text>
         <ScrollView
           style={styles.tcContainer}
-          onScroll={({nativeEvent}) => {
+          onScroll={({ nativeEvent }) => {
             if (isCloseToBottom(nativeEvent)) {
-              this.setState({accepted: true});
+              this.setState({ accepted: true });
             }
           }}>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
             Hi Intellicare App User,
           </Text>
           <Text style={styles.pnP}>
@@ -941,7 +820,7 @@ export default class Login extends React.Component {
             data. So please take time to read this before you continue signing
             up.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>What we collect and why.</Text>
+          <Text style={{ fontWeight: 'bold' }}>What we collect and why.</Text>
           <Text style={styles.pnP}>
             We built this App to provide you with the most efficient services we
             can offer in the market, improve our services and personalize them
@@ -974,7 +853,7 @@ export default class Login extends React.Component {
             All those we collect from you are treated as private and
             confidential.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>
+          <Text style={{ fontWeight: 'bold' }}>
             Reviewing, Updating, Removing and deleting your information
           </Text>
           <Text style={styles.pnP}>
@@ -997,7 +876,7 @@ export default class Login extends React.Component {
             that we may no longer be able to serve you nor provide you with the
             products and services that you require.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>
+          <Text style={{ fontWeight: 'bold' }}>
             When Intellicare shares your information
           </Text>
           <Text style={styles.pnP}>
@@ -1031,7 +910,7 @@ export default class Login extends React.Component {
             data subject which require protection under the Philippine
             Constitution.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>To whom we may Disclose</Text>
+          <Text style={{ fontWeight: 'bold' }}>To whom we may Disclose</Text>
           <Text style={styles.pnP}>
             Your information may be disclosed subject to the above-stated
             conditions only and the requirements of the Data Privacy Act to:
@@ -1050,7 +929,7 @@ export default class Login extends React.Component {
             rights of Intellicare and your Employer; provided that the
             information is absolutely necessary.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>
+          <Text style={{ fontWeight: 'bold' }}>
             We build security into our services to protect your information
           </Text>
           <Text style={styles.pnP}>
@@ -1060,7 +939,7 @@ export default class Login extends React.Component {
             standards are in place so you will feel comfortable trusting us with
             your data.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>Retention</Text>
+          <Text style={{ fontWeight: 'bold' }}>Retention</Text>
           <Text style={styles.pnP}>
             Your information is retained for the period of time for as long as
             the purpose for which the personal data was collected continues.
@@ -1071,7 +950,7 @@ export default class Login extends React.Component {
             compliance of legal, regulatory or accounting requirements, or to
             protect our interest.
           </Text>
-          <Text style={{fontWeight: 'bold'}}>Complaints</Text>
+          <Text style={{ fontWeight: 'bold' }}>Complaints</Text>
           <Text style={styles.pnP}>
             If you have complaints, our lines are open. Kindly contact our Data
             Protection Officer via email via dpo@intellicare.net.ph.
@@ -1079,7 +958,7 @@ export default class Login extends React.Component {
         </ScrollView>
         <TouchableOpacity
           disabled={!this.state.accepted}
-          onPress={() => this.setState({visibleModal: false, accepted: false})}
+          onPress={() => this.setState({ visibleModal: false, accepted: false })}
           style={
             this.state.accepted ? styles.pnButton : styles.pnButtonDisabled
           }>
@@ -1093,32 +972,48 @@ export default class Login extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.pnTitle}>Valid IDs</Text>
-        <ScrollView style={styles.tcContainer}>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>• Company ID</Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>
+        <ScrollView
+          style={styles.tcContainer}
+        >
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            • Company ID
+          </Text>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
             • Driver’s License
           </Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>• OFW ID</Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            • OFW ID
+          </Text>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
             • Philippine Passport
           </Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
             • PhilHealth ID
           </Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>• PRC ID</Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>• Postal ID</Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            • PRC ID
+          </Text>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            • Postal ID
+          </Text>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
             • Senior Citizen ID
           </Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
             • SSS UMID Card
           </Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>• TIN Card</Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}}>• Voter’s ID</Text>
-          <Text style={{fontWeight: 'bold', marginTop: 10}} />
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            • TIN Card
+          </Text>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+            • Voter’s ID
+          </Text>
+          <Text style={{ fontWeight: 'bold', marginTop: 10 }}>
+
+          </Text>
         </ScrollView>
         <TouchableOpacity
-          onPress={() => this.setState({visibleList: false})}
+          onPress={() => this.setState({ visibleList: false })}
           style={styles.pnButton}>
           <Text style={styles.pnButtonLabel}>Proceed</Text>
         </TouchableOpacity>
@@ -1140,13 +1035,10 @@ export default class Login extends React.Component {
       }
     });
 
-    var acctstr1 = this.state.intellicare_acct.length - 2;
-    var acctstr2 = this.state.intellicare_acct.length;
+    var acctstr1 = this.state.intellicare_acct.length - 2
+    var acctstr2 = this.state.intellicare_acct.length
     if (this.state.intellicare_acct.substring(acctstr1, acctstr2) !== '00') {
-      return Alert.alert(
-        'Oops',
-        'This Registration is for principal member only',
-      );
+      return Alert.alert('Oops', 'This Registration is for principal member only');
     }
 
     if (this.state.province === '' || this.state.province === null) {
@@ -1156,6 +1048,7 @@ export default class Login extends React.Component {
     if (this.state.municipal === '' || this.state.municipal === null) {
       return Alert.alert('Oops', 'Municipal is required');
     }
+
 
     if (valid_email.test(this.state.email) === false) {
       return Alert.alert('Oops', 'Email address is not valid!');
@@ -1183,10 +1076,7 @@ export default class Login extends React.Component {
     }
 
     if (!regularExpression.test(this.state.password)) {
-      return Alert.alert(
-        'Oops',
-        'Password should contain atleast one number, one uppercase and one special character.',
-      );
+      return Alert.alert('Oops', 'Password should contain atleast one number, one uppercase and one special character.');
     }
 
     if (this.state.password !== this.state.confirm_password) {
@@ -1199,6 +1089,7 @@ export default class Login extends React.Component {
   };
 
   handleValidIDPhoto = () => {
+
     const options = {
       noData: true,
     };
@@ -1218,7 +1109,7 @@ export default class Login extends React.Component {
             };
 
             console.log(vidphoto);
-            this.setState({valid_photo: vidphoto});
+            this.setState({ valid_photo: vidphoto });
             // response.uri is the URI of the new image that can now be displayed, uploaded...
             // response.path is the path of the new image
             // response.name is the name of the new image with the extension
@@ -1252,7 +1143,7 @@ export default class Login extends React.Component {
             };
 
             console.log(intphoto);
-            this.setState({intid_photo: intphoto});
+            this.setState({ intid_photo: intphoto });
             // response.uri is the URI of the new image that can now be displayed, uploaded...
             // response.path is the path of the new image
             // response.name is the name of the new image with the extension
@@ -1283,7 +1174,7 @@ export default class Login extends React.Component {
 
     let nstring = this.state.intellicare_no;
 
-    this.setState({intellicare_no: nstring.replace(/[^0-9]/gi, '')});
+    this.setState({ intellicare_no: nstring.replace(/[^0-9]/gi, '') });
     //console.log('new id',this.setState.intellicare_no)
 
     formdata.append('gov_id', this.state.valid_photo);
@@ -1303,8 +1194,8 @@ export default class Login extends React.Component {
         birthdate: newbdate,
         street: this.state.street,
         mobileno: this.state.mobile_no,
-        province: this.state.province[0].province_name,
-        city_minicipal: this.state.municipal.municipal_name,
+        city_minicipal: this.state.municipalName,
+        province: this.state.provinceName,
         membertype: 'P',
         gender: this.state.gender,
         accountno: this.state.intellicare_acct,
@@ -1319,16 +1210,18 @@ export default class Login extends React.Component {
       }),
     );
     console.log('formdata: ', formdata);
-    this.setState({creatingAcct: true});
+    this.setState({ creatingAcct: true });
 
     try {
-      let resp = await fetch(POST_REGISTRATION, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'multipart/form-data',
+      let resp = await fetch(POST_REGISTRATION,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
+          body: formdata,
         },
-        body: formdata,
-      });
+      );
       let respJson = await resp.json();
 
       if (respJson.is_success === true) {
@@ -1347,7 +1240,7 @@ export default class Login extends React.Component {
       console.log(error);
     }
 
-    this.setState({creatingAcct: false});
+    this.setState({ creatingAcct: false });
   }
 
   SEND_EMAILVERIFICATION() {
@@ -1401,7 +1294,7 @@ const styles = StyleSheet.create({
     borderTopEndRadius: 50,
     justifyContent: 'center',
     shadowColor: '#2d2d2d',
-    shadowOffset: {width: 1, height: 5},
+    shadowOffset: { width: 1, height: 5 },
     shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 5,
@@ -1434,6 +1327,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   viewButtonID: {
+
     marginBottom: 10,
     marginHorizontal: 20,
   },

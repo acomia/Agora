@@ -9,6 +9,7 @@ import {
   TouchableNativeFeedback,
   StatusBar,
   Alert,
+  Platform,
 } from 'react-native';
 import {
   Container,
@@ -31,9 +32,19 @@ import SwiperFlatList from 'react-native-swiper-flatlist';
 import { ScrollView } from 'react-native-gesture-handler';
 import { MEDGATE } from '../util/api';
 
+
+
 const ACCESS_TOKEN = 'access_token';
-const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
-const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
+//const SCREEN_WIDTH = require('react-native-extra-dimensions-android').getRealWindowWidth();
+//const SCREEN_HEIGHT = require('react-native-extra-dimensions-android').getRealWindowHeight();
+const SCREEN_WIDTH = Platform.OS === 'android'  ?
+              require('react-native-extra-dimensions-android').getRealWindowWidth()
+              : Dimensions.get('window').width
+const SCREEN_HEIGHT = Platform.OS === 'android'  ?
+              require('react-native-extra-dimensions-android').getRealWindowHeight()
+              : Dimensions.get('window').height
+              
+//Platform.OS === 'android' ? alert('android'): alert('ios');
 
 export default class OnBoarding extends React.Component {
   componentWillMount() {
@@ -278,17 +289,20 @@ const styles = StyleSheet.create({
   buttonSignIn: {
     flex: 1,
     margin: 5,
+    justifyContent: 'center',
   },
   textButtonSignIn: {
     color: '#fff',
     fontWeight: 'bold',
     textAlign: 'center',
+    alignSelf: 'center',
   },
   buttonCreateAccount: {
     backgroundColor: '#ffffff',
     flex: 1,
     margin: 5,
     textAlign: 'center',
+    justifyContent: 'center',
   },
   textButtonCreateAccount: {
     color: '#5fb650',
