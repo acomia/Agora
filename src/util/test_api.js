@@ -38,7 +38,7 @@ export const FORGOT_PASSWORD_NEW_PASSWORD =
   'https://intellicare.com.ph/uat/webservice/memberprofile/api/member/forgotpassword/changepassword';
 
 //AGORA MAP
-export const GOOGLE_MAPS_APIKEY = 'AIzaSyBYxkZ2A4Y4i_bX4SebtODZj6cR45c1Czw';
+export const GOOGLE_MAPS_APIKEY = 'Place your GOOGLEMAP API KEY Here!';
 export const MAPLOGIN_TOKEN =
   'https://intellicare.com.ph/uat/webservice/thousandminds/api/login';
 export const ACCREDITED_HOSPITALS =
