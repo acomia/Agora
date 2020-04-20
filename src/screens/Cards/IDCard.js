@@ -10,6 +10,11 @@ import {Card, Label} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
+const SCREEN_HEIGHT =
+  Platform.OS === 'android'
+    ? require('react-native-extra-dimensions-android').getRealWindowHeight()
+    : Dimensions.get('window').height;
+
 export default function IDCard({
   fullname,
   acct,
@@ -17,8 +22,6 @@ export default function IDCard({
   bday,
   gender,
   company,
-  intellicare,
-  current_city,
 }) {
   const [frontCardOpacity, setFrontCardOpacity] = useState(1);
   const [backCardOpacity, setBackCardOpacity] = useState(0);
@@ -33,8 +36,13 @@ export default function IDCard({
     cardName,
     cardDetails,
     titlecardDetails,
-    cardFooter,
+    fullertonLogo,
     countryOfOrigTextStyle,
+    blackViewStyle,
+    contentStyle,
+    flipIconStyle,
+    labelStyle,
+    medlinxLogo,
   } = styles;
 
   function flipCard() {
@@ -64,30 +72,19 @@ export default function IDCard({
             start={{x: 0, y: 1}}
             end={{x: 0, y: 0}}
             style={linearGradient}>
-            <View
-              style={{
-                height: 60,
-                backgroundColor: '#000',
-                top: 16,
-              }}
-            />
-            <View
-              style={{
-                flex: 1,
-                padding: 20,
-                justifyContent: 'space-evenly',
-              }}>
-              <Label style={{fontSize: 10, fontWeight: 'bold'}}>
+            <View style={blackViewStyle} />
+            <View style={contentStyle}>
+              <Label style={labelStyle}>
                 {'\u25CF'} Kartu ini berlaku untuk pelayanan di klinik/rumah
                 sakit rekanan untuk peserta yang terdaftar dan tidak bisa
                 dipindahtangankan.
               </Label>
-              <Label style={{fontSize: 10, fontWeight: 'bold'}}>
+              <Label style={labelStyle}>
                 {'\u25CF'} Jika Anda mengalami kendala pelayanan, silakan
                 hubungi kami di Call Center 24 Jam: 021 2997 6333 atau email
                 case.managers@fullertonhealth.com
               </Label>
-              <Label style={{fontSize: 10, fontWeight: 'bold', width: 240}}>
+              <Label style={[labelStyle, {width: 240}]}>
                 {'\u25CF'} Jika menemukan kartu ini mohon menghubungi: FULLERTON
                 HEALTH INDONESIA CIBIS Nine Building, Lt 5 JI. TB Simatupang No.
                 2 Jakarta Selatan 12560
@@ -96,28 +93,14 @@ export default function IDCard({
             <Image
               source={require('../../../assets/images/logo_medlinx.png')}
               resizeMode="contain"
-              style={{
-                width: 100,
-                height: 30,
-                alignSelf: 'flex-end',
-                bottom: 6,
-                right: 6,
-              }}
+              style={medlinxLogo}
             />
           </LinearGradient>
         </View>
         <TouchableNativeFeedback onPress={() => flipCard()}>
           <Image
             source={require('../../../assets/images/refresh.png')}
-            style={{
-              width: 24,
-              height: 24,
-              alignSelf: 'flex-end',
-              right: 10,
-              top: 18,
-              opacity: 0.7,
-              position: 'absolute',
-            }}
+            style={flipIconStyle}
           />
         </TouchableNativeFeedback>
       </Card>
@@ -180,12 +163,7 @@ export default function IDCard({
               <Image
                 source={require('../../../assets/images/Fullerton-Healthcare.png')}
                 resizeMode="center"
-                style={{
-                  width: 150,
-                  height: 30,
-                  alignSelf: 'flex-end',
-                  bottom: 4,
-                }}
+                style={fullertonLogo}
               />
             </LinearGradient>
           </View>
@@ -227,8 +205,6 @@ const styles = StyleSheet.create({
   linearGradient: {
     flex: 1,
     borderRadius: 20,
-    // borderBottomLeftRadius: 20,
-    // borderBottomRightRadius: 20,
   },
   cardInfo: {
     flex: 2,
@@ -237,16 +213,16 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: SCREEN_HEIGHT > 750 ? 18 : 16,
     color: 'navy',
   },
   cardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     textTransform: 'uppercase',
     color: 'navy',
   },
   titlecardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     color: 'navy',
   },
   cardFooter: {
@@ -259,9 +235,43 @@ const styles = StyleSheet.create({
   },
   countryOfOrigTextStyle: {
     color: 'navy',
-    fontSize: 10,
+    fontSize: SCREEN_HEIGHT > 750 ? 10 : 9,
     alignSelf: 'flex-end',
     right: 8,
     marginBottom: 2,
+  },
+  fullertonLogo: {
+    width: 150,
+    height: 30,
+    alignSelf: 'flex-end',
+    bottom: 4,
+  },
+  // Back Card
+  flipIconStyle: {
+    width: 24,
+    height: 24,
+    alignSelf: 'flex-end',
+    right: 10,
+    top: 18,
+    opacity: 0.7,
+    position: 'absolute',
+  },
+  blackViewStyle: {
+    height: 60,
+    backgroundColor: '#000',
+    top: 16,
+  },
+  contentStyle: {
+    flex: 1,
+    padding: 20,
+    justifyContent: 'space-evenly',
+  },
+  labelStyle: {fontSize: SCREEN_HEIGHT > 750 ? 11 : 9, fontWeight: 'bold'},
+  medlinxLogo: {
+    width: 100,
+    height: 30,
+    alignSelf: 'flex-end',
+    bottom: 6,
+    right: 6,
   },
 });

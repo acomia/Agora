@@ -225,67 +225,6 @@ export default class MembInfo extends React.Component {
                 intellicare={intellicare}
               />
               {/* ) : null} */}
-              {/* <Card style={styles.mainCardStyle}>
-                <LinearGradient
-                  colors={['#fff', '#ececec']}
-                  start={{x: 0, y: 0}}
-                  end={{x: 1, y: 0}}
-                  style={{flex: 1, borderRadius: 20}}>
-                  <View
-                    style={{
-                      flex: 1,
-                      justifyContent: 'center',
-                    }}>
-                    {intellicare === true ? (
-                      <Image
-                        source={require('../../assets/images/avega-logo.png')}
-                        resizeMode="contain"
-                        style={styles.avegaLogo}
-                      />
-                    ) : (
-                      <ImageBackground
-                        source={require('../../assets/images/virtual-card-header.png')}
-                        resizeMode="contain"
-                        style={styles.intellicareLogoOld}
-                      />
-                    )}
-                  </View>
-                  <View style={styles.cardInfo}>
-                    <Label style={styles.cardName}>{fullname}</Label>
-                    <Label style={styles.cardDetails}>{company}</Label>
-                    <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>
-                        Account No:{' '}
-                      </Label>
-                      <Label style={styles.cardDetails}>{acct}</Label>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>Card No: </Label>
-                      <Label style={styles.cardDetails}>{cardno}</Label>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>
-                        Birthdate (mm/dd/yyyy):{' '}
-                      </Label>
-                      <Label style={styles.cardDetails}>
-                        {moment(birth_date).format('L')}
-                      </Label>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>Gender: </Label>
-                      <Label style={styles.cardDetails}>{gender}</Label>
-                    </View>
-                    <View style={{flexDirection: 'row'}}>
-                      <Label style={styles.titlecardDetails}>
-                        Country of origin:{' '}
-                      </Label>
-                      <Label style={styles.cardDetails}>
-                        {this.state.currentAddress}
-                      </Label>
-                    </View>
-                  </View>
-                </LinearGradient>
-              </Card> */}
             </View>
             <View style={styles.viewButtonBenefits}>
               <Button
@@ -388,8 +327,6 @@ const styles = StyleSheet.create({
     height: 100,
     backgroundColor: '#5fb650',
     paddingHorizontal: 30,
-    // borderBottomEndRadius: 50,
-    // borderBottomStartRadius: 50,
   },
   headerTitle: {
     fontSize: 30,
@@ -409,64 +346,6 @@ const styles = StyleSheet.create({
   headerText: {
     color: '#fff',
     fontSize: 20,
-  },
-  mainCardStyle: {
-    alignSelf: 'center',
-    flex: 1,
-    minHeight: 250,
-    borderRadius: 20,
-    borderColor: '#f5f5f5',
-    shadowColor: '#2d2d2d',
-    shadowOffset: {width: 0, height: 3},
-    shadowOpacity: 0.1,
-    shadowRadius: 20,
-    elevation: 10,
-    color: '#2d2d2d',
-    backgroundColor: '#ffffff',
-    width: width * 0.9,
-    padding: 0,
-    justifyContent: 'center',
-  },
-  cardInfo: {
-    flex: 2,
-    paddingHorizontal: 20,
-  },
-  mainCardText: {
-    marginVertical: 15,
-    textAlign: 'justify',
-  },
-  cardName: {
-    fontWeight: 'bold',
-    fontSize: 18,
-  },
-  cardDetails: {
-    fontSize: 14,
-    textTransform: 'uppercase',
-    color: '#6d6e72',
-  },
-  titlecardDetails: {
-    fontSize: 14,
-    color: '#6d6e72',
-  },
-  avegaLogo: {
-    height: 60,
-    width: 120,
-    marginHorizontal: 20,
-    alignSelf: 'flex-start',
-  },
-  intellicareLogo: {
-    height: 50,
-    width: 150,
-    marginHorizontal: 20,
-    marginBottom: 10,
-    alignSelf: 'flex-end',
-  },
-  intellicareLogoOld: {
-    width: width * 0.9,
-    height: height * 0.1,
-    borderTopStartRadius: 10,
-    overflow: 'hidden',
-    marginTop: -14,
   },
   sectionMembInfo: {
     marginVertical: 10,

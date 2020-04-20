@@ -10,6 +10,11 @@ import {Card, Label, Icon} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
+const SCREEN_HEIGHT =
+  Platform.OS === 'android'
+    ? require('react-native-extra-dimensions-android').getRealWindowHeight()
+    : Dimensions.get('window').height;
+
 export default function HKCard({
   fullname,
   acct,
@@ -17,8 +22,6 @@ export default function HKCard({
   bday,
   gender,
   company,
-  intellicare,
-  current_city,
 }) {
   const [frontCardOpacity, setFrontCardOpacity] = useState(1);
   const [backCardOpacity, setBackCardOpacity] = useState(0);
@@ -39,6 +42,10 @@ export default function HKCard({
     countryOfOrigTextStyle,
     phoneTextStyle,
     wwwTextStyle,
+    topTextStyle,
+    flipIconStyle,
+    contentStyle,
+    labelStyle,
   } = styles;
 
   function flipCard() {
@@ -64,64 +71,44 @@ export default function HKCard({
         ]}>
         <View style={{flex: 1}}>
           <View style={{top: 5, alignItems: 'center'}}>
-            <Label
-              style={{
-                color: '#000',
-                fontSize: 12,
-                fontWeight: 'bold',
-              }}>
+            <Label style={topTextStyle}>
               Health Maintenance Medical Practice Limited
             </Label>
-            <Label
-              style={{
-                color: '#000',
-                fontSize: 12,
-                fontWeight: 'bold',
-              }}>
-              維 健 醫 務 有 限 公 司
-            </Label>
+            <Label style={topTextStyle}>維 健 醫 務 有 限 公 司</Label>
           </View>
           <TouchableNativeFeedback onPress={() => flipCard()}>
             <Image
               source={require('../../../assets/images/refresh.png')}
-              style={{
-                width: 24,
-                height: 24,
-                alignSelf: 'flex-end',
-                right: 10,
-                top: 18,
-                opacity: 0.7,
-                position: 'absolute',
-              }}
+              style={flipIconStyle}
             />
           </TouchableNativeFeedback>
-          <View style={{paddingHorizontal: 20, top: 6}}>
-            <Label style={{fontSize: 10}}>Authorised Signature 授权签名</Label>
-            <Label style={{fontSize: 10}}>
+          <View style={contentStyle}>
+            <Label style={labelStyle}>Authorised Signature 授权签名</Label>
+            <Label style={labelStyle}>
               In case of emergency, please contact 在紧急情况下，请联系
             </Label>
             <View
               style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Label style={{fontSize: 10}}>Name 名称</Label>
-              <Label style={{fontSize: 10, right: width * 0.2}}>
+              <Label style={labelStyle}>Name 名称</Label>
+              <Label style={[labelStyle, {right: width * 0.2}]}>
                 Phone 电话
               </Label>
             </View>
-            <Label style={{fontSize: 10}}>Drug Allergy 药物过敏</Label>
-            <Label style={{fontSize: 10, marginBottom: 5}}>
+            <Label style={labelStyle}>Drug Allergy 药物过敏</Label>
+            <Label style={[labelStyle, {marginBottom: 5}]}>
               Past Significant Illness 过去重大疾病
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               This card may be used by the authorised signatory only.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               This card is the property of HMMTP Ltd., if found please return to
               Unit 405 4/F., Tower 1, Silvercord, No. 30 Canton Road, Tsim Sha
               Tsui, Kowloon. The member to whom this card was issued is
               responsible for any transaction which is not fully settled by the
               Insurance Company.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               该卡仅供授权签字人使用。此卡的财产是維健醫務有限公司，如果找到，请返回
               尖沙咀广东道30号新港中心1座4楼405室 九龙翠这张卡的发卡会员是
               对于未完全解决的交易负责 保险公司。
@@ -132,8 +119,8 @@ export default function HKCard({
                 justifyContent: 'space-between',
                 marginTop: 5,
               }}>
-              <Label style={{fontSize: 10}}>For enquiry, call 2158 8500</Label>
-              <Label style={{fontSize: 10, right: width * 0.3}}>
+              <Label style={labelStyle}>For enquiry, call 2158 8500</Label>
+              <Label style={[labelStyle, {right: width * 0.3}]}>
                 咨询电话：2158 8500
               </Label>
             </View>
@@ -246,23 +233,23 @@ const styles = StyleSheet.create({
   },
   cardName: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: SCREEN_HEIGHT > 750 ? 18 : 16,
     fontWeight: 'bold',
   },
   cardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     textTransform: 'uppercase',
     color: '#fff',
   },
   titlecardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     color: '#fff',
   },
   cardBody: {
     alignSelf: 'flex-end',
     position: 'absolute',
     top: 20,
-    right: 50,
+    right: SCREEN_HEIGHT > 750 ? 50 : 10,
   },
   cardBodyTextStyle: {
     color: '#fff',
@@ -279,18 +266,18 @@ const styles = StyleSheet.create({
   },
   membshipTextStyle: {
     color: '#DF6161',
-    fontSize: 14,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     fontWeight: 'bold',
   },
   countryOfOrigTextStyle: {
     color: '#DF6161',
-    fontSize: 10,
+    fontSize: SCREEN_HEIGHT > 750 ? 10 : 9,
     alignSelf: 'flex-end',
     right: 4,
   },
   phoneTextStyle: {
     color: '#fff',
-    fontSize: 14,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     fontWeight: 'bold',
     textAlign: 'center',
     alignSelf: 'flex-end',
@@ -299,9 +286,26 @@ const styles = StyleSheet.create({
   },
   wwwTextStyle: {
     color: '#DF6161',
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 12 : 10,
     fontWeight: 'bold',
     alignSelf: 'flex-end',
     right: 4,
   },
+  //Back Card
+  topTextStyle: {
+    color: '#000',
+    fontSize: 12,
+    fontWeight: 'bold',
+  },
+  flipIconStyle: {
+    width: 24,
+    height: 24,
+    alignSelf: 'flex-end',
+    right: 10,
+    top: 18,
+    opacity: 0.7,
+    position: 'absolute',
+  },
+  contentStyle: {paddingHorizontal: 20, top: 6},
+  labelStyle: {fontSize: SCREEN_HEIGHT > 750 ? 11 : 9},
 });

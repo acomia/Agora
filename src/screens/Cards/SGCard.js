@@ -10,6 +10,11 @@ import {Card, Label} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
+const SCREEN_HEIGHT =
+  Platform.OS === 'android'
+    ? require('react-native-extra-dimensions-android').getRealWindowHeight()
+    : Dimensions.get('window').height;
+
 export default function SGCard({
   fullname,
   acct,
@@ -17,8 +22,6 @@ export default function SGCard({
   bday,
   gender,
   company,
-  intellicare,
-  current_city,
 }) {
   const [frontCardOpacity, setFrontCardOpacity] = useState(1);
   const [backCardOpacity, setBackCardOpacity] = useState(0);
@@ -36,6 +39,13 @@ export default function SGCard({
     titlecardDetails,
     cardFooter,
     countryOfOrigTextStyle,
+    linearGradientBack,
+    topTextStyle,
+    boxStyle,
+    remarksStyle,
+    labelStyle,
+    wwwTextStyle,
+    flipIconStyle,
   } = styles;
 
   function flipCard() {
@@ -64,68 +74,26 @@ export default function SGCard({
             colors={['#11428C', '#1856B2']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            style={[
-              linearGradient,
-              {
-                borderTopLeftRadius: 20,
-                borderBottomLeftRadius: 20,
-                padding: 20,
-              },
-            ]}>
-            <Label
-              style={{
-                color: '#fff',
-                fontSize: 14,
-                fontWeight: 'bold',
-              }}>
+            style={linearGradientBack}>
+            <Label style={topTextStyle}>
               Please present this card together with your NRIC/EP/WP/PP/BC at
               all Fullerton panel clinics. If you require assistance, please
               call our hotline @ 6333 3636
             </Label>
-            <View
-              style={{
-                flex: 1,
-                borderWidth: 0.6,
-                borderColor: '#fff',
-                padding: 20,
-                marginTop: 10,
-              }}>
-              <Label
-                style={{
-                  color: '#fff',
-                  fontSize: 14,
-                  fontWeight: 'bold',
-                  bottom: 29,
-                  backgroundColor: '#11428C',
-                  width: 58,
-                  textAlign: 'center',
-                  // position: 'absolute',
-                }}>
-                Remarks
-              </Label>
-              <Label style={{color: '#fff', fontSize: 12}}>
+            <View style={boxStyle}>
+              <Label style={remarksStyle}>Remarks</Label>
+              <Label style={labelStyle}>
                 General Exclusions Apply. This policy covers for Surcharge.
                 Policy Covers Standard Diagnostic X-ray & Lab Tests (Including
                 high-end and high-field radiological scans ie. MRI/CT/PET/
                 Scans). Referral from GP /SP is required
               </Label>
-              <Label
-                style={{
-                  textAlign: 'left',
-                  alignSelf: 'flex-end',
-                  color: '#fff',
-                  fontSize: 10,
-                  width: 200,
-                  right: 0,
-                  bottom: 0,
-                  position: 'absolute',
-                }}>
+              <Label style={wwwTextStyle}>
                 For more details on our lifestyle benefits, please visit
                 www.fullertonhealth.com/lifestyle-benefits.html
               </Label>
             </View>
           </LinearGradient>
-
           <View
             style={{
               width: 50,
@@ -138,15 +106,7 @@ export default function SGCard({
         <TouchableNativeFeedback onPress={() => flipCard()}>
           <Image
             source={require('../../../assets/images/refresh.png')}
-            style={{
-              width: 24,
-              height: 24,
-              alignSelf: 'flex-end',
-              right: 10,
-              top: 18,
-              opacity: 0.7,
-              position: 'absolute',
-            }}
+            style={flipIconStyle}
           />
         </TouchableNativeFeedback>
       </Card>
@@ -265,16 +225,16 @@ const styles = StyleSheet.create({
   },
   cardName: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: SCREEN_HEIGHT > 750 ? 18 : 16,
     fontWeight: 'bold',
   },
   cardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     textTransform: 'uppercase',
     color: '#fff',
   },
   titlecardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     color: '#fff',
   },
   cardFooter: {
@@ -285,8 +245,56 @@ const styles = StyleSheet.create({
   },
   countryOfOrigTextStyle: {
     color: '#fff',
-    fontSize: 10,
+    fontSize: SCREEN_HEIGHT > 750 ? 10 : 9,
     alignSelf: 'flex-end',
     padding: 8,
+  },
+  // Back Card
+  flipIconStyle: {
+    width: 24,
+    height: 24,
+    alignSelf: 'flex-end',
+    right: 10,
+    top: 18,
+    opacity: 0.7,
+    position: 'absolute',
+  },
+  linearGradientBack: {
+    flex: 1,
+    borderTopLeftRadius: 20,
+    borderBottomLeftRadius: 20,
+    padding: 20,
+  },
+  topTextStyle: {
+    color: '#fff',
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
+    fontWeight: 'bold',
+  },
+  boxStyle: {
+    flex: 1,
+    borderWidth: 0.6,
+    borderColor: '#fff',
+    padding: 20,
+    marginTop: 10,
+  },
+  remarksStyle: {
+    color: '#fff',
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
+    fontWeight: 'bold',
+    bottom: 29,
+    backgroundColor: '#11428C',
+    width: 58,
+    textAlign: 'center',
+  },
+  labelStyle: {color: '#fff', fontSize: SCREEN_HEIGHT > 750 ? 12 : 10},
+  wwwTextStyle: {
+    textAlign: 'left',
+    alignSelf: 'flex-end',
+    color: '#fff',
+    fontSize: SCREEN_HEIGHT > 750 ? 10 : 8,
+    width: 200,
+    right: 0,
+    bottom: 0,
+    position: 'absolute',
   },
 });

@@ -10,6 +10,11 @@ import {Card, Label} from 'native-base';
 import LinearGradient from 'react-native-linear-gradient';
 import moment from 'moment';
 
+const SCREEN_HEIGHT =
+  Platform.OS === 'android'
+    ? require('react-native-extra-dimensions-android').getRealWindowHeight()
+    : Dimensions.get('window').height;
+
 export default function MYCard({
   fullname,
   acct,
@@ -17,8 +22,6 @@ export default function MYCard({
   bday,
   gender,
   company,
-  intellicare,
-  current_city,
 }) {
   const [frontCardOpacity, setFrontCardOpacity] = useState(1);
   const [backCardOpacity, setBackCardOpacity] = useState(0);
@@ -35,6 +38,13 @@ export default function MYCard({
     titlecardDetails,
     cardFooter,
     countryOfOrigTextStyle,
+    ihpLogoStyle,
+    malaysiaTextStyle,
+    flipIconStyle,
+    linearGradientBack,
+    termsTextStyle,
+    labelStyle,
+    footerContentStyle,
   } = styles;
 
   function flipCard() {
@@ -63,67 +73,52 @@ export default function MYCard({
             colors={['#fff', '#FDFEFE']}
             start={{x: 0, y: 0}}
             end={{x: 1, y: 0}}
-            style={[
-              linearGradient,
-              {
-                borderTopLeftRadius: 20,
-                borderBottomLeftRadius: 20,
-                padding: 10,
-                justifyContent: 'space-evenly',
-              },
-            ]}>
-            <Label style={{fontSize: 12, fontWeight: 'bold'}}>
-              Terms & Conditions
-            </Label>
-            <Label style={{fontSize: 10}}>
+            style={linearGradientBack}>
+            <Label style={termsTextStyle}>Terms & Conditions</Label>
+            <Label style={labelStyle}>
               {'\u25CF'} This card is not transferable and must be presented
               with the cardholder's IC.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} This card must be presented before medical services can
               be rendered.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} Fraudulent use of this card may implicate legal
               proceedings.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} The cardholder shall be deemed, by use of this card, to
               have given consent & authorised the relevant providers to release
               all information pertaining to treatment of the cardholder to
               Integrated Health Plans (Malaysia) Sdn Bhd.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} Please report loss of this card to IHP or your
               organization/ insurer immediately.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} Please report loss of this card to IHP or your
               organization/ insurer immediately.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} An administration fee of RM10 plus prevailing taxes
               will be imposed for replacement of physical card.
             </Label>
-            <Label style={{fontSize: 10}}>
+            <Label style={labelStyle}>
               {'\u25CF'} This card is the property of Integrated Health Plans
               (Malaysia) Sdn Bhd. If found, please contact;
             </Label>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                paddingTop: 10,
-              }}>
+            <View style={footerContentStyle}>
               <View style={{flexDirection: 'row'}}>
-                <Label style={{fontSize: 10, fontWeight: 'bold'}}>
+                <Label style={[labelStyle, {fontWeight: 'bold'}]}>
                   Employee hotline:
                 </Label>
-                <Label style={{fontSize: 10}}> +603 8230 4088</Label>
+                <Label style={labelStyle}> +603 8230 4088</Label>
               </View>
               <View style={{flexDirection: 'row'}}>
-                <Label style={{fontSize: 10, fontWeight: 'bold'}}>Email:</Label>
-                <Label style={{fontSize: 10}}> enquiry@ihpmy.com</Label>
+                <Label style={[labelStyle, {fontWeight: 'bold'}]}>Email:</Label>
+                <Label style={labelStyle}> enquiry@ihpmy.com</Label>
               </View>
             </View>
           </LinearGradient>
@@ -139,15 +134,7 @@ export default function MYCard({
         <TouchableNativeFeedback onPress={() => flipCard()}>
           <Image
             source={require('../../../assets/images/refresh.png')}
-            style={{
-              width: 24,
-              height: 24,
-              alignSelf: 'flex-end',
-              right: 10,
-              top: 18,
-              opacity: 0.7,
-              position: 'absolute',
-            }}
+            style={flipIconStyle}
           />
         </TouchableNativeFeedback>
       </Card>
@@ -216,12 +203,9 @@ export default function MYCard({
               <Image
                 source={require('../../../assets/images/ihp_logo.png')}
                 resizeMode="contain"
-                style={{width: 50, height: 50, marginTop: 10}}
+                style={ihpLogoStyle}
               />
-              <Label
-                style={{fontSize: 12, color: '#7D3C98', fontWeight: 'bold'}}>
-                M a l a y s i a
-              </Label>
+              <Label style={malaysiaTextStyle}>M a l a y s i a</Label>
             </View>
           </View>
         </View>
@@ -270,21 +254,21 @@ const styles = StyleSheet.create({
   },
   cardName: {
     fontWeight: 'bold',
-    fontSize: 16,
+    fontSize: SCREEN_HEIGHT > 750 ? 18 : 16,
     color: '#7D3C98',
   },
   cardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     textTransform: 'uppercase',
     color: '#7D3C98',
   },
   titlecardDetails: {
-    fontSize: 12,
+    fontSize: SCREEN_HEIGHT > 750 ? 14 : 12,
     color: '#7D3C98',
   },
   cardFooter: {
     alignItems: 'center',
-    width: 70,
+    width: SCREEN_HEIGHT > 750 ? 80 : 75,
     backgroundColor: '#fff',
     borderWidth: 0.4,
     borderColor: '#D0D3D4',
@@ -292,8 +276,38 @@ const styles = StyleSheet.create({
   },
   countryOfOrigTextStyle: {
     color: '#7D3C98',
-    fontSize: 10,
+    fontSize: SCREEN_HEIGHT > 750 ? 10 : 9,
     alignSelf: 'flex-end',
     right: 8,
+  },
+  malaysiaTextStyle: {
+    fontSize: SCREEN_HEIGHT > 750 ? 11 : 10,
+    color: '#7D3C98',
+    fontWeight: 'bold',
+  },
+  ihpLogoStyle: {width: 50, height: 50, marginTop: 10},
+  // Back Card
+  flipIconStyle: {
+    width: 24,
+    height: 24,
+    alignSelf: 'flex-end',
+    right: 10,
+    top: 18,
+    opacity: 0.7,
+    position: 'absolute',
+  },
+  linearGradientBack: {
+    flex: 1,
+    borderBottomLeftRadius: 20,
+    borderTopLeftRadius: 20,
+    padding: 10,
+    justifyContent: 'space-evenly',
+  },
+  termsTextStyle: {fontSize: SCREEN_HEIGHT > 750 ? 12 : 11, fontWeight: 'bold'},
+  labelStyle: {fontSize: SCREEN_HEIGHT > 750 ? 10 : 8},
+  footerContentStyle: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingTop: 10,
   },
 });
